@@ -27,6 +27,14 @@ body {
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+/* Prevent double-tap zoom on buttons and interactive elements */
+button, input, select, textarea, a {
+  touch-action: manipulation;
 }
 
 /* Custom Scrollbar */

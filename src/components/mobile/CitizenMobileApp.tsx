@@ -166,8 +166,23 @@ export const CitizenMobileApp: React.FC = () => {
       }
     }, 2000);
 
+    // Prevent multi-touch pinch zoom on mobile devices
+    const preventZoom = (e: TouchEvent) => {
+      if (e.touches && e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+    const preventGesture = (e: Event) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener("touchstart", preventZoom, { passive: false });
+    document.addEventListener("gesturestart", preventGesture, { passive: false });
+
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      document.removeEventListener("touchstart", preventZoom);
+      document.removeEventListener("gesturestart", preventGesture);
       clearTimeout(timer);
     };
   }, []);
