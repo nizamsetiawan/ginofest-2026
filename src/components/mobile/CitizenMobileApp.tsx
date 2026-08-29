@@ -1608,32 +1608,23 @@ export const CitizenMobileApp: React.FC = () => {
                 <div className="-m-3.5 space-y-3.5 animate-in fade-in duration-200 pb-4">
                   {/* ═══ TOP VIVID BLUE GRADIENT BANNER ═══ */}
                   <div className="bg-gradient-to-b from-[#2563eb] via-[#3b82f6] to-[#60a5fa]/20 px-4 pt-3 pb-4 space-y-3 rounded-b-[28px] shadow-sm">
-                    {/* Top Pill / Org Header & Action Buttons */}
+                    {/* Top Pill / Greeting Header & Notification Button */}
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex-1 min-w-0 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-2xs flex items-center gap-1.5 border border-white/40">
-                        <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md shrink-0" />
+                        <span className="text-[13px] shrink-0">👋</span>
                         <span className="text-[11px] font-black text-[#071e49] truncate">
-                          Dinas Kesehatan Kab. Gresik
+                          Selamat Datang di Kcal
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex items-center shrink-0">
                         <button
                           type="button"
                           onClick={() => alert("Pemberitahuan: Menu MBG Ikan Bandeng Bakar Madu untuk siswa SD Kebomas telah dijadwalkan hari ini!")}
-                          className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors cursor-pointer border border-white/25"
+                          className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors cursor-pointer border border-white/25 shadow-2xs"
                           title="Notifikasi"
                         >
                           <Bell className="w-4 h-4" />
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setActiveTab("ai_chat")}
-                          className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors cursor-pointer border border-white/25"
-                          title="K-Bot Asisten AI"
-                        >
-                          <Sparkles className="w-4 h-4 text-amber-200" />
                         </button>
                       </div>
                     </div>
@@ -1648,7 +1639,7 @@ export const CitizenMobileApp: React.FC = () => {
                           {citizenUser?.name || "Muhammad Nizam Setiawan"}
                         </h2>
                         <p className="text-[11px] text-blue-100 font-medium truncate mt-0.5">
-                          Warga Kec. {citizenUser?.district || "Kebomas"} • Ginofest 2026
+                          Kecamatan {citizenUser?.district || "Kebomas"}
                         </p>
                       </div>
                     </div>
