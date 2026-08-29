@@ -951,27 +951,64 @@ export interface CitizenAccountRecord {
 
 export async function registerCitizenToFirestore(account: Omit<CitizenAccountRecord, "id">): Promise<{ success: boolean; id?: string; error?: string }> {
   try {
-    const colRef = collection(db, "kcal_masyarakat");
     const cleanEmail = account.email.trim().toLowerCase();
-    
-    // Check if email already registered
-    const q = query(colRef, where("email", "==", cleanEmail));
-    const snap = await getDocs(q);
-    if (!snap.empty) {
-      return { success: false, error: "Alamat email ini sudah terdaftar. Silakan masuk atau gunakan email lain." };
+    const cleanPass = account.password || "password123";
+
+    // 1. Create User in Firebase Authentication (Users list in Firebase Console)
+    let firebaseUid = "";
+    try {
+      const { getAuth, createUserWithEmailAndPassword, updateProfile } = await import("firebase/auth");
+      const auth = getAuth(app);
+      const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, cleanPass);
+      firebaseUid = userCredential.user.uid;
+      
+      try {
+        await updateProfile(userCredential.user, {
+          displayName: account.fullName,
+        });
+      } catch {}
+    } catch (authErr: any) {
+      console.warn("Firebase Auth registration note:", authErr);
+      if (authErr.code === "auth/email-already-in-use") {
+        return { success: false, error: "Alamat email ini sudah terdaftar di Firebase Authentication. Silakan langsung masuk." };
+      }
+      if (authErr.code === "auth/weak-password") {
+        return { success: false, error: "Kata sandi terlalu lemah. Gunakan minimal 6 karakter." };
+      }
+      if (authErr.code === "auth/invalid-email") {
+        return { success: false, error: "Format alamat email tidak valid." };
+      }
     }
 
-    const docRef = await addDoc(colRef, {
-      ...account,
-      email: cleanEmail,
-      createdAtIso: new Date().toISOString(),
-      role: "masyarakat",
-    });
+    // 2. Sync / Save to Cloud Firestore (kcal_masyarakat)
+    const colRef = collection(db, "kcal_masyarakat");
+    const q = query(colRef, where("email", "==", cleanEmail));
+    const snap = await getDocs(q);
 
-    return { success: true, id: docRef.id };
+    let docId = firebaseUid || "";
+    if (snap.empty) {
+      const newDoc = await addDoc(colRef, {
+        ...account,
+        uid: firebaseUid,
+        email: cleanEmail,
+        createdAtIso: new Date().toISOString(),
+        role: "masyarakat",
+      });
+      docId = newDoc.id;
+    } else {
+      docId = snap.docs[0].id;
+      await setDoc(doc(db, "kcal_masyarakat", docId), {
+        ...account,
+        uid: firebaseUid,
+        email: cleanEmail,
+        updatedAtIso: new Date().toISOString(),
+      }, { merge: true });
+    }
+
+    return { success: true, id: docId };
   } catch (err: any) {
-    console.error("Error registering citizen to Firestore:", err);
-    return { success: false, error: err.message || "Gagal mendaftarkan akun ke Cloud Firestore" };
+    console.error("Error registering citizen:", err);
+    return { success: false, error: err.message || "Gagal mendaftarkan akun." };
   }
 }
 
@@ -981,19 +1018,48 @@ export async function loginCitizenFromFirestore(
   district?: string
 ): Promise<{ success: boolean; user?: { id: string; name: string; email: string; phone?: string; district: string }; error?: string }> {
   try {
-    const colRef = collection(db, "kcal_masyarakat");
     const cleanEmail = email.trim().toLowerCase();
+    const cleanPass = password || "";
+
+    // 1. Authenticate with Firebase Authentication
+    let firebaseUser: any = null;
+    if (cleanPass) {
+      try {
+        const { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } = await import("firebase/auth");
+        const auth = getAuth(app);
+        try {
+          const cred = await signInWithEmailAndPassword(auth, cleanEmail, cleanPass);
+          firebaseUser = cred.user;
+        } catch (signInErr: any) {
+          if (signInErr.code === "auth/user-not-found" || signInErr.code === "auth/invalid-credential") {
+            // Auto register in Firebase Auth if user exists in Firestore or is logging in
+            try {
+              const newCred = await createUserWithEmailAndPassword(auth, cleanEmail, cleanPass);
+              firebaseUser = newCred.user;
+            } catch {}
+          } else if (signInErr.code === "auth/wrong-password") {
+            return { success: false, error: "Kata sandi yang Anda masukkan salah. Silakan periksa kembali atau gunakan Lupa Kata Sandi." };
+          }
+        }
+      } catch (authErr) {
+        console.warn("Firebase Auth login attempt:", authErr);
+      }
+    }
+
+    // 2. Fetch / Sync from Cloud Firestore (kcal_masyarakat)
+    const colRef = collection(db, "kcal_masyarakat");
     const q = query(colRef, where("email", "==", cleanEmail));
     const snap = await getDocs(q);
 
     if (snap.empty) {
-      // Auto-provision in Firestore if not yet recorded
+      // Auto-provision in Firestore
       const newDoc = await addDoc(colRef, {
+        uid: firebaseUser?.uid || "",
         fullName: cleanEmail.split("@")[0].toUpperCase(),
         email: cleanEmail,
         phone: "081234567890",
         district: district || "Kebomas",
-        password: password || "password123",
+        password: cleanPass || "password123",
         role: "masyarakat",
         createdAtIso: new Date().toISOString(),
       });
@@ -1010,14 +1076,16 @@ export async function loginCitizenFromFirestore(
     }
 
     const userData = snap.docs[0].data();
-    if (password && userData.password && userData.password !== password) {
+    if (cleanPass && userData.password && userData.password !== cleanPass && !firebaseUser) {
       return { success: false, error: "Kata sandi yang Anda masukkan salah. Silakan coba lagi atau gunakan Lupa Kata Sandi." };
     }
 
-    // Update district if user selected a different one
-    if (district && district !== userData.district) {
-      await setDoc(doc(db, "kcal_masyarakat", snap.docs[0].id), { district }, { merge: true });
-    }
+    // Update district & lastLoginIso in Firestore
+    await setDoc(doc(db, "kcal_masyarakat", snap.docs[0].id), {
+      lastLoginIso: new Date().toISOString(),
+      ...(district ? { district } : {}),
+      ...(firebaseUser?.uid ? { uid: firebaseUser.uid } : {}),
+    }, { merge: true });
 
     return {
       success: true,
@@ -1030,8 +1098,7 @@ export async function loginCitizenFromFirestore(
       }
     };
   } catch (err: any) {
-    console.error("Error login citizen from Firestore:", err);
-    // Fallback local session
+    console.error("Error login citizen:", err);
     return {
       success: true,
       user: {
