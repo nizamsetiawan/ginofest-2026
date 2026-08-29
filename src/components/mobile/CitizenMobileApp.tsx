@@ -181,8 +181,9 @@ export const CitizenMobileApp: React.FC = () => {
   const isDraggingRef = React.useRef(false);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    const target = e.currentTarget as HTMLElement;
-    if (target.scrollTop === 0) {
+    const target = e.target as HTMLElement;
+    const scrollParent = target.closest(".overflow-y-auto") as HTMLElement;
+    if (!scrollParent || scrollParent.scrollTop <= 2) {
       startYRef.current = e.touches[0].clientY;
       isDraggingRef.current = true;
     } else {
@@ -687,7 +688,12 @@ export const CitizenMobileApp: React.FC = () => {
   return (
     <div className="min-h-screen bg-white sm:bg-slate-950 flex justify-center items-center selection:bg-[#1a73e8] selection:text-white p-0 sm:p-4">
       {/* Native Mobile Smartphone Frame (Compact .APK proportions) */}
-      <div className="w-full sm:max-w-[380px] min-h-[100dvh] sm:min-h-[760px] sm:max-h-[800px] bg-white sm:rounded-[40px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-0 sm:border-[8px] sm:border-slate-800 flex flex-col relative overflow-hidden">
+      <div 
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className="w-full sm:max-w-[380px] min-h-[100dvh] sm:min-h-[760px] sm:max-h-[800px] bg-white sm:rounded-[40px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-0 sm:border-[8px] sm:border-slate-800 flex flex-col relative overflow-hidden select-none"
+      >
         
         {/* ═══ HARD RELOAD FULLSCREEN LOADING ANIMATION OVERLAY ═══ */}
         {isHardReloading && (
@@ -718,6 +724,14 @@ export const CitizenMobileApp: React.FC = () => {
           </div>
         )}
 
+        {/* ═══ UNIVERSAL PULL REFRESH SUCCESS TOAST (All Screens) ═══ */}
+        {pullRefreshToast && (
+          <div className="absolute top-10 left-3.5 right-3.5 z-[90] bg-[#071e49]/95 backdrop-blur-md text-white px-3 py-2 rounded-2xl shadow-xl text-[11px] font-bold flex items-center justify-center gap-1.5 animate-in slide-in-from-top-3 duration-300">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span>{pullRefreshToast}</span>
+          </div>
+        )}
+
         {/* ═══ NATIVE TOP STATUS BAR (Visible on Desktop preview) ═══ */}
         <div className="hidden sm:flex h-8 px-4 pt-1.5 items-center justify-between bg-white text-slate-800 select-none shrink-0 z-50">
           <span className="text-[11px] font-bold tracking-tight">9:41</span>
@@ -728,6 +742,30 @@ export const CitizenMobileApp: React.FC = () => {
             <Signal className="w-2.5 h-2.5" />
             <Wifi className="w-2.5 h-2.5" />
             <Battery className="w-3 h-3 fill-current" />
+          </div>
+        </div>
+
+        {/* ═══ UNIVERSAL PULL-TO-REFRESH VISUAL DROP PILL (Visible on ANY screen when pulled) ═══ */}
+        <div
+          style={{
+            height: pullY,
+            opacity: pullY > 8 ? 1 : 0,
+            transform: `scale(${Math.min(1, pullY / 40)})`
+          }}
+          className="overflow-hidden transition-all duration-150 ease-out flex items-center justify-center pointer-events-none shrink-0 z-40 bg-white/95"
+        >
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/95 border border-blue-200 text-[#1a73e8] text-[10.5px] font-bold shadow-xs">
+            <RefreshCw
+              className={`w-3.5 h-3.5 ${isPullRefreshing ? "animate-spin" : ""}`}
+              style={{ transform: `rotate(${pullY * 6}deg)` }}
+            />
+            <span>
+              {isPullRefreshing
+                ? "Menyegarkan data..."
+                : pullY >= 45
+                ? "Lepaskan untuk menyegarkan"
+                : "Tarik untuk menyegarkan"}
+            </span>
           </div>
         </div>
 
@@ -792,30 +830,6 @@ export const CitizenMobileApp: React.FC = () => {
             onTouchEnd={handleTouchEnd}
             className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200 overscroll-contain"
           >
-            {/* Native Pull-to-Refresh Visual Indicator */}
-            <div
-              style={{
-                height: pullY,
-                opacity: pullY > 8 ? 1 : 0,
-                transform: `scale(${Math.min(1, pullY / 40)})`
-              }}
-              className="overflow-hidden transition-all duration-150 ease-out flex items-center justify-center pointer-events-none shrink-0 mb-1"
-            >
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/90 border border-blue-200 text-[#1a73e8] text-[10.5px] font-bold shadow-xs">
-                <RefreshCw
-                  className={`w-3.5 h-3.5 ${isPullRefreshing ? "animate-spin" : ""}`}
-                  style={{ transform: `rotate(${pullY * 6}deg)` }}
-                />
-                <span>
-                  {isPullRefreshing
-                    ? "Menyegarkan data..."
-                    : pullY >= 45
-                    ? "Lepaskan untuk menyegarkan"
-                    : "Tarik untuk menyegarkan"}
-                </span>
-              </div>
-            </div>
-
             {/* Top Bar: Install APK Button & Country Flag */}
             <div className="flex items-center justify-between pb-2">
               {!isStandalone ? (
@@ -1581,29 +1595,6 @@ export const CitizenMobileApp: React.FC = () => {
               onTouchEnd={handleTouchEnd}
               className="flex-1 p-3.5 space-y-3 overflow-y-auto pb-20 relative overscroll-contain"
             >
-              {/* Native Pull-to-Refresh Visual Indicator */}
-              <div
-                style={{
-                  height: pullY,
-                  opacity: pullY > 8 ? 1 : 0,
-                  transform: `scale(${Math.min(1, pullY / 40)})`
-                }}
-                className="overflow-hidden transition-all duration-150 ease-out flex items-center justify-center pointer-events-none shrink-0"
-              >
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/90 border border-blue-200 text-[#1a73e8] text-[10.5px] font-bold shadow-xs">
-                  <RefreshCw
-                    className={`w-3.5 h-3.5 ${isPullRefreshing ? "animate-spin" : ""}`}
-                    style={{ transform: `rotate(${pullY * 6}deg)` }}
-                  />
-                  <span>
-                    {isPullRefreshing
-                      ? "Menyegarkan data..."
-                      : pullY >= 45
-                      ? "Lepaskan untuk menyegarkan"
-                      : "Tarik untuk menyegarkan"}
-                  </span>
-                </div>
-              </div>
               {/* TAB 1: BERANDA WARGA */}
               {activeTab === "home" && (
                 <div className="space-y-3 animate-in fade-in duration-200">
