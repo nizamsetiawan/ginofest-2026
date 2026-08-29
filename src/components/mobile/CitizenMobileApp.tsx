@@ -52,6 +52,58 @@ export const CitizenMobileApp: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>("splash");
   const [activeTab, setActiveTab] = useState<MobileTab>("home");
 
+  // Authenticated Citizen User State
+  const [citizenUser, setCitizenUser] = useState<{
+    id?: string;
+    name: string;
+    email: string;
+    phone?: string;
+    district: string;
+    photoURL?: string;
+  } | null>(null);
+
+  // ═══ RESTORE SCREEN & SESSION ON REFRESH (Stay on current screen) ═══
+  useEffect(() => {
+    try {
+      const savedUserStr = localStorage.getItem("kcal_active_citizen_user");
+      if (savedUserStr) {
+        const savedUser = JSON.parse(savedUserStr);
+        if (savedUser && savedUser.email) {
+          setCitizenUser(savedUser);
+        }
+      }
+
+      const savedScreen = sessionStorage.getItem("kcal_citizen_screen") as AppScreen;
+      if (savedScreen && savedScreen !== "splash") {
+        setCurrentScreen(savedScreen);
+      }
+
+      const savedTab = sessionStorage.getItem("kcal_citizen_tab") as MobileTab;
+      if (savedTab) {
+        setActiveTab(savedTab);
+      }
+    } catch {}
+  }, []);
+
+  // Sync screen changes to sessionStorage
+  useEffect(() => {
+    if (currentScreen !== "splash") {
+      sessionStorage.setItem("kcal_citizen_screen", currentScreen);
+    }
+  }, [currentScreen]);
+
+  // Sync tab changes to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem("kcal_citizen_tab", activeTab);
+  }, [activeTab]);
+
+  // Sync user changes to localStorage
+  useEffect(() => {
+    if (citizenUser) {
+      localStorage.setItem("kcal_active_citizen_user", JSON.stringify(citizenUser));
+    }
+  }, [citizenUser]);
+
   // Login Form State (GreatDay HR Style)
   const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -98,15 +150,6 @@ export const CitizenMobileApp: React.FC = () => {
   const [showRegPassword, setShowRegPassword] = useState(false);
   const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-
-  // Authenticated Citizen User
-  const [citizenUser, setCitizenUser] = useState<{
-    id?: string;
-    name: string;
-    email: string;
-    phone?: string;
-    district: string;
-  } | null>(null);
 
   // AI Screening Form State
   const [childName, setChildName] = useState("");
@@ -1532,7 +1575,12 @@ export const CitizenMobileApp: React.FC = () => {
               </div>
 
               <button
-                onClick={() => setCurrentScreen("login")}
+                onClick={() => {
+                  localStorage.removeItem("kcal_active_citizen_user");
+                  sessionStorage.setItem("kcal_citizen_screen", "login");
+                  setCitizenUser(null);
+                  setCurrentScreen("login");
+                }}
                 className="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 transition-colors cursor-pointer"
                 title="Keluar Sesi"
               >
