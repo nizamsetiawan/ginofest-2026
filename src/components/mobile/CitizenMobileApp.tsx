@@ -133,6 +133,7 @@ export const CitizenMobileApp: React.FC = () => {
   // ═══ PULL-TO-REFRESH STATE & HANDLERS ═══
   const [pullY, setPullY] = useState(0);
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
+  const [isHardReloading, setIsHardReloading] = useState(false);
   const [pullRefreshToast, setPullRefreshToast] = useState<string | null>(null);
   const startYRef = React.useRef(0);
   const isDraggingRef = React.useRef(false);
@@ -148,7 +149,7 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDraggingRef.current || isPullRefreshing) return;
+    if (!isDraggingRef.current || isPullRefreshing || isHardReloading) return;
     const currentY = e.touches[0].clientY;
     const delta = currentY - startYRef.current;
     if (delta > 0) {
@@ -159,22 +160,23 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   const handleTouchEnd = async () => {
-    if (!isDraggingRef.current || isPullRefreshing) return;
+    if (!isDraggingRef.current || isPullRefreshing || isHardReloading) return;
     isDraggingRef.current = false;
 
     if (pullY >= 45) {
       setIsPullRefreshing(true);
+      setIsHardReloading(true);
       setPullY(45);
 
       // Trigger haptic vibration on real phone
       if (typeof navigator !== "undefined" && navigator.vibrate) {
-        try { navigator.vibrate(25); } catch {}
+        try { navigator.vibrate(30); } catch {}
       }
 
-      // Hard reload the browser page to fetch latest deployment bundle from Vercel!
+      // Hard reload the browser page with visual loading animation
       setTimeout(() => {
         window.location.reload();
-      }, 400);
+      }, 700);
     } else {
       setPullY(0);
     }
@@ -638,6 +640,35 @@ export const CitizenMobileApp: React.FC = () => {
       {/* Native Mobile Smartphone Frame (Compact .APK proportions) */}
       <div className="w-full sm:max-w-[380px] min-h-[100dvh] sm:min-h-[760px] sm:max-h-[800px] bg-white sm:rounded-[40px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-0 sm:border-[8px] sm:border-slate-800 flex flex-col relative overflow-hidden">
         
+        {/* ═══ HARD RELOAD FULLSCREEN LOADING ANIMATION OVERLAY ═══ */}
+        {isHardReloading && (
+          <div className="absolute inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-200 select-none">
+            <div className="space-y-4 flex flex-col items-center">
+              {/* App Logo with Pulse Radar */}
+              <div className="relative">
+                <div className="absolute -inset-3 rounded-2xl bg-[#1a73e8]/20 blur-md animate-ping"></div>
+                <img src="/logo_app.svg" alt="Kcal" className="w-14 h-14 rounded-2xl shadow-md relative z-10 animate-bounce" />
+              </div>
+
+              <div className="space-y-1">
+                <h3 className="text-[15px] font-black text-[#071e49]">
+                  Memperbarui Aplikasi Kcal...
+                </h3>
+                <p className="text-[11px] text-slate-500 font-medium max-w-[220px]">
+                  Mengunduh pembaruan sistem terbaru dari server
+                </p>
+              </div>
+
+              {/* Progress dots */}
+              <div className="flex items-center gap-1.5 pt-2">
+                <div className="w-2 h-2 rounded-full bg-[#1a73e8] animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-2 h-2 rounded-full bg-[#1a73e8] animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-2 h-2 rounded-full bg-[#1a73e8] animate-bounce"></div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ═══ NATIVE TOP STATUS BAR (Visible on Desktop preview) ═══ */}
         <div className="hidden sm:flex h-8 px-4 pt-1.5 items-center justify-between bg-white text-slate-800 select-none shrink-0 z-50">
           <span className="text-[11px] font-bold tracking-tight">9:41</span>
