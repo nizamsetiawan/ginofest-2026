@@ -1,6 +1,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { 
   getFirestore, 
+  initializeFirestore,
   collection, 
   getDocs, 
   doc, 
@@ -22,16 +23,28 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-KKJMJ66N8Q",
 };
 
-// Singleton App & Firestore
+// Singleton App & Safe Firestore instance
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-export const db = getFirestore(app);
 
-// 4 DEDICATED TOP-LEVEL COLLECTIONS
+let firestoreDb;
+try {
+  firestoreDb = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+    ignoreUndefinedProperties: true,
+  });
+} catch (e) {
+  firestoreDb = getFirestore(app);
+}
+
+export const db = firestoreDb;
+
+// 5 DEDICATED TOP-LEVEL COLLECTIONS
 export const COLLECTIONS = {
   commodities: "master_komoditas",
   prices: "master_harga_pasar",
   recipes: "master_menu_makanan",
   nutrition: "master_nilai_gizi",
+  districts: "master_wilayah",
 };
 
 // -------------------------------------------------------------
@@ -316,7 +329,65 @@ export async function syncNutritionToFirestore(nutrition: any[]) {
 }
 
 // -------------------------------------------------------------
-// 5. DELETE OPERATION
+// 5. STEP 5: MASTER WILAYAH & SASARAN SISWA (Collection: master_wilayah)
+// -------------------------------------------------------------
+export async function fetchDistrictsFromFirestore() {
+  try {
+    const colRef = collection(db, COLLECTIONS.districts);
+    const snap = await getDocs(colRef);
+    if (!snap.empty) {
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as any));
+      items.sort((a: any, b: any) => (a.no || 0) - (b.no || 0));
+      return { success: true, data: items };
+    }
+    return { success: false, message: "Koleksi master_wilayah kosong" };
+  } catch (error: any) {
+    console.warn("Gagal load master_wilayah:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function saveDistrictToFirestore(district: any) {
+  try {
+    const docId = district.id || district.name?.toLowerCase().replace(/\s+/g, "_") || `dist_${Date.now()}`;
+    const docRef = doc(db, COLLECTIONS.districts, docId);
+    await setDoc(docRef, {
+      id: docId,
+      no: Number(district.no) || 1,
+      name: district.name,
+      targetChildren: Number(district.targetChildren) || 0,
+      schoolsCount: Number(district.schoolsCount) || 0,
+      posyanduCount: Number(district.posyanduCount) || 0,
+      stuntingRate: Number(district.stuntingRate) || 0,
+      coverageMBG: Number(district.coverageMBG) || 0,
+      localCommodity: district.localCommodity || "",
+      deficiencyFocus: district.deficiencyFocus || "",
+      riskLevel: district.riskLevel || "Sedang",
+      monthlyBudget: Number(district.monthlyBudget) || 0,
+      lat: Number(district.lat) || 0,
+      lng: Number(district.lng) || 0,
+      updatedAt: serverTimestamp(),
+      updatedAtIso: new Date().toISOString()
+    }, { merge: true });
+    return { success: true, docId };
+  } catch (error: any) {
+    console.error("Gagal simpan master_wilayah ke Firestore:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function syncDistrictsToFirestore(districts: any[]) {
+  try {
+    await Promise.all(districts.map(d => saveDistrictToFirestore(d)));
+    return { success: true };
+  } catch (error: any) {
+    console.error("Gagal sync master_wilayah:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// -------------------------------------------------------------
+// 6. DELETE OPERATION
 // -------------------------------------------------------------
 export async function deleteDocumentFromFirestore(collectionName: string, docId: string) {
   try {
@@ -330,15 +401,16 @@ export async function deleteDocumentFromFirestore(collectionName: string, docId:
 }
 
 // -------------------------------------------------------------
-// 6. FETCH ALL 4 TOP-LEVEL COLLECTIONS AT ONCE
+// 7. FETCH ALL 5 TOP-LEVEL COLLECTIONS AT ONCE
 // -------------------------------------------------------------
 export async function loadMasterDataFromFirestore() {
   try {
-    const [comRes, priceRes, recRes, nutRes] = await Promise.all([
+    const [comRes, priceRes, recRes, nutRes, distRes] = await Promise.all([
       fetchCommoditiesFromFirestore(),
       fetchPricesFromFirestore(),
       fetchRecipesFromFirestore(),
-      fetchNutritionFromFirestore()
+      fetchNutritionFromFirestore(),
+      fetchDistrictsFromFirestore()
     ]);
 
     return {
@@ -347,6 +419,7 @@ export async function loadMasterDataFromFirestore() {
       prices: (priceRes.success && Array.isArray(priceRes.data) && priceRes.data.length > 0 ? priceRes.data : null) as any[] | null,
       recipes: (recRes.success && Array.isArray(recRes.data) && recRes.data.length > 0 ? recRes.data : null) as any[] | null,
       nutrition: (nutRes.success && Array.isArray(nutRes.data) && nutRes.data.length > 0 ? nutRes.data : null) as any[] | null,
+      districts: (distRes.success && Array.isArray(distRes.data) && distRes.data.length > 0 ? distRes.data : null) as any[] | null,
     };
   } catch (error: any) {
     console.warn("Gagal load seluruh master koleksi Firestore:", error);
@@ -355,24 +428,243 @@ export async function loadMasterDataFromFirestore() {
 }
 
 // -------------------------------------------------------------
-// 7. SAVE ALL 4 TOP-LEVEL COLLECTIONS AT ONCE
+// 8. SAVE ALL 5 TOP-LEVEL COLLECTIONS AT ONCE
 // -------------------------------------------------------------
 export async function saveAllMasterDataToFirestore(dataset: {
   commodities: any[];
   prices: any[];
   recipes: any[];
   nutrition: any[];
+  districts?: any[];
 }) {
   try {
-    await Promise.all([
+    const promises = [
       syncCommoditiesToFirestore(dataset.commodities),
       syncPricesToFirestore(dataset.prices),
       syncRecipesToFirestore(dataset.recipes),
       syncNutritionToFirestore(dataset.nutrition)
-    ]);
+    ];
+    if (dataset.districts && dataset.districts.length > 0) {
+      promises.push(syncDistrictsToFirestore(dataset.districts));
+    }
+    await Promise.all(promises);
     return { success: true };
   } catch (error: any) {
     console.error("Gagal simpan seluruh koleksi ke Firestore:", error);
     return { success: false, error: error.message };
   }
 }
+
+// -------------------------------------------------------------
+// 8. MBG MENU PLAN PERSISTENCE (Collection: mbg_menu_plans)
+// -------------------------------------------------------------
+export async function saveMenuPlanToFirestore(districtId: string, period: string, planData: any) {
+  try {
+    const planDocId = `${districtId}_${period}`;
+    const docRef = doc(db, "mbg_menu_plans", planDocId);
+    await setDoc(docRef, {
+      id: planDocId,
+      districtId,
+      period,
+      includeSaturday: !!planData.includeSaturday,
+      monthlyWeeks: planData.monthlyWeeks,
+      budgetSummary: planData.budgetSummary || null,
+      logisticsBOM: planData.logisticsBOM || [],
+      availableGeneratedRecipes: planData.availableGeneratedRecipes || [],
+      updatedAt: serverTimestamp(),
+      updatedAtIso: new Date().toISOString()
+    }, { merge: true });
+
+    return { success: true, docId: planDocId };
+  } catch (error: any) {
+    console.error("Gagal simpan rancangan menu MBG ke Firestore:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function fetchMenuPlanFromFirestore(districtId: string, period: string) {
+  try {
+    const planDocId = `${districtId}_${period}`;
+    const docRef = doc(db, "mbg_menu_plans", planDocId);
+    const colRef = collection(db, "mbg_menu_plans");
+    const q = query(colRef, where("id", "==", planDocId));
+    const snap = await getDocs(q);
+    
+    if (!snap.empty) {
+      const data = snap.docs[0].data();
+      return { success: true, data };
+    }
+    return { success: false, message: "Belum ada rancangan menu tersimpan" };
+  } catch (error: any) {
+    console.warn("Gagal fetch rancangan menu MBG dari Firestore:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteMenuPlanFromFirestore(districtId: string, period: string) {
+  try {
+    const planDocId = `${districtId}_${period}`;
+    const docRef = doc(db, "mbg_menu_plans", planDocId);
+    await deleteDoc(docRef);
+    return { success: true };
+  } catch (error: any) {
+    console.error("Gagal hapus rancangan menu MBG dari Firestore:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// -------------------------------------------------------------
+// 9. NOTIFICATIONS (Collection: gscan_notifications)
+// -------------------------------------------------------------
+export interface FirestoreNotification {
+  id: string;
+  title: string;
+  description: string;
+  category: "master" | "generate" | "screening" | "system" | "settings";
+  isRead: boolean;
+  createdAt?: any;
+  createdAtIso?: string;
+}
+
+export async function addNotification(notif: Omit<FirestoreNotification, "id" | "isRead" | "createdAt" | "createdAtIso">) {
+  try {
+    const docId = `notif_${Date.now()}`;
+    const docRef = doc(db, "gscan_notifications", docId);
+    await setDoc(docRef, {
+      id: docId,
+      ...notif,
+      isRead: false,
+      createdAt: serverTimestamp(),
+      createdAtIso: new Date().toISOString(),
+    });
+    return { success: true, docId };
+  } catch (error: any) {
+    console.error("Gagal simpan notifikasi:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function fetchNotifications() {
+  try {
+    const colRef = collection(db, "gscan_notifications");
+    const snap = await getDocs(colRef);
+    if (!snap.empty) {
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as FirestoreNotification));
+      items.sort((a: any, b: any) => {
+        const ta = a.createdAtIso || "";
+        const tb = b.createdAtIso || "";
+        return tb.localeCompare(ta);
+      });
+      return { success: true, data: items };
+    }
+    return { success: true, data: [] };
+  } catch (error: any) {
+    console.warn("Gagal load gscan_notifications:", error);
+    return { success: false, data: [], error: error.message };
+  }
+}
+
+export async function markNotificationRead(docId: string) {
+  try {
+    const docRef = doc(db, "gscan_notifications", docId);
+    await setDoc(docRef, { isRead: true }, { merge: true });
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function markAllNotificationsRead() {
+  try {
+    const colRef = collection(db, "gscan_notifications");
+    const snap = await getDocs(colRef);
+    await Promise.all(snap.docs.map(d => setDoc(d.ref, { isRead: true }, { merge: true })));
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+// -------------------------------------------------------------
+// 10. SETTINGS (Collection: gscan_settings)
+// -------------------------------------------------------------
+export interface GScanSettings {
+  defaultCycleDays: 5 | 6;
+  paguPerPorsi: number;
+  adminId: string;
+  updatedAt?: any;
+  updatedAtIso?: string;
+}
+
+export async function fetchSettings() {
+  try {
+    const docRef = doc(db, "gscan_settings", "app_config");
+    const colRef = collection(db, "gscan_settings");
+    const q = query(colRef, where("__name__", "==", "app_config"));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      return { success: true, data: snap.docs[0].data() as GScanSettings };
+    }
+    return { success: true, data: null };
+  } catch (error: any) {
+    console.warn("Gagal load gscan_settings:", error);
+    return { success: false, data: null, error: error.message };
+  }
+}
+
+export async function saveSettings(settings: Partial<GScanSettings>) {
+  try {
+    const docRef = doc(db, "gscan_settings", "app_config");
+    await setDoc(docRef, {
+      ...settings,
+      updatedAt: serverTimestamp(),
+      updatedAtIso: new Date().toISOString(),
+    }, { merge: true });
+    return { success: true };
+  } catch (error: any) {
+    console.error("Gagal simpan gscan_settings:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// -------------------------------------------------------------
+// 11. HELP CHAT Q&A (Collection: gscan_help_qa)
+// -------------------------------------------------------------
+export interface HelpQA {
+  id: string;
+  command: string;
+  question: string;
+  answer: string;
+  category: string;
+}
+
+export async function fetchHelpQA() {
+  try {
+    const colRef = collection(db, "gscan_help_qa");
+    const snap = await getDocs(colRef);
+    if (!snap.empty) {
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as HelpQA));
+      items.sort((a: any, b: any) => (a.command || "").localeCompare(b.command || ""));
+      return { success: true, data: items };
+    }
+    return { success: true, data: [] };
+  } catch (error: any) {
+    console.warn("Gagal load gscan_help_qa:", error);
+    return { success: false, data: [], error: error.message };
+  }
+}
+
+export async function seedHelpQA(items: Omit<HelpQA, "id">[]) {
+  try {
+    await Promise.all(items.map((item, idx) => {
+      const docId = `help_${idx + 1}`;
+      const docRef = doc(db, "gscan_help_qa", docId);
+      return setDoc(docRef, { id: docId, ...item }, { merge: true });
+    }));
+    return { success: true };
+  } catch (error: any) {
+    console.error("Gagal seed gscan_help_qa:", error);
+    return { success: false, error: error.message };
+  }
+}
+

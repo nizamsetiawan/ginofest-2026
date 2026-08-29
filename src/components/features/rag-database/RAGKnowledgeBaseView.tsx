@@ -39,13 +39,16 @@ import {
   syncPricesToFirestore, 
   syncRecipesToFirestore, 
   syncNutritionToFirestore,
+  syncDistrictsToFirestore,
   saveCommodityToFirestore,
   savePriceToFirestore,
   saveRecipeToFirestore,
   saveNutritionToFirestore,
+  saveDistrictToFirestore,
   deleteDocumentFromFirestore,
   COLLECTIONS
 } from "@/services/firebase-service";
+import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 const SECRET_PIN = "69hagh0d";
 const PIN_LENGTH = 8;
@@ -112,6 +115,21 @@ export interface NutritionRecord {
   link: string;
 }
 
+export interface DistrictRecord {
+  id: string;
+  no: number;
+  name: string;
+  targetChildren: number;
+  schoolsCount: number;
+  posyanduCount: number;
+  stuntingRate: number;
+  coverageMBG: number;
+  localCommodity: string;
+  deficiencyFocus: string;
+  riskLevel: "Tinggi" | "Sedang" | "Rendah";
+  monthlyBudget: number;
+}
+
 export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBackToDashboard }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pinDigits, setPinDigits] = useState<string[]>(Array(PIN_LENGTH).fill(""));
@@ -120,7 +138,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [activeDatasetTab, setActiveDatasetTab] = useState<"komoditas" | "harga" | "menu" | "gizi">("komoditas");
+  const [activeDatasetTab, setActiveDatasetTab] = useState<"komoditas" | "harga" | "menu" | "gizi" | "wilayah">("komoditas");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Search & Filter State
@@ -132,13 +150,15 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
   const [priceSearchQuery, setPriceSearchQuery] = useState("");
   const [priceCategoryFilter, setPriceCategoryFilter] = useState("Semua");
 
-  // Menu & Nutrition Search & Filters
+  // Menu & Nutrition & District Search & Filters
   const [menuSearchQuery, setMenuSearchQuery] = useState("");
   const [nutritionSearchQuery, setNutritionSearchQuery] = useState("");
+  const [districtSearchQuery, setDistrictSearchQuery] = useState("");
+  const [districtRiskFilter, setDistrictRiskFilter] = useState("Semua");
   const [selectedNutritionCategoryFilter, setSelectedNutritionCategoryFilter] = useState("Semua");
 
   // Edit & Add Modal State
-  const [editingItem, setEditingItem] = useState<{ type: "komoditas" | "harga" | "menu" | "gizi"; isNew?: boolean; data: any } | null>(null);
+  const [editingItem, setEditingItem] = useState<{ type: "komoditas" | "harga" | "menu" | "gizi" | "wilayah"; isNew?: boolean; data: any } | null>(null);
   const [isEstimatingPrice, setIsEstimatingPrice] = useState(false);
   const [isRecommendingCommodities, setIsRecommendingCommodities] = useState(false);
   const [isGeneratingMenus, setIsGeneratingMenus] = useState(false);
@@ -152,6 +172,9 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
   const [commodities, setCommodities] = useState<CommodityRecord[]>([]);
   const [recipes, setRecipes] = useState<RecipeRecord[]>([]);
   const [nutrition, setNutrition] = useState<NutritionRecord[]>([]);
+  const [districts, setDistricts] = useState<DistrictRecord[]>(() => 
+    GRESIK_DISTRICTS.map((d, idx) => ({ ...d, no: idx + 1 }))
+  );
   const [isLoadingFromFirestore, setIsLoadingFromFirestore] = useState(false);
   const [lastUpdatedDate, setLastUpdatedDate] = useState<string>("29 Agustus 2026, 18:00 WIB");
   const [selectedMenuNos, setSelectedMenuNos] = useState<number[]>([]);
@@ -184,7 +207,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
   // Reset page when tab, search, or filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeDatasetTab, commoditySearchQuery, selectedCategoryFilter, priceSearchQuery, priceCategoryFilter, menuSearchQuery, nutritionSearchQuery, pageSize]);
+  }, [activeDatasetTab, commoditySearchQuery, selectedCategoryFilter, priceSearchQuery, priceCategoryFilter, menuSearchQuery, nutritionSearchQuery, districtSearchQuery, districtRiskFilter, pageSize]);
 
   // Load Saved Master Data from Cloud Firestore on Auth
   useEffect(() => {
@@ -198,6 +221,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           if (Array.isArray(res.prices) && res.prices.length > 0) setPrices(res.prices as any);
           if (Array.isArray(res.recipes) && res.recipes.length > 0) setRecipes(res.recipes as any);
           if (Array.isArray(res.nutrition) && res.nutrition.length > 0) setNutrition(res.nutrition as any);
+          if (Array.isArray(res.districts) && res.districts.length > 0) {
+            setDistricts(res.districts as any);
+          } else {
+            const initialDist = GRESIK_DISTRICTS.map((d, idx) => ({ ...d, no: idx + 1 }));
+            setDistricts(initialDist);
+            syncDistrictsToFirestore(initialDist);
+          }
           updateTimestamp();
           showToast("✓ Data Master berhasil dimuat dari Cloud Firestore");
         }
@@ -307,6 +337,31 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
     return filteredNutrition.slice(start, start + pageSize);
   }, [filteredNutrition, currentPage, pageSize]);
   const totalNutritionPages = Math.ceil(filteredNutrition.length / pageSize) || 1;
+
+  // Filtered Districts (Tab 5)
+  const filteredDistricts = useMemo(() => {
+    return districts.filter(d => {
+      const matchesRisk = 
+        districtRiskFilter === "Semua" || 
+        (districtRiskFilter === "Rendah" && (d.stuntingRate < 12 || d.riskLevel === "Rendah")) ||
+        (districtRiskFilter === "Sedang" && ((d.stuntingRate >= 12 && d.stuntingRate < 16) || d.riskLevel === "Sedang")) ||
+        (districtRiskFilter === "Tinggi" && (d.stuntingRate >= 16 || d.riskLevel === "Tinggi"));
+        
+      if (!matchesRisk) return false;
+      if (!districtSearchQuery) return true;
+      const query = districtSearchQuery.toLowerCase();
+      return (
+        (d.name && d.name.toLowerCase().includes(query)) ||
+        (d.riskLevel && d.riskLevel.toLowerCase().includes(query))
+      );
+    });
+  }, [districts, districtSearchQuery, districtRiskFilter]);
+
+  const paginatedDistricts = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredDistricts.slice(start, start + pageSize);
+  }, [filteredDistricts, currentPage, pageSize]);
+  const totalDistrictPages = Math.ceil(filteredDistricts.length / pageSize) || 1;
 
   // Auto-focus first input box on mount
   useEffect(() => {
@@ -789,6 +844,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
       setRecipes(updated);
       await saveRecipeToFirestore(recordToSave);
       showToast(`✓ Menu "${editingItem.data.name}" diperbarui & tersimpan di Cloud Firestore!`);
+    } else if (editingItem.type === "wilayah") {
+      const recordToSave = { ...editingItem.data };
+      const updated = districts.map(d => d.no === editingItem.data.no || d.id === editingItem.data.id ? { ...d, ...recordToSave } : d);
+      setDistricts(updated);
+      await saveDistrictToFirestore(recordToSave);
+      showToast(`✓ Data Wilayah "${editingItem.data.name}" (${Number(editingItem.data.targetChildren).toLocaleString("id-ID")} Siswa) berhasil disimpan di Cloud Firestore!`);
     } else {
       const recordToSave = { ...editingItem.data };
       const updated = nutrition.map(n => n.no === editingItem.data.no ? { ...n, ...recordToSave } : n);
@@ -1206,8 +1267,8 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
       {/* 2. SLIDE RECREATION: METODE / MEKANISME AI (SISI PEMERINTAH) */}
       <div className="p-6 lg:p-8 rounded-3xl bg-white border border-[#e2e8f0] shadow-xs space-y-6 relative overflow-hidden">
         {/* Top Header Badge Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-[#f1f5f9] pb-4">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#f1f5f9] pb-4">
+          <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="px-3.5 py-1 rounded-lg bg-[#1a73e8] text-white text-[13px] font-black tracking-wide uppercase shadow-xs">
                 Sisi Pemerintah
@@ -1216,48 +1277,72 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 Metode / Mekanisme AI
               </h1>
             </div>
-            <p className="text-[12px] text-[#64748b] mt-1">
-              Sumber Data: Desk Research, Portal Satu Data Gresik, SISKAPERBAPO, TKPI Kemenkes RI, & Buku BGN
+            <p className="text-[12px] text-[#64748b]">
+              Sumber Data: Desk Research, Portal Satu Data Gresik, SISKAPERBAPO Jawa Timur, TKPI Kemenkes RI
             </p>
           </div>
         </div>
 
         {/* 1. Proses Pelatihan AI Badges */}
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           <div className="flex items-center gap-2 text-[14px] font-black text-[#071e49]">
             <div className="w-3 h-3 rounded-full bg-[#1a73e8]"></div>
             <span>Proses Pelatihan AI:</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-            <div className="p-3.5 rounded-2xl bg-white border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-colors shadow-2xs">
-              <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
-                <Cpu className="w-5 h-5" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+            {/* Fine-tuning Card */}
+            <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] hover:border-[#1a73e8] flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
+                  <Cpu className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-[13px] font-black text-[#071e49]">Fine-tuning</h4>
+                  <p className="text-[11px] text-[#1a73e8] font-bold leading-tight">
+                    MobileNetV3 Edge Stunting Screening
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="text-[13px] font-black text-[#071e49]">Fine-tuning</h4>
-                <p className="text-[10px] text-[#64748b]">MobileNetV3 Edge Stunting Screening</p>
-              </div>
+              <p className="text-[11px] text-[#64748b] leading-relaxed border-t border-slate-100 pt-2">
+                Deteksi cepat kondisi fisik dan tumbuh kembang anak untuk memetakan kebutuhan gizi di wilayah prioritas.
+              </p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-white border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-colors shadow-2xs">
-              <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
-                <Search className="w-5 h-5" />
+            {/* RAG Card */}
+            <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] hover:border-[#1a73e8] flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
+                  <Search className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-[13px] font-black text-[#071e49]">Retrieval-Augmented Generation (RAG)</h4>
+                  <p className="text-[11px] text-[#1a73e8] font-bold leading-tight">
+                    Pencarian 4 Data Pangan Terintegrasi
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="text-[13px] font-black text-[#071e49]">Retrieval-Augmented Generation (RAG)</h4>
-                <p className="text-[10px] text-[#64748b]">Vector Search atas 4 Dataset Pangan</p>
-              </div>
+              <p className="text-[11px] text-[#64748b] leading-relaxed border-t border-slate-100 pt-2">
+                Mengambil data harga pasar, ketersediaan bahan pangan lokal, menu acuan, dan nilai gizi secara langsung.
+              </p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-white border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-colors shadow-2xs">
-              <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
-                <Sliders className="w-5 h-5" />
+            {/* Prompt Engineering Card */}
+            <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] hover:border-[#1a73e8] flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
+                  <Sliders className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-[13px] font-black text-[#071e49]">Prompt Engineering</h4>
+                  <p className="text-[11px] text-[#1a73e8] font-bold leading-tight">
+                    Standar Formula Menu & Pagu Biaya
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="text-[13px] font-black text-[#071e49]">Prompt Engineering</h4>
-                <p className="text-[10px] text-[#64748b]">Master Constraint Gemini 1.5 Pro / 2.0</p>
-              </div>
+              <p className="text-[11px] text-[#64748b] leading-relaxed border-t border-slate-100 pt-2">
+                Memastikan menu memenuhi prinsip 5 Bintang + Susu, cukup gizi stunting, dan tetap di bawah pagu Rp 15.000.
+              </p>
             </div>
           </div>
         </div>
@@ -1270,9 +1355,9 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center pt-1">
-            {/* LEFT: 4 Inputs (Clean Static Labels without links) */}
+            {/* LEFT: 4 Inputs (Aligned with Master 1-4 Sources) */}
             <div className="lg:col-span-4 space-y-2.5">
-              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] flex items-center gap-3 transition-all shadow-2xs">
+              <div className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
                   <Fish className="w-4 h-4" />
                 </div>
@@ -1281,12 +1366,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     Menerima data komoditas pangan daerah
                   </h4>
                   <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
-                    satudata.gresikkab.go.id
+                    Dinas Pertanian, Ketahanan Pangan, & Perikanan Kab. Gresik
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] flex items-center gap-3 transition-all shadow-2xs">
+              <div className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
                   <Tag className="w-4 h-4" />
                 </div>
@@ -1295,12 +1380,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     Menerima data harga pangan daerah
                   </h4>
                   <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
-                    siskaperbapo.jatimprov.go.id
+                    SISKAPERBAPO Jawa Timur
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] flex items-center gap-3 transition-all shadow-2xs">
+              <div className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
                   <Utensils className="w-4 h-4" />
                 </div>
@@ -1309,12 +1394,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     Menerima data menu makanan
                   </h4>
                   <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
-                    badangizi.go.id (Buku MBG BGN)
+                    Kementerian Kesehatan Republik Indonesia (Kemenkes RI)
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] flex items-center gap-3 transition-all shadow-2xs">
+              <div className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
                   <ClipboardCheck className="w-4 h-4" />
                 </div>
@@ -1323,7 +1408,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     Menerima data angka gizi daerah
                   </h4>
                   <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
-                    panganku.org (TKPI Kemenkes RI)
+                    Tabel Komposisi Pangan Indonesia (TKPI 2019) Kemenkes RI
                   </span>
                 </div>
               </div>
@@ -1432,6 +1517,16 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               }`}
             >
               4. Master Nilai Gizi TKPI
+            </button>
+            <button
+              onClick={() => setActiveDatasetTab("wilayah")}
+              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-all shrink-0 ${
+                activeDatasetTab === "wilayah"
+                  ? "bg-[#1a73e8] text-white shadow-xs"
+                  : "text-[#475569] hover:bg-slate-100"
+              }`}
+            >
+              5. Master Data Wilayah & Sasaran Siswa MBG
             </button>
           </div>
 
@@ -2433,6 +2528,193 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             </div>
           </div>
         )}
+
+        {/* TAB 5: SPREADSHEET TABLE MASTER WILAYAH & SASARAN SISWA MBG */}
+        {activeDatasetTab === "wilayah" && (
+          <div className="space-y-4">
+            {/* Search & Filter Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-[#f8fafc] p-3 rounded-2xl border border-[#e2e8f0]">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1">
+                {/* Search Bar */}
+                <div className="relative flex-1 max-w-md">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Cari nama kecamatan atau status risiko..."
+                    value={districtSearchQuery}
+                    onChange={(e) => setDistrictSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[12px] font-medium text-[#071e49] focus:outline-none focus:border-[#1a73e8] shadow-2xs"
+                  />
+                </div>
+
+                {/* Risk Level Filter Dropdown */}
+                <div className="relative shrink-0">
+                  <select
+                    value={districtRiskFilter}
+                    onChange={(e) => setDistrictRiskFilter(e.target.value)}
+                    className="appearance-none pl-3 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[12px] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                  >
+                    <option value="Semua">Semua Tingkat Risiko</option>
+                    <option value="Rendah">Risiko Rendah (&lt; 12%)</option>
+                    <option value="Sedang">Risiko Sedang (12% - 16%)</option>
+                    <option value="Tinggi">Risiko Tinggi (&gt; 16%)</option>
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Summary Stats Pill */}
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-[#1a73e8] text-[11px] font-bold">
+                  Total Sasaran: {districts.reduce((acc, d) => acc + (Number(d.targetChildren) || 0), 0).toLocaleString("id-ID")} Siswa
+                </span>
+              </div>
+            </div>
+
+            {/* Table Container */}
+            <div className="overflow-x-auto overflow-y-auto max-h-[460px] rounded-xl border border-[#cbd5e1] shadow-xs">
+              <table className="w-full text-left text-[12px] border-collapse bg-white">
+                <thead className="sticky top-0 z-10 shadow-xs">
+                  <tr className="bg-[#1a73e8] text-white font-bold divide-x divide-blue-400">
+                    <th className="py-2.5 px-3 w-12 text-center border-blue-400">No</th>
+                    <th className="py-2.5 px-4 border-blue-400 min-w-[200px] font-bold">Kecamatan</th>
+                    <th className="py-2.5 px-4 border-blue-400 min-w-[220px] text-right font-bold">Sasaran Siswa MBG</th>
+                    <th className="py-2.5 px-4 border-blue-400 min-w-[180px] text-center font-bold">Prevalensi Stunting (%)</th>
+                    <th className="py-2.5 px-3 text-center border-blue-400 w-24 font-bold">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#f1f5f9]">
+                  {paginatedDistricts.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-[#64748b]">
+                        Tidak ditemukan data wilayah yang sesuai dengan filter atau kata kunci pencarian.
+                      </td>
+                    </tr>
+                  ) : (
+                    paginatedDistricts.map((d, idx) => (
+                      <tr key={d.id || idx} className="hover:bg-slate-50 divide-x divide-slate-100">
+                        <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">
+                          {d.no || (currentPage - 1) * pageSize + idx + 1}
+                        </td>
+                        <td className="py-2.5 px-4 font-bold text-[#071e49]">
+                          {d.name}
+                        </td>
+                        <td className="py-2.5 px-4 text-right font-mono font-bold text-[#1a73e8]">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-blue-50/70 border border-blue-200 inline-block">
+                            {Number(d.targetChildren).toLocaleString("id-ID")} Siswa
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-4 text-center">
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                            d.stuntingRate >= 16 
+                              ? "bg-red-50 text-red-700 border-red-200" 
+                              : d.stuntingRate >= 12 
+                              ? "bg-amber-50 text-amber-700 border-amber-200" 
+                              : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          }`}>
+                            {d.stuntingRate}% ({d.riskLevel || (d.stuntingRate >= 16 ? "Tinggi" : d.stuntingRate >= 12 ? "Sedang" : "Rendah")})
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          <button
+                            onClick={() => setEditingItem({ type: "wilayah", isNew: false, data: { ...d } })}
+                            className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                            title="Edit Sasaran Siswa & Wilayah"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls for Tab 5 (Numbered Pills 1 2 3 ... matching Tabs 1-4) */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-[#f1f5f9] text-[12px] text-[#64748b]">
+              <div className="flex items-center gap-2">
+                <span>Tampilkan:</span>
+                <div className="relative">
+                  <select
+                    value={pageSize}
+                    onChange={(e) => setPageSize(Number(e.target.value))}
+                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[12px] focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs"
+                  >
+                    <option value={20}>20</option>
+                    <option value={40}>40</option>
+                    <option value={60}>60</option>
+                  </select>
+                  <ChevronDown className="w-3 h-3 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+                <span>
+                  Menampilkan {filteredDistricts.length === 0 ? 0 : (currentPage - 1) * pageSize + 1} - {Math.min(currentPage * pageSize, filteredDistricts.length)} dari {filteredDistricts.length} data wilayah
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  title="Halaman Sebelumnya"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                {(() => {
+                  const pages: (number | string)[] = [];
+                  const total = totalDistrictPages;
+                  if (total <= 5) {
+                    for (let i = 1; i <= total; i++) pages.push(i);
+                  } else {
+                    if (currentPage <= 3) {
+                      pages.push(1, 2, 3, 4, "...", total);
+                    } else if (currentPage >= total - 2) {
+                      pages.push(1, "...", total - 3, total - 2, total - 1, total);
+                    } else {
+                      pages.push(1, "...", currentPage - 1, currentPage, currentPage + 1, "...", total);
+                    }
+                  }
+
+                  return pages.map((p, idx) => {
+                    if (p === "...") {
+                      return (
+                        <span key={idx} className="px-1.5 py-1 text-slate-400 font-bold text-[12px] select-none">
+                          ...
+                        </span>
+                      );
+                    }
+                    const num = p as number;
+                    const isActive = num === currentPage;
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => setCurrentPage(num)}
+                        className={`w-8 h-8 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center ${
+                          isActive
+                            ? "bg-[#1a73e8] text-white shadow-2xs"
+                            : "bg-white text-[#071e49] border border-[#cbd5e1] hover:bg-slate-50"
+                        }`}
+                      >
+                        {num}
+                      </button>
+                    );
+                  });
+                })()}
+
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalDistrictPages))}
+                  disabled={currentPage === totalDistrictPages || totalDistrictPages === 0}
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  title="Halaman Selanjutnya"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 3. MODAL EDIT / TAMBAH DATA (SUPPORT 4 DATASET & AI HELPERS) */}
@@ -2949,6 +3231,49 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     <span>{geminiReasoning}</span>
                   </p>
                 )}
+              </div>
+            )}
+
+            {/* Form Fields for Master Wilayah */}
+            {editingItem.type === "wilayah" && (
+              <div className="space-y-3.5 text-[12px]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="font-bold text-slate-500 block mb-1">
+                      Nama Kecamatan <span className="text-[10px] font-normal text-slate-400">(Terkunci)</span>:
+                    </label>
+                    <input
+                      type="text"
+                      value={editingItem.data.name || ""}
+                      disabled
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 border border-[#cbd5e1] font-bold text-slate-500 cursor-not-allowed text-[12px]"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-[#1a73e8] block mb-1">
+                      Sasaran Siswa MBG (Jumlah Anak):
+                    </label>
+                    <input
+                      type="number"
+                      value={editingItem.data.targetChildren || 0}
+                      autoFocus
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, targetChildren: Number(e.target.value) } })}
+                      className="w-full px-3 py-2 rounded-xl bg-blue-50 border border-blue-300 font-mono font-bold text-[#1a73e8] text-[13px] focus:outline-none focus:border-[#1a73e8]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-500 block mb-1">
+                    Prevalensi Stunting (%) <span className="text-[10px] font-normal text-slate-400">(Otomatis dari Sistem Skrining & Surveilans Dinkes)</span>:
+                  </label>
+                  <input
+                    type="text"
+                    value={`${editingItem.data.stuntingRate}% (${editingItem.data.riskLevel || (editingItem.data.stuntingRate >= 16 ? "Risiko Tinggi" : editingItem.data.stuntingRate >= 12 ? "Risiko Sedang" : "Risiko Rendah")})`}
+                    disabled
+                    className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] bg-slate-100 font-bold text-slate-500 cursor-not-allowed text-[12px]"
+                  />
+                </div>
               </div>
             )}
 

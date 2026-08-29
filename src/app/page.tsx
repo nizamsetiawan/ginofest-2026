@@ -1,19 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { NuSantapSidebar, NavKey } from "@/components/layout/NuSantapSidebar";
 import { NuSantapHeader } from "@/components/layout/NuSantapHeader";
 import { ScanResultsView } from "@/components/features/scan-results/ScanResultsView";
 import { PrevalenceMapView } from "@/components/dashboard/PrevalenceMapView";
 import { MenuPlannerAI } from "@/components/features/menu-planner/MenuPlannerAI";
 import { RAGKnowledgeBaseView } from "@/components/features/rag-database/RAGKnowledgeBaseView";
-import { CommodityMarketView } from "@/components/dashboard/CommodityMarketView";
+import { ScreeningView } from "@/components/features/screening/ScreeningView";
+import { NotificationsView } from "@/components/features/notifications/NotificationsView";
+import { HelpView } from "@/components/features/help/HelpView";
+import { SettingsView } from "@/components/features/settings/SettingsView";
 import { AdminSwitchModal } from "@/components/features/modals/AdminSwitchModal";
-import { ScreeningSimModal } from "@/components/features/modals/ScreeningSimModal";
 import { AIChatbotModal } from "@/components/features/modals/AIChatbotModal";
 import { ExportReportModal } from "@/components/dashboard/ExportReportModal";
 import { useDashboardState } from "@/hooks/useDashboardState";
 import { ADMIN_PROFILES, AdminProfile } from "@/data/admin-profiles";
+import { fetchNotifications } from "@/services/firebase-service";
 
 export default function DashboardPage() {
   const {
@@ -22,8 +25,6 @@ export default function DashboardPage() {
     selectedDistrict,
     isChatOpen,
     setIsChatOpen,
-    isScreeningOpen,
-    setIsScreeningOpen,
     isExportOpen,
     setIsExportOpen,
   } = useDashboardState();
@@ -31,6 +32,19 @@ export default function DashboardPage() {
   const [activeNav, setActiveNav] = useState<NavKey>("scan");
   const [currentAdmin, setCurrentAdmin] = useState<AdminProfile>(ADMIN_PROFILES[0]);
   const [isAdminSwitchOpen, setIsAdminSwitchOpen] = useState(false);
+  const [unreadNotifCount, setUnreadNotifCount] = useState(0);
+
+  // Load unread notification count
+  const refreshUnreadCount = useCallback(async () => {
+    const res = await fetchNotifications();
+    if (res.success && res.data) {
+      setUnreadNotifCount(res.data.filter((n) => !n.isRead).length);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshUnreadCount();
+  }, [refreshUnreadCount, activeNav]);
 
   const handleAdminSelect = (admin: AdminProfile) => {
     setCurrentAdmin(admin);
@@ -54,15 +68,15 @@ export default function DashboardPage() {
       <NuSantapSidebar
         activeNav={activeNav}
         setActiveNav={setActiveNav}
-        onOpenScreening={() => setIsScreeningOpen(true)}
         currentAdmin={currentAdmin}
-        onOpenAdminSwitch={() => setIsAdminSwitchOpen(true)}
+        unreadNotifCount={unreadNotifCount}
       />
 
       {/* 2. Main Workspace */}
       <main className="flex-1 p-6 lg:p-8 overflow-y-auto max-w-7xl">
         {/* Top Greeting & Download PDF button */}
         <NuSantapHeader
+          adminName={currentAdmin.name}
           regionName={currentAdmin.regionLabel}
           onDownloadPDF={() => setIsExportOpen(true)}
         />
@@ -87,18 +101,23 @@ export default function DashboardPage() {
             />
           )}
 
-          {activeNav === "market" && (
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-                <h1 className="text-[24px] font-black text-[#071e49] tracking-tight">
-                  Komoditas Pangan
-                </h1>
-                <span className="text-[12px] text-[#64748b]">
-                  Monitoring Harga Pasar & Ketersediaan Komoditas Gresik
-                </span>
-              </div>
-              <CommodityMarketView />
-            </div>
+          {activeNav === "qrcode" && (
+            <ScreeningView />
+          )}
+
+          {activeNav === "notifications" && (
+            <NotificationsView />
+          )}
+
+          {activeNav === "help" && (
+            <HelpView onOpenChat={() => setIsChatOpen(true)} />
+          )}
+
+          {activeNav === "settings" && (
+            <SettingsView
+              currentAdmin={currentAdmin}
+              onOpenAdminSwitch={() => setIsAdminSwitchOpen(true)}
+            />
           )}
         </div>
       </main>
@@ -112,11 +131,6 @@ export default function DashboardPage() {
       />
 
       {/* Interactive Modals */}
-      <ScreeningSimModal
-        isOpen={isScreeningOpen}
-        onClose={() => setIsScreeningOpen(false)}
-      />
-
       <AIChatbotModal
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
