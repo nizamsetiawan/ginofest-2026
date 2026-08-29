@@ -1564,9 +1564,9 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 5. SCREEN: MAIN APP (Logged in Citizen Portal)           */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "main" && (
-          <div className="flex-1 flex flex-col bg-[#f8fafc] h-full overflow-hidden relative">
-            {/* Top Bar Header */}
-            <header className="shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-2xs z-30 pt-safe sm:pt-2.5">
+          <div className="flex-1 flex flex-col bg-[#f8fafc] h-full w-full overflow-hidden relative">
+            {/* Top Bar Header (Flush at top, no extra margin) */}
+            <header className="shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-2xs z-30">
               <div className="flex items-center gap-2.5">
                 <img src="/logo_app.svg" alt="Kcal" className="w-8 h-8 rounded-xl shadow-xs" />
                 <div>
