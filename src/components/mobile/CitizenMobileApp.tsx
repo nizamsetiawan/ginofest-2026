@@ -111,6 +111,7 @@ export const CitizenMobileApp: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(true);
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [authSuccessSnackbar, setAuthSuccessSnackbar] = useState<string | null>(null);
 
   // Forgot Password Multi-step State (Step 1: Request OTP -> Step 2: Verify OTP -> Step 3: Set New Password)
   const [forgotStep, setForgotStep] = useState<1 | 2 | 3>(1);
@@ -508,14 +509,27 @@ export const CitizenMobileApp: React.FC = () => {
     setIsSubmittingAuth(false);
 
     if (res.success) {
-      setCitizenUser({
-        id: res.id || "c_" + Date.now(),
-        name: regFullName.trim(),
-        email: regEmail.trim(),
-        phone: regPhone.trim(),
-        district: regDistrict,
-      });
-      setCurrentScreen("main");
+      // 1. Pre-fill login credentials with registered data
+      setLoginIdentifier(regEmail.trim());
+      setLoginDistrict(regDistrict);
+      setLoginPassword("");
+
+      // 2. Set success snackbar alert
+      setAuthSuccessSnackbar("Pendaftaran akun berhasil! Silakan masuk dengan email dan kata sandi Anda.");
+      setTimeout(() => setAuthSuccessSnackbar(null), 6000);
+
+      // 3. Clear registration fields
+      setRegFullName("");
+      setRegEmail("");
+      setRegPhone("");
+      setRegPassword("");
+      setRegConfirmPassword("");
+      setRegDistrict("");
+      setFieldErrors({});
+      setAuthError("");
+
+      // 4. Redirect directly to LOGIN screen (not main app)
+      setCurrentScreen("login");
     } else {
       setAuthError(res.error || "Pendaftaran gagal. Silakan coba lagi.");
     }
@@ -863,6 +877,17 @@ export const CitizenMobileApp: React.FC = () => {
                 Pantau menu MBG & gizi anak setiap hari!
               </p>
             </div>
+
+            {/* Success Snackbar (e.g. after Registration or Password Reset) */}
+            {authSuccessSnackbar && (
+              <div className="mb-3 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11.5px] font-medium flex items-start gap-2 animate-in fade-in slide-in-from-top-2 shadow-2xs">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <p className="font-bold text-emerald-900">Pendaftaran Berhasil!</p>
+                  <p className="text-[10.5px] text-emerald-700 leading-snug">{authSuccessSnackbar}</p>
+                </div>
+              </div>
+            )}
 
             {/* Error Message if any */}
             {authError && (
