@@ -33,7 +33,11 @@ import {
   Share,
   Bell,
   Navigation,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Moon,
+  Sun,
+  Sunrise,
+  Sunset
 } from "lucide-react";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 import {
@@ -128,6 +132,49 @@ export const CitizenMobileApp: React.FC = () => {
   const [resetSuccessMsg, setResetSuccessMsg] = useState("");
   const [resetErrorMsg, setResetErrorMsg] = useState("");
   const [simulatedEmailNotification, setSimulatedEmailNotification] = useState<string | null>(null);
+
+  // Dynamic Atmosphere State (Suasana Malam / Pagi / Siang / Sore) matching web dashboard
+  const [timeOfDay, setTimeOfDay] = useState<"morning" | "afternoon" | "evening" | "night">("night");
+  const [greetingText, setGreetingText] = useState("Selamat Malam");
+  const [greetingEmoji, setGreetingEmoji] = useState("🌙");
+  const [currentTimeStr, setCurrentTimeStr] = useState("01.24 WIB");
+  const [currentDateStr, setCurrentDateStr] = useState("Minggu, 30 Agu 2026");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const hours = now.getHours();
+
+      if (hours >= 5 && hours < 11) {
+        setTimeOfDay("morning");
+        setGreetingText("Selamat Pagi");
+        setGreetingEmoji("🌅");
+      } else if (hours >= 11 && hours < 15) {
+        setTimeOfDay("afternoon");
+        setGreetingText("Selamat Siang");
+        setGreetingEmoji("☀️");
+      } else if (hours >= 15 && hours < 18) {
+        setTimeOfDay("evening");
+        setGreetingText("Selamat Sore");
+        setGreetingEmoji("🌇");
+      } else {
+        setTimeOfDay("night");
+        setGreetingText("Selamat Malam");
+        setGreetingEmoji("🌙");
+      }
+
+      const pad = (n: number) => n.toString().padStart(2, "0");
+      setCurrentTimeStr(`${pad(now.getHours())}.${pad(now.getMinutes())} WIB`);
+
+      const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+      setCurrentDateStr(`${dayNames[now.getDay()]}, ${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`);
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   // OTP Countdown Timer
   useEffect(() => {
@@ -1606,86 +1653,123 @@ export const CitizenMobileApp: React.FC = () => {
               {/* TAB 1: BERANDA WARGA (Exact Match of Reference UI Layout & Palette) */}
               {activeTab === "home" && (
                 <div className="-m-3.5 space-y-3.5 animate-in fade-in duration-200 pb-4">
-                  {/* ═══ TOP VIVID BLUE GRADIENT BANNER ═══ */}
-                  <div className="bg-gradient-to-b from-[#2563eb] via-[#3b82f6] to-[#60a5fa]/20 px-4 pt-3 pb-4 space-y-3 rounded-b-[28px] shadow-sm">
-                    {/* Top Pill / Greeting Header & Notification Button */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex-1 min-w-0 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-2xs flex items-center gap-1.5 border border-white/40">
-                        <span className="text-[13px] shrink-0">👋</span>
-                        <span className="text-[11px] font-black text-[#071e49] truncate">
-                          Selamat Datang di Kcal
+                  {/* ═══ TOP DYNAMIC ATMOSPHERE BANNER (Suasana Malam / Pagi / Siang / Sore) ═══ */}
+                  <div className={`px-4 pt-3.5 pb-4 space-y-3 rounded-b-[28px] shadow-lg relative overflow-hidden text-white transition-all duration-700 ${
+                    timeOfDay === "night"
+                      ? "bg-gradient-to-b from-[#071426] via-[#0d1f3c] to-[#081b38] border-b border-blue-950/80"
+                      : timeOfDay === "morning"
+                      ? "bg-gradient-to-b from-[#1e40af] via-[#3b82f6] to-[#60a5fa] border-b border-blue-400/40"
+                      : timeOfDay === "afternoon"
+                      ? "bg-gradient-to-b from-[#1d4ed8] via-[#2563eb] to-[#38bdf8] border-b border-blue-400/40"
+                      : "bg-gradient-to-b from-[#1e3a8a] via-[#4338ca] to-[#f59e0b]/40 border-b border-indigo-900/60"
+                  }`}>
+                    {/* Ambient Glows & Twinkling Stars (Night Theme) */}
+                    {timeOfDay === "night" && (
+                      <>
+                        <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-blue-500/15 blur-3xl pointer-events-none"></div>
+                        <div className="absolute -bottom-10 left-1/3 w-40 h-40 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none"></div>
+                        <div className="absolute top-3 left-1/4 w-1.5 h-1.5 rounded-full bg-blue-200/70 animate-ping duration-1000"></div>
+                        <div className="absolute top-6 right-1/4 w-1 h-1 rounded-full bg-amber-200/90 animate-pulse"></div>
+                        <div className="absolute bottom-4 right-1/3 w-1.5 h-1.5 rounded-full bg-indigo-200/60 animate-pulse"></div>
+                        <div className="absolute top-4 right-12 w-1 h-1 rounded-full bg-white/80 animate-pulse"></div>
+                      </>
+                    )}
+
+                    {/* Top Atmosphere Badges & Notification Button */}
+                    <div className="relative z-10 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 flex-wrap min-w-0 flex-1">
+                        {/* Atmosphere Pill */}
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10.5px] font-bold shadow-inner ${
+                          timeOfDay === "night"
+                            ? "bg-blue-900/70 border border-blue-400/30 text-blue-200"
+                            : "bg-white/20 border border-white/30 text-white backdrop-blur-sm"
+                        }`}>
+                          {timeOfDay === "night" ? (
+                            <>
+                              <Moon className="w-3 h-3 text-blue-300 animate-pulse" />
+                              <span>Suasana Malam</span>
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping"></span>
+                            </>
+                          ) : timeOfDay === "morning" ? (
+                            <>
+                              <Sunrise className="w-3 h-3 text-amber-300" />
+                              <span>Suasana Pagi</span>
+                            </>
+                          ) : timeOfDay === "afternoon" ? (
+                            <>
+                              <Sun className="w-3 h-3 text-amber-300" />
+                              <span>Suasana Siang</span>
+                            </>
+                          ) : (
+                            <>
+                              <Sunset className="w-3 h-3 text-amber-300" />
+                              <span>Suasana Sore</span>
+                            </>
+                          )}
+                        </span>
+
+                        {/* Location Pill */}
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[10.5px] font-bold text-blue-100 backdrop-blur-sm truncate">
+                          <MapPin className="w-3 h-3 text-blue-300 shrink-0" />
+                          <span className="truncate">Kec. {citizenUser?.district || "Kebomas"}, Gresik</span>
                         </span>
                       </div>
 
-                      <div className="flex items-center shrink-0">
-                        <button
-                          type="button"
-                          onClick={() => alert("Pemberitahuan: Menu MBG Ikan Bandeng Bakar Madu untuk siswa SD Kebomas telah dijadwalkan hari ini!")}
-                          className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors cursor-pointer border border-white/25 shadow-2xs"
-                          title="Notifikasi"
-                        >
-                          <Bell className="w-4 h-4" />
-                        </button>
-                      </div>
+                      {/* Notification Bell */}
+                      <button
+                        type="button"
+                        onClick={() => alert(`Pemberitahuan: Menu MBG Ikan Bandeng Bakar Madu untuk siswa SD ${citizenUser?.district || "Kebomas"} telah dijadwalkan hari ini!`)}
+                        className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-colors cursor-pointer border border-white/20 shadow-2xs shrink-0"
+                        title="Notifikasi"
+                      >
+                        <Bell className="w-4 h-4" />
+                      </button>
                     </div>
 
-                    {/* User Profile Identity Row */}
-                    <div className="flex items-center gap-3 pt-1">
-                      <div className="w-12 h-12 rounded-full bg-white/25 border-2 border-white flex items-center justify-center text-white text-[16px] font-black shadow-md shrink-0">
-                        {citizenUser?.name ? citizenUser.name.charAt(0).toUpperCase() : "M"}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h2 className="text-[15px] font-black text-white leading-tight truncate">
+                    {/* Greeting & User Name Row (Matching Web Dashboard NuSantapHeader) */}
+                    <div className="relative z-10 space-y-0.5 pt-1">
+                      <h1 className="text-[17px] font-black tracking-tight text-white flex items-center gap-1.5 flex-wrap">
+                        <span>{greetingText},</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-sky-300 to-indigo-200">
                           {citizenUser?.name || "Muhammad Nizam Setiawan"}
-                        </h2>
-                        <p className="text-[11px] text-blue-100 font-medium truncate mt-0.5">
-                          Kecamatan {citizenUser?.district || "Kebomas"}
-                        </p>
-                      </div>
+                        </span>
+                        <span className="inline-block animate-bounce">{greetingEmoji}</span>
+                      </h1>
+                      <p className="text-[10.5px] text-blue-200/80 leading-relaxed font-medium">
+                        Dashboard Pemantauan MBG & Intervensi Gizi tetap aktif dan tersinkronisasi 24/7.
+                      </p>
                     </div>
 
-                    {/* Hero Card: Today's Schedule & Status Nutrisi */}
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-slate-800 space-y-2.5">
+                    {/* Hero Card: Today's Schedule & Real-time Clock */}
+                    <div className="relative z-10 bg-white rounded-2xl p-3.5 shadow-sm border border-slate-100 text-slate-800 space-y-2.5">
                       <div className="flex items-start justify-between">
                         <div>
-                          <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium">
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
                             <span>Today</span>
-                            <span className="font-bold text-slate-800 text-[12px]">Sunday, 30 Aug 2026</span>
+                            <span className="font-bold text-slate-800 text-[12px]">{currentDateStr}</span>
                           </div>
                           <p className="text-[10px] text-slate-400 mt-0.5">
-                            Shift: <span className="font-semibold text-slate-600">Menu MBG Siang Terdistribusi</span>
+                            Shift: <span className="font-semibold text-slate-700">Menu MBG Siang Terdistribusi</span>
                           </p>
                         </div>
-                        <div className="flex items-center gap-2 text-slate-600">
-                          <button
-                            type="button"
-                            onClick={() => setActiveTab("screening")}
-                            className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-700 transition-colors"
-                            title="Posyandu Anak"
-                          >
-                            <ShieldCheck className="w-4 h-4 text-[#1a73e8]" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setActiveTab("menu")}
-                            className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-700 transition-colors"
-                            title="Riwayat Menu MBG"
-                          >
-                            <Clock className="w-4 h-4 text-slate-600" />
-                          </button>
+
+                        {/* Real-time Clock Badge matching Web Dashboard */}
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 text-white text-[11px] font-mono font-bold shadow-xs">
+                          <Clock className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
+                          <span>{currentTimeStr}</span>
                         </div>
                       </div>
 
                       {/* In / Out Nutritional Timing */}
-                      <div className="flex items-center gap-4 pt-1 text-[11px] font-bold border-t border-slate-100">
+                      <div className="flex items-center justify-between pt-1.5 text-[11px] font-bold border-t border-slate-100">
                         <div className="flex items-center gap-1.5 text-emerald-600">
                           <Clock className="w-3.5 h-3.5" />
-                          <span className="text-slate-500">07:30</span>
+                          <span className="text-slate-700 font-bold">07:30</span>
                           <span className="text-slate-400 font-normal">In (Sarapan)</span>
                         </div>
                         <div className="flex items-center gap-1.5 text-rose-600">
                           <Clock className="w-3.5 h-3.5" />
-                          <span className="text-slate-500">12:00</span>
+                          <span className="text-slate-700 font-bold">12:00</span>
                           <span className="text-slate-400 font-normal">Out (MBG Siang)</span>
                         </div>
                       </div>
