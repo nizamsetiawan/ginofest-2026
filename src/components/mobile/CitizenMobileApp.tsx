@@ -162,22 +162,19 @@ export const CitizenMobileApp: React.FC = () => {
     if (!isDraggingRef.current || isPullRefreshing) return;
     isDraggingRef.current = false;
 
-    if (pullY >= 48) {
+    if (pullY >= 45) {
       setIsPullRefreshing(true);
       setPullY(45);
 
       // Trigger haptic vibration on real phone
       if (typeof navigator !== "undefined" && navigator.vibrate) {
-        try { navigator.vibrate(20); } catch {}
+        try { navigator.vibrate(25); } catch {}
       }
 
-      // Re-fetch / simulate refresh
-      await new Promise((resolve) => setTimeout(resolve, 850));
-
-      setIsPullRefreshing(false);
-      setPullY(0);
-      setPullRefreshToast("Data gizi & menu MBG berhasil diperbarui!");
-      setTimeout(() => setPullRefreshToast(null), 2500);
+      // Hard reload the browser page to fetch latest deployment bundle from Vercel!
+      setTimeout(() => {
+        window.location.reload();
+      }, 400);
     } else {
       setPullY(0);
     }
@@ -707,7 +704,36 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 2. SCREEN: LOGIN (Clean Native APK Style)                */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "login" && (
-          <div className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200">
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200 overscroll-contain"
+          >
+            {/* Native Pull-to-Refresh Visual Indicator */}
+            <div
+              style={{
+                height: pullY,
+                opacity: pullY > 8 ? 1 : 0,
+                transform: `scale(${Math.min(1, pullY / 40)})`
+              }}
+              className="overflow-hidden transition-all duration-150 ease-out flex items-center justify-center pointer-events-none shrink-0 mb-1"
+            >
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/90 border border-blue-200 text-[#1a73e8] text-[10.5px] font-bold shadow-xs">
+                <RefreshCw
+                  className={`w-3.5 h-3.5 ${isPullRefreshing ? "animate-spin" : ""}`}
+                  style={{ transform: `rotate(${pullY * 6}deg)` }}
+                />
+                <span>
+                  {isPullRefreshing
+                    ? "Memuat versi terbaru..."
+                    : pullY >= 45
+                    ? "Lepaskan untuk memperbarui aplikasi"
+                    : "Tarik untuk menyegarkan"}
+                </span>
+              </div>
+            </div>
+
             {/* Top Bar: Install APK Button & Country Flag */}
             <div className="flex items-center justify-between pb-2">
               {!isStandalone ? (
