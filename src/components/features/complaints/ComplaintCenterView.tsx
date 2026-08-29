@@ -268,18 +268,18 @@ export const ComplaintCenterView: React.FC = () => {
                     />
 
                     {/* Status Dropdown Selector */}
-                    <div className="relative shrink-0">
+                    <div className="relative shrink-0 inline-flex items-center">
                       <select
                         value={status}
                         onChange={(e) => handleUpdateStatus(c.id!, e.target.value as "baru" | "proses" | "selesai")}
-                        className="appearance-none pl-3 pr-7 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-[#cbd5e1] text-[11px] font-bold text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs transition-all"
+                        className="appearance-none text-center pl-3.5 pr-7 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-[#cbd5e1] text-[11px] font-bold text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs transition-all"
                         title="Ubah Status Tiket Aduan"
                       >
                         <option value="baru">Baru</option>
                         <option value="proses">Ditindaklanjuti</option>
                         <option value="selesai">Selesai</option>
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <ChevronDown className="w-3.5 h-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
                   </div>
                 </div>
