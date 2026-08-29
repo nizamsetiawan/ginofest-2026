@@ -456,31 +456,31 @@ Berikan jawaban yang luwes dan ramah.`;
           </p>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        {/* Action Buttons (Compact Icon Buttons) */}
+        <div className="flex items-center gap-1.5 self-start sm:self-auto">
           <button
             onClick={() => setIsComplaintModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-bold text-[#1a73e8] bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all cursor-pointer shadow-2xs"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-[#1a73e8] bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all cursor-pointer shadow-2xs"
+            title="Kirim Komplain / Aduan Baru"
           >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>Kirim Komplain</span>
+            <MessageSquare className="w-4 h-4" />
           </button>
 
           <button
             onClick={handleOpenTrack}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer shadow-2xs"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer shadow-2xs"
+            title="Lacak Status Aduan (Track Aduan)"
           >
-            <ClipboardList className="w-3.5 h-3.5" />
-            <span>Track Aduan</span>
+            <ClipboardList className="w-4 h-4" />
           </button>
 
           {messages.length > 1 && (
             <button
               onClick={() => setIsConfirmClearOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-all cursor-pointer shadow-2xs"
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-all cursor-pointer shadow-2xs"
+              title="Hapus Riwayat Percakapan"
             >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>Hapus Riwayat</span>
+              <Trash2 className="w-4 h-4" />
             </button>
           )}
         </div>

@@ -252,42 +252,35 @@ export const ComplaintCenterView: React.FC = () => {
                     <span>Tujuan: takathasan82@gmail.com</span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                     {/* Response Note Input */}
                     <input
                       type="text"
-                      placeholder="Tulis catatan tanggapan..."
+                      placeholder="Tulis tanggapan / catatan admin..."
                       value={responseNotesMap[c.id!] || ""}
                       onChange={(e) => setResponseNotesMap((prev) => ({ ...prev, [c.id!]: e.target.value }))}
-                      className="px-2.5 py-1 rounded-lg border border-[#cbd5e1] text-[11px] text-[#071e49] focus:outline-none focus:border-[#1a73e8] w-44 font-medium"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleUpdateStatus(c.id!, status);
+                        }
+                      }}
+                      className="px-2.5 py-1 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[11px] text-[#071e49] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-[#1a73e8] w-full sm:w-56 font-medium"
                     />
 
-                    {/* Status Buttons */}
-                    {status !== "proses" && (
-                      <button
-                        onClick={() => handleUpdateStatus(c.id!, "proses")}
-                        className="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 text-[11px] font-bold cursor-pointer transition-colors"
+                    {/* Status Dropdown Selector */}
+                    <div className="relative shrink-0">
+                      <select
+                        value={status}
+                        onChange={(e) => handleUpdateStatus(c.id!, e.target.value as "baru" | "proses" | "selesai")}
+                        className="appearance-none pl-3 pr-7 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-[#cbd5e1] text-[11px] font-bold text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs transition-all"
+                        title="Ubah Status Tiket Aduan"
                       >
-                        Tindaklanjuti
-                      </button>
-                    )}
-                    {status !== "selesai" && (
-                      <button
-                        onClick={() => handleUpdateStatus(c.id!, "selesai")}
-                        className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-[11px] font-bold cursor-pointer transition-colors flex items-center gap-1"
-                      >
-                        <CheckCircle2 className="w-3 h-3" />
-                        Selesaikan
-                      </button>
-                    )}
-                    {status === "selesai" && (
-                      <button
-                        onClick={() => handleUpdateStatus(c.id!, "baru")}
-                        className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 text-[11px] font-bold cursor-pointer transition-colors"
-                      >
-                        Buka Ulang
-                      </button>
-                    )}
+                        <option value="baru">Baru</option>
+                        <option value="proses">Ditindaklanjuti</option>
+                        <option value="selesai">Selesai</option>
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
                   </div>
                 </div>
               </div>
