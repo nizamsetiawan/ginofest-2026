@@ -692,9 +692,11 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         });
       });
 
-      // Synchronize price district mappings & auto-insert new items
+      // Synchronize price district mappings & auto-insert new items in Step 2 & Step 4
       let newPrices = [...prices];
       let pricesModified = false;
+      let newNutrition = [...nutrition];
+      let nutritionModified = false;
 
       itemDistrictsMap.forEach((distList, itemName) => {
         const distStr = distList.length === 18 ? "18 Kecamatan" : distList.join(", ");
@@ -706,7 +708,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             pricesModified = true;
           }
         } else {
-          // New commodity discovered in Step 1 -> add to Step 2
+          // New commodity discovered in Step 1 -> auto-add to Step 2 (Master Harga Pasar)
           const newPriceItem: PriceRecord = {
             no: newPrices.length + 1,
             item: itemName,
@@ -718,6 +720,51 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           savePriceToFirestore(newPriceItem);
           pricesModified = true;
         }
+
+        // Auto-Cascade to Step 4 (Master Nilai Gizi TKPI): ensure item has lab nutrition record
+        const existingNutIdx = newNutrition.findIndex(n => 
+          n.name.toLowerCase() === itemName.toLowerCase() || 
+          n.name.toLowerCase().includes(itemName.toLowerCase()) || 
+          itemName.toLowerCase().includes(n.name.toLowerCase())
+        );
+
+        if (existingNutIdx < 0) {
+          const generatedCode = `TK${String(newNutrition.length + 1).padStart(3, "0")}`;
+          const newNutItem: NutritionRecord = {
+            no: newNutrition.length + 1,
+            code: generatedCode,
+            name: itemName,
+            category: getItemCategory(itemName),
+            state: "Mentah",
+            water: 75.0,
+            calories: 120,
+            protein: 10.0,
+            fat: 2.0,
+            carbs: 15.0,
+            fiber: 1.0,
+            ash: 1.0,
+            calcium: 20,
+            phosphorus: 100,
+            iron: 1.5,
+            sodium: 20,
+            potassium: 200,
+            copper: 0.1,
+            zinc: 1.0,
+            retinol: 0,
+            bCarotene: 50,
+            totalCarotene: 50,
+            thiamin: 0.1,
+            riboflavin: 0.1,
+            niacin: 1.0,
+            vitaminC: 5,
+            bdd: 100,
+            source: "TKPI 2019 Kemenkes RI",
+            link: "https://www.panganku.org"
+          };
+          newNutrition.push(newNutItem);
+          saveNutritionToFirestore(newNutItem);
+          nutritionModified = true;
+        }
       });
 
       if (pricesModified) {
@@ -725,7 +772,11 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         syncPricesToFirestore(newPrices);
       }
 
-      showToast(`✓ Komoditas "${editingItem.data.name}" diperbarui & tersinkron ke Master Harga Pasar di Cloud Firestore!`);
+      if (nutritionModified) {
+        setNutrition(newNutrition);
+      }
+
+      showToast(`✓ Komoditas "${editingItem.data.name}" diperbarui & otomatis tersinkron ke Master Harga (Step 2) & Master Nilai Gizi (Step 4) di Cloud Firestore!`);
     } else if (editingItem.type === "harga") {
       const recordToSave = { ...editingItem.data };
       const updated = prices.map(p => p.no === editingItem.data.no ? { ...p, ...recordToSave } : p);
