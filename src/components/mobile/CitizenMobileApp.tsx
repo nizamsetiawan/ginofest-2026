@@ -722,11 +722,13 @@ export const CitizenMobileApp: React.FC = () => {
                 <div className="w-1.5 h-1.5 rounded-full bg-[#1a73e8] animate-bounce [animation-delay:-0.15s]"></div>
                 <div className="w-1.5 h-1.5 rounded-full bg-[#1a73e8] animate-bounce"></div>
               </div>
-            </div>
 
-            {/* Bottom Version */}
-            <div className="absolute bottom-4 text-[10px] font-medium text-slate-400">
-              v1.0.0
+              {/* Version Text below Loading Dots */}
+              <div className="pt-1.5">
+                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
+                  v1.0.0
+                </span>
+              </div>
             </div>
           </div>
         )}
