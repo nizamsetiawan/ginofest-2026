@@ -1,0 +1,18 @@
+{
+  "name": "Kcal - Pantau Gizi & MBG Gresik",
+  "short_name": "Kcal",
+  "description": "Smart screening awal indikasi malnutrisi anak melalui analisis visual pertumbuhan & kuesioner interaktif AI",
+  "start_url": "/masyarakat",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo_app.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

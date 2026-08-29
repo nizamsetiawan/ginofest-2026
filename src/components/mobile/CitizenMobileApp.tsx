@@ -27,7 +27,13 @@ import {
   KeyRound,
   Wifi,
   Battery,
-  Signal
+  Signal,
+  Download,
+  Smartphone,
+  Share,
+  Bell,
+  Navigation,
+  Image as ImageIcon
 } from "lucide-react";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 import {
@@ -122,6 +128,136 @@ export const CitizenMobileApp: React.FC = () => {
   const [complaintMessage, setComplaintMessage] = useState("");
   const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false);
   const [submittedTicket, setSubmittedTicket] = useState<string | null>(null);
+
+  // ═══ PWA / APK INSTALL STATES ═══
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [showIOSModal, setShowIOSModal] = useState(false);
+
+  useEffect(() => {
+    // Check standalone mode (already installed as APK/PWA)
+    const isApp =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone ||
+      document.referrer.includes("android-app://");
+    setIsStandalone(isApp);
+
+    // Detect iOS
+    const iosDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsIOS(iosDevice);
+
+    // Listen for PWA install event on Android / Chromium
+    const handleBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      if (!isApp) {
+        setShowInstallBanner(true);
+      }
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+
+    // Auto-show banner on mobile browsers after 2s if not standalone
+    const timer = setTimeout(() => {
+      if (!isApp) {
+        setShowInstallBanner(true);
+      }
+    }, 2000);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      clearTimeout(timer);
+    };
+  }, []);
+
+  // ═══ DEVICE PERMISSIONS STATES (Kamera, Galeri, Lokasi, Notifikasi) ═══
+  const [showPermissionDialog, setShowPermissionDialog] = useState(false);
+  const [isRequestingPermissions, setIsRequestingPermissions] = useState(false);
+  const [permissionStates, setPermissionStates] = useState<{
+    camera: "granted" | "prompt" | "denied";
+    location: "granted" | "prompt" | "denied";
+    notification: "granted" | "prompt" | "denied";
+  }>({
+    camera: "prompt",
+    location: "prompt",
+    notification: "prompt"
+  });
+
+  useEffect(() => {
+    // Check if permissions were previously handled
+    const handled = localStorage.getItem("kcal_permissions_dialog_handled");
+    if (!handled) {
+      const timer = setTimeout(() => {
+        setShowPermissionDialog(true);
+      }, 2600);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleGrantAllPermissions = async () => {
+    setIsRequestingPermissions(true);
+
+    // 1. Request GPS Location Permission
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setPermissionStates((p) => ({ ...p, location: "granted" }));
+        },
+        (err) => {
+          console.warn("Location permission error:", err);
+          setPermissionStates((p) => ({ ...p, location: "denied" }));
+        },
+        { timeout: 5000 }
+      );
+    }
+
+    // 2. Request Camera / Media Permission
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // Stop stream immediately after acquiring permission
+        stream.getTracks().forEach((track) => track.stop());
+        setPermissionStates((p) => ({ ...p, camera: "granted" }));
+      } catch (err) {
+        console.warn("Camera permission error:", err);
+        setPermissionStates((p) => ({ ...p, camera: "denied" }));
+      }
+    }
+
+    // 3. Request Notification Permission
+    if (typeof Notification !== "undefined" && Notification.requestPermission) {
+      try {
+        const perm = await Notification.requestPermission();
+        setPermissionStates((p) => ({
+          ...p,
+          notification: perm === "granted" ? "granted" : "denied"
+        }));
+      } catch (err) {
+        console.warn("Notification permission error:", err);
+      }
+    }
+
+    setIsRequestingPermissions(false);
+    localStorage.setItem("kcal_permissions_dialog_handled", "true");
+    setShowPermissionDialog(false);
+  };
+
+  const handleInstallPWA = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        setShowInstallBanner(false);
+        setDeferredPrompt(null);
+      }
+    } else if (isIOS) {
+      setShowIOSModal(true);
+    } else {
+      alert("Untuk memasang aplikasi Kcal di layar utama HP:\n\n1. Ketuk ikon titik tiga (⋮) di pojok kanan atas browser\n2. Pilih 'Pasang Aplikasi' atau 'Tambahkan ke Layar Utama'");
+    }
+  };
 
   // ═══ 1. SPLASH SCREEN EFFECT (Auto transitions after 2.4s) ═══
   useEffect(() => {
@@ -516,8 +652,21 @@ export const CitizenMobileApp: React.FC = () => {
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "login" && (
           <div className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200">
-            {/* Top Bar: Country Flag */}
-            <div className="flex justify-end pb-2">
+            {/* Top Bar: Install APK Button & Country Flag */}
+            <div className="flex items-center justify-between pb-2">
+              {!isStandalone ? (
+                <button
+                  type="button"
+                  onClick={handleInstallPWA}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#1a73e8] text-[10.5px] font-black transition-all cursor-pointer shadow-2xs"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>Pasang Aplikasi (.APK)</span>
+                </button>
+              ) : (
+                <div></div>
+              )}
+
               <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-slate-600">
                 <span>🇮🇩</span>
                 <span>ID</span>
@@ -1657,6 +1806,165 @@ export const CitizenMobileApp: React.FC = () => {
               {/* Native Home Indicator Bar (Desktop preview) */}
               <div className="hidden sm:block pb-1">
                 <div className="w-28 h-1 rounded-full bg-slate-300 mx-auto"></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ═══ FLOATING PWA / APK INSTALL BANNER ═══ */}
+        {showInstallBanner && !isStandalone && (
+          <div className="absolute bottom-3 left-3 right-3 z-50 bg-[#071e49]/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-blue-400/30 flex items-center justify-between gap-2 animate-in slide-in-from-bottom-5 duration-300">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <img src="/logo_app.svg" alt="Kcal" className="w-8 h-8 rounded-xl shadow-xs shrink-0" />
+              <div className="min-w-0">
+                <h4 className="text-[11.5px] font-black text-white leading-tight flex items-center gap-1.5 truncate">
+                  <span>Pasang Aplikasi Kcal</span>
+                  <span className="text-[8.5px] px-1.5 py-0.2 bg-emerald-500 text-white rounded font-bold uppercase">APK</span>
+                </h4>
+                <p className="text-[10px] text-blue-200 truncate">Akses cepat di layar utama HP</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={handleInstallPWA}
+                className="px-2.5 py-1.5 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[10.5px] font-bold shadow-xs cursor-pointer flex items-center gap-1"
+              >
+                <Download className="w-3 h-3" />
+                <span>Pasang</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowInstallBanner(false)}
+                className="p-1 text-slate-400 hover:text-white cursor-pointer"
+                title="Tutup banner"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ═══ IOS INSTALL GUIDE MODAL ═══ */}
+        {showIOSModal && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
+            <div className="bg-white rounded-3xl p-5 max-w-xs w-full space-y-4 text-center animate-in slide-in-from-bottom-6 shadow-2xl">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#1a73e8] mx-auto flex items-center justify-center">
+                <Smartphone className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-[15px] font-black text-[#071e49]">Pasang di Layar Utama iPhone</h3>
+                <p className="text-[11px] text-slate-500">Jadikan Kcal seperti aplikasi bawaan iOS:</p>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-2xl text-left text-[11px] space-y-2.5 text-slate-700">
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-[#1a73e8] text-white text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
+                  <span>Ketuk tombol <strong>Bagikan (Share)</strong> <Share className="w-3.5 h-3.5 inline text-[#1a73e8] mx-0.5" /> di Safari.</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-[#1a73e8] text-white text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
+                  <span>Pilih opsi <strong>&quot;Tambah ke Layar Utama&quot;</strong>.</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-[#1a73e8] text-white text-[10px] font-bold flex items-center justify-center shrink-0">3</span>
+                  <span>Ketuk <strong>&quot;Tambah&quot;</strong> di pojok kanan atas.</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowIOSModal(false)}
+                className="w-full py-2.5 bg-[#071e49] hover:bg-[#1a73e8] text-white rounded-xl font-bold text-[12px] transition-colors cursor-pointer"
+              >
+                Mengerti
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ═══ NATIVE DEVICE PERMISSIONS REQUEST MODAL (.APK EXPERIENCE) ═══ */}
+        {showPermissionDialog && (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 animate-in fade-in duration-300">
+            <div className="bg-white rounded-3xl p-5 max-w-[340px] w-full space-y-3.5 shadow-2xl border border-slate-200 animate-in slide-in-from-bottom-8 duration-300 text-left">
+              {/* Header with App Logo */}
+              <div className="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
+                <img src="/logo_app.svg" alt="Kcal" className="w-9 h-9 rounded-2xl shadow-xs shrink-0" />
+                <div>
+                  <h3 className="text-[13.5px] font-black text-[#071e49] leading-tight">
+                    Izin Akses Aplikasi Kcal
+                  </h3>
+                  <p className="text-[10px] text-slate-500">
+                    Ginofest 2026 • Pemkab Gresik
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Untuk pengalaman optimal layaknya aplikasi mobile native, Kcal memerlukan izin perangkat berikut:
+              </p>
+
+              {/* Permission List */}
+              <div className="space-y-2">
+                {/* 1. Kamera & Galeri */}
+                <div className="flex items-start gap-2 p-2 rounded-2xl bg-blue-50/60 border border-blue-100">
+                  <div className="w-6 h-6 rounded-lg bg-blue-100 text-[#1a73e8] flex items-center justify-center shrink-0 mt-0.5">
+                    <Camera className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <h4 className="text-[11px] font-bold text-[#071e49]">Kamera & Galeri Foto</h4>
+                    <p className="text-[9.5px] text-slate-500 leading-tight">
+                      Diperlukan untuk skrining visual stunting & upload foto aduan.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 2. Lokasi GPS */}
+                <div className="flex items-start gap-2 p-2 rounded-2xl bg-emerald-50/60 border border-emerald-100">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Navigation className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <h4 className="text-[11px] font-bold text-[#071e49]">Lokasi Wilayah (GPS)</h4>
+                    <p className="text-[9.5px] text-slate-500 leading-tight">
+                      Mendeteksi kecamatan domisili Anda di Gresik secara otomatis.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 3. Notifikasi */}
+                <div className="flex items-start gap-2 p-2 rounded-2xl bg-purple-50/60 border border-purple-100">
+                  <div className="w-6 h-6 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Bell className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <h4 className="text-[11px] font-bold text-[#071e49]">Notifikasi Pengingat</h4>
+                    <p className="text-[9.5px] text-slate-500 leading-tight">
+                      Update jadwal menu MBG harian dan status tindak lanjut aduan.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={handleGrantAllPermissions}
+                  disabled={isRequestingPermissions}
+                  className="w-full py-2.5 px-4 bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold text-[12px] rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Izinkan Semua Izin Perangkat</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.setItem("kcal_permissions_dialog_handled", "true");
+                    setShowPermissionDialog(false);
+                  }}
+                  className="w-full py-1.5 text-slate-500 hover:text-slate-700 font-semibold text-[10.5px] cursor-pointer text-center"
+                >
+                  Nanti Saja
+                </button>
               </div>
             </div>
           </div>
