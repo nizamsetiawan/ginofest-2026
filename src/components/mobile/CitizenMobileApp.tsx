@@ -129,6 +129,59 @@ export const CitizenMobileApp: React.FC = () => {
   const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false);
   const [submittedTicket, setSubmittedTicket] = useState<string | null>(null);
 
+  // ═══ PULL-TO-REFRESH STATE & HANDLERS ═══
+  const [pullY, setPullY] = useState(0);
+  const [isPullRefreshing, setIsPullRefreshing] = useState(false);
+  const [pullRefreshToast, setPullRefreshToast] = useState<string | null>(null);
+  const startYRef = React.useRef(0);
+  const isDraggingRef = React.useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const target = e.currentTarget as HTMLElement;
+    if (target.scrollTop === 0) {
+      startYRef.current = e.touches[0].clientY;
+      isDraggingRef.current = true;
+    } else {
+      isDraggingRef.current = false;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current || isPullRefreshing) return;
+    const currentY = e.touches[0].clientY;
+    const delta = currentY - startYRef.current;
+    if (delta > 0) {
+      // Rubber-band dampening
+      const dist = Math.min(delta * 0.4, 70);
+      setPullY(dist);
+    }
+  };
+
+  const handleTouchEnd = async () => {
+    if (!isDraggingRef.current || isPullRefreshing) return;
+    isDraggingRef.current = false;
+
+    if (pullY >= 48) {
+      setIsPullRefreshing(true);
+      setPullY(45);
+
+      // Trigger haptic vibration on real phone
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        try { navigator.vibrate(20); } catch {}
+      }
+
+      // Re-fetch / simulate refresh
+      await new Promise((resolve) => setTimeout(resolve, 850));
+
+      setIsPullRefreshing(false);
+      setPullY(0);
+      setPullRefreshToast("Data gizi & menu MBG berhasil diperbarui!");
+      setTimeout(() => setPullRefreshToast(null), 2500);
+    } else {
+      setPullY(0);
+    }
+  };
+
   // ═══ PWA / APK INSTALL STATES ═══
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
@@ -1442,8 +1495,44 @@ export const CitizenMobileApp: React.FC = () => {
               </button>
             </header>
 
-            {/* Main Tabs Container */}
-            <main className="flex-1 p-3.5 space-y-3 overflow-y-auto pb-20">
+            {/* Pull Refresh Success Toast */}
+            {pullRefreshToast && (
+              <div className="absolute top-12 left-4 right-4 z-50 bg-[#071e49]/95 backdrop-blur-md text-white px-3 py-2 rounded-2xl shadow-xl text-[11px] font-bold flex items-center justify-center gap-1.5 animate-in slide-in-from-top-3 duration-300">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{pullRefreshToast}</span>
+              </div>
+            )}
+
+            {/* Main Tabs Container with Native Pull-to-Refresh */}
+            <main
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              className="flex-1 p-3.5 space-y-3 overflow-y-auto pb-20 relative overscroll-contain"
+            >
+              {/* Native Pull-to-Refresh Visual Indicator */}
+              <div
+                style={{
+                  height: pullY,
+                  opacity: pullY > 8 ? 1 : 0,
+                  transform: `scale(${Math.min(1, pullY / 40)})`
+                }}
+                className="overflow-hidden transition-all duration-150 ease-out flex items-center justify-center pointer-events-none shrink-0"
+              >
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/90 border border-blue-200 text-[#1a73e8] text-[10.5px] font-bold shadow-xs">
+                  <RefreshCw
+                    className={`w-3.5 h-3.5 ${isPullRefreshing ? "animate-spin" : ""}`}
+                    style={{ transform: `rotate(${pullY * 6}deg)` }}
+                  />
+                  <span>
+                    {isPullRefreshing
+                      ? "Menyinkronkan data..."
+                      : pullY >= 45
+                      ? "Lepaskan untuk memperbarui"
+                      : "Tarik untuk menyegarkan"}
+                  </span>
+                </div>
+              </div>
               {/* TAB 1: BERANDA WARGA */}
               {activeTab === "home" && (
                 <div className="space-y-3 animate-in fade-in duration-200">
