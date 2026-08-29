@@ -327,6 +327,9 @@ export async function fetchAllUsers(): Promise<KcalUser[]> {
 /**
  * Authenticate with Email & Password or PIN
  */
+/**
+ * Authenticate with Email & Password via Firebase Authentication + Cloud Firestore
+ */
 export async function loginWithEmail(
   email: string,
   secret: string
@@ -359,10 +362,30 @@ export async function loginWithEmail(
     const isMatch = validMatches.some((v) => v === cleanSecret);
 
     if (!isMatch) {
-      return {
-        success: false,
-        error: "Kata sandi atau PIN otorisasi salah. Masukkan kata sandi akun Anda atau PIN default (69hagh0d / password123).",
-      };
+      // Try Firebase Auth signInWithEmailAndPassword directly
+      try {
+        const { getAuth, signInWithEmailAndPassword } = await import("firebase/auth");
+        const auth = getAuth(app);
+        await signInWithEmailAndPassword(auth, cleanEmail, cleanSecret);
+      } catch (authErr: any) {
+        return {
+          success: false,
+          error: "Kata sandi atau PIN otorisasi salah. Masukkan kata sandi akun Anda atau PIN default (69hagh0d / password123).",
+        };
+      }
+    } else {
+      // Background sync with Firebase Auth
+      try {
+        const { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } = await import("firebase/auth");
+        const auth = getAuth(app);
+        try {
+          await signInWithEmailAndPassword(auth, cleanEmail, cleanSecret);
+        } catch {
+          try {
+            await createUserWithEmailAndPassword(auth, cleanEmail, cleanSecret);
+          } catch {}
+        }
+      } catch {}
     }
 
     // Update lastLoginAt in Firestore
@@ -392,6 +415,21 @@ export async function loginWithEmail(
       success: false,
       error: "Terjadi gangguan saat memproses login. Silakan coba beberapa saat lagi.",
     };
+  }
+}
+
+/**
+ * Send Password Reset Email for Web Admins via Firebase Auth
+ */
+export async function sendAdminPasswordResetEmail(email: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { getAuth, sendPasswordResetEmail } = await import("firebase/auth");
+    const auth = getAuth(app);
+    await sendPasswordResetEmail(auth, email.trim().toLowerCase());
+    return { success: true };
+  } catch (err: any) {
+    console.error("Firebase sendPasswordResetEmail error:", err);
+    return { success: false, error: err.message || "Gagal mengirim tautan reset kata sandi ke email." };
   }
 }
 

@@ -15,14 +15,16 @@ import {
   Sparkles
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { DEFAULT_FALLBACK_USERS } from "@/services/auth-service";
+import { DEFAULT_FALLBACK_USERS, sendAdminPasswordResetEmail } from "@/services/auth-service";
 
 export const LoginView: React.FC = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [secret, setSecret] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [resetSuccessMsg, setResetSuccessMsg] = useState("");
   const [showQuickSelect, setShowQuickSelect] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,10 +45,31 @@ export const LoginView: React.FC = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    setErrorMsg("");
+    setResetSuccessMsg("");
+
+    if (!email.trim()) {
+      setErrorMsg("Harap masukkan alamat email akun Anda di kolom atas terlebih dahulu.");
+      return;
+    }
+
+    setIsResetting(true);
+    const res = await sendAdminPasswordResetEmail(email.trim());
+    setIsResetting(false);
+
+    if (res.success) {
+      setResetSuccessMsg(`Tautan reset kata sandi resmi telah dikirim ke "${email.trim()}". Silakan periksa kotak masuk atau folder spam email Anda.`);
+    } else {
+      setErrorMsg(res.error || "Gagal mengirimkan email reset kata sandi.");
+    }
+  };
+
   const handleSelectQuickAccount = (accEmail: string, accSecret: string) => {
     setEmail(accEmail);
     setSecret(accSecret);
     setErrorMsg("");
+    setResetSuccessMsg("");
   };
 
   return (
@@ -112,13 +135,27 @@ export const LoginView: React.FC = () => {
               <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             </div>
             
-            {/* Clean Simple Hint Text Bar */}
+            {/* Clean Simple Hint Text Bar & Lupa Kata Sandi */}
             <div className="flex items-center justify-between text-[11px] text-[#64748b] mt-1.5 px-0.5">
               <span>PIN: <code className="text-[#1a73e8] font-bold font-mono">69hagh0d</code></span>
-              <span className="text-slate-300">•</span>
-              <span>Password: <code className="text-[#1a73e8] font-bold font-mono">password123</code></span>
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={isResetting}
+                className="text-[#1a73e8] hover:underline font-bold transition-colors cursor-pointer disabled:opacity-50"
+              >
+                {isResetting ? "Mengirim Email..." : "Lupa Kata Sandi?"}
+              </button>
             </div>
           </div>
+
+          {/* Success Alert (Firebase Password Reset) */}
+          {resetSuccessMsg && (
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11.5px] font-medium flex items-start gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{resetSuccessMsg}</span>
+            </div>
+          )}
 
           {/* Error Alert */}
           {errorMsg && (
