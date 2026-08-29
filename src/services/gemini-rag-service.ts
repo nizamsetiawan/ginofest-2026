@@ -634,12 +634,9 @@ ${existingList}
 DAFTAR BAHAN BAKU TERSEDIA DARI 18 KECAMATAN GRESIK (Pilih dari bahan ini):
 ${ingredientsList}
 
-ATURAN KOMPOSISI GIZI SEIMBANG 5 BINTANG & STANDAR PENCEGAHAN STUNTING:
-1. Karbohidrat (Nasi Putih / Nasi Jagung / Kentang / Ubi)
-2. Protein Hewani Kaya Zat Besi & Zinc (Ikan Bandeng / Tongkol / Nila / Kakap / Kupang / Ayam / Daging Sapi / Telur)
-3. Protein Nabati (Tempe / Tahu / Kacang Hijau / Kacang Merah / Edamame)
-4. Sayuran Segar (Daun Kelor / Bayam / Wortel / Brokoli / Kangkung / Buncis / Labu Kuning)
-5. Buah Segar + WAJIB SERTAKAN SUSU SAPI / SUSU UHT (Contoh: Semangka, Susu Sapi / Pisang, Susu UHT)
+ATURAN STRUKTUR KOMPOSISI 5 BINTANG & SUSU (WAJIB IKUTI FORMAT BERIKUT TANPA EMOJI/ICON):
+Gunakan pemisah pipa '|' untuk 6 pilar berikut:
+"Karbohidrat: [Nama Bahan & Gramatur] | Protein Hewani: [Nama Bahan & Gramatur] | Protein Nabati: [Nama Bahan & Gramatur] | Sayuran: [Nama Bahan & Gramatur] | Buah: [Nama Bahan & Gramatur] | Susu: [Susu Sapi Segar (150ml) / Susu UHT Plain (125ml)]"
 
 Hasilkan TEPAT 5 menu baru dalam format JSON array valid tanpa markdown tambahan:
 [
@@ -647,7 +644,7 @@ Hasilkan TEPAT 5 menu baru dalam format JSON array valid tanpa markdown tambahan
     "no": 1,
     "name": "Nasi Bandeng Presto & Sayur Bening Kelor",
     "targetGroup": "TK / SD / SMP",
-    "composition": "Nasi, Ikan Bandeng Presto (80g), Tahu Bacem, Sayur Bening Kelor, Pisang Ambon, Susu Sapi",
+    "composition": "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Bandeng Presto (80g) | Protein Nabati: Tahu Bacem (40g) | Sayuran: Sayur Bening Kelor (50g) | Buah: Semangka Segar (50g) | Susu: Susu Sapi Segar (150ml)",
     "nutritionTarget": "645 Kkal | 27.0g Protein | 5.4mg Fe"
   }
 ]`;
@@ -678,7 +675,7 @@ Hasilkan TEPAT 5 menu baru dalam format JSON array valid tanpa markdown tambahan
                 no: idx + 1,
                 name: item.name,
                 targetGroup: item.targetGroup || "TK / SD / SMP",
-                composition: item.composition.includes("Susu") ? item.composition : `${item.composition}, Susu UHT`,
+                composition: item.composition.includes("Susu:") ? item.composition : `${item.composition} | Susu: Susu Sapi Segar (150ml)`,
                 nutritionTarget: item.nutritionTarget || "630 Kkal | 26.0g Protein | 5.0mg Fe",
                 source: "Standar Menu BGN RI",
                 link: "https://badangizi.go.id"
@@ -726,26 +723,19 @@ export async function calculateMenuNutritionWithGemini(
   if (apiKey && apiKey.trim() !== "" && apiKey !== "YOUR_GEMINI_API_KEY") {
     const prompt = `Anda adalah Ahli Gizi Klinis & Perencana Menu MBG Badan Gizi Nasional (BGN RI) bersertifikasi.
 Tugas Anda adalah membedah dan menghitung secara presisi:
-1. Komposisi Porsi 5 Bintang (Gramatur bahan + Wajib Susu Sapi/UHT).
+1. Komposisi Porsi 5 Bintang + Susu dalam format terstruktur tanpa emoji/icon:
+"Karbohidrat: [Bahan (Gramatur)] | Protein Hewani: [Bahan (Gramatur)] | Protein Nabati: [Bahan (Gramatur)] | Sayuran: [Bahan (Gramatur)] | Buah: [Bahan (Gramatur)] | Susu: [Susu Sapi (150ml) / Susu UHT (125ml)]"
 2. Target Angka Gizi Akumulatif (Kalori Kkal | Protein g | Zat Besi Fe mg) mengacu pada Tabel Komposisi Pangan Indonesia (TKPI Kemenkes RI).
 
-NAMA MENU: "${menuName}"
-KOMPOSISI SAAT INI (Jika ada): "${currentComposition}"
-
-ATURAN PERHITUNGAN BGN & TKPI:
-- Karbohidrat (~100g nasi: 130 Kkal, 2.5g protein)
-- Protein Hewani (~75-85g ikan/ayam/daging/telur: ~110-180 Kkal, 18-25g protein, 1.5-5.5mg Fe)
-- Protein Nabati (~40g tempe/tahu: ~70-80 Kkal, 7.5g protein, 1.0mg Fe)
-- Sayuran (~50g sayur: ~30-45 Kkal, 2.0g protein, 1.5-3.0mg Fe)
-- Buah + Susu (~50g buah + 150-200ml susu: ~150-180 Kkal, 6-7g protein, 0.2mg Fe)
-- Total kalori target berkisar 580 - 670 Kkal, protein 22 - 28g, zat besi 4.2 - 6.5mg (standar pencegahan stunting).
+MENU MASAKAN: "${menuName}"
+KOMPOSISI SAAT INI (Bila ada): "${currentComposition}"
 
 Kembalikan HANYA JSON object valid:
 {
-  "composition": "Nasi, Ikan Bandeng (80g), Tahu Bacem (40g), Sayur Bening Kelor (50g), Semangka (50g), Susu Sapi (150ml)",
+  "composition": "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Bandeng Bakar (80g) | Protein Nabati: Tahu Bacem (40g) | Sayuran: Sayur Bening Kelor (50g) | Buah: Semangka Segar (50g) | Susu: Susu Sapi Segar (150ml)",
   "nutritionTarget": "640 Kkal | 26.5g Protein | 5.2mg Fe",
   "targetGroup": "TK / SD / SMP",
-  "reasoning": "Kombinasi protein hewani ikan bandeng dan daun kelor memberikan asupan zat besi tinggi untuk pencegahan stunting."
+  "reasoning": "Rincian porsi dihitung sesuai takaran AKG anak sekolah dan nilai laboratorium TKPI 2019 Kemenkes RI."
 }`;
 
     const models = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
@@ -770,10 +760,10 @@ Kembalikan HANYA JSON object valid:
           if (text) {
             const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
             return {
-              composition: parsed.composition || currentComposition || "Nasi, Protein Hewani (80g), Tempe (40g), Sayuran (50g), Buah, Susu UHT",
+              composition: parsed.composition || currentComposition || "Karbohidrat: Nasi (150g) | Protein Hewani: Ikan Bandeng (80g) | Protein Nabati: Tempe (40g) | Sayuran: Sayuran Segar (50g) | Buah: Buah Segar (50g) | Susu: Susu Sapi Segar (150ml)",
               nutritionTarget: parsed.nutritionTarget || "620 Kkal | 25.0g Protein | 4.8mg Fe",
               targetGroup: parsed.targetGroup || "TK / SD / SMP",
-              reasoning: parsed.reasoning || "Dihitung secara presisi berdasarkan standar TKPI Kemenkes RI."
+              reasoning: parsed.reasoning || "Dihitung secara presisi berdasarkan standar formula 5 Bintang dan TKPI Kemenkes RI."
             };
           }
         }
@@ -784,7 +774,7 @@ Kembalikan HANYA JSON object valid:
   }
 
   return {
-    composition: currentComposition || "Nasi, Protein Hewani (80g), Tahu (40g), Sayur Segar (50g), Buah, Susu Sapi",
+    composition: currentComposition || "Karbohidrat: Nasi (150g) | Protein Hewani: Daging Ayam (80g) | Protein Nabati: Tahu (40g) | Sayuran: Sayur Sop (50g) | Buah: Pisang (50g) | Susu: Susu Sapi Segar (150ml)",
     nutritionTarget: "630 Kkal | 26.0g Protein | 5.0mg Fe",
     targetGroup: "TK / SD / SMP",
     reasoning: "Standar porsi gizi seimbang BGN RI untuk pencegahan stunting."

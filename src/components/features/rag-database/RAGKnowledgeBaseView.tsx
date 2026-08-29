@@ -1971,7 +1971,36 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                                 {r.targetGroup}
                               </span>
                             </td>
-                            <td className="py-2.5 px-4 text-[#475569] font-medium">{r.composition}</td>
+                            <td className="py-2.5 px-4">
+                              {r.composition.includes("|") ? (
+                                <div className="flex flex-wrap gap-1.5 py-0.5 max-w-xl">
+                                  {r.composition.split("|").map((part, pIdx) => {
+                                    const trimmed = part.trim();
+                                    const [category, ...rest] = trimmed.split(":");
+                                    if (rest.length > 0) {
+                                      const catName = category.trim();
+                                      const itemName = rest.join(":").trim();
+                                      return (
+                                        <span
+                                          key={pIdx}
+                                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100/90 border border-slate-200 text-[11px]"
+                                        >
+                                          <span className="font-bold text-slate-700">{catName}:</span>
+                                          <span className="font-semibold text-[#071e49]">{itemName}</span>
+                                        </span>
+                                      );
+                                    }
+                                    return (
+                                      <span key={pIdx} className="text-[11px] font-medium text-slate-700">
+                                        {trimmed}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <span className="text-[11px] font-medium text-slate-700">{r.composition}</span>
+                              )}
+                            </td>
                             <td className="py-2.5 px-4 font-bold text-emerald-700 text-[11px]">{r.nutritionTarget}</td>
                             <td className="py-2.5 px-3 text-center">
                               <div className="flex items-center justify-center gap-1">
@@ -2530,11 +2559,11 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <div>
                   <label className="font-bold text-[#071e49] block mb-1">Komposisi 5 Bintang (Wajib Ada Susu):</label>
                   <textarea
-                    rows={2}
+                    rows={3}
                     value={editingItem.data.composition}
                     onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, composition: e.target.value } })}
-                    placeholder="Contoh: Nasi, Ikan Bandeng (80g), Tahu (40g), Sayur Kelor (50g), Semangka (50g), Susu Sapi (150ml)"
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#1a73e8] text-[12px] leading-relaxed bg-white"
+                    placeholder="Contoh: Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Bandeng Bakar (80g) | Protein Nabati: Tahu Bacem (40g) | Sayuran: Sayur Bening Kelor (50g) | Buah: Semangka Segar (50g) | Susu: Susu Sapi Segar (150ml)"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#1a73e8] text-[12px] leading-relaxed bg-white font-medium"
                   />
                 </div>
                 <div>
