@@ -220,18 +220,39 @@ export const CitizenMobileApp: React.FC = () => {
 
     if (pullY >= 45) {
       setIsPullRefreshing(true);
-      setIsHardReloading(true);
       setPullY(45);
 
       // Trigger haptic vibration on real phone
       if (typeof navigator !== "undefined" && navigator.vibrate) {
-        try { navigator.vibrate(30); } catch {}
+        try { navigator.vibrate(20); } catch {}
       }
 
-      // Hard reload the browser page with visual loading animation
-      setTimeout(() => {
-        window.location.reload();
-      }, 700);
+      try {
+        // Cek apakah ada build / deploy baru dari server Vercel
+        const currentBuild = sessionStorage.getItem("kcal_client_build_id");
+        const res = await fetch("/api/version?t=" + Date.now(), { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (currentBuild && data?.buildId && data.buildId !== currentBuild) {
+            // HANYA JIKA ADA DEPLOY BARU: Tampilkan layar animasi "Memperbarui Aplikasi Kcal..."
+            setIsHardReloading(true);
+            sessionStorage.setItem("kcal_client_build_id", data.buildId);
+            setTimeout(() => {
+              window.location.reload();
+            }, 800);
+            return;
+          } else if (data?.buildId && !currentBuild) {
+            sessionStorage.setItem("kcal_client_build_id", data.buildId);
+          }
+        }
+      } catch {}
+
+      // JIKA TIDAK ADA DEPLOY BARU: Cukup refresh data secara instan tanpa reload browser!
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setIsPullRefreshing(false);
+      setPullY(0);
+      setPullRefreshToast("Data gizi & menu MBG berhasil diperbarui!");
+      setTimeout(() => setPullRefreshToast(null), 2500);
     } else {
       setPullY(0);
     }
@@ -861,9 +882,9 @@ export const CitizenMobileApp: React.FC = () => {
                 />
                 <span>
                   {isPullRefreshing
-                    ? "Memuat versi terbaru..."
+                    ? "Menyegarkan data..."
                     : pullY >= 45
-                    ? "Lepaskan untuk memperbarui aplikasi"
+                    ? "Lepaskan untuk menyegarkan"
                     : "Tarik untuk menyegarkan"}
                 </span>
               </div>
@@ -1678,9 +1699,9 @@ export const CitizenMobileApp: React.FC = () => {
                   />
                   <span>
                     {isPullRefreshing
-                      ? "Menyinkronkan data..."
+                      ? "Menyegarkan data..."
                       : pullY >= 45
-                      ? "Lepaskan untuk memperbarui"
+                      ? "Lepaskan untuk menyegarkan"
                       : "Tarik untuk menyegarkan"}
                   </span>
                 </div>
