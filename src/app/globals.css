@@ -37,7 +37,7 @@ body {
   padding-top: max(env(safe-area-inset-top, 0px), 8px);
 }
 .pb-safe-nav {
-  padding-bottom: max(env(safe-area-inset-bottom, 12px), 16px);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 14px);
 }
 
 /* Prevent double-tap zoom on buttons and interactive elements */

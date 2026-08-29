@@ -700,13 +700,13 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white sm:bg-slate-950 flex justify-center items-center selection:bg-[#1a73e8] selection:text-white p-0 sm:p-4">
+    <div className="fixed inset-0 sm:static sm:min-h-screen bg-white sm:bg-slate-950 flex justify-center items-center selection:bg-[#1a73e8] selection:text-white p-0 sm:p-4 overflow-hidden">
       {/* Native Mobile Smartphone Frame (Compact .APK proportions) */}
       <div 
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="w-full sm:max-w-[380px] h-[100dvh] max-h-[100dvh] sm:h-[780px] sm:max-h-[800px] bg-white sm:rounded-[40px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-0 sm:border-[8px] sm:border-slate-800 flex flex-col relative overflow-hidden select-none"
+        className="w-full h-full sm:max-w-[380px] sm:h-[780px] sm:max-h-[800px] bg-white sm:rounded-[40px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-0 sm:border-[8px] sm:border-slate-800 flex flex-col relative overflow-hidden select-none"
       >
         
         {/* ═══ HARD RELOAD FULLSCREEN LOADING ANIMATION OVERLAY ═══ */}
