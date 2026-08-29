@@ -44,7 +44,7 @@ import {
 } from "@/services/firebase-service";
 
 type AppScreen = "splash" | "login" | "register" | "forgot_password" | "main";
-type MobileTab = "home" | "screening" | "menu" | "complaint" | "ai_chat";
+type MobileTab = "home" | "menu" | "screening" | "ai_chat" | "profile" | "complaint";
 
 export const CitizenMobileApp: React.FC = () => {
   // Screen state
@@ -1949,36 +1949,201 @@ export const CitizenMobileApp: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* TAB 5: PROFIL WARGA */}
+              {activeTab === "profile" && (
+                <div className="space-y-3.5 animate-in fade-in duration-200">
+                  {/* Citizen Profile Card */}
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-[#071e49] to-[#1a73e8] text-white space-y-3 shadow-md">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center text-[18px] font-black text-white shadow-inner">
+                        {citizenUser?.name ? citizenUser.name.charAt(0).toUpperCase() : "W"}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="text-[14px] font-black leading-tight truncate">
+                            {citizenUser?.name || "Warga Gresik"}
+                          </h3>
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        </div>
+                        <p className="text-[11px] text-blue-100 truncate mt-0.5">
+                          {citizenUser?.email || "warga@gresik.id"}
+                        </p>
+                        <div className="flex items-center gap-1 mt-1">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 text-[9px] font-bold text-blue-100 border border-white/20">
+                            <MapPin className="w-2.5 h-2.5 text-amber-300" />
+                            <span>Kec. {citizenUser?.district || "Kebomas"}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Stats Grid */}
+                    <div className="grid grid-cols-3 gap-1.5 pt-1 text-center border-t border-white/10">
+                      <div className="p-1.5 rounded-xl bg-white/10">
+                        <span className="block text-[12px] font-black text-white">1</span>
+                        <span className="text-[9px] text-blue-100">Anak Dipantau</span>
+                      </div>
+                      <div className="p-1.5 rounded-xl bg-white/10">
+                        <span className="block text-[12px] font-black text-emerald-300">Optimal</span>
+                        <span className="text-[9px] text-blue-100">Status Gizi</span>
+                      </div>
+                      <div className="p-1.5 rounded-xl bg-white/10">
+                        <span className="block text-[12px] font-black text-amber-300">MBG</span>
+                        <span className="text-[9px] text-blue-100">Aktif Sekolah</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu & Layanan Warga */}
+                  <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2">
+                    <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-1">
+                      Layanan & Pengaturan
+                    </h4>
+
+                    <div className="space-y-1">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("screening")}
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-bold text-[11.5px] transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-blue-50 text-[#1a73e8] flex items-center justify-center">
+                            <Activity className="w-3.5 h-3.5" />
+                          </div>
+                          <span>Riwayat Skrining Gizi AI</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("complaint")}
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-bold text-[11.5px] transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                            <MessageSquare className="w-3.5 h-3.5" />
+                          </div>
+                          <span>Pusat Pengaduan Menu MBG</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("ai_chat")}
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-bold text-[11.5px] transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                            <Sparkles className="w-3.5 h-3.5" />
+                          </div>
+                          <span>Konsultasi Nutrisi K-Bot AI</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Tombol Keluar Sesi */}
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        localStorage.removeItem("kcal_active_citizen_user");
+                        sessionStorage.setItem("kcal_citizen_screen", "login");
+                        setCitizenUser(null);
+                        setCurrentScreen("login");
+                      }}
+                      className="w-full py-2.5 px-4 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-[12px] font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Keluar dari Akun</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </main>
 
-            {/* Bottom Navigation Bar & Native Home Indicator (Fixed in Flex Column, Non-overlapping) */}
-            <div className="shrink-0 bg-white border-t border-slate-200 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] pb-safe-nav pt-1.5">
+            {/* Bottom Navigation Bar with Prominent Floating 'Analisis' Button */}
+            <div className="shrink-0 bg-white border-t border-slate-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.06)] pb-safe-nav pt-1 relative">
               <nav className="px-2 flex items-center justify-around">
-                {[
-                  { id: "home", label: "Beranda", icon: Home },
-                  { id: "screening", label: "Cek Gizi", icon: Activity },
-                  { id: "menu", label: "Menu MBG", icon: Utensils },
-                  { id: "complaint", label: "Aduan", icon: MessageSquare },
-                  { id: "ai_chat", label: "Tanya AI", icon: Sparkles },
-                ].map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id as MobileTab)}
-                      className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-2xl transition-all cursor-pointer ${
-                        isActive ? "text-[#1a73e8] font-black" : "text-slate-400 font-semibold hover:text-slate-600"
-                      }`}
-                    >
-                      <div className={`p-1 rounded-xl transition-all ${isActive ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
-                        <Icon className={`w-4 h-4 transition-transform ${isActive ? "scale-110" : ""}`} />
-                      </div>
-                      <span className="text-[10px] tracking-tight">{tab.label}</span>
-                    </button>
-                  );
-                })}
+                {/* 1. Beranda */}
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("home")}
+                  className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl transition-all cursor-pointer ${
+                    activeTab === "home" ? "text-[#1a73e8] font-bold" : "text-slate-400 font-medium hover:text-slate-600"
+                  }`}
+                >
+                  <div className={`p-1 rounded-xl transition-all ${activeTab === "home" ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
+                    <Home className={`w-4 h-4 transition-transform ${activeTab === "home" ? "scale-110" : ""}`} />
+                  </div>
+                  <span className="text-[10px] tracking-tight">Beranda</span>
+                </button>
+
+                {/* 2. Menu */}
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("menu")}
+                  className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl transition-all cursor-pointer ${
+                    activeTab === "menu" ? "text-[#1a73e8] font-bold" : "text-slate-400 font-medium hover:text-slate-600"
+                  }`}
+                >
+                  <div className={`p-1 rounded-xl transition-all ${activeTab === "menu" ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
+                    <Utensils className={`w-4 h-4 transition-transform ${activeTab === "menu" ? "scale-110" : ""}`} />
+                  </div>
+                  <span className="text-[10px] tracking-tight">Menu</span>
+                </button>
+
+                {/* 3. PROMINENT FLOATING CENTER BUTTON: Analisis */}
+                <div className="relative -top-4.5 flex flex-col items-center">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("screening")}
+                    className={`w-12 h-12 rounded-full bg-gradient-to-tr from-[#071e49] via-[#1a73e8] to-[#2563eb] text-white flex items-center justify-center shadow-lg shadow-blue-500/35 border-[3px] border-white active:scale-95 transition-all cursor-pointer ${
+                      activeTab === "screening" ? "ring-2 ring-[#1a73e8] scale-105" : "hover:shadow-blue-500/50"
+                    }`}
+                  >
+                    <Activity className="w-5 h-5 animate-pulse" />
+                  </button>
+                  <span className={`text-[10px] font-black tracking-tight mt-0.5 ${
+                    activeTab === "screening" ? "text-[#1a73e8]" : "text-slate-600"
+                  }`}>
+                    Analisis
+                  </span>
+                </div>
+
+                {/* 4. Chat */}
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("ai_chat")}
+                  className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl transition-all cursor-pointer ${
+                    activeTab === "ai_chat" ? "text-[#1a73e8] font-bold" : "text-slate-400 font-medium hover:text-slate-600"
+                  }`}
+                >
+                  <div className={`p-1 rounded-xl transition-all ${activeTab === "ai_chat" ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
+                    <MessageSquare className={`w-4 h-4 transition-transform ${activeTab === "ai_chat" ? "scale-110" : ""}`} />
+                  </div>
+                  <span className="text-[10px] tracking-tight">Chat</span>
+                </button>
+
+                {/* 5. Profil */}
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("profile")}
+                  className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl transition-all cursor-pointer ${
+                    activeTab === "profile" ? "text-[#1a73e8] font-bold" : "text-slate-400 font-medium hover:text-slate-600"
+                  }`}
+                >
+                  <div className={`p-1 rounded-xl transition-all ${activeTab === "profile" ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
+                    <User className={`w-4 h-4 transition-transform ${activeTab === "profile" ? "scale-110" : ""}`} />
+                  </div>
+                  <span className="text-[10px] tracking-tight">Profil</span>
+                </button>
               </nav>
+
               {/* Native Home Indicator Bar (Desktop preview) */}
               <div className="hidden sm:block pb-1 pt-0.5">
                 <div className="w-28 h-1 rounded-full bg-slate-300 mx-auto"></div>
