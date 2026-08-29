@@ -1044,6 +1044,79 @@ export async function loginCitizenFromFirestore(
   }
 }
 
+export async function signInWithGoogleFirebase(
+  district?: string
+): Promise<{
+  success: boolean;
+  user?: { id: string; name: string; email: string; phone?: string; district: string; photoURL?: string };
+  error?: string;
+}> {
+  try {
+    const { getAuth, GoogleAuthProvider, signInWithPopup } = await import("firebase/auth");
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    // Forces Google to always show the real account selector screen
+    provider.setCustomParameters({ prompt: "select_account" });
+
+    const result = await signInWithPopup(auth, provider);
+    const googleUser = result.user;
+    const cleanEmail = (googleUser.email || "").toLowerCase();
+    const fullName = googleUser.displayName || cleanEmail.split("@")[0] || "Warga Gresik";
+    const finalDistrict = district || "Gresik";
+
+    // Sync user data to Cloud Firestore (kcal_masyarakat)
+    const colRef = collection(db, "kcal_masyarakat");
+    const q = query(colRef, where("email", "==", cleanEmail));
+    const snap = await getDocs(q);
+
+    let docId = googleUser.uid;
+    if (snap.empty) {
+      const newDoc = await addDoc(colRef, {
+        uid: googleUser.uid,
+        fullName,
+        email: cleanEmail,
+        district: finalDistrict,
+        authProvider: "google",
+        photoURL: googleUser.photoURL || "",
+        createdAtIso: new Date().toISOString(),
+      });
+      docId = newDoc.id;
+    } else {
+      docId = snap.docs[0].id;
+      await setDoc(
+        doc(db, "kcal_masyarakat", docId),
+        {
+          fullName,
+          lastLoginIso: new Date().toISOString(),
+          photoURL: googleUser.photoURL || "",
+          ...(district ? { district } : {}),
+        },
+        { merge: true }
+      );
+    }
+
+    return {
+      success: true,
+      user: {
+        id: docId,
+        name: fullName,
+        email: cleanEmail,
+        district: finalDistrict,
+        photoURL: googleUser.photoURL || undefined,
+      },
+    };
+  } catch (err: any) {
+    console.error("Firebase Google Auth error:", err);
+    if (err.code === "auth/popup-closed-by-user") {
+      return { success: false, error: "Pemilihan akun Google dibatalkan." };
+    }
+    if (err.code === "auth/unauthorized-domain") {
+      return { success: false, error: "Domain ini belum diotorisasi di Firebase Console Authentication Settings." };
+    }
+    return { success: false, error: err.message || "Gagal menghubungkan ke akun Google." };
+  }
+}
+
 export async function resetCitizenPasswordInFirestore(
   email: string,
   newPassword: string,
@@ -1072,4 +1145,5 @@ export async function resetCitizenPasswordInFirestore(
     return { success: false, error: err.message || "Gagal mengatur ulang kata sandi." };
   }
 }
+
 
