@@ -973,7 +973,7 @@ export const CitizenMobileApp: React.FC = () => {
                       <span>Memproses Masuk...</span>
                     </>
                   ) : (
-                    <span>Masuk ke Portal Masyarakat</span>
+                    <span>Masuk</span>
                   )}
                 </button>
               </div>
