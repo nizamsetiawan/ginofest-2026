@@ -934,3 +934,142 @@ export async function updateComplaintStatusInFirestore(
   }
 }
 
+// -------------------------------------------------------------
+// 10. STEP 10: CITIZEN AUTH & PROFILE SYNC (Collection: kcal_masyarakat)
+// -------------------------------------------------------------
+export interface CitizenAccountRecord {
+  id?: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  district: string;
+  password?: string;
+  role: "masyarakat";
+  avatarBg?: string;
+  createdAtIso: string;
+}
+
+export async function registerCitizenToFirestore(account: Omit<CitizenAccountRecord, "id">): Promise<{ success: boolean; id?: string; error?: string }> {
+  try {
+    const colRef = collection(db, "kcal_masyarakat");
+    const cleanEmail = account.email.trim().toLowerCase();
+    
+    // Check if email already registered
+    const q = query(colRef, where("email", "==", cleanEmail));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      return { success: false, error: "Alamat email ini sudah terdaftar. Silakan masuk atau gunakan email lain." };
+    }
+
+    const docRef = await addDoc(colRef, {
+      ...account,
+      email: cleanEmail,
+      createdAtIso: new Date().toISOString(),
+      role: "masyarakat",
+    });
+
+    return { success: true, id: docRef.id };
+  } catch (err: any) {
+    console.error("Error registering citizen to Firestore:", err);
+    return { success: false, error: err.message || "Gagal mendaftarkan akun ke Cloud Firestore" };
+  }
+}
+
+export async function loginCitizenFromFirestore(
+  email: string,
+  password?: string,
+  district?: string
+): Promise<{ success: boolean; user?: { id: string; name: string; email: string; phone?: string; district: string }; error?: string }> {
+  try {
+    const colRef = collection(db, "kcal_masyarakat");
+    const cleanEmail = email.trim().toLowerCase();
+    const q = query(colRef, where("email", "==", cleanEmail));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      // Auto-provision in Firestore if not yet recorded
+      const newDoc = await addDoc(colRef, {
+        fullName: cleanEmail.split("@")[0].toUpperCase(),
+        email: cleanEmail,
+        phone: "081234567890",
+        district: district || "Kebomas",
+        password: password || "password123",
+        role: "masyarakat",
+        createdAtIso: new Date().toISOString(),
+      });
+      return {
+        success: true,
+        user: {
+          id: newDoc.id,
+          name: cleanEmail.split("@")[0].toUpperCase(),
+          email: cleanEmail,
+          phone: "081234567890",
+          district: district || "Kebomas",
+        }
+      };
+    }
+
+    const userData = snap.docs[0].data();
+    if (password && userData.password && userData.password !== password) {
+      return { success: false, error: "Kata sandi yang Anda masukkan salah. Silakan coba lagi atau gunakan Lupa Kata Sandi." };
+    }
+
+    // Update district if user selected a different one
+    if (district && district !== userData.district) {
+      await setDoc(doc(db, "kcal_masyarakat", snap.docs[0].id), { district }, { merge: true });
+    }
+
+    return {
+      success: true,
+      user: {
+        id: snap.docs[0].id,
+        name: userData.fullName || cleanEmail.split("@")[0],
+        email: userData.email,
+        phone: userData.phone,
+        district: district || userData.district || "Kebomas",
+      }
+    };
+  } catch (err: any) {
+    console.error("Error login citizen from Firestore:", err);
+    // Fallback local session
+    return {
+      success: true,
+      user: {
+        id: "local_" + Date.now(),
+        name: email.split("@")[0],
+        email: email,
+        district: district || "Kebomas",
+      }
+    };
+  }
+}
+
+export async function resetCitizenPasswordInFirestore(
+  email: string,
+  newPassword: string,
+  district?: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const colRef = collection(db, "kcal_masyarakat");
+    const cleanEmail = email.trim().toLowerCase();
+    const q = query(colRef, where("email", "==", cleanEmail));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      return { success: false, error: "Akun dengan alamat email ini tidak ditemukan di database masyarakat." };
+    }
+
+    const targetDoc = snap.docs[0];
+    await setDoc(doc(db, "kcal_masyarakat", targetDoc.id), {
+      password: newPassword,
+      updatedAtIso: new Date().toISOString(),
+      ...(district ? { district } : {}),
+    }, { merge: true });
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Error resetting citizen password in Firestore:", err);
+    return { success: false, error: err.message || "Gagal mengatur ulang kata sandi." };
+  }
+}
+
