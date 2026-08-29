@@ -1044,7 +1044,7 @@ export const CitizenMobileApp: React.FC = () => {
                   Kcal<span className="text-[#1a73e8]">.</span>
                 </span>
               </div>
-              <h2 className="text-[14px] font-black text-[#071e49]">Daftar Akun Masyarakat</h2>
+              <h2 className="text-[14px] font-black text-[#071e49]">Daftar Akun</h2>
               <p className="text-[10px] text-[#64748b]">
                 Daftarkan akun keluarga untuk memantau menu MBG & gizi anak
               </p>
@@ -1228,7 +1228,7 @@ export const CitizenMobileApp: React.FC = () => {
                     <span>Mendaftarkan Akun...</span>
                   </>
                 ) : (
-                  <span>Daftar Akun Masyarakat</span>
+                  <span>Daftar Akun</span>
                 )}
               </button>
             </form>
