@@ -1490,7 +1490,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 Tabel Master 1: Komoditas Pangan Kabupaten Gresik
               </h3>
               <p className="text-[11px] text-[#64748b]">
-                Daftar bahan pangan baku untuk program MBG
+                Pemetaan potensi bahan pangan lokal per 18 kecamatan untuk program MBG — Sumber resmi: Dinas Pertanian, Ketahanan Pangan, dan Perikanan (DKPP) Kab. Gresik.
               </p>
             </div>
 
@@ -1716,7 +1716,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 </span>
               </h3>
               <p className="text-[11px] text-[#64748b]">
-                Daftar bahan pangan diekstrak dan disinkronkan otomatis dari Master Komoditas (Step 1) di 18 kecamatan tanpa duplikasi data
+                Daftar bahan pangan diekstrak dan disinkronkan otomatis dari Master Komoditas (Step 1) di 18 kecamatan tanpa duplikasi data — Sumber resmi: SISKAPERBAPO Jawa Timur & Diskoperindag Kab. Gresik.
               </p>
             </div>
 
@@ -1917,7 +1917,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     </span>
                   </h3>
                   <p className="text-[11px] text-[#64748b]">
-                    Perhitungan porsi dan komposisi zat gizi disesuaikan dengan pedoman resmi Badan Gizi Nasional (BGN RI) untuk pemenuhan gizi seimbang dan pencegahan stunting
+                    Perhitungan porsi dan komposisi zat gizi formula 5 Bintang disesuaikan dengan pedoman resmi — Sumber resmi: Badan Gizi Nasional (BGN RI) & Standar PMT Kemenkes RI.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap shrink-0">
