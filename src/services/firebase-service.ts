@@ -1,15 +1,17 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { 
-  getFirestore, 
+import {
+  getFirestore,
   initializeFirestore,
-  collection, 
-  getDocs, 
-  doc, 
-  setDoc, 
-  deleteDoc, 
-  query, 
-  where, 
-  serverTimestamp 
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  addDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
+  serverTimestamp
 } from "firebase/firestore";
 
 // Firebase App Config for ginofest-2026
@@ -489,7 +491,7 @@ export async function fetchMenuPlanFromFirestore(districtId: string, period: str
     const colRef = collection(db, "mbg_menu_plans");
     const q = query(colRef, where("id", "==", planDocId));
     const snap = await getDocs(q);
-    
+
     if (!snap.empty) {
       const data = snap.docs[0].data();
       return { success: true, data };
@@ -549,7 +551,15 @@ export async function fetchNotifications() {
     const colRef = collection(db, "gscan_notifications");
     const snap = await getDocs(colRef);
     if (!snap.empty) {
-      const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as FirestoreNotification));
+      const items = snap.docs.map(d => {
+        const data = d.data() as any;
+        const desc = (data.description || "").replace(/Dr\.\s*Hendra\s*Pratama/gi, "Nizam Setiawan");
+        return {
+          id: d.id,
+          ...data,
+          description: desc,
+        } as FirestoreNotification;
+      });
       items.sort((a: any, b: any) => {
         const ta = a.createdAtIso || "";
         const tb = b.createdAtIso || "";
@@ -585,6 +595,16 @@ export async function markAllNotificationsRead() {
   }
 }
 
+export async function deleteNotification(docId: string) {
+  try {
+    const docRef = doc(db, "gscan_notifications", docId);
+    await deleteDoc(docRef);
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
 // -------------------------------------------------------------
 // 10. SETTINGS (Collection: gscan_settings)
 // -------------------------------------------------------------
@@ -592,13 +612,23 @@ export interface GScanSettings {
   defaultCycleDays: 5 | 6;
   paguPerPorsi: number;
   adminId: string;
+  authPin?: string;
+  // Firebase config
+  firebaseApiKey?: string;
+  firebaseProjectId?: string;
+  firebaseAuthDomain?: string;
+  firebaseStorageBucket?: string;
+  firebaseMessagingSenderId?: string;
+  firebaseAppId?: string;
+  firebaseMeasurementId?: string;
+  // Gemini
+  geminiApiKey?: string;
   updatedAt?: any;
   updatedAtIso?: string;
 }
 
 export async function fetchSettings() {
   try {
-    const docRef = doc(db, "gscan_settings", "app_config");
     const colRef = collection(db, "gscan_settings");
     const q = query(colRef, where("__name__", "==", "app_config"));
     const snap = await getDocs(q);
@@ -627,6 +657,40 @@ export async function saveSettings(settings: Partial<GScanSettings>) {
   }
 }
 
+// Seed initial credentials to Firestore (run once)
+export async function seedCredentialsToFirestore() {
+  try {
+    const docRef = doc(db, "gscan_settings", "app_config");
+    const snap = await getDocs(query(collection(db, "gscan_settings"), where("__name__", "==", "app_config")));
+
+    const existingData = !snap.empty ? snap.docs[0].data() : {};
+
+    // Always ensure authPin, firebase keys, and settings are present in Firestore
+    await setDoc(docRef, {
+      defaultCycleDays: existingData.defaultCycleDays || 6,
+      paguPerPorsi: existingData.paguPerPorsi || 15000,
+      adminId: existingData.adminId || "admin-dinkes",
+      authPin: existingData.authPin || "69hagh0d",
+      instansi: "ginofest 2026",
+      firebaseApiKey: existingData.firebaseApiKey || "AIzaSyCqYxL4HM-4dBM8cDfNhu8x-vxX3vOCwQY",
+      firebaseProjectId: existingData.firebaseProjectId || "ginofest-2026",
+      firebaseAuthDomain: existingData.firebaseAuthDomain || "ginofest-2026.firebaseapp.com",
+      firebaseStorageBucket: existingData.firebaseStorageBucket || "ginofest-2026.firebasestorage.app",
+      firebaseMessagingSenderId: existingData.firebaseMessagingSenderId || "19574959170",
+      firebaseAppId: existingData.firebaseAppId || "1:19574959170:web:ca37e18784de2eeb3511db",
+      firebaseMeasurementId: existingData.firebaseMeasurementId || "G-KKJMJ66N8Q",
+      geminiApiKey: existingData.geminiApiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY || "",
+      updatedAt: serverTimestamp(),
+      updatedAtIso: new Date().toISOString(),
+    }, { merge: true });
+
+    return { success: true, seeded: true };
+  } catch (error: any) {
+    console.error("Gagal seed credentials:", error);
+    return { success: false, error: error.message };
+  }
+}
+
 // -------------------------------------------------------------
 // 11. HELP CHAT Q&A (Collection: gscan_help_qa)
 // -------------------------------------------------------------
@@ -638,14 +702,97 @@ export interface HelpQA {
   category: string;
 }
 
+export const INITIAL_HELP_QA_SEED: Omit<HelpQA, "id">[] = [
+  // 1. Perencana Menu & Anggaran
+  { command: "/menu", question: "Bagaimana cara generate menu MBG otomatis?", answer: "Klik menu \"Generate Menu\" di sidebar → pilih kecamatan & bulan target → tekan tombol \"Generate Menu AI\". Sistem akan merancang jadwal menu mingguan otomatis berbasis komoditas lokal dan pagu Rp 15.000. Hasil otomatis tersimpan ke Firestore.", category: "Perencana Menu" },
+  { command: "/generate", question: "Langkah-langkah lengkap generate menu MBG AI", answer: "1. Buka halaman Generate Menu\n2. Pilih Kecamatan (misal: Manyar / Kebomas)\n3. Pilih Bulan (Agustus 2026 s/d Juli 2027)\n4. Tentukan siklus (5 atau 6 hari kerja)\n5. Klik 'Generate Menu AI'\n6. AI merancang menu 4 minggu + tabel BOM otomatis.", category: "Perencana Menu" },
+  { command: "/bom", question: "Bagaimana cara melihat & download laporan kebutuhan bahan pokok (BOM)?", answer: "Setelah menu di-generate, klik tombol biru \"Laporan Kebutuhan Bahan Pokok\" di bawah jadwal menu. Akan muncul dialog modal berisi rincian tonase bahan pangan dan total anggaran. Klik tombol \"Download Excel (.XLS)\" untuk mengunduh laporan berformat resmi.", category: "Perencana Menu" },
+  { command: "/tahunan", question: "Bagaimana cara kerja Kalender Tahunan MBG?", answer: "Di halaman Generate Menu, klik tab \"Tahunan\" di bagian atas. Anda akan melihat kalender 12 bulan (Agustus 2026 – Juli 2027). Setiap bulan memiliki status 'Sudah Dibuat' atau 'Belum Dibuat'. Klik 'Buka Rencana Menu →' untuk mengedit bulan tertentu.", category: "Perencana Menu" },
+  { command: "/mingguan", question: "Bagaimana cara navigasi minggu 1 sampai minggu 4?", answer: "Pada tampilan bulanan perencana menu, klik tab Minggu 1, Minggu 2, Minggu 3, atau Minggu 4 di atas tabel. Setiap minggu menampilkan jadwal hari Senin s/d Jumat/Sabtu dengan komposisi gizi dan estimasi biaya per porsi.", category: "Perencana Menu" },
+  { command: "/pagu", question: "Berapa standar pagu resmi MBG per porsi?", answer: "Pagu resmi Badan Gizi Nasional (BGN) RI Tahun 2026 adalah Rp 15.000 / porsi / anak / hari kerja. Angka ini digunakan sebagai batas maksimal kalkulasi biaya bahan pangan dan operasional dapur MBG.", category: "Anggaran" },
+  { command: "/siklus", question: "Apa perbedaan siklus 5 hari vs 6 hari kerja?", answer: "• Siklus 5 Hari: Senin – Jumat (sekitar 20–22 hari kerja/bulan).\n• Siklus 6 Hari: Senin – Sabtu (sekitar 24–26 hari kerja/bulan).\nPilihan siklus mempengaruhi total hari makan anak dan kalkulasi total tonase bahan pangan di laporan BOM.", category: "Anggaran" },
+
+  // 2. Basis Data RAG
+  { command: "/rag", question: "Apa itu Basis Data RAG dan bagaimana cara kerjanya?", answer: "Basis Data RAG (Retrieval-Augmented Generation) adalah repositori 5 master dataset pangan resmi: Komoditas, Harga Pasar SISKAPERBAPO, Menu Standar MBG, Nilai Gizi TKPI 2019, dan Data 18 Wilayah. Data ini menjadi acuan grounding fakta bagi AI untuk merancang menu MBG yang presisi, kaya gizi lokal, dan hemat anggaran.", category: "Basis Data RAG" },
+  { command: "/rag_auth", question: "Bagaimana cara verifikasi PIN untuk membuka Basis Data RAG?", answer: "1. Buka menu 'Basis Data RAG' di sidebar.\n2. Masukkan 8 digit PIN otorisasi administrator (default: 69hagh0d).\n3. Kotak PIN akan otomatis memverifikasi dan membuka tabel master data.", category: "Basis Data RAG" },
+  { command: "/rag_komoditas", question: "Bagaimana cara mengelola Master Komoditas Pangan Lokal?", answer: "Pilih tab 'Komoditas' di RAG → Anda dapat melihat potensi pangan per kecamatan (seperti Bandeng Manyar, Kupang Sidayu, Kelor Panceng). Klik tombol edit di baris data untuk menambah atau mengubah komoditas unggulan.", category: "Basis Data RAG" },
+  { command: "/rag_harga", question: "Bagaimana cara mengelola & update Master Harga Pasar?", answer: "Pilih tab 'Harga Pasar' di RAG. Tabel menampilkan harga eceran/grosir per satuan kg/butir/ikat. Anda dapat mengubah harga secara manual dengan klik tombol Edit atau menggunakan tombol 'Kalibrasi Harga Otomatis'.", category: "Basis Data RAG" },
+  { command: "/rag_kalibrasi", question: "Bagaimana cara kerja fitur Kalibrasi Harga Otomatis?", answer: "Di tab Harga Pasar RAG, klik tombol 'Kalibrasi Harga Otomatis'. Sistem akan melakukan kalibrasi estimasi harga terkini berdasarkan inflasi dan data pasar rakyat Jawa Timur, lalu menyimpannya ke Firestore.", category: "Basis Data RAG" },
+  { command: "/rag_menu", question: "Bagaimana cara mengelola Master Menu Standar MBG?", answer: "Pilih tab 'Menu Standar' di RAG. Setiap menu terverifikasi memiliki komposisi 5 Bintang (Karbohidrat, Protein Hewani, Nabati, Sayur, Buah), target sasaran, dan estimasi biaya. Anda bisa menambah menu baru atau merevisi gramasi bahan.", category: "Basis Data RAG" },
+  { command: "/rag_gizi", question: "Bagaimana cara mengelola Master Nilai Gizi Pangan TKPI?", answer: "Pilih tab 'Nilai Gizi' di RAG. Memuat database gizi lengkap TKPI 2019 (Kalori, Protein, Lemak, Karbohidrat, Kalsium, Zat Besi Fe, Vitamin C, Zinc). Digunakan AI untuk menghitung kecukupan AKG harian siswa.", category: "Basis Data RAG" },
+  { command: "/rag_wilayah", question: "Bagaimana cara mengelola Data 18 Kecamatan & Sasaran Siswa?", answer: "Pilih tab 'Data Wilayah' di RAG. Anda dapat melihat dan memperbarui jumlah sasaran siswa MBG, jumlah sekolah, target porsi per hari, dan prevalensi stunting (%) tiap kecamatan di Gresik.", category: "Basis Data RAG" },
+  { command: "/rag_upload", question: "Bagaimana cara upload file Excel ke Basis Data RAG?", answer: "1. Buka tab dataset yang ingin di-update di halaman RAG.\n2. Klik tombol 'Upload Excel'.\n3. Pilih file spreadsheet (.xlsx/.xls).\n4. Sistem memvalidasi kolom dan langsung menyinkronkan data baru ke Cloud Firestore.", category: "Basis Data RAG" },
+  { command: "/rag_template", question: "Format file Excel apa yang didukung untuk import RAG?", answer: "Gunakan format Excel standar (.xlsx atau .xls) dengan header kolom sesuai dataset:\n• Komoditas: No, Kecamatan, Komoditas Pangan\n• Harga: No, Nama Bahan, Kategori, Harga Satuan\n• Menu: No, Nama Menu, Kelompok Sasaran, Komposisi\n• Gizi: No, Kode, Nama Bahan, Kalori, Protein, Lemak, Fe", category: "Basis Data RAG" },
+  { command: "/rag_tambah", question: "Bagaimana cara menambah baris data master baru secara manual?", answer: "Di setiap tab dataset RAG, klik tombol '+ Tambah Data'. Lengkapi formulir pop-up yang muncul, lalu tekan 'Simpan ke Firestore'. Data baru langsung aktif dan digunakan oleh AI Generator.", category: "Basis Data RAG" },
+  { command: "/rag_edit", question: "Bagaimana cara mengedit data master langsung di tabel?", answer: "Pada tabel RAG, klik ikon pensil (Edit) di ujung kanan baris data yang ingin diubah. Perbarui nilainya pada modal edit, lalu tekan 'Simpan Perubahan'.", category: "Basis Data RAG" },
+  { command: "/rag_hapus", question: "Bagaimana cara menghapus data master dari RAG?", answer: "Klik ikon tempat sampah (Hapus) pada baris data di tabel RAG → konfirmasi penghapusan. Data akan terhapus dari Cloud Firestore secara permanen.", category: "Basis Data RAG" },
+  { command: "/rag_search", question: "Bagaimana cara mencari & memfilter data di Basis Data RAG?", answer: "Gunakan kotak pencarian 'Cari komoditas/bahan/kecamatan...' di atas tabel RAG. Anda juga dapat memfilter berdasarkan kategori bahan pangan atau nama kecamatan untuk mempercepat pencarian.", category: "Basis Data RAG" },
+  { command: "/rag_export", question: "Bagaimana cara ekspor dataset master ke file Excel?", answer: "Di halaman Basis Data RAG, klik tombol 'Download Excel / Ekspor'. Seluruh tabel master data yang sedang dibuka akan otomatis diunduh dalam format file .XLS resmi.", category: "Basis Data RAG" },
+  { command: "/rag_grounding", question: "Bagaimana AI Gemini menggunakan RAG untuk menyusun menu?", answer: "Saat tombol 'Generate Menu AI' ditekan, sistem mengambil (Retrieve) data komoditas lokal dan harga pasar dari RAG, lalu menggabungkannya (Augment) ke dalam prompt AI Gemini. Hasilnya (Generate) berupa menu yang sesuai anggaran Rp 15.000 dan kaya gizi lokal.", category: "Basis Data RAG" },
+
+  // 3. Skrining & Peta
+  { command: "/scan", question: "Bagaimana cara menggunakan fitur Scan QR Code?", answer: "Klik 'Scan QR Code' di sidebar → lengkapi data anak (Nama, Kecamatan, Usia, TB, BB) → klik 'Mulai Analisis AI'. Sistem akan menghitung Z-Score WHO dan menyajikan rekomendasi bahan pangan lokal serta rujukan Posyandu.", category: "Skrining" },
+  { command: "/zscore", question: "Bagaimana AI menghitung Z-Score antropometri?", answer: "AI mencocokkan Tinggi Badan (TB) dan Berat Badan (BB) terhadap standar baku WHO Multicentre Growth Reference Study berdasarkan usia (bulan). Z-Score < -2 SD diklasifikasikan sebagai indikasi stunting yang membutuhkan intervensi gizi segera.", category: "Skrining" },
+  { command: "/peta", question: "Bagaimana cara membaca Peta Prevalensi?", answer: "Buka menu 'Peta Prevalensi'. Peta menampilkan 18 kecamatan dengan indikator risiko warna: Hijau (Risiko Rendah < 10%), Kuning (Risiko Sedang 10-20%), dan Merah (Risiko Tinggi > 20%). Klik kecamatan untuk melihat detail sasaran siswa MBG.", category: "Peta" },
+  { command: "/stunting", question: "Apa strategi penanganan stunting di Kcal?", answer: "Kcal memadukan penapisan fisik anak (Scan QR Code) dengan intervensi menu makanan MBG berbasis komoditas kaya mikronutrien lokal (misal: Kupang Sidayu kaya Fe 15.6mg, Ikan Bandeng kaya Omega-3, Kelor kaya kalsium).", category: "Gizi & Stunting" },
+  { command: "/ekspor", question: "Format file apa yang didukung untuk ekspor laporan?", answer: "Laporan kebutuhan logistik bahan pokok (BOM) diekspor dalam format Excel Spreadsheet (.XLS) lengkap dengan kop dokumen resmi, ringkasan pagu anggaran, dan rincian tonase belanja komoditas pasar.", category: "Ekspor" },
+
+  // 4. Pengaduan & Layanan
+  { command: "/komplain", question: "Kirim keluhan, masukan, atau kendala sistem", answer: "Silakan ketikkan keluhan atau kendala Anda. Laporan akan otomatis tersimpan ke Cloud Firestore dan diteruskan langsung ke kontak pengelola (takathasan82@gmail.com).", category: "Layanan Pengaduan" },
+
+  // 5. Sistem & Pengaturan
+  { command: "/notif", question: "Bagaimana cara kerja Pusat Notifikasi?", answer: "Setiap aktivitas (upload master data, generate menu, update settings, skrining anak) otomatis dicatat ke Cloud Firestore (koleksi gscan_notifications). Klik notifikasi untuk melihat rincian tanggal, jam, dan admin eksekutor.", category: "Sistem" },
+  { command: "/pengaturan", question: "Apa saja yang dapat dikonfigurasi di Pengaturan?", answer: "Di menu Pengaturan Anda dapat: melihat profil admin aktif, mengatur siklus hari kerja (5/6 hari), membuka & mengedit API Keys (Gemini & Firebase), mengganti PIN otorisasi, dan melihat info perangkat/sistem.", category: "Pengaturan" },
+  { command: "/pin", question: "Bagaimana cara verifikasi & ganti PIN akses administrator?", answer: "PIN otorisasi administrator terdiri dari 8 karakter (default: 69hagh0d). Masukkan PIN pada dialog segmented 8-kotak untuk membuka kunci kredensial. Untuk mengubah PIN, gunakan form 'Keamanan & Ubah PIN Akses' di halaman Pengaturan.", category: "Keamanan" },
+  { command: "/admin", question: "Bagaimana cara ganti akun administrator wilayah?", answer: "Buka halaman Pengaturan → pada bagian 'Administrator Aktif', klik tombol 'Ganti Akun' → pilih akun administrator (1 Akun Kabupaten, 6 Akun Kecamatan). Data dashboard akan menyesuaikan wilayah yang dipilih.", category: "Sistem" },
+  { command: "/firestore", question: "Apa saja 9 koleksi Cloud Firestore yang aktif?", answer: "1. master_komoditas\n2. master_harga_pasar\n3. master_menu_makanan\n4. master_nilai_gizi\n5. master_wilayah\n6. mbg_menu_plans\n7. gscan_notifications\n8. gscan_settings\n9. gscan_help_qa", category: "Basis Data" },
+  { command: "/device", question: "Informasi perangkat apa yang dideteksi oleh sistem?", answer: "Sistem mendeteksi: jenis browser, sistem operasi, resolusi layar (DPR), bahasa browser, timezone (WIB), jumlah inti CPU (cores), kapasitas RAM memori perangkat, status koneksi internet, dan User Agent.", category: "Sistem" },
+  { command: "/bantuan", question: "Bagaimana cara bertanya ke Asisten AI Gemini di sini?", answer: "Ketik langsung pertanyaan apa saja di kolom chat bawah (tanpa tanda '/'). Asisten AI Gemini akan menjelaskan seluruh fitur, tata cara penggunaan, kalkulasi gizi, maupun kebijakan program MBG di Kabupaten Gresik.", category: "Asisten AI" },
+  { command: "/kontak", question: "Kontak helpdesk dan dukungan teknis Kcal", answer: "Dinas Kesehatan Kabupaten Gresik — Tim Teknis Inovasi MBG & Stunting (GinoFest 2026)\n• Alamat: Jl. Dr. Wahidin Sudirohusodo No. 245, Gresik\n• Email: takathasan82@gmail.com\n• Layanan: Senin – Jumat (08:00 – 16:00 WIB)", category: "Dukungan" },
+  { command: "/faq", question: "Daftar topik bantuan yang sering ditanyakan", answer: "Gunakan perintah cepat berikut:\n• /menu - Generate Menu MBG\n• /bom - Laporan Kebutuhan Bahan Pokok\n• /rag - Basis Data 5 Master Pangan\n• /scan - Scan QR Code Skrining Anak\n• /pin - Keamanan & Kode Akses 8 Digit\n• /pagu - Standar Anggaran BGN Rp 15.000\n• /komplain - Layanan Pengaduan & Keluhan Sistem", category: "Bantuan" },
+];
+
+export async function seedHelpQA(items: Omit<HelpQA, "id">[]) {
+  try {
+    await Promise.all(items.map((item) => {
+      const docId = `cmd_${item.command.replace("/", "")}`;
+      const docRef = doc(db, "gscan_help_qa", docId);
+      return setDoc(docRef, { id: docId, ...item }, { merge: true });
+    }));
+    return { success: true };
+  } catch (error: any) {
+    console.error("Gagal seed gscan_help_qa:", error);
+    return { success: false, error: error.message };
+  }
+}
+
 export async function fetchHelpQA() {
   try {
     const colRef = collection(db, "gscan_help_qa");
-    const snap = await getDocs(colRef);
+    let snap = await getDocs(colRef);
+
+    // Check if /komplain exists in docs, if not reseed
+    const hasKomplain = !snap.empty && snap.docs.some(d => d.data()?.command === "/komplain");
+
+    if (snap.empty || !hasKomplain || snap.docs.length < INITIAL_HELP_QA_SEED.length) {
+      await seedHelpQA(INITIAL_HELP_QA_SEED);
+      snap = await getDocs(colRef);
+    }
+
     if (!snap.empty) {
       const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as HelpQA));
-      items.sort((a: any, b: any) => (a.command || "").localeCompare(b.command || ""));
-      return { success: true, data: items };
+
+      // Deduplicate strictly by command key
+      const uniqueMap = new Map<string, HelpQA>();
+      for (const item of items) {
+        if (item.command && !uniqueMap.has(item.command)) {
+          uniqueMap.set(item.command, item);
+        }
+      }
+
+      const deduplicated = Array.from(uniqueMap.values());
+      deduplicated.sort((a: any, b: any) => (a.command || "").localeCompare(b.command || ""));
+      return { success: true, data: deduplicated };
     }
     return { success: true, data: [] };
   } catch (error: any) {
@@ -654,17 +801,136 @@ export async function fetchHelpQA() {
   }
 }
 
-export async function seedHelpQA(items: Omit<HelpQA, "id">[]) {
+// -------------------------------------------------------------
+// 12. HELP CHAT HISTORY (Collection: gscan_help_history)
+// -------------------------------------------------------------
+export interface HelpChatMessage {
+  id?: string;
+  sender: "user" | "bot";
+  text: string;
+  isAiGenerated?: boolean;
+  timestamp?: any;
+  createdAtIso?: string;
+}
+
+export async function saveHelpChatMessage(msg: Omit<HelpChatMessage, "id">) {
   try {
-    await Promise.all(items.map((item, idx) => {
-      const docId = `help_${idx + 1}`;
-      const docRef = doc(db, "gscan_help_qa", docId);
-      return setDoc(docRef, { id: docId, ...item }, { merge: true });
-    }));
+    const colRef = collection(db, "gscan_help_history");
+    const docRef = await addDoc(colRef, {
+      ...msg,
+      timestamp: serverTimestamp(),
+      createdAtIso: new Date().toISOString(),
+    });
+    return { success: true, docId: docRef.id };
+  } catch (error: any) {
+    console.error("Gagal simpan help chat message:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function fetchHelpChatHistory() {
+  try {
+    const colRef = collection(db, "gscan_help_history");
+    const snap = await getDocs(colRef);
+    if (!snap.empty) {
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as HelpChatMessage));
+      items.sort((a, b) => {
+        const ta = a.createdAtIso || "";
+        const tb = b.createdAtIso || "";
+        return ta.localeCompare(tb);
+      });
+      return { success: true, data: items };
+    }
+    return { success: true, data: [] };
+  } catch (error: any) {
+    console.warn("Gagal load gscan_help_history:", error);
+    return { success: false, data: [], error: error.message };
+  }
+}
+
+export async function clearHelpChatHistory() {
+  try {
+    const colRef = collection(db, "gscan_help_history");
+    const snap = await getDocs(colRef);
+    await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
     return { success: true };
   } catch (error: any) {
-    console.error("Gagal seed gscan_help_qa:", error);
+    console.error("Gagal hapus gscan_help_history:", error);
     return { success: false, error: error.message };
+  }
+}
+
+// -------------------------------------------------------------
+// 13. COMPLAINTS & FEEDBACK (Collection: gscan_complaints)
+// -------------------------------------------------------------
+export interface ComplaintRecord {
+  id?: string;
+  senderName: string;
+  senderContact?: string;
+  category: string;
+  message: string;
+  district?: string;
+  status?: "baru" | "proses" | "selesai";
+  responseNotes?: string;
+  createdAtIso?: string;
+  timestamp?: any;
+}
+
+export async function saveComplaintToFirestore(complaint: Omit<ComplaintRecord, "id">) {
+  try {
+    const colRef = collection(db, "gscan_complaints");
+    const docRef = await addDoc(colRef, {
+      ...complaint,
+      status: complaint.status || "baru",
+      timestamp: serverTimestamp(),
+      createdAtIso: new Date().toISOString(),
+    });
+    return { success: true, docId: docRef.id };
+  } catch (error: any) {
+    console.error("Gagal simpan komplain:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function fetchComplaintsFromFirestore(): Promise<{ success: boolean; data: ComplaintRecord[] }> {
+  try {
+    const colRef = collection(db, "gscan_complaints");
+    const q = query(colRef, orderBy("createdAtIso", "desc"));
+    const snap = await getDocs(q);
+    const data: ComplaintRecord[] = [];
+    snap.forEach((docSnap) => {
+      data.push({ id: docSnap.id, ...docSnap.data() } as ComplaintRecord);
+    });
+    return { success: true, data };
+  } catch (error: any) {
+    console.error("Gagal ambil komplain:", error);
+    // Fallback without orderBy if index not ready
+    try {
+      const colRef2 = collection(db, "gscan_complaints");
+      const snap2 = await getDocs(colRef2);
+      const data2: ComplaintRecord[] = [];
+      snap2.forEach((docSnap) => {
+        data2.push({ id: docSnap.id, ...docSnap.data() } as ComplaintRecord);
+      });
+      return { success: true, data: data2 };
+    } catch {
+      return { success: false, data: [] };
+    }
+  }
+}
+
+export async function updateComplaintStatusInFirestore(
+  complaintId: string,
+  status: "baru" | "proses" | "selesai",
+  responseNotes?: string
+): Promise<{ success: boolean }> {
+  try {
+    const docRef = doc(db, "gscan_complaints", complaintId);
+    await setDoc(docRef, { status, ...(responseNotes ? { responseNotes } : {}) }, { merge: true });
+    return { success: true };
+  } catch (error: any) {
+    console.error("Gagal update status komplain:", error);
+    return { success: false };
   }
 }
 

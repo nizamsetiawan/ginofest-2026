@@ -49,6 +49,8 @@ import {
   COLLECTIONS
 } from "@/services/firebase-service";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
+import { useAuth } from "@/contexts/AuthContext";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 const SECRET_PIN = "69hagh0d";
 const PIN_LENGTH = 8;
@@ -78,6 +80,7 @@ interface RecipeRecord {
   targetGroup: string;
   composition: string;
   nutritionTarget: string;
+  district?: string;
   source: string;
   link: string;
 }
@@ -111,6 +114,7 @@ export interface NutritionRecord {
   niacin?: number | string;
   vitaminC: number | string;
   bdd: number | string;
+  district?: string;
   source: string;
   link: string;
 }
@@ -131,7 +135,63 @@ export interface DistrictRecord {
 }
 
 export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBackToDashboard }) => {
+  const { user } = useAuth();
+  const isSuperAdmin = user?.role === "super_admin";
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Strict exact matching helper for Table 1 (Komoditas) and Table 5 (Master Wilayah)
+  const isMyExactDistrictRow = useCallback((districtNameOrId?: string): boolean => {
+    if (isSuperAdmin) return true;
+    if (!user || user.role !== "admin_kecamatan" || !user.districtId) return false;
+
+    const myId = user.districtId.toLowerCase().trim();
+    const myName = (user.regionLabel || "").toLowerCase().replace("kec.", "").trim();
+    const target = (districtNameOrId || "").toLowerCase().trim();
+
+    if (myId === "gresik") {
+      return target === "gresik" || target === "gresik kota";
+    }
+
+    if (target === "gresik kota" || target === "gresik") {
+      return myId === "gresik";
+    }
+
+    return target === myId || target === myName || target.includes(myId) || myId.includes(target);
+  }, [isSuperAdmin, user]);
+
+  // Helper for Table 2 (Harga Bahan Pokok SISKAPERBAPO)
+  const canUserEditDistrict = useCallback((districtsText?: string): boolean => {
+    if (isSuperAdmin) return true;
+    if (!user || user.role !== "admin_kecamatan" || !user.districtId) return false;
+
+    const target = (districtsText || "").toLowerCase().trim();
+    const myId = user.districtId.toLowerCase().trim();
+    const myName = (user.regionLabel || "").toLowerCase().replace("kec.", "").trim();
+
+    // If item applies to all 18 Kecamatan or whole kabupaten, allow edit
+    if (
+      !target ||
+      target.includes("18 kecamatan") ||
+      target.includes("semua") ||
+      target.includes("seluruh") ||
+      target.includes("kabupaten") ||
+      target === "gresik"
+    ) {
+      return true;
+    }
+
+    if (myId === "gresik") {
+      return target.includes("gresik kota") || target === "gresik";
+    }
+
+    if (target.includes("gresik kota")) {
+      return myId === "gresik";
+    }
+
+    return target.includes(myId) || target.includes(myName);
+  }, [isSuperAdmin, user]);
+
   const [pinDigits, setPinDigits] = useState<string[]>(Array(PIN_LENGTH).fill(""));
   const [pinError, setPinError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -152,10 +212,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
 
   // Menu & Nutrition & District Search & Filters
   const [menuSearchQuery, setMenuSearchQuery] = useState("");
+  const [menuDistrictFilter, setMenuDistrictFilter] = useState("Semua");
   const [nutritionSearchQuery, setNutritionSearchQuery] = useState("");
+  const [selectedNutritionCategoryFilter, setSelectedNutritionCategoryFilter] = useState("Semua");
+  const [nutritionDistrictFilter, setNutritionDistrictFilter] = useState("Semua");
   const [districtSearchQuery, setDistrictSearchQuery] = useState("");
   const [districtRiskFilter, setDistrictRiskFilter] = useState("Semua");
-  const [selectedNutritionCategoryFilter, setSelectedNutritionCategoryFilter] = useState("Semua");
 
   // Edit & Add Modal State
   const [editingItem, setEditingItem] = useState<{ type: "komoditas" | "harga" | "menu" | "gizi" | "wilayah"; isNew?: boolean; data: any } | null>(null);
@@ -207,7 +269,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
   // Reset page when tab, search, or filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeDatasetTab, commoditySearchQuery, selectedCategoryFilter, priceSearchQuery, priceCategoryFilter, menuSearchQuery, nutritionSearchQuery, districtSearchQuery, districtRiskFilter, pageSize]);
+  }, [activeDatasetTab, commoditySearchQuery, selectedCategoryFilter, priceSearchQuery, priceCategoryFilter, menuSearchQuery, menuDistrictFilter, nutritionSearchQuery, selectedNutritionCategoryFilter, nutritionDistrictFilter, districtSearchQuery, districtRiskFilter, pageSize]);
 
   // Load Saved Master Data from Cloud Firestore on Auth
   useEffect(() => {
@@ -284,19 +346,25 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
   }, [filteredPrices, currentPage, pageSize]);
   const totalPricePages = Math.ceil(filteredPrices.length / pageSize) || 1;
 
-  // Filtered Recipes (Tab 3)
+  // Filtered Recipes (Tab 3) with District & Search
   const filteredRecipes = useMemo(() => {
     return recipes.filter(r => {
+      if (menuDistrictFilter !== "Semua") {
+        const d = (r.district || "Semua 18 Kecamatan").toLowerCase();
+        const f = menuDistrictFilter.toLowerCase();
+        if (!d.includes(f) && !d.includes("semua")) return false;
+      }
       if (!menuSearchQuery) return true;
       const query = menuSearchQuery.toLowerCase();
       return (
         (r.name && r.name.toLowerCase().includes(query)) ||
         (r.targetGroup && r.targetGroup.toLowerCase().includes(query)) ||
         (r.composition && r.composition.toLowerCase().includes(query)) ||
-        (r.nutritionTarget && r.nutritionTarget.toLowerCase().includes(query))
+        (r.nutritionTarget && r.nutritionTarget.toLowerCase().includes(query)) ||
+        (r.district && r.district.toLowerCase().includes(query))
       );
     });
-  }, [recipes, menuSearchQuery]);
+  }, [recipes, menuSearchQuery, menuDistrictFilter]);
 
   const paginatedRecipes = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -320,6 +388,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         if (selectedNutritionCategoryFilter === "Buah-buahan" && n.category !== "Buah-buahan") return false;
       }
 
+      if (nutritionDistrictFilter !== "Semua") {
+        const d = (n.district || "Semua 18 Kecamatan").toLowerCase();
+        const f = nutritionDistrictFilter.toLowerCase();
+        if (!d.includes(f) && !d.includes("semua")) return false;
+      }
+
       if (!nutritionSearchQuery) return true;
       const query = nutritionSearchQuery.toLowerCase();
       return (
@@ -327,10 +401,11 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         (n.code && n.code.toLowerCase().includes(query)) ||
         (n.category && n.category.toLowerCase().includes(query)) ||
         (n.state && n.state.toLowerCase().includes(query)) ||
+        (n.district && n.district.toLowerCase().includes(query)) ||
         (n.source && n.source.toLowerCase().includes(query))
       );
     });
-  }, [nutrition, nutritionSearchQuery, selectedNutritionCategoryFilter]);
+  }, [nutrition, nutritionSearchQuery, selectedNutritionCategoryFilter, nutritionDistrictFilter]);
 
   const paginatedNutrition = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -459,7 +534,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
   };
 
   const verifyPin = (pin: string) => {
-    if (pin === SECRET_PIN) {
+    if (pin === SECRET_PIN || (user?.pin && pin === user.pin)) {
       setIsAuthenticated(true);
       setPinError(false);
     } else {
@@ -672,13 +747,16 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         const uniqueNew = newGeneratedMenus.filter(m => !existingSet.has((m.name || "").toLowerCase().trim()));
         const finalToAdd = uniqueNew.length > 0 ? uniqueNew : newGeneratedMenus;
 
+        const userDistrictLabel = !isSuperAdmin && user?.regionLabel ? user.regionLabel : "Semua 18 Kecamatan";
+
         const preparedNewMenus: RecipeRecord[] = finalToAdd.slice(0, 5).map((item: any, idx: number) => ({
           no: recipes.length + idx + 1,
           name: item.name,
           targetGroup: item.targetGroup || "TK / SD / SMP",
           composition: item.composition,
           nutritionTarget: item.nutritionTarget || "630 Kkal | 26.0g Protein | 5.0mg Fe",
-          source: "Standar Menu BGN RI",
+          district: userDistrictLabel,
+          source: `Standar Menu MBG (${userDistrictLabel})`,
           link: "https://badangizi.go.id"
         }));
 
@@ -1618,7 +1696,28 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f1f5f9]">
-                  {paginatedCommodities.length === 0 ? (
+                  {isLoadingFromFirestore ? (
+                    Array.from({ length: 6 }).map((_, rIdx) => (
+                      <tr key={rIdx} className="divide-x divide-slate-100 animate-pulse">
+                        <td className="py-2.5 px-3 text-center bg-slate-50/50">
+                          <Skeleton className="h-4 w-4 mx-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-28" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <div className="flex gap-1.5">
+                            <Skeleton className="h-6 w-16 rounded-lg" />
+                            <Skeleton className="h-6 w-20 rounded-lg" />
+                            <Skeleton className="h-6 w-14 rounded-lg" />
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          <Skeleton className="h-6 w-12 rounded-lg mx-auto" />
+                        </td>
+                      </tr>
+                    ))
+                  ) : paginatedCommodities.length === 0 ? (
                     <tr>
                       <td colSpan={4} className="py-8 text-center text-[#64748b]">
                         Tidak ditemukan bahan pangan yang sesuai dengan filter atau kata kunci pencarian.
@@ -1668,18 +1767,20 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                             <div className="flex items-center justify-center gap-1.5">
                               <button
                                 onClick={() => setSelectedDistrictModal(d)}
-                                className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors"
+                                className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
                                 title="Lihat semua bahan"
                               >
                                 <Eye className="w-3.5 h-3.5" />
                               </button>
-                              <button
-                                onClick={() => setEditingItem({ type: "komoditas", isNew: false, data: { ...d, itemsString: d.items.join(", ") } })}
-                                className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors"
-                                title="Edit komoditas kecamatan"
-                              >
-                                <Edit2 className="w-3.5 h-3.5" />
-                              </button>
+                              {isMyExactDistrictRow(d.name) && (
+                                <button
+                                  onClick={() => setEditingItem({ type: "komoditas", isNew: false, data: { ...d, itemsString: d.items.join(", ") } })}
+                                  className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                                  title="Edit komoditas kecamatan"
+                                >
+                                  <Edit2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -1844,7 +1945,30 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f1f5f9]">
-                  {paginatedPrices.length === 0 ? (
+                  {isLoadingFromFirestore ? (
+                    Array.from({ length: 6 }).map((_, rIdx) => (
+                      <tr key={rIdx} className="divide-x divide-slate-100 animate-pulse">
+                        <td className="py-2.5 px-3 text-center bg-slate-50/50">
+                          <Skeleton className="h-4 w-4 mx-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-32" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-5 w-20 rounded-lg" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-20 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-28" />
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          <Skeleton className="h-6 w-12 rounded-lg mx-auto" />
+                        </td>
+                      </tr>
+                    ))
+                  ) : paginatedPrices.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="py-8 text-center text-[#64748b]">
                         Tidak ditemukan data harga yang sesuai dengan pencarian atau filter.
@@ -1863,13 +1987,17 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         <td className="py-2.5 px-4 text-right font-black text-[#1a73e8]">{p.price}</td>
                         <td className="py-2.5 px-4 text-[#475569] font-medium">{p.districts}</td>
                         <td className="py-2.5 px-3 text-center">
-                          <button
-                            onClick={() => setEditingItem({ type: "harga", isNew: false, data: { ...p } })}
-                            className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors"
-                            title="Edit harga"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
+                          {canUserEditDistrict(p.districts) ? (
+                            <button
+                              onClick={() => setEditingItem({ type: "harga", isNew: false, data: { ...p } })}
+                              className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                              title="Edit harga pasar"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                          ) : (
+                            <span className="text-[10px] text-slate-400 font-medium select-none">Read-only</span>
+                          )}
                         </td>
                       </tr>
                     ))
@@ -2037,6 +2165,28 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#1a73e8] shadow-2xs"
                   />
                 </div>
+
+                {/* District Filter Dropdown for Menu */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <label className="text-[12px] font-bold text-[#071e49] hidden md:inline">
+                    Filter Wilayah:
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={menuDistrictFilter}
+                      onChange={(e) => setMenuDistrictFilter(e.target.value)}
+                      className="appearance-none pl-3.5 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[12px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                    >
+                      <option value="Semua">Semua Wilayah (18 Kecamatan)</option>
+                      {GRESIK_DISTRICTS.map((d) => (
+                        <option key={d.id} value={d.name}>
+                          Kec. {d.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
               </div>
 
               {/* Table Container */}
@@ -2054,15 +2204,45 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         />
                       </th>
                       <th className="py-2.5 px-3 w-12 text-center border-blue-400">No</th>
-                      <th className="py-2.5 px-4 border-blue-400 w-56 font-bold">Nama Menu Standar</th>
-                      <th className="py-2.5 px-4 border-blue-400 w-36 font-bold">Sasaran</th>
+                      <th className="py-2.5 px-4 border-blue-400 w-52 font-bold">Nama Menu Standar</th>
+                      <th className="py-2.5 px-3 border-blue-400 w-36 font-bold">Wilayah</th>
+                      <th className="py-2.5 px-4 border-blue-400 w-32 font-bold">Sasaran</th>
                       <th className="py-2.5 px-4 border-blue-400 font-bold">Komposisi Bahan Pokok</th>
                       <th className="py-2.5 px-4 border-blue-400 w-52 font-bold">Target Gizi</th>
                       <th className="py-2.5 px-3 text-center border-blue-400 w-24 font-bold">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#f1f5f9]">
-                    {paginatedRecipes.length === 0 ? (
+                    {isLoadingFromFirestore ? (
+                      Array.from({ length: 6 }).map((_, rIdx) => (
+                        <tr key={rIdx} className="divide-x divide-slate-100 animate-pulse">
+                          <td className="py-2.5 px-3 text-center">
+                            <Skeleton className="h-4 w-4 mx-auto rounded" />
+                          </td>
+                          <td className="py-2.5 px-3 text-center bg-slate-50/50">
+                            <Skeleton className="h-4 w-4 mx-auto" />
+                          </td>
+                          <td className="py-2.5 px-4">
+                            <Skeleton className="h-4 w-36" />
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <Skeleton className="h-4 w-20" />
+                          </td>
+                          <td className="py-2.5 px-4">
+                            <Skeleton className="h-5 w-16 rounded-full" />
+                          </td>
+                          <td className="py-2.5 px-4">
+                            <Skeleton className="h-4 w-48" />
+                          </td>
+                          <td className="py-2.5 px-4">
+                            <Skeleton className="h-4 w-32" />
+                          </td>
+                          <td className="py-2.5 px-3 text-center">
+                            <Skeleton className="h-6 w-12 rounded-lg mx-auto" />
+                          </td>
+                        </tr>
+                      ))
+                    ) : paginatedRecipes.length === 0 ? (
                       <tr>
                         <td colSpan={7} className="py-8 text-center text-[#64748b]">
                           Tidak ditemukan menu makanan yang sesuai dengan pencarian.
@@ -2088,8 +2268,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                             </td>
                             <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">{r.no}</td>
                             <td className="py-2.5 px-4 font-bold text-[#071e49]">{r.name}</td>
+                            <td className="py-2.5 px-3">
+                              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-[#1a73e8] text-[10px] font-bold border border-blue-200 block truncate">
+                                {r.district || "Semua 18 Kecamatan"}
+                              </span>
+                            </td>
                             <td className="py-2.5 px-4">
-                              <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-[#1a73e8] text-[11px] font-bold border border-blue-200">
+                              <span className="px-2.5 py-1 rounded-lg bg-slate-50 text-[#071e49] text-[11px] font-bold border border-slate-200">
                                 {r.targetGroup}
                               </span>
                             </td>
@@ -2128,18 +2313,20 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                               <div className="flex items-center justify-center gap-1">
                                 <button
                                   onClick={() => setEditingItem({ type: "menu", isNew: false, data: { ...r } })}
-                                  className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors"
+                                  className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
                                   title="Edit menu"
                                 >
                                   <Edit2 className="w-3.5 h-3.5" />
                                 </button>
-                                <button
-                                  onClick={() => handleDeleteRow("menu", r.no)}
-                                  className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                                  title="Hapus menu ini"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
+                                {isSuperAdmin && (
+                                  <button
+                                    onClick={() => handleDeleteRow("menu", r.no)}
+                                    className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                                    title="Hapus menu ini"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
                               </div>
                             </td>
                           </tr>
@@ -2257,17 +2444,14 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 />
               </div>
 
-              {/* Clean Category Dropdown Filter */}
-              <div className="flex items-center gap-2 shrink-0">
-                <label htmlFor="nutrition-category-select" className="text-[12px] font-bold text-[#071e49] hidden md:inline">
-                  Filter Kelompok:
-                </label>
+              {/* Clean Category & District Dropdown Filters */}
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
                 <div className="relative">
                   <select
                     id="nutrition-category-select"
                     value={selectedNutritionCategoryFilter}
                     onChange={(e) => setSelectedNutritionCategoryFilter(e.target.value)}
-                    className="appearance-none pl-3.5 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[12px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                    className="appearance-none pl-3 pr-7 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[11px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
                   >
                     <option value="Semua">Semua Kelompok</option>
                     <option value="Serealia">Serealia</option>
@@ -2280,7 +2464,23 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     <option value="Sayuran">Sayuran</option>
                     <option value="Buah-buahan">Buah-buahan</option>
                   </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+
+                <div className="relative">
+                  <select
+                    value={nutritionDistrictFilter}
+                    onChange={(e) => setNutritionDistrictFilter(e.target.value)}
+                    className="appearance-none pl-3 pr-7 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[11px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                  >
+                    <option value="Semua">Semua Wilayah (18 Kecamatan)</option>
+                    {GRESIK_DISTRICTS.map((d) => (
+                      <option key={d.id} value={d.name}>
+                        Kec. {d.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -2298,6 +2498,9 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     </th>
                     <th className="py-2.5 px-4 font-bold w-48 bg-[#1a73e8] border-blue-400 cursor-help" title="Nama Bahan Pangan terstandarisasi per 100 gram Bagian yang Dapat Dimakan (BDD)">
                       Nama Bahan (100g)
+                    </th>
+                    <th className="py-2.5 px-3 w-28 bg-[#1a73e8] border-blue-400">
+                      Wilayah
                     </th>
                     <th className="py-2.5 px-3 w-32 bg-[#1a73e8] border-blue-400 cursor-help" title="Kelompok Komoditas Pangan (Serealia, Umbi, Ikan/Seafood, Daging, Telur, Susu, Sayuran, Buah)">
                       Kelompok
@@ -2377,9 +2580,44 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f1f5f9]">
-                  {paginatedNutrition.length === 0 ? (
+                  {isLoadingFromFirestore ? (
+                    Array.from({ length: 6 }).map((_, rIdx) => (
+                      <tr key={rIdx} className="divide-x divide-slate-100 animate-pulse">
+                        <td className="py-2.5 px-3 text-center bg-slate-50/50">
+                          <Skeleton className="h-4 w-4 mx-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-32" />
+                        </td>
+                        <td className="py-2.5 px-3.5">
+                          <Skeleton className="h-5 w-20 rounded-lg" />
+                        </td>
+                        <td className="py-2.5 px-3.5">
+                          <Skeleton className="h-4 w-12 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-3.5">
+                          <Skeleton className="h-4 w-12 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-3.5">
+                          <Skeleton className="h-4 w-12 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-3.5">
+                          <Skeleton className="h-4 w-12 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-3.5">
+                          <Skeleton className="h-4 w-12 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-3.5">
+                          <Skeleton className="h-4 w-12 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          <Skeleton className="h-6 w-12 rounded-lg mx-auto" />
+                        </td>
+                      </tr>
+                    ))
+                  ) : paginatedNutrition.length === 0 ? (
                     <tr>
-                      <td colSpan={26} className="py-8 text-center text-[#64748b]">
+                      <td colSpan={27} className="py-8 text-center text-[#64748b]">
                         Tidak ditemukan data gizi TKPI yang sesuai dengan filter / pencarian.
                       </td>
                     </tr>
@@ -2389,6 +2627,9 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         <td className="py-2 px-3 text-center font-bold text-slate-500 bg-slate-50/50">{n.no}</td>
                         <td className="py-2 px-3 font-mono font-bold text-[#1a73e8]">{n.code}</td>
                         <td className="py-2 px-4 font-bold text-[#071e49]">{n.name}</td>
+                        <td className="py-2 px-3 text-[10px] font-bold text-[#1a73e8]">
+                          {n.district || "Semua 18 Kecamatan"}
+                        </td>
                         <td className="py-2 px-3">
                           <span className="px-2 py-0.5 rounded-lg bg-blue-50 text-[#1a73e8] text-[10px] font-bold border border-blue-200">
                             {n.category || "-"}
@@ -2421,20 +2662,26 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         <td className="py-2 px-2.5 text-center font-bold text-slate-700">{n.bdd ?? 100}%</td>
                         <td className="py-2 px-3 text-center">
                           <div className="flex items-center justify-center gap-1">
-                            <button
-                              onClick={() => setEditingItem({ type: "gizi", isNew: false, data: { ...n } })}
-                              className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors"
-                              title="Edit data gizi"
-                            >
-                              <Edit2 className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteRow("gizi", n.no)}
-                              className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                              title="Hapus data gizi ini"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
+                            {canUserEditDistrict(n.district) ? (
+                              <button
+                                onClick={() => setEditingItem({ type: "gizi", isNew: false, data: { ...n } })}
+                                className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                                title="Edit data gizi"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+                            ) : (
+                              <span className="text-[10px] text-slate-400 font-medium select-none">Read-only</span>
+                            )}
+                            {isSuperAdmin && (
+                              <button
+                                onClick={() => handleDeleteRow("gizi", n.no)}
+                                className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                                title="Hapus data gizi ini"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -2584,7 +2831,39 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f1f5f9]">
-                  {paginatedDistricts.length === 0 ? (
+                  {isLoadingFromFirestore ? (
+                    Array.from({ length: 6 }).map((_, rIdx) => (
+                      <tr key={rIdx} className="divide-x divide-slate-100 animate-pulse">
+                        <td className="py-2.5 px-3 text-center bg-slate-50/50">
+                          <Skeleton className="h-4 w-4 mx-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-16 font-mono" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-28" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-16 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-16 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-16 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-4 w-16 ml-auto" />
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <Skeleton className="h-5 w-20 rounded-full mx-auto" />
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          <Skeleton className="h-6 w-12 rounded-lg mx-auto" />
+                        </td>
+                      </tr>
+                    ))
+                  ) : paginatedDistricts.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="py-8 text-center text-[#64748b]">
                         Tidak ditemukan data wilayah yang sesuai dengan filter atau kata kunci pencarian.
@@ -2616,13 +2895,17 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                           </span>
                         </td>
                         <td className="py-2.5 px-3 text-center">
-                          <button
-                            onClick={() => setEditingItem({ type: "wilayah", isNew: false, data: { ...d } })}
-                            className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
-                            title="Edit Sasaran Siswa & Wilayah"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
+                          {isMyExactDistrictRow(d.name) ? (
+                            <button
+                              onClick={() => setEditingItem({ type: "wilayah", isNew: false, data: { ...d } })}
+                              className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                              title="Edit Sasaran Siswa & Wilayah"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                          ) : (
+                            <span className="text-[10px] text-slate-400 font-medium select-none">Read-only</span>
+                          )}
                         </td>
                       </tr>
                     ))
@@ -2944,6 +3227,24 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                       <span>{geminiReasoning}</span>
                     </p>
                   )}
+                </div>
+                <div>
+                  <label className="font-bold text-[#071e49] block mb-1">Cakupan Wilayah / Kecamatan:</label>
+                  <div className="relative">
+                    <select
+                      value={editingItem.data.district || (!isSuperAdmin && user?.regionLabel ? user.regionLabel : "Semua 18 Kecamatan")}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, district: e.target.value } })}
+                      className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] text-[12px] focus:outline-none focus:border-[#1a73e8] bg-white appearance-none cursor-pointer"
+                    >
+                      <option value="Semua 18 Kecamatan">Semua 18 Kecamatan</option>
+                      {GRESIK_DISTRICTS.map((d) => (
+                        <option key={d.id} value={`Kec. ${d.name}`}>
+                          Kec. {d.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
                 </div>
               </div>
             )}

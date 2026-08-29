@@ -14,10 +14,52 @@ import {
   Legend 
 } from "recharts";
 import { MONTHLY_TRENDS } from "@/data/monthly-trends";
-import { TrendingDown, LineChart as LineChartIcon, Coins, Sparkles } from "lucide-react";
+import { TrendingDown, LineChart as LineChartIcon, Coins, Sparkles, Download } from "lucide-react";
 
 export const AnalyticsTrends: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"stunting" | "budget">("stunting");
+
+  const downloadChartAsPng = () => {
+    const container = document.getElementById("chart-analytics-trends");
+    if (!container) return;
+    const svgElement = container.querySelector("svg");
+    if (!svgElement) return;
+
+    try {
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+      const URLObject = window.URL || window.webkitURL || window;
+      const blobURL = URLObject.createObjectURL(svgBlob);
+
+      const image = new window.Image();
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        const scale = 2;
+        const width = svgElement.clientWidth || 800;
+        const height = svgElement.clientHeight || 350;
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        const context = canvas.getContext("2d");
+        if (context) {
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.scale(scale, scale);
+          context.drawImage(image, 0, 0, width, height);
+        }
+        const png = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.download = `Tren_Efektivitas_MBG_${activeTab}.png`;
+        downloadLink.href = png;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URLObject.revokeObjectURL(blobURL);
+      };
+      image.src = blobURL;
+    } catch (err) {
+      console.error("Gagal unduh gambar grafik:", err);
+    }
+  };
 
   return (
     <div className="app-card p-5 shadow-subtle">
@@ -37,35 +79,46 @@ export const AnalyticsTrends: React.FC = () => {
           </p>
         </div>
 
-        {/* Tab switcher */}
-        <div className="inline-flex p-1 rounded-xl bg-[#f1f5f9] border border-[#e2e8f0] text-[12px] font-semibold">
+        {/* Controls: Tab switcher & Download button */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="inline-flex p-1 rounded-xl bg-[#f1f5f9] border border-[#e2e8f0] text-[12px] font-semibold">
+            <button
+              onClick={() => setActiveTab("stunting")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
+                activeTab === "stunting"
+                  ? "bg-white text-[#222222] shadow-xs"
+                  : "text-[#64748b] hover:text-[#222222]"
+              }`}
+            >
+              <TrendingDown className="w-3.5 h-3.5 text-[#2bb34d]" />
+              <span>Tren Stunting (%)</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("budget")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
+                activeTab === "budget"
+                  ? "bg-white text-[#222222] shadow-xs"
+                  : "text-[#64748b] hover:text-[#222222]"
+              }`}
+            >
+              <Coins className="w-3.5 h-3.5 text-[#f68a22]" />
+              <span>Efisiensi APBD (Rp M)</span>
+            </button>
+          </div>
+
           <button
-            onClick={() => setActiveTab("stunting")}
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
-              activeTab === "stunting"
-                ? "bg-white text-[#222222] shadow-xs"
-                : "text-[#64748b] hover:text-[#222222]"
-            }`}
+            onClick={downloadChartAsPng}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#071e49] text-[11px] font-bold transition-all cursor-pointer shadow-2xs"
+            title="Unduh Grafik sebagai Gambar (PNG)"
           >
-            <TrendingDown className="w-3.5 h-3.5 text-[#2bb34d]" />
-            <span>Tren Stunting (%)</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("budget")}
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
-              activeTab === "budget"
-                ? "bg-white text-[#222222] shadow-xs"
-                : "text-[#64748b] hover:text-[#222222]"
-            }`}
-          >
-            <Coins className="w-3.5 h-3.5 text-[#f68a22]" />
-            <span>Efisiensi APBD (Rp M)</span>
+            <Download className="w-3.5 h-3.5 text-[#1a73e8]" />
+            <span>Unduh PNG</span>
           </button>
         </div>
       </div>
 
       {/* Chart Canvas */}
-      <div className="w-full h-72">
+      <div id="chart-analytics-trends" className="w-full h-72">
         <ResponsiveContainer width="100%" height="100%">
           {activeTab === "stunting" ? (
             <AreaChart

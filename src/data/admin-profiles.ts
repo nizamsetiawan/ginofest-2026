@@ -12,12 +12,12 @@ export interface AdminProfile {
 export const ADMIN_PROFILES: AdminProfile[] = [
   {
     id: "admin-dinkes",
-    name: "Dr. Hendra Pratama",
+    name: "Nizam Setiawan",
     districtId: "all",
     regionLabel: "Kabupaten Gresik",
-    email: "admin.dinkes@gresikkab.go.id",
+    email: "nizamsetiawan15@gmail.com",
     role: "Kabupaten",
-    initials: "HP",
+    initials: "NS",
     avatarBg: "#071e49",
   },
   {

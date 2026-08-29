@@ -102,7 +102,7 @@ export const ExportReportModal: React.FC<ExportReportModalProps> = ({
                 </div>
               </div>
               <p className="text-[10px] text-slate-400">
-                Jl. Dr. Wahidin Sudirohusodo No. 245, Gresik, Jawa Timur • Sistem GScan AI (2026)
+                Jl. Dr. Wahidin Sudirohusodo No. 245, Gresik, Jawa Timur • Sistem Kcal AI (2026)
               </p>
             </div>
 
@@ -192,12 +192,12 @@ export const ExportReportModal: React.FC<ExportReportModalProps> = ({
 
               <div>
                 <p className="text-[11px] text-slate-500">Gresik, {new Date().toLocaleDateString("id-ID")}</p>
-                <p className="font-bold text-slate-900 mt-1">Tim Ahli Gizi & AI GScan</p>
+                <p className="font-bold text-slate-900 mt-1">Tim Ahli Gizi & AI Kcal</p>
                 <div className="h-12 flex items-center justify-center text-emerald-600 font-mono text-[10px]">
                   ✓ Verified by Gemini AI Engine
                 </div>
-                <p className="font-semibold text-slate-800">Koordinator GScan Pemkab</p>
-                <p className="text-[10px] text-slate-400">ID Dokumen: GSK-2026-MBG-094</p>
+                <p className="font-semibold text-slate-800">Koordinator Kcal Pemkab</p>
+                <p className="text-[10px] text-slate-400">ID Dokumen: KCAL-2026-MBG-094</p>
               </div>
             </div>
           </div>
@@ -205,7 +205,7 @@ export const ExportReportModal: React.FC<ExportReportModalProps> = ({
 
         {downloadSuccess && (
           <div className="px-6 py-2.5 bg-emerald-600 text-white text-xs font-semibold text-center animate-in slide-in-from-bottom">
-            ✓ Berkas Laporan Resmi GScan Berhasil Diunduh (PDF Ready)!
+            ✓ Berkas Laporan Resmi Kcal Berhasil Diunduh (PDF Ready)!
           </div>
         )}
       </div>

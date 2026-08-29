@@ -1,6 +1,6 @@
 export const SITE_CONFIG = {
-  appName: "GScan AI",
-  fullName: "Gresik Growth & Nutrition Scan AI",
+  appName: "Kcal AI",
+  fullName: "Kcal AI • Nutrition & Growth Platform",
   tagline: "Dashboard Terpadu Pemkab Gresik untuk Optimalisasi MBG & Percepatan Penurunan Stunting",
   regency: "Kabupaten Gresik",
   province: "Jawa Timur",

@@ -28,11 +28,13 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         <div className="flex items-center gap-6">
           {/* Logo */}
           <div className="flex items-center gap-2 cursor-pointer">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-tr from-[#d1b06c] to-[#92d05d] text-[#071e49] font-black text-sm tracking-wider">
-              G
-            </div>
+            <img
+              src="/logo_app.svg"
+              alt="Kcal Logo"
+              className="w-8 h-8 rounded-lg"
+            />
             <div className="flex items-baseline gap-1">
-              <span className="font-extrabold text-[16px] text-white tracking-tight">GScan</span>
+              <span className="font-extrabold text-[16px] text-white tracking-tight">Kcal</span>
               <span className="text-[#92d05d] font-bold text-[12px]">MBG</span>
             </div>
           </div>

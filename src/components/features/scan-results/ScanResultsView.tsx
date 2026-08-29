@@ -6,6 +6,8 @@ import {
   MULTI_YEAR_TREND_DATA,
   DistrictStuntingYearRecord 
 } from "@/data/gresik-official-stunting";
+import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { 
   ResponsiveContainer, 
   LineChart, 
@@ -26,7 +28,8 @@ import {
   CheckCircle2,
   RefreshCw,
   Calendar,
-  Building2
+  Building2,
+  Download
 } from "lucide-react";
 
 interface ScanResultsViewProps {
@@ -241,12 +244,55 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
     </div>
   );
 
+  // Helper to download any Recharts container as crisp PNG image
+  const downloadChartAsPng = (containerId: string, filename: string) => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const svgElement = container.querySelector("svg");
+    if (!svgElement) return;
+
+    try {
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+      const URLObject = window.URL || window.webkitURL || window;
+      const blobURL = URLObject.createObjectURL(svgBlob);
+
+      const image = new window.Image();
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        const scale = 2; // High DPI crisp retina quality
+        const width = svgElement.clientWidth || 800;
+        const height = svgElement.clientHeight || 350;
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        const context = canvas.getContext("2d");
+        if (context) {
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.scale(scale, scale);
+          context.drawImage(image, 0, 0, width, height);
+        }
+        const png = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.download = `${filename}.png`;
+        downloadLink.href = png;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URLObject.revokeObjectURL(blobURL);
+      };
+      image.src = blobURL;
+    } catch (err) {
+      console.error("Gagal mengunduh gambar grafik:", err);
+    }
+  };
+
   // Reusable Line & Bar Charts
   const renderCharts = () => (
     <div className="space-y-6">
       {/* 1. Multi-Year Trend Chart (2022 - 2026) */}
       <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-2 border-b border-slate-100">
           <div>
             <h2 className="text-[16px] font-black text-[#071e49]">
               Tren Kasus Stunting Kabupaten Gresik (2022 - 2026)
@@ -255,9 +301,18 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
               Perbandingan tren tahunan balita stunting, sembuh, dan lulus
             </p>
           </div>
+
+          <button
+            onClick={() => downloadChartAsPng("chart-trend-stunting", `Grafik_Tren_Stunting_Gresik_2022_2026`)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#071e49] text-[11px] font-bold transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
+            title="Unduh Grafik sebagai Gambar (PNG)"
+          >
+            <Download className="w-3.5 h-3.5 text-[#1a73e8]" />
+            <span>Unduh PNG</span>
+          </button>
         </div>
 
-        <div className="w-full h-72 min-h-[280px]">
+        <div id="chart-trend-stunting" className="w-full h-72 min-h-[280px]">
           {isMounted ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={MULTI_YEAR_TREND_DATA} margin={{ top: 10, right: 30, left: 10, bottom: 10 }}>
@@ -302,7 +357,7 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
 
       {/* 2. Bar Chart Per-Kecamatan (Tahun Terpilih) */}
       <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-2 border-b border-slate-100">
           <div>
             <h2 className="text-[16px] font-black text-[#071e49]">
               Distribusi 18 Kecamatan Tahun {selectedYear}
@@ -311,9 +366,18 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
               Perbandingan Balita Stunting, Sembuh, dan Lulus per Kecamatan
             </p>
           </div>
+
+          <button
+            onClick={() => downloadChartAsPng("chart-district-distribution", `Grafik_Distribusi_Kecamatan_${selectedYear}`)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#071e49] text-[11px] font-bold transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
+            title="Unduh Grafik sebagai Gambar (PNG)"
+          >
+            <Download className="w-3.5 h-3.5 text-[#1a73e8]" />
+            <span>Unduh PNG</span>
+          </button>
         </div>
 
-        <div className="w-full h-80 min-h-[320px]">
+        <div id="chart-district-distribution" className="w-full h-80 min-h-[320px]">
           {isMounted && !isLoadingApi ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={activeRecords} margin={{ top: 10, right: 20, left: 0, bottom: 25 }}>
@@ -335,9 +399,21 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-[#1a73e8] text-[13px] gap-2 animate-pulse">
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              <span>Memuat data grafik...</span>
+            <div className="w-full h-full flex flex-col justify-end p-6 gap-3 animate-pulse bg-slate-50/50 rounded-2xl">
+              <div className="flex items-end justify-between gap-3 h-52">
+                {Array.from({ length: 14 }).map((_, i) => (
+                  <div key={i} className="flex-1 flex items-end gap-1 h-full">
+                    <Skeleton className="w-full rounded-t-sm" style={{ height: `${25 + (i * 9) % 70}%` }} />
+                    <Skeleton className="w-full rounded-t-sm bg-blue-200/80" style={{ height: `${35 + (i * 13) % 60}%` }} />
+                    <Skeleton className="w-full rounded-t-sm bg-emerald-200/80" style={{ height: `${20 + (i * 11) % 65}%` }} />
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between gap-2 border-t border-slate-200 pt-2">
+                {Array.from({ length: 14 }).map((_, i) => (
+                  <Skeleton key={i} className="h-3 w-7" />
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -382,7 +458,33 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
             </thead>
 
             <tbody className="divide-y divide-[#f1f5f9]">
-              {filteredRecords.length > 0 ? (
+              {isLoadingApi ? (
+                Array.from({ length: 6 }).map((_, rIdx) => (
+                  <tr key={rIdx} className="divide-x divide-slate-100 animate-pulse">
+                    <td className="py-2.5 px-3 text-center bg-slate-50/50">
+                      <Skeleton className="h-4 w-4 mx-auto" />
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <Skeleton className="h-4 w-20" />
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <Skeleton className="h-4 w-28" />
+                    </td>
+                    <td className="py-2.5 px-4 text-center">
+                      <Skeleton className="h-4 w-12 mx-auto" />
+                    </td>
+                    <td className="py-2.5 px-4 text-center">
+                      <Skeleton className="h-4 w-12 mx-auto" />
+                    </td>
+                    <td className="py-2.5 px-4 text-center">
+                      <Skeleton className="h-4 w-12 mx-auto" />
+                    </td>
+                    <td className="py-2.5 px-4 text-center">
+                      <Skeleton className="h-5 w-24 rounded-full mx-auto" />
+                    </td>
+                  </tr>
+                ))
+              ) : filteredRecords.length > 0 ? (
                 filteredRecords.map((row, idx) => (
                   <tr 
                     key={row.kodeWilayah || idx}
@@ -418,7 +520,7 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
               ) : (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-[#64748b]">
-                    {isLoadingApi ? "Memuat data..." : "Tidak ada kecamatan yang sesuai dengan pencarian"}
+                    Tidak ada kecamatan yang sesuai dengan pencarian
                   </td>
                 </tr>
               )}

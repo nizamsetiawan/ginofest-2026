@@ -55,8 +55,12 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between py-3.5 gap-3">
           {/* Brand & Identity */}
           <div className="flex items-center gap-3">
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-[#f68a22] to-[#f79638] shadow-sm text-white font-extrabold text-lg tracking-wider">
-              <span>G</span>
+            <div className="relative">
+              <img
+                src="/logo_app.svg"
+                alt="Kcal Logo"
+                className="w-10 h-10 rounded-xl shadow-sm"
+              />
               <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1a73e8] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1a73e8] ring-2 ring-white"></span>
@@ -66,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-[17px] font-extrabold text-[#222222] tracking-tight">
-                  GScan <span className="text-[#f68a22] font-bold">AI</span>
+                  Kcal <span className="text-[#f68a22] font-bold">AI</span>
                 </h1>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-[#ffe6c1] text-[#b56114] border border-[#fde2bb]">
                   <ShieldCheck className="w-3 h-3 text-[#f68a22]" />

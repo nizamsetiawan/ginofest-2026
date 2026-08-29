@@ -19,7 +19,8 @@ import {
   Info,
   Clock,
   Trash2,
-  Loader2
+  Loader2,
+  Lock
 } from "lucide-react";
 import { GRESIK_DISTRICTS, DistrictData } from "@/data/gresik-districts";
 import { 
@@ -28,6 +29,7 @@ import {
   deleteMenuPlanFromFirestore,
   fetchDistrictsFromFirestore
 } from "@/services/firebase-service";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MenuPlannerAIProps {
   selectedDistrict: string;
@@ -102,8 +104,19 @@ function getWorkdaysForMonth(year: number, month: number, includeSaturday: boole
 }
 
 export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }) => {
+  const { user } = useAuth();
+  const isKecamatanAdmin = user?.role === "admin_kecamatan" && user.districtId !== "all";
+  const defaultDistrict = isKecamatanAdmin ? user.districtId : (selectedDistrict || "kebomas");
+
   const [hasGenerated, setHasGenerated] = useState<boolean>(false);
-  const [targetDistrictId, setTargetDistrictId] = useState<string>(selectedDistrict || "kebomas");
+  const [targetDistrictId, setTargetDistrictId] = useState<string>(defaultDistrict);
+
+  // Sync if user context changes
+  useEffect(() => {
+    if (isKecamatanAdmin && user?.districtId) {
+      setTargetDistrictId(user.districtId);
+    }
+  }, [isKecamatanAdmin, user?.districtId]);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("2026-8");
   const [includeSaturday, setIncludeSaturday] = useState<boolean>(false);
   const [selectedWeek, setSelectedWeek] = useState<number>(1);
@@ -567,19 +580,34 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               </h1>
 
               {/* Filter Kecamatan */}
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-white border border-[#cbd5e1] text-[12px] font-bold text-[#071e49] shadow-2xs">
-                <MapPin className="w-3.5 h-3.5 text-[#1a73e8]" />
-                <select
-                  value={targetDistrictId}
-                  onChange={(e) => setTargetDistrictId(e.target.value)}
-                  className="bg-transparent focus:outline-none cursor-pointer font-bold"
-                >
-                  {GRESIK_DISTRICTS.map((d) => (
-                    <option key={d.id} value={d.id}>
-                      Kec. {d.name}
-                    </option>
-                  ))}
-                </select>
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border text-[12px] font-bold shadow-2xs ${
+                isKecamatanAdmin
+                  ? "bg-slate-50 border-blue-200 text-[#071e49]"
+                  : "bg-white border-[#cbd5e1] text-[#071e49]"
+              }`}>
+                {isKecamatanAdmin ? (
+                  <Lock className="w-3.5 h-3.5 text-[#1a73e8]" />
+                ) : (
+                  <MapPin className="w-3.5 h-3.5 text-[#1a73e8]" />
+                )}
+                {isKecamatanAdmin ? (
+                  <span className="font-bold text-[#1a73e8]">
+                    Kec. {GRESIK_DISTRICTS.find((d) => d.id === targetDistrictId)?.name || user?.regionLabel}
+                    <span className="ml-1 text-[10px] text-slate-500 font-medium">(Terkunci Wilayah Anda)</span>
+                  </span>
+                ) : (
+                  <select
+                    value={targetDistrictId}
+                    onChange={(e) => setTargetDistrictId(e.target.value)}
+                    className="bg-transparent focus:outline-none cursor-pointer font-bold"
+                  >
+                    {GRESIK_DISTRICTS.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        Kec. {d.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
 
               {/* Filter Periode Bulan & Tahun */}
