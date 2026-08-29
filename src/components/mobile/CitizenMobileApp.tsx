@@ -319,30 +319,32 @@ export const CitizenMobileApp: React.FC = () => {
     }
   };
 
-  // Handle Google Login Simulation with Cloud Firestore Sync
+  // Handle Google Login Simulation with Cloud Firestore Sync (Tanpa wajib pilih kecamatan)
   const handleGoogleLogin = async () => {
-    if (!loginDistrict) {
-      setAuthError("Silakan pilih kecamatan domisili Anda terlebih dahulu sebelum masuk dengan Google");
-      return;
-    }
+    setAuthError("");
     setIsSubmittingAuth(true);
-    const res = await loginCitizenFromFirestore("masyarakat.gresik@gmail.com", "google_oauth_pass", loginDistrict);
+
+    const defaultDistrict = loginDistrict || "Gresik";
+    const googleUserEmail = "warga.gresik@gmail.com";
+    const googleUserName = "Warga Gresik (Google)";
+
+    const res = await loginCitizenFromFirestore(googleUserEmail, "google_oauth_pass", defaultDistrict);
     setIsSubmittingAuth(false);
 
     if (res.success && res.user) {
       setCitizenUser({
         ...res.user,
-        name: "Masyarakat Gresik",
-        email: "masyarakat.gresik@gmail.com",
-        district: loginDistrict,
+        name: res.user.name || googleUserName,
+        email: googleUserEmail,
+        district: res.user.district || defaultDistrict,
       });
       setCurrentScreen("main");
     } else {
       setCitizenUser({
-        id: "usr_" + Date.now(),
-        name: "Masyarakat Gresik",
-        email: "masyarakat.gresik@gmail.com",
-        district: loginDistrict,
+        id: "usr_google_" + Date.now(),
+        name: googleUserName,
+        email: googleUserEmail,
+        district: defaultDistrict,
       });
       setCurrentScreen("main");
     }
