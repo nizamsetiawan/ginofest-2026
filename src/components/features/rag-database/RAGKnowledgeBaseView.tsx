@@ -2217,37 +2217,91 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             {/* Complete Horizontal Scrollable Table Container with Fixed Sticky Header */}
             <div className="overflow-x-auto overflow-y-auto max-h-[480px] rounded-xl border border-[#cbd5e1] shadow-xs">
               <table className="w-full text-left text-[11px] border-collapse bg-white whitespace-nowrap">
-                <thead className="sticky top-0 z-20 shadow-md text-white">
+                <thead className="sticky top-0 z-20 shadow-md text-white select-none">
                   <tr className="bg-[#1a73e8] font-bold divide-x divide-blue-400">
-                    <th className="py-2.5 px-3 text-center w-12 bg-[#1a73e8] border-blue-400">No</th>
-                    <th className="py-2.5 px-3 font-mono font-bold w-24 bg-[#1a73e8] border-blue-400">Kode</th>
-                    <th className="py-2.5 px-4 font-bold w-48 bg-[#1a73e8] border-blue-400">Nama Bahan (100g)</th>
-                    <th className="py-2.5 px-3 w-32 bg-[#1a73e8] border-blue-400">Kelompok</th>
-                    <th className="py-2.5 px-2.5 text-center w-20 bg-[#1a73e8] border-blue-400">Bentuk</th>
+                    <th className="py-2.5 px-3 text-center w-12 bg-[#1a73e8] border-blue-400 cursor-help" title="Nomor urut data bahan pangan TKPI">
+                      No
+                    </th>
+                    <th className="py-2.5 px-3 font-mono font-bold w-24 bg-[#1a73e8] border-blue-400 cursor-help" title="Kode Unik Resmi Bahan Pangan dalam Tabel Komposisi Pangan Indonesia (TKPI 2019 Kemenkes RI)">
+                      Kode
+                    </th>
+                    <th className="py-2.5 px-4 font-bold w-48 bg-[#1a73e8] border-blue-400 cursor-help" title="Nama Bahan Pangan terstandarisasi per 100 gram Bagian yang Dapat Dimakan (BDD)">
+                      Nama Bahan (100g)
+                    </th>
+                    <th className="py-2.5 px-3 w-32 bg-[#1a73e8] border-blue-400 cursor-help" title="Kelompok Komoditas Pangan (Serealia, Umbi, Ikan/Seafood, Daging, Telur, Susu, Sayuran, Buah)">
+                      Kelompok
+                    </th>
+                    <th className="py-2.5 px-2.5 text-center w-20 bg-[#1a73e8] border-blue-400 cursor-help" title="Bentuk Fisik Bahan Pangan: Mentah (Segar) atau Olahan">
+                      Bentuk
+                    </th>
+
                     {/* Makronutrisi Group */}
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500">Air (g)</th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500">Energi (Kal)</th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500">Protein (g)</th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500">Lemak (g)</th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500">KH (g)</th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500">Serat (g)</th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500">Abu (g)</th>
+                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Kadar Air (Moisture) dalam gram (g) per 100g BDD — Menentukan kesegaran dan kepadatan nutrisi bahan makanan">
+                      Air (g)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Energi / Kalori Total dalam Kkal per 100g BDD — Sumber tenaga utama untuk metabolisme & aktivitas fisik harian anak">
+                      Energi (Kal)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Protein Total dalam gram (g) per 100g BDD — Zat pembangun sel, otot, dan pertumbuhan linear anak (Kunci Pencegahan Stunting)">
+                      Protein (g)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Lemak Total dalam gram (g) per 100g BDD — Sumber asam lemak esensial dan pelarut vitamin A, D, E, K">
+                      Lemak (g)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Karbohidrat (KH) Total dalam gram (g) per 100g BDD — Sumber glukosa cepat untuk energi harian dan fungsi kognitif otak">
+                      KH (g)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Serat Pangan (Dietary Fiber) dalam gram (g) per 100g BDD — Menjaga kesehatan saluran cerna dan mikrobioma usus anak">
+                      Serat (g)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Kadar Abu (Ash) dalam gram (g) per 100g BDD — Total kandungan mineral anorganik murni dalam bahan pangan">
+                      Abu (g)
+                    </th>
+
                     {/* Mineral Group */}
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500">Ca (mg)</th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500">P (mg)</th>
-                    <th className="py-2.5 px-3 text-right bg-amber-600 border-amber-500 font-black">Fe (mg)</th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500">Na (mg)</th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500">K (mg)</th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500">Zn (mg)</th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500">Cu (mg)</th>
+                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Kalsium (Calcium / Ca) dalam miligram (mg) per 100g BDD — Pembentukan struktur tulang dan gigi yang kuat, mencegah gagal tumbuh">
+                      Ca (mg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Fosfor (Phosphorus / P) dalam miligram (mg) per 100g BDD — Bekerja sinergis dengan kalsium untuk kepadatan tulang dan membran sel">
+                      P (mg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-amber-600 border-amber-500 font-black cursor-help" title="Zat Besi (Iron / Fe) dalam miligram (mg) per 100g BDD — Pembentukan hemoglobin darah, mencegah anemia defisiensi besi & stunting kognitif">
+                      Fe (mg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Natrium (Sodium / Na) dalam miligram (mg) per 100g BDD — Elektrolit pengatur keseimbangan cairan tubuh dan transmisi impuls saraf">
+                      Na (mg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Kalium (Potassium / K) dalam miligram (mg) per 100g BDD — Elektrolit penting untuk fungsi jantung, kontraksi otot, dan tekanan darah">
+                      K (mg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Seng (Zinc / Zn) dalam miligram (mg) per 100g BDD — Kofaktor enzim imunitas, perbaikan jaringan sel, dan pemacu pertumbuhan tinggi badan">
+                      Zn (mg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Tembaga (Copper / Cu) dalam miligram (mg) per 100g BDD — Mendukung penyerapan zat besi dan pembentukan sel darah merah">
+                      Cu (mg)
+                    </th>
+
                     {/* Vitamin Group */}
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500">Vit. A (mcg)</th>
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500">β-Karoten (mcg)</th>
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500">B1 (mg)</th>
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500">B2 (mg)</th>
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500">Vit. C (mg)</th>
+                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Vitamin A (Retinol) dalam mikrogram (mcg) per 100g BDD — Menjaga kesehatan penglihatan, epitel, dan sistem kekebalan tubuh">
+                      Vit. A (mcg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Beta-Karoten (β-Carotene) dalam mikrogram (mcg) per 100g BDD — Provitamin A alami dan antioksidan pelindung kerusakan sel">
+                      β-Karoten (mcg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Tiamin (Vitamin B1) dalam miligram (mg) per 100g BDD — Mengubah karbohidrat menjadi energi dan menjaga kesehatan fungsi saraf">
+                      B1 (mg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Riboflavin (Vitamin B2) dalam miligram (mg) per 100g BDD — Membantu produksi energi seluler dan kesehatan kulit/mata">
+                      B2 (mg)
+                    </th>
+                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Vitamin C (Asam Askorbat) dalam miligram (mg) per 100g BDD — Antioksidan kuat dan peningkat penyerapan zat besi (Fe) dalam tubuh">
+                      Vit. C (mg)
+                    </th>
+
                     {/* Spesifikasi */}
-                    <th className="py-2.5 px-2.5 text-center w-16 bg-[#1a73e8] border-blue-400">% BDD</th>
+                    <th className="py-2.5 px-2.5 text-center w-16 bg-[#1a73e8] border-blue-400 cursor-help" title="Bagian yang Dapat Dimakan (Edible Portion / BDD) — Persentase bagian bersih yang bisa dimakan setelah dibersihkan dari tulang/kulit/sisik (misal: 100% untuk beras/daging tanpa tulang, 80% untuk bandeng, 58% untuk ayam utuh)">
+                      % BDD
+                    </th>
                     <th className="py-2.5 px-3 text-center w-20 bg-[#1a73e8] border-blue-400">Aksi</th>
                   </tr>
                 </thead>
