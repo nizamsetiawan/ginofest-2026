@@ -32,6 +32,14 @@ body {
   overscroll-behavior-y: none;
 }
 
+/* Safe area padding utilities for iOS Notch and Home Indicator */
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 8px);
+}
+.pb-safe-nav {
+  padding-bottom: max(env(safe-area-inset-bottom, 12px), 16px);
+}
+
 /* Prevent double-tap zoom on buttons and interactive elements */
 button, input, select, textarea, a {
   touch-action: manipulation;
