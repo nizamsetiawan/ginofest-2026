@@ -41,7 +41,8 @@ import {
   registerCitizenToFirestore,
   loginCitizenFromFirestore,
   resetCitizenPasswordInFirestore,
-  signInWithGoogleFirebase
+  signInWithGoogleFirebase,
+  checkGoogleRedirectResult
 } from "@/services/firebase-service";
 
 type AppScreen = "splash" | "login" | "register" | "forgot_password" | "main";
@@ -62,8 +63,19 @@ export const CitizenMobileApp: React.FC = () => {
     photoURL?: string;
   } | null>(null);
 
-  // ═══ RESTORE SCREEN & SESSION ON REFRESH (Stay on current screen) ═══
+  // ═══ RESTORE SCREEN, SESSION, & GOOGLE REDIRECT ON MOUNT ═══
   useEffect(() => {
+    // 1. Check if returning from Google OAuth Redirect
+    checkGoogleRedirectResult()
+      .then((res) => {
+        if (res && res.success && res.user) {
+          setCitizenUser(res.user);
+          setCurrentScreen("main");
+        }
+      })
+      .catch(() => {});
+
+    // 2. Restore saved session
     try {
       const savedUserStr = localStorage.getItem("kcal_active_citizen_user");
       if (savedUserStr) {
