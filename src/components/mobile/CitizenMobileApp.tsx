@@ -920,9 +920,9 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 3. SCREEN: REGISTER (Clean & Compact Form)               */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "register" && (
-          <div className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200">
+          <div className="flex-1 bg-white flex flex-col px-5 pt-4 pb-6 overflow-y-auto animate-in fade-in duration-200">
             {/* Top Navigation & Flag */}
-            <div className="flex items-center justify-between pb-1">
+            <div className="flex items-center justify-between pb-2 mb-1">
               <button
                 type="button"
                 onClick={() => {
@@ -930,7 +930,7 @@ export const CitizenMobileApp: React.FC = () => {
                   setFieldErrors({});
                   setCurrentScreen("login");
                 }}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-500 hover:text-[#071e49] cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-600 hover:text-[#071e49] transition-all cursor-pointer shadow-2xs"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Kembali</span>
@@ -1161,7 +1161,7 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 4. SCREEN: ATUR ULANG KATA SANDI (3-Step OTP Verification)*/}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "forgot_password" && (
-          <div className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200 relative">
+          <div className="flex-1 bg-white flex flex-col px-5 pt-4 pb-6 overflow-y-auto animate-in fade-in duration-200 relative">
             {/* Simulated Email Pop-up Notification */}
             {simulatedEmailNotification && (
               <div className="mb-2.5 p-2.5 rounded-xl bg-blue-50 border border-blue-200 shadow-md text-slate-800 text-[11px] flex items-center justify-between gap-2 animate-in slide-in-from-top-4 duration-300">
@@ -1188,7 +1188,7 @@ export const CitizenMobileApp: React.FC = () => {
             )}
 
             {/* Top Navigation & Flag */}
-            <div className="flex items-center justify-between pb-1">
+            <div className="flex items-center justify-between pb-2 mb-1">
               <button
                 type="button"
                 onClick={() => {
@@ -1203,7 +1203,7 @@ export const CitizenMobileApp: React.FC = () => {
                     setForgotStep(2);
                   }
                 }}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-500 hover:text-[#071e49] cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-600 hover:text-[#071e49] transition-all cursor-pointer shadow-2xs"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>{forgotStep === 1 ? "Kembali ke Login" : "Sebelumnya"}</span>
