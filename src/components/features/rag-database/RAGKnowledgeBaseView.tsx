@@ -2601,9 +2601,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                       <input
                         type="text"
                         value={editingItem.data.code}
+                        disabled={!editingItem.isNew}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, code: e.target.value } })}
                         placeholder="Contoh: AP001"
-                        className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] bg-white font-mono font-bold text-[#1a73e8] focus:outline-none focus:border-[#1a73e8]"
+                        className={`w-full px-3 py-2 rounded-xl border border-[#cbd5e1] font-mono font-bold ${
+                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-[#1a73e8] focus:outline-none focus:border-[#1a73e8]"
+                        }`}
                       />
                     </div>
                     <div className="sm:col-span-9">
@@ -2611,9 +2614,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                       <input
                         type="text"
                         value={editingItem.data.name}
+                        disabled={!editingItem.isNew}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, name: e.target.value } })}
                         placeholder="Contoh: Ikan Bandeng Segar"
-                        className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] bg-white font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                        className={`w-full px-3 py-2 rounded-xl border border-[#cbd5e1] font-bold ${
+                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                        }`}
                       />
                     </div>
                   </div>
@@ -2622,8 +2628,11 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                       <label className="font-bold text-slate-700 block mb-1">Kelompok Makanan:</label>
                       <select
                         value={editingItem.data.category || "Pangan Lainnya"}
+                        disabled={!editingItem.isNew}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })}
-                        className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] bg-white font-semibold text-slate-700 focus:outline-none focus:border-[#1a73e8]"
+                        className={`w-full px-3 py-2 rounded-xl border border-[#cbd5e1] font-semibold ${
+                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-slate-700 focus:outline-none focus:border-[#1a73e8]"
+                        }`}
                       >
                         {["Serealia", "Umbi-umbian", "Ikan & Seafood", "Daging & Unggas", "Telur", "Susu", "Kacang-kacangan", "Sayuran", "Buah-buahan", "Pangan Lainnya"].map(c => (
                           <option key={c} value={c}>{c}</option>
