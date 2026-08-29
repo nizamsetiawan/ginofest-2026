@@ -1270,14 +1270,9 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center pt-1">
-            {/* LEFT: 4 Inputs */}
+            {/* LEFT: 4 Inputs (Clean Static Labels without links) */}
             <div className="lg:col-span-4 space-y-2.5">
-              <a
-                href="https://satudata.gresikkab.go.id"
-                target="_blank"
-                rel="noreferrer"
-                className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all block group shadow-2xs"
-              >
+              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] flex items-center gap-3 transition-all shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
                   <Fish className="w-4 h-4" />
                 </div>
@@ -1285,19 +1280,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
                     Menerima data komoditas pangan daerah
                   </h4>
-                  <span className="text-[10px] text-[#1a73e8] font-semibold flex items-center gap-1 mt-0.5">
-                    <span>satudata.gresikkab.go.id</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
+                  <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
+                    satudata.gresikkab.go.id
                   </span>
                 </div>
-              </a>
+              </div>
 
-              <a
-                href="https://siskaperbapo.jatimprov.go.id"
-                target="_blank"
-                rel="noreferrer"
-                className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all block group shadow-2xs"
-              >
+              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] flex items-center gap-3 transition-all shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
                   <Tag className="w-4 h-4" />
                 </div>
@@ -1305,19 +1294,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
                     Menerima data harga pangan daerah
                   </h4>
-                  <span className="text-[10px] text-[#1a73e8] font-semibold flex items-center gap-1 mt-0.5">
-                    <span>siskaperbapo.jatimprov.go.id</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
+                  <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
+                    siskaperbapo.jatimprov.go.id
                   </span>
                 </div>
-              </a>
+              </div>
 
-              <a
-                href="https://badangizi.go.id"
-                target="_blank"
-                rel="noreferrer"
-                className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all block group shadow-2xs"
-              >
+              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] flex items-center gap-3 transition-all shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
                   <Utensils className="w-4 h-4" />
                 </div>
@@ -1325,19 +1308,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
                     Menerima data menu makanan
                   </h4>
-                  <span className="text-[10px] text-[#1a73e8] font-semibold flex items-center gap-1 mt-0.5">
-                    <span>badangizi.go.id (Buku MBG BGN)</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
+                  <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
+                    badangizi.go.id (Buku MBG BGN)
                   </span>
                 </div>
-              </a>
+              </div>
 
-              <a
-                href="https://www.panganku.org"
-                target="_blank"
-                rel="noreferrer"
-                className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all block group shadow-2xs"
-              >
+              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] flex items-center gap-3 transition-all shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
                   <ClipboardCheck className="w-4 h-4" />
                 </div>
@@ -1345,12 +1322,11 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
                     Menerima data angka gizi daerah
                   </h4>
-                  <span className="text-[10px] text-[#1a73e8] font-semibold flex items-center gap-1 mt-0.5">
-                    <span>panganku.org (TKPI Kemenkes RI)</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
+                  <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
+                    panganku.org (TKPI Kemenkes RI)
                   </span>
                 </div>
-              </a>
+              </div>
             </div>
 
             {/* CENTER: Main AI Engine Node */}
@@ -2988,6 +2964,102 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 className="px-5 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold shadow-xs transition-colors"
               >
                 Simpan Perubahan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. VIEW DISTRICT DETAIL MODAL (Tab 1 Eye Icon) */}
+      {selectedDistrictModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#cbd5e1] space-y-5 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[#f1f5f9] pb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-[16px] font-bold text-[#071e49]">
+                    {selectedDistrictModal.name}
+                  </h3>
+                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1a73e8] border border-blue-200">
+                    {selectedDistrictModal.items.length} Komoditas Pangan
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#64748b] mt-0.5">
+                  Daftar komoditas pangan lokal yang tersedia di kecamatan ini untuk pasokan MBG.
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedDistrictModal(null)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                title="Tutup dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Categorized Commodities Breakdown */}
+            <div className="space-y-4 text-[12px]">
+              {(() => {
+                const categories = [
+                  "Karbohidrat",
+                  "Protein Hewani",
+                  "Susu & Telur",
+                  "Protein Nabati",
+                  "Sayuran",
+                  "Buah-buahan",
+                  "Bumbu & Minyak"
+                ];
+
+                return categories.map((cat) => {
+                  const itemsInCat = selectedDistrictModal.items.filter(
+                    (it) => getItemCategory(it) === cat
+                  );
+
+                  if (itemsInCat.length === 0) return null;
+
+                  return (
+                    <div key={cat} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-[#071e49] text-[12px]">{cat}</span>
+                        <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                          {itemsInCat.length} bahan
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {itemsInCat.map((item, iIdx) => (
+                          <span
+                            key={iIdx}
+                            className="px-2.5 py-1 rounded-lg bg-white text-[#071e49] text-[11px] font-semibold border border-slate-200 shadow-2xs"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="flex items-center justify-between pt-3 border-t border-[#f1f5f9]">
+              <button
+                onClick={() => setSelectedDistrictModal(null)}
+                className="px-4 py-2 rounded-xl text-[12px] font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                Tutup
+              </button>
+              <button
+                onClick={() => {
+                  const toEdit = { ...selectedDistrictModal, itemsString: selectedDistrictModal.items.join(", ") };
+                  setSelectedDistrictModal(null);
+                  setEditingItem({ type: "komoditas", isNew: false, data: toEdit });
+                }}
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold shadow-xs transition-colors cursor-pointer"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+                <span>Edit Komoditas Kecamatan</span>
               </button>
             </div>
           </div>
