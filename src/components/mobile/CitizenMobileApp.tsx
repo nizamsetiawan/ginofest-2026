@@ -177,7 +177,6 @@ export const CitizenMobileApp: React.FC = () => {
   const [pullY, setPullY] = useState(0);
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
   const [isHardReloading, setIsHardReloading] = useState(false);
-  const [pullRefreshToast, setPullRefreshToast] = useState<string | null>(null);
   const startYRef = React.useRef(0);
   const isDraggingRef = React.useRef(false);
 
@@ -236,12 +235,10 @@ export const CitizenMobileApp: React.FC = () => {
         }
       } catch {}
 
-      // JIKA TIDAK ADA DEPLOY BARU: Cukup refresh data secara instan tanpa reload browser!
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // JIKA TIDAK ADA DEPLOY BARU: Cukup refresh data secara instan tanpa reload dan tanpa snackbar
+      await new Promise((resolve) => setTimeout(resolve, 400));
       setIsPullRefreshing(false);
       setPullY(0);
-      setPullRefreshToast("Data gizi & menu MBG berhasil diperbarui!");
-      setTimeout(() => setPullRefreshToast(null), 2500);
     } else {
       setPullY(0);
     }
@@ -735,14 +732,6 @@ export const CitizenMobileApp: React.FC = () => {
                 <div className="w-2 h-2 rounded-full bg-[#1a73e8] animate-bounce"></div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* ═══ UNIVERSAL PULL REFRESH SUCCESS TOAST (All Screens) ═══ */}
-        {pullRefreshToast && (
-          <div className="absolute top-10 left-3.5 right-3.5 z-[90] bg-[#071e49]/95 backdrop-blur-md text-white px-3 py-2 rounded-2xl shadow-xl text-[11px] font-bold flex items-center justify-center gap-1.5 animate-in slide-in-from-top-3 duration-300">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span>{pullRefreshToast}</span>
           </div>
         )}
 
@@ -1604,14 +1593,6 @@ export const CitizenMobileApp: React.FC = () => {
                 <LogOut className="w-3.5 h-3.5" />
               </button>
             </header>
-
-            {/* Pull Refresh Success Toast */}
-            {pullRefreshToast && (
-              <div className="absolute top-12 left-4 right-4 z-50 bg-[#071e49]/95 backdrop-blur-md text-white px-3 py-2 rounded-2xl shadow-xl text-[11px] font-bold flex items-center justify-center gap-1.5 animate-in slide-in-from-top-3 duration-300">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{pullRefreshToast}</span>
-              </div>
-            )}
 
             {/* Main Tabs Container with Native Pull-to-Refresh */}
             <main
