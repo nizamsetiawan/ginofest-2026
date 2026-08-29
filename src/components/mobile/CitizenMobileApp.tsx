@@ -899,8 +899,8 @@ export const CitizenMobileApp: React.FC = () => {
               </button>
             </div>
 
-            {/* Bottom: Register Switcher */}
-            <div className="mt-auto pt-5 pb-1 text-center text-[11px] text-[#64748b]">
+            {/* Link: Register Switcher (Tepat di bawah Masuk dengan Google) */}
+            <div className="pt-3.5 pb-2 text-center text-[11.5px] text-[#64748b]">
               <span>Belum punya akun? </span>
               <button
                 type="button"
@@ -908,7 +908,7 @@ export const CitizenMobileApp: React.FC = () => {
                   setAuthError("");
                   setCurrentScreen("register");
                 }}
-                className="text-[#1a73e8] font-bold hover:underline cursor-pointer"
+                className="text-[#1a73e8] font-black hover:underline cursor-pointer ml-1"
               >
                 Daftar Sekarang
               </button>
