@@ -48,12 +48,12 @@ import {
   resetCitizenPasswordInFirestore,
 } from "@/services/firebase-service";
 
-type AppScreen = "splash" | "splash1" | "splash2" | "onboarding1" | "onboarding2" | "onboarding3" | "login" | "register" | "forgot_password" | "main";
+type AppScreen = "splash" | "onboarding1" | "onboarding2" | "onboarding3" | "login" | "register" | "forgot_password" | "main";
 type MobileTab = "home" | "menu" | "screening" | "ai_chat" | "profile" | "complaint";
 
 export const CitizenMobileApp: React.FC = () => {
   // Screen state
-  const [currentScreen, setCurrentScreen] = useState<AppScreen>("splash1");
+  const [currentScreen, setCurrentScreen] = useState<AppScreen>("splash");
   const [activeTab, setActiveTab] = useState<MobileTab>("home");
 
   // Authenticated Citizen User State
@@ -78,7 +78,7 @@ export const CitizenMobileApp: React.FC = () => {
       }
 
       const savedScreen = sessionStorage.getItem("kcal_citizen_screen") as AppScreen;
-      if (savedScreen && !["splash", "splash1", "splash2", "onboarding1", "onboarding2", "onboarding3"].includes(savedScreen)) {
+      if (savedScreen && !["splash", "onboarding1", "onboarding2", "onboarding3"].includes(savedScreen)) {
         setCurrentScreen(savedScreen);
       }
 
@@ -91,7 +91,7 @@ export const CitizenMobileApp: React.FC = () => {
 
   // Sync screen changes to sessionStorage
   useEffect(() => {
-    if (!["splash", "splash1", "splash2", "onboarding1", "onboarding2", "onboarding3"].includes(currentScreen)) {
+    if (!["splash", "onboarding1", "onboarding2", "onboarding3"].includes(currentScreen)) {
       sessionStorage.setItem("kcal_citizen_screen", currentScreen);
     }
   }, [currentScreen]);
@@ -437,7 +437,15 @@ export const CitizenMobileApp: React.FC = () => {
     }
   };
 
-  // ═══ 1. SPLASH SCREEN (Manual Interactive Navigation via Stepper & Buttons) ═══
+  // ═══ 1. SPLASH SCREEN EFFECT (Auto transitions after 2.4s to Onboarding 1) ═══
+  useEffect(() => {
+    if (currentScreen === "splash") {
+      const timer = setTimeout(() => {
+        setCurrentScreen(citizenUser ? "main" : "onboarding1");
+      }, 2400);
+      return () => clearTimeout(timer);
+    }
+  }, [currentScreen, citizenUser]);
 
   // Handle Login with Cloud Firestore
   const handleLogin = async (e: React.FormEvent) => {
@@ -813,199 +821,50 @@ export const CitizenMobileApp: React.FC = () => {
         </div>
 
         {/* ═════════════════════════════════════════════════════════ */}
-        {/* 1A. SCREEN: SPLASH SCREEN 01 (Screening & Deteksi Gizi)   */}
+        {/* 1. SCREEN: SPLASH SCREEN (Centered Logo & Native Vibes)  */}
         {/* ═════════════════════════════════════════════════════════ */}
-        {(currentScreen === "splash" || currentScreen === "splash1") && (
-          <div className="flex-1 relative flex flex-col justify-between select-none font-sans overflow-hidden bg-white animate-in fade-in duration-300">
-            {/* Top Sunburst Rays Background Layer */}
-            <div className="absolute top-0 left-0 right-0 h-[52%] overflow-hidden pointer-events-none select-none z-0">
-              <img
-                src="/Frame 4.svg"
-                alt="Radiant Background"
-                className="w-full h-full object-cover object-top"
-              />
-            </div>
-
-            {/* Top Status & Controls Bar */}
-            <div className="relative z-10 flex items-center justify-between px-6 pt-4">
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-xs">
-                <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
-                <span className="text-[12px] font-black text-ford-blue tracking-tight">Kcal</span>
-              </div>
-
-              <button
-                onClick={() => setCurrentScreen("login")}
-                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-50 text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
-              >
-                Lewati
-              </button>
-            </div>
-
-            {/* Center Emblem Illustration Layer (Clean Shield) */}
-            <div className="relative z-10 flex-1 flex items-center justify-center pt-2 pb-1">
-              <div className="w-[220px] sm:w-[240px] max-w-[70vw] aspect-square flex items-center justify-center animate-in zoom-in-95 duration-500">
+        {currentScreen === "splash" && (
+          <div 
+            onClick={() => setCurrentScreen("onboarding1")}
+            className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-green-tint/40 to-[#F8FAFC] flex flex-col items-center justify-center p-5 text-center animate-in fade-in duration-300 cursor-pointer select-none font-sans"
+          >
+            <div className="space-y-4 flex flex-col items-center">
+              {/* App Logo with Pulse Ring */}
+              <div className="relative">
+                <div className="absolute -inset-3 rounded-3xl bg-green-02/25 blur-lg animate-pulse"></div>
                 <img
-                  src="/shield-1.svg"
-                  alt="Emblem Shield"
-                  className="w-full h-full object-contain filter drop-shadow-md pointer-events-none select-none"
+                  src="/logo_app.svg"
+                  alt="Kcal Logo"
+                  className="w-16 h-16 rounded-2xl shadow-lg relative z-10 animate-in zoom-in-75 duration-500"
                 />
               </div>
-            </div>
 
-            {/* Bottom Content Area: Information, Stepper & Button */}
-            <div className="relative z-10 bg-white px-6 pt-2 pb-6 space-y-4 text-center">
-              {/* Badge, Title & Description */}
-              <div className="space-y-2">
-                <div className="inline-block">
-                  <span className="px-3.5 py-1 rounded-full bg-green-tint text-ford-blue text-[10.5px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
-                    Ginofest 2026 • Inovasi Pemkab Gresik
+              {/* Title & Tagline */}
+              <div className="space-y-1.5 relative z-10 max-w-[260px]">
+                <h1 className="text-[24px] font-bold text-ford-blue tracking-tight">
+                  Kcal
+                </h1>
+                <p className="text-[11.5px] font-medium text-blue-gray leading-relaxed">
+                  &ldquo;Smart screening awal indikasi malnutrisi anak melalui analisis visual pertumbuhan & kuesioner interaktif AI&rdquo;
+                </p>
+                <div className="pt-0.5">
+                  <span className="inline-block px-3 py-0.5 rounded-full bg-green-tint text-ford-blue text-[9.5px] font-bold border border-green-02/40 tracking-wide">
+                    Ginofest 2026
                   </span>
                 </div>
-
-                <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
-                  Smart Screening & Deteksi Gizi
-                </h1>
-
-                <p className="text-[12.5px] font-medium text-blue-gray leading-relaxed max-w-[310px] mx-auto">
-                  Deteksi dini indikasi malnutrisi & risiko stunting anak melalui analisis visual AI terstandarisasi Kemenkes RI.
-                </p>
               </div>
 
-              {/* Stepper Dots & Action Button */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                {/* Interactive Stepper Indicator Dots */}
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentScreen("splash1")}
-                    className="w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs cursor-pointer"
-                    title="Halaman 1: Deteksi Gizi"
-                    aria-label="Halaman 1"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setCurrentScreen("splash2")}
-                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
-                    title="Halaman 2: Menu MBG"
-                    aria-label="Halaman 2"
-                  />
-                </div>
-
-                {/* Next Step Button */}
-                <button
-                  type="button"
-                  onClick={() => setCurrentScreen("splash2")}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12.5px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                >
-                  <span>Lanjut</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+              {/* Subtle Loading Dots */}
+              <div className="flex items-center gap-1.5 pt-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-02 animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-light-sea-green animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-ford-blue animate-bounce"></div>
               </div>
 
-              {/* Version Footer */}
-              <div className="pt-0.5">
-                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
-                  v1.0.0 • Kcal Gresik
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ═════════════════════════════════════════════════════════ */}
-        {/* 1B. SCREEN: SPLASH SCREEN 02 (Rekomendasi Menu MBG Lokal) */}
-        {/* ═════════════════════════════════════════════════════════ */}
-        {currentScreen === "splash2" && (
-          <div className="flex-1 relative flex flex-col justify-between select-none font-sans overflow-hidden bg-white animate-in fade-in duration-300">
-            {/* Top Sunburst Rays Background Layer */}
-            <div className="absolute top-0 left-0 right-0 h-[52%] overflow-hidden pointer-events-none select-none z-0">
-              <img
-                src="/Frame 4.svg"
-                alt="Radiant Background"
-                className="w-full h-full object-cover object-top"
-              />
-            </div>
-
-            {/* Top Status & Controls Bar */}
-            <div className="relative z-10 flex items-center justify-between px-6 pt-4">
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-xs">
-                <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
-                <span className="text-[12px] font-black text-ford-blue tracking-tight">Kcal</span>
-              </div>
-
-              <button
-                onClick={() => setCurrentScreen("login")}
-                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-50 text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
-              >
-                Lewati
-              </button>
-            </div>
-
-            {/* Center Emblem Illustration Layer (Shield with Floating Vitamin Bubbles) */}
-            <div className="relative z-10 flex-1 flex items-center justify-center pt-2 pb-1">
-              <div className="w-[220px] sm:w-[240px] max-w-[70vw] aspect-square flex items-center justify-center animate-in zoom-in-95 duration-500">
-                <img
-                  src="/shield.svg"
-                  alt="Emblem Shield with Nutrients"
-                  className="w-full h-full object-contain filter drop-shadow-md pointer-events-none select-none"
-                />
-              </div>
-            </div>
-
-            {/* Bottom Content Area: Information, Stepper & Button */}
-            <div className="relative z-10 bg-white px-6 pt-2 pb-6 space-y-4 text-center">
-              {/* Badge, Title & Description */}
-              <div className="space-y-2">
-                <div className="inline-block">
-                  <span className="px-3.5 py-1 rounded-full bg-green-tint text-ford-blue text-[10.5px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
-                    Nutrisi Formula 5 Bintang • Komoditas Gresik
-                  </span>
-                </div>
-
-                <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
-                  Makan Bergizi Gratis (MBG)
-                </h1>
-
-                <p className="text-[12.5px] font-medium text-blue-gray leading-relaxed max-w-[310px] mx-auto">
-                  Rekomendasi pemenuhan nutrisi seimbang harian anak berbasis komoditas pangan pasar lokal 18 kecamatan.
-                </p>
-              </div>
-
-              {/* Stepper Dots & Action Button */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                {/* Interactive Stepper Indicator Dots */}
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentScreen("splash1")}
-                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
-                    title="Halaman 1: Deteksi Gizi"
-                    aria-label="Halaman 1"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setCurrentScreen("splash2")}
-                    className="w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs cursor-pointer"
-                    title="Halaman 2: Menu MBG"
-                    aria-label="Halaman 2"
-                  />
-                </div>
-
-                {/* Next to Onboarding Button */}
-                <button
-                  type="button"
-                  onClick={() => setCurrentScreen("onboarding1")}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12.5px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                >
-                  <span>Lanjut</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Version Footer */}
-              <div className="pt-0.5">
-                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
-                  v1.0.0 • Kcal Gresik
+              {/* Version Text below Loading Dots */}
+              <div className="pt-1.5">
+                <span className="text-[10px] font-bold text-blue-gray/60 tracking-wider">
+                  v1.0.0
                 </span>
               </div>
             </div>
