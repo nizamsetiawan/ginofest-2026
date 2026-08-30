@@ -75,16 +75,23 @@ export const CitizenMobileApp: React.FC = () => {
   useEffect(() => {
     try {
       const savedUserStr = localStorage.getItem("kcal_active_citizen_user");
+      let activeUser = null;
       if (savedUserStr) {
         const savedUser = JSON.parse(savedUserStr);
-        if (savedUser && savedUser.email) {
+        if (savedUser && (savedUser.email || savedUser.name)) {
+          activeUser = savedUser;
           setCitizenUser(savedUser);
         }
       }
 
-      const savedScreen = sessionStorage.getItem("kcal_citizen_screen") as AppScreen;
-      if (savedScreen && !["splash", "onboarding"].includes(savedScreen)) {
-        setCurrentScreen(savedScreen);
+      // If user has already logged in before, automatically go straight to 'main'
+      if (activeUser) {
+        setCurrentScreen("main");
+      } else {
+        const savedScreen = sessionStorage.getItem("kcal_citizen_screen") as AppScreen;
+        if (savedScreen && !["splash", "onboarding"].includes(savedScreen)) {
+          setCurrentScreen(savedScreen);
+        }
       }
 
       const savedTab = sessionStorage.getItem("kcal_citizen_tab") as MobileTab;
@@ -442,15 +449,41 @@ export const CitizenMobileApp: React.FC = () => {
     }
   };
 
-  // ═══ 1. SPLASH SCREEN EFFECT (Auto transitions after 2.4s to Onboarding) ═══
+  // ═══ 1. SPLASH SCREEN EFFECT (Auto transitions: to Main if logged in, otherwise Onboarding) ═══
   useEffect(() => {
     if (currentScreen === "splash") {
       const timer = setTimeout(() => {
-        setCurrentScreen(citizenUser ? "main" : "onboarding");
-      }, 2400);
+        try {
+          const savedUserStr = localStorage.getItem("kcal_active_citizen_user");
+          if (savedUserStr) {
+            const parsed = JSON.parse(savedUserStr);
+            if (parsed && (parsed.email || parsed.name)) {
+              setCitizenUser(parsed);
+              setCurrentScreen("main");
+              return;
+            }
+          }
+        } catch {}
+
+        if (citizenUser) {
+          setCurrentScreen("main");
+        } else {
+          setCurrentScreen("onboarding");
+        }
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [currentScreen, citizenUser]);
+
+  // Handle Logout (Explicitly clears persistent session and redirects to Login)
+  const handleCitizenLogout = () => {
+    try {
+      localStorage.removeItem("kcal_active_citizen_user");
+      sessionStorage.removeItem("kcal_citizen_screen");
+    } catch {}
+    setCitizenUser(null);
+    setCurrentScreen("login");
+  };
 
   // Handle Swipe Gesture for Onboarding
   const handleOnboardingTouchStart = (e: React.TouchEvent) => {
@@ -534,6 +567,10 @@ export const CitizenMobileApp: React.FC = () => {
 
     if (res.success && res.user) {
       setCitizenUser(res.user);
+      try {
+        localStorage.setItem("kcal_active_citizen_user", JSON.stringify(res.user));
+        sessionStorage.setItem("kcal_citizen_screen", "main");
+      } catch {}
       setCurrentScreen("main");
     } else {
       setAuthError(res.error || "Gagal masuk. Silakan periksa kembali email dan kata sandi Anda.");
@@ -883,7 +920,16 @@ export const CitizenMobileApp: React.FC = () => {
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "splash" && (
           <div 
-            onClick={() => setCurrentScreen("onboarding")}
+            onClick={() => {
+              try {
+                const saved = localStorage.getItem("kcal_active_citizen_user");
+                if (saved || citizenUser) {
+                  setCurrentScreen("main");
+                  return;
+                }
+              } catch {}
+              setCurrentScreen("onboarding");
+            }}
             className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-green-tint/40 to-[#F8FAFC] flex flex-col items-center justify-center p-5 text-center animate-in fade-in duration-300 cursor-pointer select-none font-sans"
           >
             <div className="space-y-4 flex flex-col items-center">
@@ -1882,12 +1928,7 @@ export const CitizenMobileApp: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => {
-                    localStorage.removeItem("kcal_active_citizen_user");
-                    sessionStorage.setItem("kcal_citizen_screen", "login");
-                    setCitizenUser(null);
-                    setCurrentScreen("login");
-                  }}
+                  onClick={handleCitizenLogout}
                   className="p-1.5 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 transition-colors cursor-pointer"
                   title="Keluar Sesi"
                 >
@@ -2555,12 +2596,7 @@ export const CitizenMobileApp: React.FC = () => {
                   <div className="pt-1">
                     <button
                       type="button"
-                      onClick={() => {
-                        localStorage.removeItem("kcal_active_citizen_user");
-                        sessionStorage.setItem("kcal_citizen_screen", "login");
-                        setCitizenUser(null);
-                        setCurrentScreen("login");
-                      }}
+                      onClick={handleCitizenLogout}
                       className="w-full py-2.5 px-4 rounded-xl bg-red-50 hover:bg-red-100 border border-brand-red/30 text-brand-red text-[12px] font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
                     >
                       <LogOut className="w-3.5 h-3.5" />
