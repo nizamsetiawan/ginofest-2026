@@ -12,6 +12,8 @@ export interface DistrictStuntingYearRecord {
   balitaStunting: number;
   balitaSembuh: number;
   balitaLulus: number;
+  source?: string;
+  sumber?: string;
 }
 
 export interface GresikYearlySummary {

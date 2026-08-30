@@ -449,14 +449,14 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-[13px] border-collapse">
             <thead>
-              <tr className="border-b border-slate-200 bg-[#F8FAFC] text-ford-blue font-bold text-[12px]">
-                <th className="py-3 px-4">No</th>
-                <th className="py-3 px-4">Kode Wilayah</th>
-                <th className="py-3 px-4">Kecamatan</th>
-                <th className="py-3 px-4 text-center text-brand-red font-bold">Balita Stunting</th>
-                <th className="py-3 px-4 text-center font-bold text-ford-blue">Balita Sembuh</th>
-                <th className="py-3 px-4 text-center font-bold text-emerald-600">Balita Lulus</th>
-                <th className="py-3 px-4 text-center">Status Intervensi</th>
+              <tr className="bg-ford-blue text-white font-bold text-[12px] divide-x divide-white/10 select-none">
+                <th className="py-3 px-4 text-white">No</th>
+                <th className="py-3 px-4 text-white">Kode Wilayah</th>
+                <th className="py-3 px-4 text-white">Kecamatan</th>
+                <th className="py-3 px-4 text-center text-white font-bold">Balita Stunting</th>
+                <th className="py-3 px-4 text-center font-bold text-white">Balita Sembuh</th>
+                <th className="py-3 px-4 text-center font-bold text-white">Balita Lulus</th>
+                <th className="py-3 px-4 text-center text-white">Sumber Data</th>
               </tr>
             </thead>
 
@@ -513,9 +513,8 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
                       {row.balitaLulus}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <span className="inline-flex items-center gap-1 font-bold text-ford-blue bg-green-tint border border-green-02/40 px-2.5 py-0.5 rounded-full text-[11px] shadow-2xs">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-green-02" />
-                        MBG Terlaksana
+                      <span className="inline-flex items-center gap-1.5 font-bold text-ford-blue bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full text-[11px] shadow-2xs">
+                        {row.sumber || "e-PPGBM Dinkes"}
                       </span>
                     </td>
                   </tr>
