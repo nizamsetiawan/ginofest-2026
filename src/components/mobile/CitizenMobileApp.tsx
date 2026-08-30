@@ -829,60 +829,70 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 1A. SCREEN: SPLASH SCREEN 01 (Screening & Deteksi Gizi)   */}
         {/* ═════════════════════════════════════════════════════════ */}
         {(currentScreen === "splash" || currentScreen === "splash1") && (
-          <div className="flex-1 relative flex flex-col justify-between p-6 select-none font-sans overflow-hidden bg-white animate-in fade-in duration-300">
-            {/* Full Bleed Background SVG (Plascreen 01.svg) */}
-            <img
-              src="/Plascreen 01.svg"
-              alt="Splash Screen 1 Background"
-              className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none z-0"
-            />
+          <div className="flex-1 relative flex flex-col justify-between select-none font-sans overflow-hidden bg-white animate-in fade-in duration-300">
+            {/* Top Sunburst Rays Background Layer */}
+            <div className="absolute top-0 left-0 right-0 h-[52%] overflow-hidden pointer-events-none select-none z-0">
+              <img
+                src="/Frame 4.svg"
+                alt="Radiant Background"
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
 
-            {/* Top Bar: Brand Badge & Skip Button */}
-            <div className="relative z-10 flex items-center justify-between pt-1">
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200 shadow-2xs backdrop-blur-xs">
+            {/* Top Status & Controls Bar */}
+            <div className="relative z-10 flex items-center justify-between px-6 pt-4">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-xs">
                 <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
                 <span className="text-[12px] font-black text-ford-blue tracking-tight">Kcal</span>
               </div>
 
               <button
                 onClick={() => setCurrentScreen("login")}
-                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-100 text-ford-blue font-bold text-[11px] border border-slate-200 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-50 text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
               >
                 Lewati
               </button>
             </div>
 
-            {/* Center Area (Empty spacer so the shield illustration is fully visible) */}
-            <div className="relative z-10 flex-1 min-h-[160px]" />
+            {/* Center Emblem Illustration Layer (Clean Shield) */}
+            <div className="relative z-10 flex-1 flex items-center justify-center pt-2 pb-1">
+              <div className="w-[220px] sm:w-[240px] max-w-[70vw] aspect-square flex items-center justify-center animate-in zoom-in-95 duration-500">
+                <img
+                  src="/shield-1.svg"
+                  alt="Emblem Shield"
+                  className="w-full h-full object-contain filter drop-shadow-md pointer-events-none select-none"
+                />
+              </div>
+            </div>
 
-            {/* Bottom Content Area: Clean Typography & Stepper */}
-            <div className="relative z-10 space-y-5 text-center bg-white/95 backdrop-blur-xs p-5 rounded-3xl border border-slate-100 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
-              {/* Title, Subtitle & Badge */}
+            {/* Bottom Content Area: Information, Stepper & Button */}
+            <div className="relative z-10 bg-white px-6 pt-2 pb-6 space-y-4 text-center">
+              {/* Badge, Title & Description */}
               <div className="space-y-2">
                 <div className="inline-block">
-                  <span className="px-3 py-0.5 rounded-full bg-green-tint text-ford-blue text-[10px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
-                    Ginofest 2026 • Pemkab Gresik
+                  <span className="px-3.5 py-1 rounded-full bg-green-tint text-ford-blue text-[10.5px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
+                    Ginofest 2026 • Inovasi Pemkab Gresik
                   </span>
                 </div>
 
-                <h1 className="text-[21px] font-black text-ford-blue tracking-tight leading-snug">
+                <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
                   Smart Screening & Deteksi Gizi
                 </h1>
 
-                <p className="text-[12px] font-medium text-blue-gray leading-relaxed max-w-[290px] mx-auto">
-                  Deteksi dini risiko malnutrisi & stunting balita dengan analisis visual AI terstandarisasi Kemenkes RI.
+                <p className="text-[12.5px] font-medium text-blue-gray leading-relaxed max-w-[310px] mx-auto">
+                  Deteksi dini indikasi malnutrisi & risiko stunting anak melalui analisis visual AI terstandarisasi Kemenkes RI.
                 </p>
               </div>
 
-              {/* Stepper Dots & Action Controls */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-                {/* Stepper Dots Indicator */}
+              {/* Stepper Dots & Action Button */}
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                {/* Stepper Indicator Dots */}
                 <div className="flex items-center gap-1.5">
                   <div className="w-6 h-2 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs" />
                   <div className="w-2 h-2 rounded-full bg-slate-300 transition-all duration-300" />
                 </div>
 
-                {/* Next Button */}
+                {/* Next Step Button */}
                 <button
                   onClick={() => setCurrentScreen("splash2")}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12.5px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
@@ -890,6 +900,13 @@ export const CitizenMobileApp: React.FC = () => {
                   <span>Lanjut</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+              </div>
+
+              {/* Version Footer */}
+              <div className="pt-0.5">
+                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
+                  v1.0.0 • Kcal Gresik
+                </span>
               </div>
             </div>
           </div>
@@ -899,54 +916,64 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 1B. SCREEN: SPLASH SCREEN 02 (Rekomendasi Menu MBG Lokal) */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "splash2" && (
-          <div className="flex-1 relative flex flex-col justify-between p-6 select-none font-sans overflow-hidden bg-white animate-in fade-in duration-300">
-            {/* Full Bleed Background SVG (Plascreen 02.svg) */}
-            <img
-              src="/Plascreen 02.svg"
-              alt="Splash Screen 2 Background"
-              className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none z-0"
-            />
+          <div className="flex-1 relative flex flex-col justify-between select-none font-sans overflow-hidden bg-white animate-in fade-in duration-300">
+            {/* Top Sunburst Rays Background Layer */}
+            <div className="absolute top-0 left-0 right-0 h-[52%] overflow-hidden pointer-events-none select-none z-0">
+              <img
+                src="/Frame 4.svg"
+                alt="Radiant Background"
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
 
-            {/* Top Bar: Brand Badge & Skip Button */}
-            <div className="relative z-10 flex items-center justify-between pt-1">
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200 shadow-2xs backdrop-blur-xs">
+            {/* Top Status & Controls Bar */}
+            <div className="relative z-10 flex items-center justify-between px-6 pt-4">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-xs">
                 <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
                 <span className="text-[12px] font-black text-ford-blue tracking-tight">Kcal</span>
               </div>
 
               <button
                 onClick={() => setCurrentScreen("login")}
-                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-100 text-ford-blue font-bold text-[11px] border border-slate-200 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-50 text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
               >
                 Lewati
               </button>
             </div>
 
-            {/* Center Area (Empty spacer so the shield & vitamin bubbles artwork is fully visible) */}
-            <div className="relative z-10 flex-1 min-h-[160px]" />
+            {/* Center Emblem Illustration Layer (Shield with Floating Vitamin Bubbles) */}
+            <div className="relative z-10 flex-1 flex items-center justify-center pt-2 pb-1">
+              <div className="w-[220px] sm:w-[240px] max-w-[70vw] aspect-square flex items-center justify-center animate-in zoom-in-95 duration-500">
+                <img
+                  src="/shield.svg"
+                  alt="Emblem Shield with Nutrients"
+                  className="w-full h-full object-contain filter drop-shadow-md pointer-events-none select-none"
+                />
+              </div>
+            </div>
 
-            {/* Bottom Content Area: Clean Typography & Action Button */}
-            <div className="relative z-10 space-y-5 text-center bg-white/95 backdrop-blur-xs p-5 rounded-3xl border border-slate-100 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
-              {/* Title, Subtitle & Badge */}
+            {/* Bottom Content Area: Information, Stepper & Button */}
+            <div className="relative z-10 bg-white px-6 pt-2 pb-6 space-y-4 text-center">
+              {/* Badge, Title & Description */}
               <div className="space-y-2">
                 <div className="inline-block">
-                  <span className="px-3 py-0.5 rounded-full bg-green-tint text-ford-blue text-[10px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
-                    Formula 5 Bintang • Komoditas Gresik
+                  <span className="px-3.5 py-1 rounded-full bg-green-tint text-ford-blue text-[10.5px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
+                    Nutrisi Formula 5 Bintang • Komoditas Gresik
                   </span>
                 </div>
 
-                <h1 className="text-[21px] font-black text-ford-blue tracking-tight leading-snug">
+                <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
                   Makan Bergizi Gratis (MBG)
                 </h1>
 
-                <p className="text-[12px] font-medium text-blue-gray leading-relaxed max-w-[290px] mx-auto">
-                  Rekomendasi pemenuhan nutrisi seimbang harian berbasis komoditas pangan pasar lokal 18 kecamatan.
+                <p className="text-[12.5px] font-medium text-blue-gray leading-relaxed max-w-[310px] mx-auto">
+                  Rekomendasi pemenuhan nutrisi seimbang harian anak berbasis komoditas pangan pasar lokal 18 kecamatan.
                 </p>
               </div>
 
-              {/* Stepper Dots & Start Button */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-                {/* Stepper Dots Indicator */}
+              {/* Stepper Dots & Action Button */}
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                {/* Stepper Indicator Dots */}
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-slate-300 transition-all duration-300" />
                   <div className="w-6 h-2 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs" />
@@ -960,6 +987,13 @@ export const CitizenMobileApp: React.FC = () => {
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Mulai Sekarang</span>
                 </button>
+              </div>
+
+              {/* Version Footer */}
+              <div className="pt-0.5">
+                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
+                  v1.0.0 • Kcal Gresik
+                </span>
               </div>
             </div>
           </div>
