@@ -1,6 +1,4 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
 import {
-  getFirestore,
   collection,
   doc,
   getDoc,
@@ -9,19 +7,8 @@ import {
   updateDoc,
   onSnapshot,
 } from "firebase/firestore";
+import { app, db } from "./firebase-service";
 import { KcalUser } from "@/types/auth";
-
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyDummyKeyForBuild",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "ginofest-2026.firebaseapp.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "ginofest-2026",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "ginofest-2026.appspot.com",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:123456789:web:abcdef",
-};
-
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore(app);
 
 const SESSION_STORAGE_KEY = "kcal_active_user_session";
 
@@ -637,6 +624,55 @@ export function listenToSessionStatus(sessionId: string, onRevoked: () => void):
         }
       }
     });
+    return unsub;
+  } catch {
+    return () => {};
+  }
+}
+
+export async function recordCitizenSessionLog(citizen: {
+  id: string;
+  name: string;
+  email: string;
+  district?: string;
+}): Promise<string> {
+  const logId = `ses_warga_${Date.now()}`;
+  try {
+    const logData: UserSessionLog = {
+      id: logId,
+      userId: citizen.id,
+      email: citizen.email,
+      name: citizen.name,
+      role: "masyarakat",
+      districtLabel: citizen.district ? `Kec. ${citizen.district}` : "Kabupaten Gresik",
+      loginAt: new Date().toISOString(),
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "PWA Mobile App",
+      status: "active",
+    };
+    await setDoc(doc(db, "kcal_session_logs", logId), logData);
+  } catch (err) {
+    console.error("Failed recording citizen session log:", err);
+  }
+  return logId;
+}
+
+export function listenToAllSessionLogs(onUpdate: (logs: UserSessionLog[]) => void): () => void {
+  try {
+    const colRef = collection(db, "kcal_session_logs");
+    const unsub = onSnapshot(
+      colRef,
+      (snap) => {
+        const logs: UserSessionLog[] = [];
+        snap.forEach((d) => {
+          logs.push({ id: d.id, ...d.data() } as UserSessionLog);
+        });
+        logs.sort((a, b) => new Date(b.loginAt).getTime() - new Date(a.loginAt).getTime());
+        onUpdate(logs);
+      },
+      (err) => {
+        console.warn("Real-time session logs error:", err);
+      }
+    );
     return unsub;
   } catch {
     return () => {};

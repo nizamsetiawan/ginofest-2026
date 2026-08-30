@@ -36,6 +36,7 @@ import {
   fetchSessionLogs,
   clearAllSessionLogs,
   revokeSessionLog,
+  listenToAllSessionLogs,
   UserSessionLog,
   DEFAULT_FALLBACK_USERS
 } from "@/services/auth-service";
@@ -108,6 +109,11 @@ export const UserManagementView: React.FC = () => {
 
   useEffect(() => {
     loadData();
+    // Real-time live listener for session logs
+    const unsub = listenToAllSessionLogs((liveLogs) => {
+      setLogs(liveLogs);
+    });
+    return () => unsub();
   }, [loadData]);
 
   // Filtered Users

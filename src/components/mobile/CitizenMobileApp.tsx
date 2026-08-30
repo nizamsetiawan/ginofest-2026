@@ -47,7 +47,7 @@ import {
   loginCitizenFromFirestore,
   resetCitizenPasswordInFirestore,
 } from "@/services/firebase-service";
-import { closeSessionLog, listenToSessionStatus } from "@/services/auth-service";
+import { closeSessionLog, listenToSessionStatus, recordCitizenSessionLog } from "@/services/auth-service";
 
 type AppScreen = "splash" | "onboarding" | "login" | "register" | "forgot_password" | "main";
 type MobileTab = "home" | "menu" | "screening" | "ai_chat" | "profile" | "complaint";
@@ -460,6 +460,13 @@ export const CitizenMobileApp: React.FC = () => {
             const parsed = JSON.parse(savedUserStr);
             if (parsed && (parsed.email || parsed.name)) {
               setCitizenUser(parsed);
+              // Ensure an active session is recorded in Firestore
+              const existingSid = localStorage.getItem("kcal_citizen_session_id");
+              if (!existingSid) {
+                recordCitizenSessionLog(parsed).then((sid) => {
+                  localStorage.setItem("kcal_citizen_session_id", sid);
+                });
+              }
               setCurrentScreen("main");
               return;
             }
@@ -596,9 +603,11 @@ export const CitizenMobileApp: React.FC = () => {
       setCitizenUser(res.user);
       try {
         localStorage.setItem("kcal_active_citizen_user", JSON.stringify(res.user));
-        if (res.sessionId) {
-          localStorage.setItem("kcal_citizen_session_id", res.sessionId);
+        let sid = res.sessionId;
+        if (!sid) {
+          sid = await recordCitizenSessionLog(res.user);
         }
+        localStorage.setItem("kcal_citizen_session_id", sid);
         sessionStorage.setItem("kcal_citizen_screen", "main");
       } catch {}
       setCurrentScreen("main");

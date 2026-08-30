@@ -26,7 +26,7 @@ const firebaseConfig = {
 };
 
 // Singleton App & Safe Firestore instance
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+export const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 let firestoreDb;
 try {
