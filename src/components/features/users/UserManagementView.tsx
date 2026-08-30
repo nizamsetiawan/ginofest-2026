@@ -67,6 +67,7 @@ export const UserManagementView: React.FC = () => {
   const [passwordModalUser, setPasswordModalUser] = useState<KcalUser | null>(null);
   const [deletingUser, setDeletingUser] = useState<KcalUser | null>(null);
   const [viewingLog, setViewingLog] = useState<UserSessionLog | null>(null);
+  const [revokingLog, setRevokingLog] = useState<UserSessionLog | null>(null);
 
   // Form states for Create User
   const [createForm, setCreateForm] = useState<Omit<KcalUser, "id" | "createdAt">>({
@@ -272,36 +273,30 @@ export const UserManagementView: React.FC = () => {
     showToast("✓ Seluruh riwayat log sesi berhasil dibersihkan.");
   };
 
-  // Handle Force Logout Session by Super Admin
-  const handleForceLogout = async (log: UserSessionLog) => {
+  // Handle Force Logout Session Confirmation by Super Admin
+  const confirmRevokeSession = async () => {
+    if (!revokingLog) return;
     const roleTitle =
-      log.role === "masyarakat"
+      revokingLog.role === "masyarakat"
         ? "Warga Masyarakat"
-        : log.role === "super_admin"
+        : revokingLog.role === "super_admin"
         ? "Super Admin"
         : "Admin Kecamatan";
 
-    if (
-      !window.confirm(
-        `Apakah Anda yakin ingin MEMUTUS PAKSA sesi ${roleTitle} atas nama "${log.name}" (${log.email})?\n\nPengguna akan seketika dikeluarkan dari akun dan dialihkan kembali ke Splash Screen.`
-      )
-    ) {
-      return;
-    }
-
     setIsSaving(true);
-    const res = await revokeSessionLog(log.id);
+    const res = await revokeSessionLog(revokingLog.id);
     setIsSaving(false);
 
     if (res.success) {
-      showToast(`✓ Sesi ${roleTitle} "${log.name}" berhasil diputus paksa!`);
+      showToast(`✓ Sesi ${roleTitle} "${revokingLog.name}" berhasil diputus paksa!`);
       setLogs((prev) =>
         prev.map((item) =>
-          item.id === log.id
+          item.id === revokingLog.id
             ? { ...item, status: "revoked", revokedAt: new Date().toISOString(), revokedBy: "Super Admin" }
             : item
         )
       );
+      setRevokingLog(null);
     } else {
       showToast("Gagal memutus sesi pengguna.");
     }
@@ -803,7 +798,7 @@ export const UserManagementView: React.FC = () => {
                             {isActive ? (
                               <button
                                 type="button"
-                                onClick={() => handleForceLogout(log)}
+                                onClick={() => setRevokingLog(log)}
                                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 font-bold text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
                                 title="Putus sesi dan paksa pengguna keluar ke Splash Screen"
                               >
@@ -1329,7 +1324,7 @@ export const UserManagementView: React.FC = () => {
                   onClick={() => {
                     const target = viewingLog;
                     setViewingLog(null);
-                    handleForceLogout(target);
+                    setRevokingLog(target);
                   }}
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 font-bold text-[12px] transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
                 >
@@ -1346,6 +1341,88 @@ export const UserManagementView: React.FC = () => {
                 className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] font-bold text-[12px] transition-all cursor-pointer"
               >
                 Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ Modal 6: Confirm Force Logout Dialog ═══ */}
+      {revokingLog && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-white rounded-3xl border border-[#e2e8f0] shadow-2xl p-6 space-y-4 animate-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-2xl bg-red-50 text-brand-red flex items-center justify-center font-bold border border-red-100">
+                  <LogOut className="w-4 h-4 text-brand-red" />
+                </div>
+                <div>
+                  <h3 className="text-[15px] font-bold text-[#2C3968]">Putus Sesi Pengguna</h3>
+                  <p className="text-[11px] text-slate-400 font-medium">Konfirmasi Penghentian Sesi Masuk</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setRevokingLog(null)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Target User Info */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-2xl text-[12px] font-black flex items-center justify-center shrink-0 shadow-2xs"
+                style={{
+                  backgroundColor: revokingLog.role === "masyarakat" ? "#E6FAF2" : revokingLog.role === "super_admin" ? "#2C3968" : "#EBF5FF",
+                  color: revokingLog.role === "super_admin" ? "#FFFFFF" : revokingLog.role === "masyarakat" ? "#047857" : "#1D4ED8",
+                }}
+              >
+                {revokingLog.name ? revokingLog.name.slice(0, 2).toUpperCase() : "US"}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-[13px] font-bold text-ford-blue truncate">{revokingLog.name}</h4>
+                <p className="text-[11px] font-mono text-slate-500 truncate font-medium">{revokingLog.email}</p>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="text-[10px] font-bold px-2 py-0.2 rounded-md bg-white border border-slate-200 text-slate-600">
+                    {revokingLog.role === "masyarakat" ? "Masyarakat" : revokingLog.role === "super_admin" ? "Super Admin" : "Kecamatan"}
+                  </span>
+                  <span className="text-[10px] text-slate-500 font-medium truncate">
+                    {revokingLog.districtLabel || "Kabupaten Gresik"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Warning Message Box */}
+            <div className="p-3.5 rounded-2xl bg-red-50/70 border border-red-200 space-y-1">
+              <div className="flex items-center gap-1.5 text-brand-red font-bold text-[12px]">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>Peringatan Pemutusan Akses</span>
+              </div>
+              <p className="text-[11.5px] text-red-700 leading-relaxed font-medium">
+                Sesi pengguna ini akan seketika dihentikan dari server Cloud Firestore. Pengguna yang sedang membuka aplikasi akan otomatis logout dan dialihkan kembali ke Splash Screen.
+              </p>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="pt-2 flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={() => setRevokingLog(null)}
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] font-bold text-[12px] transition-all cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={confirmRevokeSession}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-[12px] transition-all shadow-xs cursor-pointer disabled:opacity-50"
+              >
+                {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <LogOut className="w-3.5 h-3.5" />}
+                <span>Ya, Putus Sesi Sekarang</span>
               </button>
             </div>
           </div>
