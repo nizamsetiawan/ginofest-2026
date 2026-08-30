@@ -636,7 +636,7 @@ export const UserManagementView: React.FC = () => {
                 <option value="all">Semua Status</option>
                 <option value="active">Hanya Sesi Aktif ({activeLogsCount})</option>
                 <option value="closed">Telah Logout / Selesai</option>
-                <option value="revoked">Diputus Super Admin</option>
+                <option value="revoked">Diputus</option>
               </select>
             </div>
           </div>
@@ -758,9 +758,9 @@ export const UserManagementView: React.FC = () => {
                             </span>
                           ) : isRevoked ? (
                             <div className="space-y-0.5">
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9.5px] font-bold bg-red-50 text-brand-red border border-brand-red/30">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-brand-red border border-brand-red/30">
                                 <span className="w-1.5 h-1.5 rounded-full bg-brand-red shrink-0"></span>
-                                <span>Diputus Admin</span>
+                                <span>Diputus</span>
                               </span>
                               {log.revokedAt && (
                                 <span className="text-[9px] text-slate-400 block font-mono">
@@ -1239,7 +1239,7 @@ export const UserManagementView: React.FC = () => {
                   ) : viewingLog.status === "revoked" ? (
                     <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-brand-red">
                       <span className="w-2 h-2 rounded-full bg-brand-red shrink-0"></span>
-                      <span>Diputus Paksa Super Admin</span>
+                      <span>Diputus</span>
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-slate-600">
