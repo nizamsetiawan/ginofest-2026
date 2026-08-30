@@ -437,20 +437,7 @@ export const CitizenMobileApp: React.FC = () => {
     }
   };
 
-  // ═══ 1. SPLASH SCREEN EFFECT (Auto transitions: Splash 1 -> Splash 2 -> Login) ═══
-  useEffect(() => {
-    if (currentScreen === "splash" || currentScreen === "splash1") {
-      const timer = setTimeout(() => {
-        setCurrentScreen("splash2");
-      }, 2800);
-      return () => clearTimeout(timer);
-    } else if (currentScreen === "splash2") {
-      const timer = setTimeout(() => {
-        setCurrentScreen(citizenUser ? "main" : "login");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [currentScreen, citizenUser]);
+  // ═══ 1. SPLASH SCREEN (Manual Interactive Navigation via Stepper & Buttons) ═══
 
   // Handle Login with Cloud Firestore
   const handleLogin = async (e: React.FormEvent) => {
@@ -886,14 +873,27 @@ export const CitizenMobileApp: React.FC = () => {
 
               {/* Stepper Dots & Action Button */}
               <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                {/* Stepper Indicator Dots */}
-                <div className="flex items-center gap-1.5">
-                  <div className="w-6 h-2 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs" />
-                  <div className="w-2 h-2 rounded-full bg-slate-300 transition-all duration-300" />
+                {/* Interactive Stepper Indicator Dots */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("splash1")}
+                    className="w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs cursor-pointer"
+                    title="Halaman 1: Deteksi Gizi"
+                    aria-label="Halaman 1"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("splash2")}
+                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
+                    title="Halaman 2: Menu MBG"
+                    aria-label="Halaman 2"
+                  />
                 </div>
 
                 {/* Next Step Button */}
                 <button
+                  type="button"
                   onClick={() => setCurrentScreen("splash2")}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12.5px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 >
@@ -973,14 +973,27 @@ export const CitizenMobileApp: React.FC = () => {
 
               {/* Stepper Dots & Action Button */}
               <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                {/* Stepper Indicator Dots */}
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-slate-300 transition-all duration-300" />
-                  <div className="w-6 h-2 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs" />
+                {/* Interactive Stepper Indicator Dots */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("splash1")}
+                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
+                    title="Halaman 1: Deteksi Gizi"
+                    aria-label="Halaman 1"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("splash2")}
+                    className="w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs cursor-pointer"
+                    title="Halaman 2: Menu MBG"
+                    aria-label="Halaman 2"
+                  />
                 </div>
 
                 {/* Start Button */}
                 <button
+                  type="button"
                   onClick={() => setCurrentScreen("login")}
                   className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[13px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 >
