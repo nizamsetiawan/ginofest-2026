@@ -64,6 +64,7 @@ export const UserManagementView: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [passwordModalUser, setPasswordModalUser] = useState<KcalUser | null>(null);
   const [deletingUser, setDeletingUser] = useState<KcalUser | null>(null);
+  const [viewingLog, setViewingLog] = useState<UserSessionLog | null>(null);
 
   // Form states for Create User
   const [createForm, setCreateForm] = useState<Omit<KcalUser, "id" | "createdAt">>({
@@ -776,21 +777,34 @@ export const UserManagementView: React.FC = () => {
                           )}
                         </td>
                         <td className="py-2.5 px-3 text-center">
-                          {isActive ? (
+                          <div className="flex items-center justify-center gap-1.5">
+                            {/* View Detail Button (Eye) */}
                             <button
                               type="button"
-                              onClick={() => handleForceLogout(log)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 font-bold text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
-                              title="Putus sesi dan paksa pengguna keluar ke Splash Screen"
+                              onClick={() => setViewingLog(log)}
+                              className="w-7 h-7 rounded-lg bg-blue-50 hover:bg-blue-100 text-brand-blue border border-brand-blue/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105 active:scale-95"
+                              title="Lihat Detail Log Sesi & Informasi Perangkat"
                             >
-                              <LogOut className="w-3.5 h-3.5" />
-                              <span>Paksa Logout</span>
+                              <Eye className="w-3.5 h-3.5" />
                             </button>
-                          ) : (
-                            <span className="text-[11px] text-slate-400 font-medium italic">
-                              Sesi Ditutup
-                            </span>
-                          )}
+
+                            {/* Force Logout Button */}
+                            {isActive ? (
+                              <button
+                                type="button"
+                                onClick={() => handleForceLogout(log)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 font-bold text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
+                                title="Putus sesi dan paksa pengguna keluar ke Splash Screen"
+                              >
+                                <LogOut className="w-3 h-3" />
+                                <span>Putus</span>
+                              </button>
+                            ) : (
+                              <span className="text-[10px] text-slate-400 font-medium px-1 italic">
+                                Selesai
+                              </span>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -1132,6 +1146,173 @@ export const UserManagementView: React.FC = () => {
               >
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                 <span>Ya, Hapus Akun</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ═══ Modal 5: View Session Detail Modal ═══ */}
+      {viewingLog && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-white rounded-3xl border border-[#e2e8f0] shadow-2xl p-6 space-y-4 animate-in zoom-in-95">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center font-bold">
+                  <Eye className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-[15px] font-bold text-[#2C3968]">Detail Audit Log Sesi</h3>
+                  <p className="text-[11px] text-slate-500 font-mono">ID: {viewingLog.id}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setViewingLog(null)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Profile Overview Card */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#f8fafc] to-[#f1f5f9] border border-slate-200 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className={`w-10 h-10 rounded-2xl text-[14px] font-black flex items-center justify-center shrink-0 shadow-xs ${
+                    viewingLog.role === "masyarakat"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : viewingLog.role === "super_admin"
+                      ? "bg-green-tint text-ford-blue"
+                      : "bg-blue-100 text-brand-blue"
+                  }`}
+                >
+                  {viewingLog.role === "masyarakat" ? "📱" : viewingLog.role === "super_admin" ? "SA" : "AK"}
+                </div>
+                <div>
+                  <h4 className="text-[14px] font-black text-ford-blue">{viewingLog.name}</h4>
+                  <p className="text-[11.5px] font-mono text-slate-500 font-bold">{viewingLog.email}</p>
+                </div>
+              </div>
+
+              <div>
+                <span
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10.5px] font-bold border ${
+                    viewingLog.role === "masyarakat"
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                      : viewingLog.role === "super_admin"
+                      ? "bg-green-tint text-ford-blue border-green-02/40"
+                      : "bg-blue-50 text-brand-blue border-brand-blue/30"
+                  }`}
+                >
+                  {viewingLog.role === "masyarakat" ? (
+                    <Smartphone className="w-3 h-3" />
+                  ) : viewingLog.role === "super_admin" ? (
+                    <Shield className="w-3 h-3" />
+                  ) : (
+                    <Building2 className="w-3 h-3" />
+                  )}
+                  <span>
+                    {viewingLog.role === "masyarakat"
+                      ? "Masyarakat (Warga)"
+                      : viewingLog.role === "super_admin"
+                      ? "Super Admin"
+                      : "Admin Kecamatan"}
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            {/* Session Metadata Grid */}
+            <div className="space-y-3 text-[12px]">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-[10.5px] font-bold text-slate-400 block mb-0.5">Status Sesi:</span>
+                  {viewingLog.status === "active" ? (
+                    <span className="inline-flex items-center gap-1 text-[11.5px] font-bold text-emerald-600">
+                      ● Sesi Sedang Aktif
+                    </span>
+                  ) : viewingLog.status === "revoked" ? (
+                    <span className="inline-flex items-center gap-1 text-[11.5px] font-bold text-brand-red">
+                      ⛔ Diputus Paksa Super Admin
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-[11.5px] font-bold text-slate-600">
+                      ○ Selesai / Telah Logout
+                    </span>
+                  )}
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-[10.5px] font-bold text-slate-400 block mb-0.5">Wilayah / Domisili:</span>
+                  <span className="text-[12px] font-bold text-ford-blue block">
+                    {viewingLog.districtLabel || "Kabupaten Gresik"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-[10.5px] font-bold text-slate-400 block mb-0.5">Waktu Mulai Masuk:</span>
+                  <span className="text-[11.5px] font-bold text-ford-blue block">
+                    {new Date(viewingLog.loginAt).toLocaleString("id-ID")} WIB
+                  </span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-[10.5px] font-bold text-slate-400 block mb-0.5">Waktu Berakhir:</span>
+                  <span className="text-[11.5px] font-bold text-ford-blue block">
+                    {viewingLog.logoutAt
+                      ? `${new Date(viewingLog.logoutAt).toLocaleString("id-ID")} WIB`
+                      : viewingLog.revokedAt
+                      ? `${new Date(viewingLog.revokedAt).toLocaleString("id-ID")} WIB (Diputus)`
+                      : "Masih Berlangsung"}
+                  </span>
+                </div>
+              </div>
+
+              {/* User Agent / Device Details */}
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10.5px] font-bold text-slate-400">Informasi Klien / Perangkat:</span>
+                  <span className="text-[10.5px] font-bold text-light-sea-green">
+                    {(viewingLog.userAgent || "").toLowerCase().includes("mobile") ||
+                    (viewingLog.userAgent || "").toLowerCase().includes("android") ||
+                    (viewingLog.userAgent || "").toLowerCase().includes("iphone")
+                      ? "📱 Mobile Device"
+                      : "💻 Desktop / Web"}
+                  </span>
+                </div>
+                <div className="p-2 rounded-lg bg-white border border-slate-200 text-[10.5px] font-mono text-slate-600 break-all">
+                  {viewingLog.userAgent || "Tidak ada metadata user agent."}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+              {viewingLog.status === "active" ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const target = viewingLog;
+                    setViewingLog(null);
+                    handleForceLogout(target);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 font-bold text-[12px] transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Paksa Logout Sesi Ini</span>
+                </button>
+              ) : (
+                <div className="text-[11px] text-slate-400 italic">Sesi telah berakhir.</div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setViewingLog(null)}
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] font-bold text-[12px] transition-all cursor-pointer"
+              >
+                Tutup
               </button>
             </div>
           </div>
