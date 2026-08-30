@@ -23,7 +23,8 @@ import {
   UserCheck,
   History,
   X,
-  Sparkles
+  Sparkles,
+  Smartphone
 } from "lucide-react";
 import { KcalUser, UserRole } from "@/types/auth";
 import {
@@ -51,6 +52,8 @@ export const UserManagementView: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [logSearchQuery, setLogSearchQuery] = useState("");
+  const [logRoleFilter, setLogRoleFilter] = useState<string>("all");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   // Modals
@@ -117,10 +120,30 @@ export const UserManagementView: React.FC = () => {
     });
   }, [users, roleFilter, searchQuery]);
 
+  // Filtered Session Logs (Including Citizen / Masyarakat logs)
+  const filteredLogs = useMemo(() => {
+    return logs.filter((l) => {
+      if (logRoleFilter !== "all" && l.role !== logRoleFilter) return false;
+      if (!logSearchQuery.trim()) return true;
+      const q = logSearchQuery.toLowerCase();
+      return (
+        (l.name && l.name.toLowerCase().includes(q)) ||
+        (l.email && l.email.toLowerCase().includes(q)) ||
+        (l.districtLabel && l.districtLabel.toLowerCase().includes(q)) ||
+        (l.userAgent && l.userAgent.toLowerCase().includes(q))
+      );
+    });
+  }, [logs, logRoleFilter, logSearchQuery]);
+
   // Statistics
   const totalUsers = users.length;
   const superAdminCount = users.filter((u) => u.role === "super_admin").length;
   const kecamatanCount = users.filter((u) => u.role === "admin_kecamatan").length;
+
+  const totalLogs = logs.length;
+  const masyarakatLogsCount = logs.filter((l) => l.role === "masyarakat").length;
+  const superAdminLogsCount = logs.filter((l) => l.role === "super_admin").length;
+  const kecamatanLogsCount = logs.filter((l) => l.role === "admin_kecamatan").length;
 
   // Handle Create User Submit
   const handleCreateSubmit = async (e: React.FormEvent) => {
@@ -317,6 +340,11 @@ export const UserManagementView: React.FC = () => {
           >
             <History className="w-3.5 h-3.5" />
             <span>Log Sesi & Aktivitas ({logs.length})</span>
+            {masyarakatLogsCount > 0 && (
+              <span className="px-1.5 py-0.2 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded-full">
+                {masyarakatLogsCount} Warga
+              </span>
+            )}
           </button>
         </div>
 
@@ -325,6 +353,8 @@ export const UserManagementView: React.FC = () => {
           <span className="text-[#2C3968]">{superAdminCount} Super Admin</span>
           <span>•</span>
           <span className="text-[#2C3968]">{kecamatanCount} Admin Kecamatan</span>
+          <span>•</span>
+          <span className="text-emerald-700">{masyarakatLogsCount} Sesi Warga</span>
         </div>
       </div>
 
@@ -497,11 +527,12 @@ export const UserManagementView: React.FC = () => {
       {/* TAB 2: SESSION LOGS */}
       {activeTab === "logs" && (
         <div className="space-y-3">
+          {/* Header Action Bar */}
           <div className="flex items-center justify-between bg-[#f8fafc] p-2.5 rounded-2xl border border-[#e2e8f0]">
             <div>
               <h3 className="text-[12px] font-bold text-[#2C3968]">Riwayat Aktivitas & Sesi Login Masuk</h3>
               <p className="text-[10px] text-[#64748b]">
-                Pencatatan timestamp, kredensial pengguna, wilayah tugas, dan perangkat web browser.
+                Pencatatan timestamp, kredensial pengguna (Super Admin, Kecamatan, & Masyarakat), wilayah tugas, dan perangkat web/mobile.
               </p>
             </div>
             <button
@@ -512,6 +543,33 @@ export const UserManagementView: React.FC = () => {
               <Trash2 className="w-3.5 h-3.5" />
               <span>Bersihkan Log</span>
             </button>
+          </div>
+
+          {/* Search and Role Filter for Logs */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 bg-[#f8fafc] p-2.5 rounded-2xl border border-[#e2e8f0]">
+            <div className="relative flex-1">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Cari nama, email, kecamatan, atau perangkat..."
+                value={logSearchQuery}
+                onChange={(e) => setLogSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#35CBC3] shadow-2xs font-medium"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <select
+                value={logRoleFilter}
+                onChange={(e) => setLogRoleFilter(e.target.value)}
+                className="pl-3 pr-7 py-1.5 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[12px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
+              >
+                <option value="all">Semua Role Sesi ({totalLogs})</option>
+                <option value="masyarakat">Masyarakat / Warga ({masyarakatLogsCount})</option>
+                <option value="super_admin">Super Admin ({superAdminLogsCount})</option>
+                <option value="admin_kecamatan">Admin Kecamatan ({kecamatanLogsCount})</option>
+              </select>
+            </div>
           </div>
 
           <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
@@ -527,44 +585,96 @@ export const UserManagementView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f1f5f9]">
-                {logs.length === 0 ? (
+                {filteredLogs.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="py-8 text-center text-[#64748b]">
                       Belum ada riwayat sesi login yang tercatat.
                     </td>
                   </tr>
                 ) : (
-                  logs.map((log, idx) => (
-                    <tr key={log.id} className="hover:bg-slate-50 divide-x divide-slate-100 transition-colors">
-                      <td className="py-2 px-3 text-center font-bold text-slate-500 bg-slate-50/50">
-                        {idx + 1}
-                      </td>
-                      <td className="py-2 px-4 whitespace-nowrap text-ford-blue text-[11px] font-medium">
-                        <div className="flex items-center gap-1.5">
-                          <Clock className="w-3 h-3 text-light-sea-green" />
-                          <span>{new Date(log.loginAt).toLocaleString("id-ID")}</span>
-                        </div>
-                      </td>
-                      <td className="py-2 px-4">
-                        <span className="font-bold text-ford-blue block text-[12px]">{log.name}</span>
-                        <span className="font-mono text-[10.5px] text-ford-blue font-bold">{log.email}</span>
-                      </td>
-                      <td className="py-2 px-4">
-                        <span className="text-[11px] font-semibold text-ford-blue block">
-                          {log.role === "super_admin" ? "Super Admin" : "Admin Kecamatan"}
-                        </span>
-                        <span className="text-[10px] text-blue-gray">{log.districtLabel}</span>
-                      </td>
-                      <td className="py-2 px-4 max-w-xs truncate text-[10px] text-blue-gray font-mono">
-                        {log.userAgent || "Browser Web"}
-                      </td>
-                      <td className="py-2 px-3 text-center">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-tint text-ford-blue border border-green-02/40">
-                          ● Sesi Aktif
-                        </span>
-                      </td>
-                    </tr>
-                  ))
+                  filteredLogs.map((log, idx) => {
+                    const isCitizen = log.role === "masyarakat";
+                    const isSuper = log.role === "super_admin";
+                    const userAgentLower = (log.userAgent || "").toLowerCase();
+                    const isMobileDevice =
+                      userAgentLower.includes("mobile") ||
+                      userAgentLower.includes("android") ||
+                      userAgentLower.includes("iphone") ||
+                      userAgentLower.includes("pwa");
+
+                    return (
+                      <tr key={log.id} className="hover:bg-slate-50 divide-x divide-slate-100 transition-colors">
+                        <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">
+                          {idx + 1}
+                        </td>
+                        <td className="py-2.5 px-4 whitespace-nowrap text-ford-blue text-[11.5px] font-medium">
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 text-light-sea-green shrink-0" />
+                            <span>{new Date(log.loginAt).toLocaleString("id-ID")}</span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`w-6 h-6 rounded-lg text-[9px] font-black flex items-center justify-center shrink-0 shadow-2xs ${
+                                isCitizen
+                                  ? "bg-emerald-100 text-emerald-800"
+                                  : isSuper
+                                  ? "bg-green-tint text-ford-blue"
+                                  : "bg-blue-100 text-brand-blue"
+                              }`}
+                            >
+                              {isCitizen ? "📱" : isSuper ? "SA" : "AK"}
+                            </div>
+                            <div>
+                              <span className="font-bold text-ford-blue block text-[12px]">{log.name}</span>
+                              <span className="font-mono text-[10.5px] text-ford-blue font-bold block">{log.email}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border mb-0.5 ${
+                              isCitizen
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                                : isSuper
+                                ? "bg-green-tint text-ford-blue border-green-02/40"
+                                : "bg-blue-50 text-brand-blue border-brand-blue/30"
+                            }`}
+                          >
+                            {isCitizen ? (
+                              <Smartphone className="w-3 h-3" />
+                            ) : isSuper ? (
+                              <Shield className="w-3 h-3" />
+                            ) : (
+                              <Building2 className="w-3 h-3" />
+                            )}
+                            <span>{isCitizen ? "Masyarakat (Warga)" : isSuper ? "Super Admin" : "Admin Kecamatan"}</span>
+                          </span>
+                          <span className="text-[10.5px] text-blue-gray font-medium block">
+                            {log.districtLabel || "Kabupaten Gresik"}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-4 max-w-xs text-[10.5px] text-blue-gray font-mono">
+                          <div className="flex items-center gap-1.5">
+                            {isMobileDevice ? (
+                              <Smartphone className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                            ) : (
+                              <Laptop className="w-3.5 h-3.5 text-ford-blue shrink-0" />
+                            )}
+                            <span className="truncate" title={log.userAgent || "Web Browser"}>
+                              {isMobileDevice ? "PWA Mobile App" : log.userAgent || "Browser Web"}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-tint text-ford-blue border border-green-02/40">
+                            ● Sesi Aktif
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

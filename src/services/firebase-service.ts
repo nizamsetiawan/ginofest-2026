@@ -1005,6 +1005,22 @@ export async function registerCitizenToFirestore(account: Omit<CitizenAccountRec
       }, { merge: true });
     }
 
+    // Record session log in Firestore for Super Admin audit trail
+    try {
+      const logId = `ses_warga_${Date.now()}`;
+      await setDoc(doc(db, "kcal_session_logs", logId), {
+        id: logId,
+        userId: docId,
+        email: cleanEmail,
+        name: account.fullName || cleanEmail.split("@")[0],
+        role: "masyarakat",
+        districtLabel: `Kec. ${account.district || "Gresik"}`,
+        loginAt: new Date().toISOString(),
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "PWA Mobile App (Pendaftaran)",
+        status: "active",
+      });
+    } catch {}
+
     return { success: true, id: docId };
   } catch (err: any) {
     console.error("Error registering citizen:", err);
@@ -1063,15 +1079,34 @@ export async function loginCitizenFromFirestore(
         role: "masyarakat",
         createdAtIso: new Date().toISOString(),
       });
+
+      const newUser = {
+        id: newDoc.id,
+        name: cleanEmail.split("@")[0].toUpperCase(),
+        email: cleanEmail,
+        phone: "081234567890",
+        district: district || "Kebomas",
+      };
+
+      // Record citizen session log
+      try {
+        const logId = `ses_warga_${Date.now()}`;
+        await setDoc(doc(db, "kcal_session_logs", logId), {
+          id: logId,
+          userId: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          role: "masyarakat",
+          districtLabel: `Kec. ${newUser.district}`,
+          loginAt: new Date().toISOString(),
+          userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "PWA Mobile App",
+          status: "active",
+        });
+      } catch {}
+
       return {
         success: true,
-        user: {
-          id: newDoc.id,
-          name: cleanEmail.split("@")[0].toUpperCase(),
-          email: cleanEmail,
-          phone: "081234567890",
-          district: district || "Kebomas",
-        }
+        user: newUser,
       };
     }
 
@@ -1087,15 +1122,33 @@ export async function loginCitizenFromFirestore(
       ...(firebaseUser?.uid ? { uid: firebaseUser.uid } : {}),
     }, { merge: true });
 
+    const targetUser = {
+      id: snap.docs[0].id,
+      name: userData.fullName || cleanEmail.split("@")[0],
+      email: userData.email,
+      phone: userData.phone,
+      district: district || userData.district || "Kebomas",
+    };
+
+    // Record citizen session log
+    try {
+      const logId = `ses_warga_${Date.now()}`;
+      await setDoc(doc(db, "kcal_session_logs", logId), {
+        id: logId,
+        userId: targetUser.id,
+        email: targetUser.email,
+        name: targetUser.name,
+        role: "masyarakat",
+        districtLabel: `Kec. ${targetUser.district}`,
+        loginAt: new Date().toISOString(),
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "PWA Mobile App",
+        status: "active",
+      });
+    } catch {}
+
     return {
       success: true,
-      user: {
-        id: snap.docs[0].id,
-        name: userData.fullName || cleanEmail.split("@")[0],
-        email: userData.email,
-        phone: userData.phone,
-        district: district || userData.district || "Kebomas",
-      }
+      user: targetUser,
     };
   } catch (err: any) {
     console.error("Error login citizen:", err);
