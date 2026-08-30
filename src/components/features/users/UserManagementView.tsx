@@ -638,9 +638,9 @@ export const UserManagementView: React.FC = () => {
                 className="pl-3 pr-7 py-1.5 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[12px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
               >
                 <option value="all">Semua Status</option>
-                <option value="active">● Hanya Sesi Aktif ({activeLogsCount})</option>
-                <option value="closed">○ Telah Logout / Selesai</option>
-                <option value="revoked">⛔ Diputus Super Admin</option>
+                <option value="active">Hanya Sesi Aktif ({activeLogsCount})</option>
+                <option value="closed">Telah Logout / Selesai</option>
+                <option value="revoked">Diputus Super Admin</option>
               </select>
             </div>
           </div>
@@ -650,18 +650,19 @@ export const UserManagementView: React.FC = () => {
               <thead className="sticky top-0 z-10 shadow-xs">
                 <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
                   <th className="py-3 px-3 w-10 text-center text-white">No</th>
-                  <th className="py-3 px-4 font-bold w-44 text-white">Waktu Sesi</th>
+                  <th className="py-3 px-4 font-bold w-40 text-white">Waktu Masuk</th>
                   <th className="py-3 px-4 font-bold text-white">Nama & Email Pengguna</th>
-                  <th className="py-3 px-4 font-bold text-white">Role & Wilayah</th>
+                  <th className="py-3 px-3.5 font-bold text-center w-36 text-white">Role Akses</th>
+                  <th className="py-3 px-4 font-bold w-40 text-white">Wilayah Tugas</th>
                   <th className="py-3 px-4 font-bold text-white">Perangkat / Client</th>
-                  <th className="py-3 px-3.5 text-center w-36 font-bold text-white">Status Sesi</th>
-                  <th className="py-3 px-3 text-center w-32 font-bold text-white">Aksi Kontrol</th>
+                  <th className="py-3 px-3.5 text-center w-32 font-bold text-white">Status Sesi</th>
+                  <th className="py-3 px-3 text-center w-28 font-bold text-white">Aksi Kontrol</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f1f5f9]">
                 {filteredLogs.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-[#64748b]">
+                    <td colSpan={8} className="py-8 text-center text-[#64748b]">
                       Belum ada riwayat sesi login yang sesuai dengan filter.
                     </td>
                   </tr>
@@ -678,6 +679,7 @@ export const UserManagementView: React.FC = () => {
 
                     const isActive = log.status === "active";
                     const isRevoked = log.status === "revoked";
+                    const userInitials = log.name ? log.name.slice(0, 2).toUpperCase() : "US";
 
                     return (
                       <tr key={log.id} className="hover:bg-slate-50 divide-x divide-slate-100 transition-colors">
@@ -700,17 +702,15 @@ export const UserManagementView: React.FC = () => {
                           </div>
                         </td>
                         <td className="py-2.5 px-4">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2.5">
                             <div
-                              className={`w-6 h-6 rounded-lg text-[9px] font-black flex items-center justify-center shrink-0 shadow-2xs ${
-                                isCitizen
-                                  ? "bg-emerald-100 text-emerald-800"
-                                  : isSuper
-                                  ? "bg-green-tint text-ford-blue"
-                                  : "bg-blue-100 text-brand-blue"
-                              }`}
+                              className="w-7 h-7 rounded-lg text-[10px] font-bold flex items-center justify-center shrink-0 shadow-2xs"
+                              style={{
+                                backgroundColor: isCitizen ? "#E6FAF2" : isSuper ? "#2C3968" : "#EBF5FF",
+                                color: isSuper ? "#FFFFFF" : isCitizen ? "#047857" : "#1D4ED8",
+                              }}
                             >
-                              {isCitizen ? "📱" : isSuper ? "SA" : "AK"}
+                              {userInitials}
                             </div>
                             <div>
                               <span className="font-bold text-ford-blue block text-[12px]">{log.name}</span>
@@ -718,9 +718,9 @@ export const UserManagementView: React.FC = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="py-2.5 px-4">
+                        <td className="py-2.5 px-3.5 text-center">
                           <span
-                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border mb-0.5 ${
+                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold border ${
                               isCitizen
                                 ? "bg-emerald-50 text-emerald-800 border-emerald-200"
                                 : isSuper
@@ -729,17 +729,17 @@ export const UserManagementView: React.FC = () => {
                             }`}
                           >
                             {isCitizen ? (
-                              <Smartphone className="w-3 h-3" />
+                              <UserCheck className="w-3 h-3" />
                             ) : isSuper ? (
                               <Shield className="w-3 h-3" />
                             ) : (
                               <Building2 className="w-3 h-3" />
                             )}
-                            <span>{isCitizen ? "Masyarakat (Warga)" : isSuper ? "Super Admin" : "Admin Kecamatan"}</span>
+                            <span>{isCitizen ? "Masyarakat" : isSuper ? "Super Admin" : "Kecamatan"}</span>
                           </span>
-                          <span className="text-[10.5px] text-blue-gray font-medium block">
-                            {log.districtLabel || "Kabupaten Gresik"}
-                          </span>
+                        </td>
+                        <td className="py-2.5 px-4 text-ford-blue font-medium text-[12px]">
+                          {log.districtLabel || "Kabupaten Gresik"}
                         </td>
                         <td className="py-2.5 px-4 max-w-xs text-[10.5px] text-blue-gray font-mono">
                           <div className="flex items-center gap-1.5">
@@ -755,24 +755,27 @@ export const UserManagementView: React.FC = () => {
                         </td>
                         <td className="py-2.5 px-3.5 text-center">
                           {isActive ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-green-tint text-ford-blue border border-green-02/40 shadow-2xs">
-                              ● Sesi Aktif
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-green-tint text-ford-blue border border-green-02/40 shadow-2xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                              <span>Sesi Aktif</span>
                             </span>
                           ) : isRevoked ? (
                             <div className="space-y-0.5">
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-red-50 text-brand-red border border-brand-red/30">
-                                ⛔ Diputus Super Admin
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9.5px] font-bold bg-red-50 text-brand-red border border-brand-red/30">
+                                <span className="w-1.5 h-1.5 rounded-full bg-brand-red shrink-0"></span>
+                                <span>Diputus Admin</span>
                               </span>
                               {log.revokedAt && (
-                                <span className="text-[9px] text-slate-400 block">
+                                <span className="text-[9px] text-slate-400 block font-mono">
                                   {new Date(log.revokedAt).toLocaleTimeString("id-ID")}
                                 </span>
                               )}
                             </div>
                           ) : (
                             <div className="space-y-0.5">
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                                ○ Telah Logout
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                                <span>Telah Logout</span>
                               </span>
                               {log.logoutAt && (
                                 <span className="text-[9px] text-slate-400 block font-mono">
@@ -1184,15 +1187,13 @@ export const UserManagementView: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#f8fafc] to-[#f1f5f9] border border-slate-200 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-2xl text-[14px] font-black flex items-center justify-center shrink-0 shadow-xs ${
-                    viewingLog.role === "masyarakat"
-                      ? "bg-emerald-100 text-emerald-800"
-                      : viewingLog.role === "super_admin"
-                      ? "bg-green-tint text-ford-blue"
-                      : "bg-blue-100 text-brand-blue"
-                  }`}
+                  className="w-10 h-10 rounded-2xl text-[12px] font-black flex items-center justify-center shrink-0 shadow-xs"
+                  style={{
+                    backgroundColor: viewingLog.role === "masyarakat" ? "#E6FAF2" : viewingLog.role === "super_admin" ? "#2C3968" : "#EBF5FF",
+                    color: viewingLog.role === "super_admin" ? "#FFFFFF" : viewingLog.role === "masyarakat" ? "#047857" : "#1D4ED8",
+                  }}
                 >
-                  {viewingLog.role === "masyarakat" ? "📱" : viewingLog.role === "super_admin" ? "SA" : "AK"}
+                  {viewingLog.name ? viewingLog.name.slice(0, 2).toUpperCase() : "US"}
                 </div>
                 <div>
                   <h4 className="text-[14px] font-black text-ford-blue">{viewingLog.name}</h4>
@@ -1211,7 +1212,7 @@ export const UserManagementView: React.FC = () => {
                   }`}
                 >
                   {viewingLog.role === "masyarakat" ? (
-                    <Smartphone className="w-3 h-3" />
+                    <UserCheck className="w-3 h-3" />
                   ) : viewingLog.role === "super_admin" ? (
                     <Shield className="w-3 h-3" />
                   ) : (
@@ -1219,7 +1220,7 @@ export const UserManagementView: React.FC = () => {
                   )}
                   <span>
                     {viewingLog.role === "masyarakat"
-                      ? "Masyarakat (Warga)"
+                      ? "Masyarakat"
                       : viewingLog.role === "super_admin"
                       ? "Super Admin"
                       : "Admin Kecamatan"}
@@ -1234,16 +1235,19 @@ export const UserManagementView: React.FC = () => {
                 <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-[10.5px] font-bold text-slate-400 block mb-0.5">Status Sesi:</span>
                   {viewingLog.status === "active" ? (
-                    <span className="inline-flex items-center gap-1 text-[11.5px] font-bold text-emerald-600">
-                      ● Sesi Sedang Aktif
+                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-emerald-600">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                      <span>Sesi Sedang Aktif</span>
                     </span>
                   ) : viewingLog.status === "revoked" ? (
-                    <span className="inline-flex items-center gap-1 text-[11.5px] font-bold text-brand-red">
-                      ⛔ Diputus Paksa Super Admin
+                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-brand-red">
+                      <span className="w-2 h-2 rounded-full bg-brand-red shrink-0"></span>
+                      <span>Diputus Paksa Super Admin</span>
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[11.5px] font-bold text-slate-600">
-                      ○ Selesai / Telah Logout
+                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-slate-600">
+                      <span className="w-2 h-2 rounded-full bg-slate-400 shrink-0"></span>
+                      <span>Selesai / Telah Logout</span>
                     </span>
                   )}
                 </div>
@@ -1280,12 +1284,20 @@ export const UserManagementView: React.FC = () => {
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-[10.5px] font-bold text-slate-400">Informasi Klien / Perangkat:</span>
-                  <span className="text-[10.5px] font-bold text-light-sea-green">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-light-sea-green">
                     {(viewingLog.userAgent || "").toLowerCase().includes("mobile") ||
                     (viewingLog.userAgent || "").toLowerCase().includes("android") ||
-                    (viewingLog.userAgent || "").toLowerCase().includes("iphone")
-                      ? "📱 Mobile Device"
-                      : "💻 Desktop / Web"}
+                    (viewingLog.userAgent || "").toLowerCase().includes("iphone") ? (
+                      <>
+                        <Smartphone className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Mobile App (PWA)</span>
+                      </>
+                    ) : (
+                      <>
+                        <Laptop className="w-3.5 h-3.5 text-ford-blue" />
+                        <span>Web Browser (Desktop)</span>
+                      </>
+                    )}
                   </span>
                 </div>
                 <div className="p-2 rounded-lg bg-white border border-slate-200 text-[10.5px] font-mono text-slate-600 break-all">
