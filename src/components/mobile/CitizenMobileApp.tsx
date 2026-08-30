@@ -48,7 +48,7 @@ import {
   resetCitizenPasswordInFirestore,
 } from "@/services/firebase-service";
 
-type AppScreen = "splash" | "splash1" | "splash2" | "login" | "register" | "forgot_password" | "main";
+type AppScreen = "splash" | "splash1" | "splash2" | "onboarding1" | "onboarding2" | "onboarding3" | "login" | "register" | "forgot_password" | "main";
 type MobileTab = "home" | "menu" | "screening" | "ai_chat" | "profile" | "complaint";
 
 export const CitizenMobileApp: React.FC = () => {
@@ -78,7 +78,7 @@ export const CitizenMobileApp: React.FC = () => {
       }
 
       const savedScreen = sessionStorage.getItem("kcal_citizen_screen") as AppScreen;
-      if (savedScreen && !["splash", "splash1", "splash2"].includes(savedScreen)) {
+      if (savedScreen && !["splash", "splash1", "splash2", "onboarding1", "onboarding2", "onboarding3"].includes(savedScreen)) {
         setCurrentScreen(savedScreen);
       }
 
@@ -91,7 +91,7 @@ export const CitizenMobileApp: React.FC = () => {
 
   // Sync screen changes to sessionStorage
   useEffect(() => {
-    if (!["splash", "splash1", "splash2"].includes(currentScreen)) {
+    if (!["splash", "splash1", "splash2", "onboarding1", "onboarding2", "onboarding3"].includes(currentScreen)) {
       sessionStorage.setItem("kcal_citizen_screen", currentScreen);
     }
   }, [currentScreen]);
@@ -988,6 +988,297 @@ export const CitizenMobileApp: React.FC = () => {
                     className="w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs cursor-pointer"
                     title="Halaman 2: Menu MBG"
                     aria-label="Halaman 2"
+                  />
+                </div>
+
+                {/* Next to Onboarding Button */}
+                <button
+                  type="button"
+                  onClick={() => setCurrentScreen("onboarding1")}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12.5px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                >
+                  <span>Lanjut</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Version Footer */}
+              <div className="pt-0.5">
+                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
+                  v1.0.0 • Kcal Gresik
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ═════════════════════════════════════════════════════════ */}
+        {/* 2A. SCREEN: ONBOARDING 01 (Masyarakat)                    */}
+        {/* ═════════════════════════════════════════════════════════ */}
+        {currentScreen === "onboarding1" && (
+          <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F4FDF9] to-[#F8FAFC] flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
+            {/* Top Bar: Brand Badge & Skip Button */}
+            <div className="relative z-10 flex items-center justify-between pt-1">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-xs">
+                <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
+                <span className="text-[12px] font-black text-ford-blue tracking-tight">Kcal</span>
+              </div>
+
+              <button
+                onClick={() => setCurrentScreen("login")}
+                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-50 text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+              >
+                Lewati
+              </button>
+            </div>
+
+            {/* Central Onboarding Illustration (onboard1.svg) */}
+            <div className="my-auto py-2 flex flex-col items-center justify-center space-y-4">
+              <div className="w-full max-w-[310px] aspect-[914/885] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 bg-white relative p-1.5 animate-in zoom-in-95 duration-500">
+                <img
+                  src="/onboard1.svg"
+                  alt="Onboarding 1 - Masyarakat"
+                  className="w-full h-full object-contain rounded-2xl pointer-events-none select-none"
+                />
+              </div>
+
+              {/* Title & Description */}
+              <div className="space-y-2 max-w-[320px] mx-auto px-1">
+                <div>
+                  <span className="inline-block px-3.5 py-1 rounded-full bg-green-tint text-ford-blue text-[10.5px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
+                    Masyarakat
+                  </span>
+                </div>
+
+                <h1 className="text-[21px] font-black text-ford-blue tracking-tight leading-snug">
+                  Wujudkan Keluarga & Lingkungan Sehat
+                </h1>
+
+                <p className="text-[12.5px] font-medium text-blue-gray leading-relaxed">
+                  Mulai langkah awal Anda untuk kesehatan yang lebih baik. Pantau kondisi gizi diri sendiri, keluarga tercinta, hingga komunitas di sekitar Anda dengan mudah dalam satu aplikasi.
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Controls: 3-Step Indicator & Next Button */}
+            <div className="pt-3 pb-1 border-t border-slate-200/60 z-10 space-y-2.5">
+              <div className="flex items-center justify-between">
+                {/* Stepper Dots Indicator (Step 1 Active) */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding1")}
+                    className="w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs cursor-pointer"
+                    title="Onboarding 1"
+                    aria-label="Onboarding 1"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding2")}
+                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
+                    title="Onboarding 2"
+                    aria-label="Onboarding 2"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding3")}
+                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
+                    title="Onboarding 3"
+                    aria-label="Onboarding 3"
+                  />
+                </div>
+
+                {/* Next Step Button */}
+                <button
+                  type="button"
+                  onClick={() => setCurrentScreen("onboarding2")}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12.5px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                >
+                  <span>Lanjut</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Version Footer */}
+              <div className="pt-0.5">
+                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
+                  v1.0.0 • Kcal Gresik
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ═════════════════════════════════════════════════════════ */}
+        {/* 2B. SCREEN: ONBOARDING 02 (Deteksi Defisiensi Nutrisi)    */}
+        {/* ═════════════════════════════════════════════════════════ */}
+        {currentScreen === "onboarding2" && (
+          <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F4FDF9] to-[#F8FAFC] flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
+            {/* Top Bar: Brand Badge & Skip Button */}
+            <div className="relative z-10 flex items-center justify-between pt-1">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-xs">
+                <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
+                <span className="text-[12px] font-black text-ford-blue tracking-tight">Kcal</span>
+              </div>
+
+              <button
+                onClick={() => setCurrentScreen("login")}
+                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-50 text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+              >
+                Lewati
+              </button>
+            </div>
+
+            {/* Central Onboarding Illustration (onboard2.svg) */}
+            <div className="my-auto py-2 flex flex-col items-center justify-center space-y-4">
+              <div className="w-full max-w-[310px] aspect-[914/885] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 bg-white relative p-1.5 animate-in zoom-in-95 duration-500">
+                <img
+                  src="/onboard2.svg"
+                  alt="Onboarding 2 - Deteksi Defisiensi Nutrisi"
+                  className="w-full h-full object-contain rounded-2xl pointer-events-none select-none"
+                />
+              </div>
+
+              {/* Title & Description */}
+              <div className="space-y-2 max-w-[320px] mx-auto px-1">
+                <div>
+                  <span className="inline-block px-3.5 py-1 rounded-full bg-blue-50 text-ford-blue text-[10.5px] font-bold border border-blue-200/70 tracking-wide shadow-2xs">
+                    Deteksi Defisiensi Nutrisi
+                  </span>
+                </div>
+
+                <h1 className="text-[21px] font-black text-ford-blue tracking-tight leading-snug">
+                  Deteksi Cerdas Kebutuhan Gizi
+                </h1>
+
+                <p className="text-[12.5px] font-medium text-blue-gray leading-relaxed">
+                  Tidak perlu menebak-nebak. Analisis defisiensi nutrisi tubuh Anda secara akurat melalui teknologi pindaian cerdas (Computer Vision) dan kuesioner interaktif berbasis Generative AI.
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Controls: 3-Step Indicator & Next Button */}
+            <div className="pt-3 pb-1 border-t border-slate-200/60 z-10 space-y-2.5">
+              <div className="flex items-center justify-between">
+                {/* Stepper Dots Indicator (Step 2 Active) */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding1")}
+                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
+                    title="Onboarding 1"
+                    aria-label="Onboarding 1"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding2")}
+                    className="w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs cursor-pointer"
+                    title="Onboarding 2"
+                    aria-label="Onboarding 2"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding3")}
+                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
+                    title="Onboarding 3"
+                    aria-label="Onboarding 3"
+                  />
+                </div>
+
+                {/* Next Step Button */}
+                <button
+                  type="button"
+                  onClick={() => setCurrentScreen("onboarding3")}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12.5px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                >
+                  <span>Lanjut</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Version Footer */}
+              <div className="pt-0.5">
+                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
+                  v1.0.0 • Kcal Gresik
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ═════════════════════════════════════════════════════════ */}
+        {/* 2C. SCREEN: ONBOARDING 03 (Rekomendasi Menu Bergizi)      */}
+        {/* ═════════════════════════════════════════════════════════ */}
+        {currentScreen === "onboarding3" && (
+          <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F4FDF9] to-[#F8FAFC] flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
+            {/* Top Bar: Brand Badge & Skip Button */}
+            <div className="relative z-10 flex items-center justify-between pt-1">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-xs">
+                <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
+                <span className="text-[12px] font-black text-ford-blue tracking-tight">Kcal</span>
+              </div>
+
+              <button
+                onClick={() => setCurrentScreen("login")}
+                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-slate-50 text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+              >
+                Lewati
+              </button>
+            </div>
+
+            {/* Central Onboarding Illustration (onboard3.svg) */}
+            <div className="my-auto py-2 flex flex-col items-center justify-center space-y-4">
+              <div className="w-full max-w-[310px] aspect-[914/885] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 bg-white relative p-1.5 animate-in zoom-in-95 duration-500">
+                <img
+                  src="/onboard3.svg"
+                  alt="Onboarding 3 - Rekomendasi Menu Bergizi"
+                  className="w-full h-full object-contain rounded-2xl pointer-events-none select-none"
+                />
+              </div>
+
+              {/* Title & Description */}
+              <div className="space-y-2 max-w-[320px] mx-auto px-1">
+                <div>
+                  <span className="inline-block px-3.5 py-1 rounded-full bg-amber-50 text-ford-blue text-[10.5px] font-bold border border-amber-200/80 tracking-wide shadow-2xs">
+                    Rekomendasi Menu Bergizi
+                  </span>
+                </div>
+
+                <h1 className="text-[21px] font-black text-ford-blue tracking-tight leading-snug">
+                  Menu Bergizi Khusus Untuk Anda
+                </h1>
+
+                <p className="text-[12.5px] font-medium text-blue-gray leading-relaxed">
+                  Dapatkan rekomendasi Makan Bergizi Gratis yang dipersonalisasi. Sistem AI kami akan merancang menu lezat yang disesuaikan persis dengan kebutuhan gizi unik harian Anda.
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Controls: 3-Step Indicator & Start Button */}
+            <div className="pt-3 pb-1 border-t border-slate-200/60 z-10 space-y-2.5">
+              <div className="flex items-center justify-between">
+                {/* Stepper Dots Indicator (Step 3 Active) */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding1")}
+                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
+                    title="Onboarding 1"
+                    aria-label="Onboarding 1"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding2")}
+                    className="w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"
+                    title="Onboarding 2"
+                    aria-label="Onboarding 2"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen("onboarding3")}
+                    className="w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs cursor-pointer"
+                    title="Onboarding 3"
+                    aria-label="Onboarding 3"
                   />
                 </div>
 
