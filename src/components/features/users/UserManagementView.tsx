@@ -43,6 +43,7 @@ import {
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 import { useAuth } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { parseClientUserAgent } from "@/utils/userAgentParser";
 
 export const UserManagementView: React.FC = () => {
   const { user: activeAuthUser } = useAuth();
@@ -680,6 +681,7 @@ export const UserManagementView: React.FC = () => {
                     const isActive = log.status === "active";
                     const isRevoked = log.status === "revoked";
                     const userInitials = log.name ? log.name.slice(0, 2).toUpperCase() : "US";
+                    const clientInfo = parseClientUserAgent(log.userAgent);
 
                     return (
                       <tr key={log.id} className="hover:bg-slate-50 divide-x divide-slate-100 transition-colors">
@@ -741,15 +743,15 @@ export const UserManagementView: React.FC = () => {
                         <td className="py-2.5 px-4 text-ford-blue font-medium text-[12px]">
                           {log.districtLabel || "Kabupaten Gresik"}
                         </td>
-                        <td className="py-2.5 px-4 max-w-xs text-[10.5px] text-blue-gray font-mono">
+                        <td className="py-2.5 px-4 max-w-xs text-[11.5px] text-ford-blue font-medium">
                           <div className="flex items-center gap-1.5">
-                            {isMobileDevice ? (
+                            {clientInfo.deviceType === "mobile" || clientInfo.deviceType === "tablet" ? (
                               <Smartphone className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                             ) : (
                               <Laptop className="w-3.5 h-3.5 text-ford-blue shrink-0" />
                             )}
-                            <span className="truncate" title={log.userAgent || "Web Browser"}>
-                              {isMobileDevice ? "PWA Mobile App" : log.userAgent || "Browser Web"}
+                            <span className="truncate text-[11px] font-medium" title={log.userAgent}>
+                              {clientInfo.shortLabel}
                             </span>
                           </div>
                         </td>
@@ -1281,29 +1283,42 @@ export const UserManagementView: React.FC = () => {
               </div>
 
               {/* User Agent / Device Details */}
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10.5px] font-bold text-slate-400">Informasi Klien / Perangkat:</span>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-light-sea-green">
-                    {(viewingLog.userAgent || "").toLowerCase().includes("mobile") ||
-                    (viewingLog.userAgent || "").toLowerCase().includes("android") ||
-                    (viewingLog.userAgent || "").toLowerCase().includes("iphone") ? (
-                      <>
-                        <Smartphone className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Mobile App (PWA)</span>
-                      </>
-                    ) : (
-                      <>
-                        <Laptop className="w-3.5 h-3.5 text-ford-blue" />
-                        <span>Web Browser (Desktop)</span>
-                      </>
-                    )}
-                  </span>
-                </div>
-                <div className="p-2 rounded-lg bg-white border border-slate-200 text-[10.5px] font-mono text-slate-600 break-all">
-                  {viewingLog.userAgent || "Tidak ada metadata user agent."}
-                </div>
-              </div>
+              {(() => {
+                const modalClient = parseClientUserAgent(viewingLog.userAgent);
+                return (
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-500">Rincian Perangkat & Peramban Web:</span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-white text-ford-blue border border-slate-200 shadow-2xs">
+                        {modalClient.deviceType === "mobile" || modalClient.deviceType === "tablet" ? (
+                          <Smartphone className="w-3 h-3 text-emerald-600" />
+                        ) : (
+                          <Laptop className="w-3 h-3 text-ford-blue" />
+                        )}
+                        <span>{modalClient.fullLabel}</span>
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-[11px]">
+                      <div className="p-2 rounded-xl bg-white border border-slate-100">
+                        <span className="text-[10px] text-slate-400 block font-bold">Sistem Operasi:</span>
+                        <span className="font-bold text-ford-blue">{modalClient.os}</span>
+                      </div>
+                      <div className="p-2 rounded-xl bg-white border border-slate-100">
+                        <span className="text-[10px] text-slate-400 block font-bold">Aplikasi Browser:</span>
+                        <span className="font-bold text-ford-blue">{modalClient.browser}</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] font-bold text-slate-400 block mb-1">Raw User Agent Header:</span>
+                      <div className="p-2 rounded-xl bg-white border border-slate-200 text-[10px] font-mono text-slate-600 break-all select-all">
+                        {viewingLog.userAgent || "Tidak ada data user agent"}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Modal Actions */}
