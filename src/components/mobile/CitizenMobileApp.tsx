@@ -934,7 +934,7 @@ export const CitizenMobileApp: React.FC = () => {
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "onboarding" && (
           <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F4FDF9] to-[#FFFFFF] flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
-            {/* Dynamic Time-of-Day Moving Ambient Vitality Glow (Pagi / Siang / Sore / Malam) */}
+            {/* Dynamic Time-of-Day Ambient Vitality Glow & Micro-Animations */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
               {/* Primary Pulsing Ambient Glow Orb */}
               <div 
@@ -944,6 +944,17 @@ export const CitizenMobileApp: React.FC = () => {
               <div 
                 className={`absolute top-[36%] left-[32%] -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-gradient-to-br ${getOnboardingGlowClasses().secondary} blur-2xl animate-bounce [animation-duration:8s] opacity-75`} 
               />
+
+              {/* Concentric Vitality Rings (Subtle Health Pulse & Slow Rotation) */}
+              <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60 rounded-full border border-green-02/15 animate-spin [animation-duration:45s]" />
+              <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full border border-dashed border-light-sea-green/15 animate-spin [animation-duration:60s] [animation-direction:reverse]" />
+
+              {/* Floating Minimalist Sparkle & Plus Micro-Accents */}
+              <div className="absolute top-[18%] left-[18%] text-green-02/40 text-[13px] font-mono animate-pulse [animation-duration:3s]">✦</div>
+              <div className="absolute top-[22%] right-[16%] text-light-sea-green/50 text-[15px] font-bold animate-bounce [animation-duration:4.5s]">+</div>
+              <div className="absolute top-[42%] left-[14%] w-2 h-2 rounded-full bg-amber-400/30 animate-pulse [animation-duration:2.5s]" />
+              <div className="absolute top-[44%] right-[15%] text-ford-blue/25 text-[11px] font-mono animate-bounce [animation-duration:5.5s]">✦</div>
+              <div className="absolute top-[12%] right-[35%] w-1.5 h-1.5 rounded-full bg-green-02/35 animate-ping [animation-duration:4s]" />
             </div>
 
             {/* Top Bar: Only Skip Button (Right-Aligned) */}
