@@ -1011,28 +1011,44 @@ export const CitizenMobileApp: React.FC = () => {
               </div>
             </div>
 
-            {/* Bottom Controls: 3-Step Indicator & Action Button (No version footer) */}
-            <div className="pt-3 pb-2 border-t border-slate-100 z-10">
-              <div className="flex items-center justify-between">
-                {/* Stepper Dots Indicator (Slide 1, 2, 3) */}
-                <div className="flex items-center gap-2">
-                  {[0, 1, 2].map((idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setOnboardingIndex(idx)}
-                      className={`transition-all duration-300 shadow-2xs cursor-pointer ${
-                        onboardingIndex === idx
-                          ? "w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green"
-                          : "w-2.5 h-2.5 rounded-full bg-slate-200 hover:bg-slate-300"
-                      }`}
-                      title={`Halaman ${idx + 1}`}
-                      aria-label={`Halaman ${idx + 1}`}
-                    />
-                  ))}
-                </div>
+            {/* Bottom Controls: Centered Stepper Dots Top, Back Arrow Left, Next/Start Right */}
+            <div className="pt-3 pb-2 border-t border-slate-100 z-10 space-y-3">
+              {/* Stepper Dots Indicator (Centered Top) */}
+              <div className="flex items-center justify-center gap-2">
+                {[0, 1, 2].map((idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setOnboardingIndex(idx)}
+                    className={`transition-all duration-300 shadow-2xs cursor-pointer ${
+                      onboardingIndex === idx
+                        ? "w-6 h-2.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green"
+                        : "w-2.5 h-2.5 rounded-full bg-slate-200 hover:bg-slate-300"
+                    }`}
+                    title={`Halaman ${idx + 1}`}
+                    aria-label={`Halaman ${idx + 1}`}
+                  />
+                ))}
+              </div>
 
-                {/* Next or Start Button */}
+              {/* Navigation Actions Row */}
+              <div className="flex items-center justify-between">
+                {/* Left: Back Arrow Button */}
+                {onboardingIndex > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => setOnboardingIndex((prev) => Math.max(prev - 1, 0))}
+                    className="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 text-ford-blue font-bold shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+                    title="Kembali ke halaman sebelumnya"
+                    aria-label="Kembali"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <div className="w-10 h-10" />
+                )}
+
+                {/* Right: Next or Start Button */}
                 {onboardingIndex < 2 ? (
                   <button
                     type="button"
@@ -2591,8 +2607,8 @@ export const CitizenMobileApp: React.FC = () => {
           </div>
         )}
 
-        {/* ═══ FLOATING PWA / APK INSTALL BANNER ═══ */}
-        {showInstallBanner && !isStandalone && (
+        {/* ═══ FLOATING PWA / APK INSTALL BANNER (Only after onboarding) ═══ */}
+        {showInstallBanner && !isStandalone && currentScreen !== "splash" && currentScreen !== "onboarding" && (
           <div className="absolute bottom-3 left-3 right-3 z-50 bg-ford-blue/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-green-02/30 flex items-center justify-between gap-2 animate-in slide-in-from-bottom-5 duration-300 font-sans">
             <div className="flex items-center gap-2.5 min-w-0">
               <img src="/logo_app.svg" alt="Kcal" className="w-8 h-8 rounded-xl shadow-xs shrink-0" />
