@@ -23,6 +23,7 @@ import {
   Camera,
   Check,
   ArrowLeft,
+  ArrowRight,
   X,
   KeyRound,
   Wifi,
@@ -47,12 +48,12 @@ import {
   resetCitizenPasswordInFirestore,
 } from "@/services/firebase-service";
 
-type AppScreen = "splash" | "login" | "register" | "forgot_password" | "main";
+type AppScreen = "splash" | "splash1" | "splash2" | "login" | "register" | "forgot_password" | "main";
 type MobileTab = "home" | "menu" | "screening" | "ai_chat" | "profile" | "complaint";
 
 export const CitizenMobileApp: React.FC = () => {
   // Screen state
-  const [currentScreen, setCurrentScreen] = useState<AppScreen>("splash");
+  const [currentScreen, setCurrentScreen] = useState<AppScreen>("splash1");
   const [activeTab, setActiveTab] = useState<MobileTab>("home");
 
   // Authenticated Citizen User State
@@ -77,7 +78,7 @@ export const CitizenMobileApp: React.FC = () => {
       }
 
       const savedScreen = sessionStorage.getItem("kcal_citizen_screen") as AppScreen;
-      if (savedScreen && savedScreen !== "splash") {
+      if (savedScreen && !["splash", "splash1", "splash2"].includes(savedScreen)) {
         setCurrentScreen(savedScreen);
       }
 
@@ -90,7 +91,7 @@ export const CitizenMobileApp: React.FC = () => {
 
   // Sync screen changes to sessionStorage
   useEffect(() => {
-    if (currentScreen !== "splash") {
+    if (!["splash", "splash1", "splash2"].includes(currentScreen)) {
       sessionStorage.setItem("kcal_citizen_screen", currentScreen);
     }
   }, [currentScreen]);
@@ -436,15 +437,20 @@ export const CitizenMobileApp: React.FC = () => {
     }
   };
 
-  // ═══ 1. SPLASH SCREEN EFFECT (Auto transitions after 2.4s) ═══
+  // ═══ 1. SPLASH SCREEN EFFECT (Auto transitions: Splash 1 -> Splash 2 -> Login) ═══
   useEffect(() => {
-    if (currentScreen === "splash") {
+    if (currentScreen === "splash" || currentScreen === "splash1") {
       const timer = setTimeout(() => {
-        setCurrentScreen("login");
-      }, 2400);
+        setCurrentScreen("splash2");
+      }, 2800);
+      return () => clearTimeout(timer);
+    } else if (currentScreen === "splash2") {
+      const timer = setTimeout(() => {
+        setCurrentScreen(citizenUser ? "main" : "login");
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [currentScreen]);
+  }, [currentScreen, citizenUser]);
 
   // Handle Login with Cloud Firestore
   const handleLogin = async (e: React.FormEvent) => {
@@ -820,52 +826,133 @@ export const CitizenMobileApp: React.FC = () => {
         </div>
 
         {/* ═════════════════════════════════════════════════════════ */}
-        {/* 1. SCREEN: SPLASH SCREEN (Centered Logo & Native Vibes)  */}
+        {/* 1A. SCREEN: SPLASH SCREEN 01 (Screening & Deteksi Gizi)   */}
         {/* ═════════════════════════════════════════════════════════ */}
-        {currentScreen === "splash" && (
-          <div 
-            onClick={() => setCurrentScreen("login")}
-            className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-green-tint/40 to-[#F8FAFC] flex flex-col items-center justify-center p-5 text-center animate-in fade-in duration-300 cursor-pointer select-none font-sans"
-          >
-            <div className="space-y-4 flex flex-col items-center">
-              {/* App Logo with Pulse Ring */}
-              <div className="relative">
-                <div className="absolute -inset-3 rounded-3xl bg-green-02/25 blur-lg animate-pulse"></div>
+        {(currentScreen === "splash" || currentScreen === "splash1") && (
+          <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F0FDF9] to-[#F8FAFC] flex flex-col justify-between p-5 text-center animate-in fade-in duration-300 select-none font-sans relative overflow-hidden">
+            {/* Top Bar: Brand Badge & Skip */}
+            <div className="flex items-center justify-between pt-1 z-10">
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/90 border border-slate-200 shadow-2xs backdrop-blur-xs">
+                <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
+                <span className="text-[11px] font-black text-ford-blue tracking-tight">Kcal</span>
+              </div>
+
+              <button
+                onClick={() => setCurrentScreen("login")}
+                className="px-3 py-1 rounded-full bg-white/90 hover:bg-slate-100 text-ford-blue font-bold text-[11px] border border-slate-200 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+              >
+                Lewati
+              </button>
+            </div>
+
+            {/* Central Graphic (Plascreen 01.svg) */}
+            <div className="my-auto py-3 flex flex-col items-center justify-center space-y-3.5">
+              <div className="w-full max-w-[310px] aspect-[414/460] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 bg-white relative p-1 animate-in zoom-in-95 duration-500">
                 <img
-                  src="/logo_app.svg"
-                  alt="Kcal Logo"
-                  className="w-16 h-16 rounded-2xl shadow-lg relative z-10 animate-in zoom-in-75 duration-500"
+                  src="/Plascreen 01.svg"
+                  alt="Splash 1 - Deteksi Gizi"
+                  className="w-full h-full object-contain rounded-2xl pointer-events-none select-none"
                 />
               </div>
 
-              {/* Title & Tagline */}
-              <div className="space-y-1.5 relative z-10 max-w-[260px]">
-                <h1 className="text-[24px] font-bold text-ford-blue tracking-tight">
-                  Kcal
+              {/* Title & Description */}
+              <div className="space-y-1.5 max-w-[300px] mx-auto px-1">
+                <h1 className="text-[19px] font-black text-ford-blue tracking-tight leading-snug">
+                  Deteksi & Pantau Gizi Balita
                 </h1>
                 <p className="text-[11.5px] font-medium text-blue-gray leading-relaxed">
-                  &ldquo;Smart screening awal indikasi malnutrisi anak melalui analisis visual pertumbuhan & kuesioner interaktif AI&rdquo;
+                  Screening mandiri indikasi malnutrisi anak berbasis parameter antropometri Kemenkes RI & kecerdasan buatan.
                 </p>
                 <div className="pt-0.5">
-                  <span className="inline-block px-3 py-0.5 rounded-full bg-green-tint text-ford-blue text-[9.5px] font-bold border border-green-02/40 tracking-wide">
-                    Ginofest 2026
+                  <span className="inline-block px-3 py-0.5 rounded-full bg-green-tint text-ford-blue text-[9.5px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
+                    Ginofest 2026 • Inovasi MBG Gresik
                   </span>
                 </div>
               </div>
+            </div>
 
-              {/* Subtle Loading Dots */}
-              <div className="flex items-center gap-1.5 pt-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-02 animate-bounce [animation-delay:-0.3s]"></div>
-                <div className="w-1.5 h-1.5 rounded-full bg-light-sea-green animate-bounce [animation-delay:-0.15s]"></div>
-                <div className="w-1.5 h-1.5 rounded-full bg-ford-blue animate-bounce"></div>
+            {/* Bottom Controls: Dots Indicator & Next Button */}
+            <div className="flex items-center justify-between pt-3 pb-1 border-t border-slate-200/60 z-10">
+              {/* Stepper Dots Indicator */}
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-2 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs" />
+                <div className="w-2 h-2 rounded-full bg-slate-300 transition-all duration-300" />
               </div>
 
-              {/* Version Text below Loading Dots */}
-              <div className="pt-1.5">
-                <span className="text-[10px] font-bold text-blue-gray/60 tracking-wider">
-                  v1.0.0
-                </span>
+              {/* Next Step Button */}
+              <button
+                onClick={() => setCurrentScreen("splash2")}
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12px] shadow-xs hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Lanjut</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ═════════════════════════════════════════════════════════ */}
+        {/* 1B. SCREEN: SPLASH SCREEN 02 (Rekomendasi Menu MBG Lokal) */}
+        {/* ═════════════════════════════════════════════════════════ */}
+        {currentScreen === "splash2" && (
+          <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F0FDF9] to-[#F8FAFC] flex flex-col justify-between p-5 text-center animate-in fade-in duration-300 select-none font-sans relative overflow-hidden">
+            {/* Top Bar: Brand Badge & Skip */}
+            <div className="flex items-center justify-between pt-1 z-10">
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/90 border border-slate-200 shadow-2xs backdrop-blur-xs">
+                <img src="/logo_app.svg" alt="Kcal" className="w-4 h-4 rounded-md" />
+                <span className="text-[11px] font-black text-ford-blue tracking-tight">Kcal</span>
               </div>
+
+              <button
+                onClick={() => setCurrentScreen("login")}
+                className="px-3 py-1 rounded-full bg-white/90 hover:bg-slate-100 text-ford-blue font-bold text-[11px] border border-slate-200 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+              >
+                Lewati
+              </button>
+            </div>
+
+            {/* Central Graphic (Plascreen 02.svg) */}
+            <div className="my-auto py-3 flex flex-col items-center justify-center space-y-3.5">
+              <div className="w-full max-w-[310px] aspect-[414/460] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 bg-white relative p-1 animate-in zoom-in-95 duration-500">
+                <img
+                  src="/Plascreen 02.svg"
+                  alt="Splash 2 - Menu MBG Lokal"
+                  className="w-full h-full object-contain rounded-2xl pointer-events-none select-none"
+                />
+              </div>
+
+              {/* Title & Description */}
+              <div className="space-y-1.5 max-w-[300px] mx-auto px-1">
+                <h1 className="text-[19px] font-black text-ford-blue tracking-tight leading-snug">
+                  Rekomendasi Menu MBG Lokal
+                </h1>
+                <p className="text-[11.5px] font-medium text-blue-gray leading-relaxed">
+                  Susun dan pantau pemenuhan gizi seimbang harian berbasis komoditas pangan pasar lokal 18 kecamatan Gresik.
+                </p>
+                <div className="pt-0.5">
+                  <span className="inline-block px-3 py-0.5 rounded-full bg-green-tint text-ford-blue text-[9.5px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
+                    Formula 5 Bintang Kemenkes • Teruji Gizi
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Controls: Dots Indicator & Start Button */}
+            <div className="flex items-center justify-between pt-3 pb-1 border-t border-slate-200/60 z-10">
+              {/* Stepper Dots Indicator */}
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-slate-300 transition-all duration-300" />
+                <div className="w-6 h-2 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green transition-all duration-300 shadow-2xs" />
+              </div>
+
+              {/* Start Button */}
+              <button
+                onClick={() => setCurrentScreen("login")}
+                className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12px] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Mulai Sekarang</span>
+              </button>
             </div>
           </div>
         )}
