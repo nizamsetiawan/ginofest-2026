@@ -254,7 +254,7 @@ export const BackupSnapshotView: React.FC = () => {
     return (
       <div className="p-8 text-center bg-white rounded-3xl border border-red-200 shadow-sm space-y-3">
         <Lock className="w-12 h-12 text-red-500 mx-auto" />
-        <h2 className="text-[18px] font-bold text-[#071e49]">Akses Khusus Super Admin</h2>
+        <h2 className="text-[18px] font-bold text-[#2C3968]">Akses Khusus Super Admin</h2>
         <p className="text-[12px] text-[#64748b]">
           Brankas Backup & Snapshot hanya dapat diakses oleh Administrator Utama Kabupaten Gresik.
         </p>
@@ -276,13 +276,13 @@ export const BackupSnapshotView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <Database className="w-5 h-5" />
             </div>
-            <h1 className="text-[22px] font-black text-[#071e49] tracking-tight">
+            <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
               Brankas Backup & Snapshot
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1a73e8] text-[11px] font-bold border border-blue-200">
+            <span className="px-2.5 py-0.5 rounded-full bg-green-tint text-ford-blue text-[11px] font-bold border border-blue-200">
               {totalRecords.toLocaleString("id-ID")} Data
             </span>
           </div>
@@ -295,17 +295,17 @@ export const BackupSnapshotView: React.FC = () => {
           <button
             onClick={loadAllData}
             disabled={isLoading}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-[#071e49] text-[12px] font-bold transition-all cursor-pointer shadow-2xs disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-[#2C3968] text-[12px] font-bold transition-all cursor-pointer shadow-2xs disabled:opacity-50"
             title="Refresh Data"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-[#1a73e8]" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-light-sea-green" : ""}`} />
             <span>Refresh</span>
           </button>
         </div>
       </div>
 
       {/* Compact Full Backup CTA */}
-      <div className="bg-gradient-to-r from-[#071e49] via-[#0b2b68] to-[#1a73e8] p-5 sm:p-6 rounded-2xl text-white shadow-xs">
+      <div className="bg-gradient-to-r from-[#2C3968] via-[#0b2b68] to-[#35CBC3] p-5 sm:p-6 rounded-2xl text-white shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="space-y-1.5">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-blue-200 text-[10px] font-bold border border-white/15">
@@ -328,7 +328,7 @@ export const BackupSnapshotView: React.FC = () => {
             <button
               onClick={handleFullExcelBackup}
               disabled={isLoading}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-white text-[#071e49] font-black text-[11px] shadow-sm hover:shadow-md transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-white text-[#2C3968] font-black text-[11px] shadow-sm hover:shadow-md transition-all cursor-pointer disabled:opacity-50"
             >
               {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />}
               <span>Full Backup (.xlsx)</span>
@@ -349,28 +349,28 @@ export const BackupSnapshotView: React.FC = () => {
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
-            <h3 className="text-[14px] font-bold text-[#071e49]">
+            <h3 className="text-[14px] font-bold text-[#2C3968]">
               Daftar Tabel Master Basis Data Cloud Firestore
             </h3>
             <p className="text-[11px] text-[#64748b]">
               Ekspor dataset per tabel ke format spreadsheet Excel (.xlsx) dengan header kolom terstandarisasi.
             </p>
           </div>
-          <span className="text-[11px] font-bold text-[#1a73e8] bg-blue-50 px-3 py-1 rounded-xl border border-blue-200 self-start sm:self-auto">
+          <span className="text-[11px] font-bold text-light-sea-green bg-blue-50 px-3 py-1 rounded-xl border border-blue-200 self-start sm:self-auto">
             7 Koleksi Aktif • {totalRecords.toLocaleString("id-ID")} Total Baris
           </span>
         </div>
 
         {/* Table Container in RAG Style */}
-        <div className="overflow-x-auto rounded-xl border border-[#cbd5e1] shadow-xs">
+        <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
           <table className="w-full text-left text-[12px] border-collapse bg-white">
             <thead className="sticky top-0 z-10 shadow-xs">
-              <tr className="bg-[#1a73e8] text-white font-bold divide-x divide-blue-400">
-                <th className="py-2.5 px-3 w-12 text-center border-blue-400">No</th>
-                <th className="py-2.5 px-4 border-blue-400 font-bold">Nama Koleksi Dataset</th>
-                <th className="py-2.5 px-4 border-blue-400 w-48 font-bold">Koleksi Firestore</th>
-                <th className="py-2.5 px-4 border-blue-400 text-center w-36 font-bold">Total Rekaman</th>
-                <th className="py-2.5 px-3 text-center border-blue-400 w-36 font-bold">Aksi Unduh</th>
+              <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
+                <th className="py-3 px-3 w-12 text-center text-white">No</th>
+                <th className="py-3 px-4 font-bold text-white">Nama Koleksi Dataset</th>
+                <th className="py-3 px-4 w-48 font-bold text-white">Koleksi Firestore</th>
+                <th className="py-3 px-4 text-center w-36 font-bold text-white">Total Rekaman</th>
+                <th className="py-3 px-3 text-center w-36 font-bold text-white">Aksi Unduh</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#f1f5f9]">
@@ -410,7 +410,7 @@ export const BackupSnapshotView: React.FC = () => {
                         <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${col.color}`}>
                           <Icon className="w-4 h-4" />
                         </div>
-                        <span className="font-bold text-[#071e49] text-[12px]">{col.name}</span>
+                        <span className="font-bold text-[#2C3968] text-[12px]">{col.name}</span>
                       </div>
                     </td>
                     <td className="py-2.5 px-4">
@@ -419,7 +419,7 @@ export const BackupSnapshotView: React.FC = () => {
                       </code>
                     </td>
                     <td className="py-2.5 px-4 text-center">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-[#1a73e8] border border-blue-200 tabular-nums">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-green-tint text-ford-blue border border-blue-200 tabular-nums">
                         {col.count.toLocaleString("id-ID")} baris
                       </span>
                     </td>

@@ -23,7 +23,7 @@ export const GresikIsolatedMap: React.FC<GresikIsolatedMapProps> = ({
 
   // Color mapping based on Stunting cases
   const getChoroplethColor = (cases: number, isSelected: boolean, isHovered: boolean) => {
-    if (isSelected || isHovered) return "#071e49"; // High-contrast navy when active
+    if (isSelected || isHovered) return "#2C3968"; // High-contrast navy when active
 
     if (metricMode === "stunting") {
       if (cases >= 300) return "#fef08a"; // 🟨 Sangat Tinggi (>300)
@@ -45,7 +45,7 @@ export const GresikIsolatedMap: React.FC<GresikIsolatedMapProps> = ({
   };
 
   const getBorderColor = (cases: number, isSelected: boolean) => {
-    if (isSelected) return "#071e49";
+    if (isSelected) return "#2C3968";
     if (cases >= 300) return "#ca8a04";
     if (cases >= 150) return "#2563eb";
     if (cases >= 50) return "#16a34a";
@@ -54,7 +54,7 @@ export const GresikIsolatedMap: React.FC<GresikIsolatedMapProps> = ({
 
   const getPinColor = (cases: number) => {
     if (cases >= 300) return "#eab308"; // 🟨
-    if (cases >= 150) return "#1a73e8"; // 🟦
+    if (cases >= 150) return "#35CBC3"; // 🟦
     if (cases >= 50) return "#16a34a";  // 🟩
     return "#9333ea";                   // 🟪
   };
@@ -176,7 +176,7 @@ export const GresikIsolatedMap: React.FC<GresikIsolatedMapProps> = ({
             rx="16" fill="#ffffff" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="5 5" 
           />
           <rect x="605" y="30" width="235" height="32" rx="16" fill="#e8f0fe" />
-          <text x="620" y="52" fill="#1a73e8" fontSize="11" fontWeight="bold">
+          <text x="620" y="52" fill="#35CBC3" fontSize="11" fontWeight="bold">
             🏝️ KEPULAUAN BAWEAN (GRESIK)
           </text>
         </g>
@@ -231,7 +231,7 @@ export const GresikIsolatedMap: React.FC<GresikIsolatedMapProps> = ({
                 textAnchor="middle"
                 fontSize="11"
                 fontWeight="800"
-                fill={isHighContrastActive ? "#ffffff" : "#071e49"}
+                fill={isHighContrastActive ? "#ffffff" : "#2C3968"}
                 className="pointer-events-none drop-shadow-xs select-none"
               >
                 {district.name}
@@ -245,7 +245,7 @@ export const GresikIsolatedMap: React.FC<GresikIsolatedMapProps> = ({
                   width="56"
                   height="18"
                   rx="6"
-                  fill={isHighContrastActive ? "#1a73e8" : "#ffffff"}
+                  fill={isHighContrastActive ? "#35CBC3" : "#ffffff"}
                   stroke={isHighContrastActive ? "#ffffff" : borderStroke}
                   strokeWidth="1"
                   className="shadow-xs"
@@ -256,7 +256,7 @@ export const GresikIsolatedMap: React.FC<GresikIsolatedMapProps> = ({
                   textAnchor="middle"
                   fontSize="10"
                   fontWeight="800"
-                  fill={isHighContrastActive ? "#ffffff" : "#071e49"}
+                  fill={isHighContrastActive ? "#ffffff" : "#2C3968"}
                   className="pointer-events-none"
                 >
                   {valueDisplay} {metricMode === "stunting" ? "ks" : "jiwa"}
@@ -279,8 +279,8 @@ export const GresikIsolatedMap: React.FC<GresikIsolatedMapProps> = ({
       </svg>
 
       {/* Floating Interactive Guide */}
-      <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-3.5 py-2 rounded-xl border border-[#e2e8f0] shadow-xs text-[11px] font-bold text-[#071e49] flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-[#1a73e8] animate-ping"></span>
+      <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-3.5 py-2 rounded-xl border border-[#e2e8f0] shadow-xs text-[11px] font-bold text-[#2C3968] flex items-center gap-2">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#35CBC3] animate-ping"></span>
         <span>Peta Tematik Stunting: Setiap kecamatan menampilkan warna & jumlah kasus langsung</span>
       </div>
     </div>

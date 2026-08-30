@@ -1064,7 +1064,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           <td style="border: 1px solid #cbd5e1; text-align: center;">${n.state || "-"}</td>
           <td style="border: 1px solid #cbd5e1; text-align: right;">${n.water ?? "-"}</td>
           <td style="border: 1px solid #cbd5e1; text-align: right; font-weight: bold;">${n.calories ?? "-"}</td>
-          <td style="border: 1px solid #cbd5e1; text-align: right; font-weight: bold; color: #1a73e8;">${n.protein ?? "-"}</td>
+          <td style="border: 1px solid #cbd5e1; text-align: right; font-weight: bold; color: #35CBC3;">${n.protein ?? "-"}</td>
           <td style="border: 1px solid #cbd5e1; text-align: right;">${n.fat ?? "-"}</td>
           <td style="border: 1px solid #cbd5e1; text-align: right;">${n.carbs ?? "-"}</td>
           <td style="border: 1px solid #cbd5e1; text-align: right;">${n.fiber ?? "-"}</td>
@@ -1096,8 +1096,8 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
       <body>
         <table border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
           <thead>
-            <tr style="background-color: #1a73e8; font-weight: bold; text-align: center; color: #ffffff;">
-              ${headerCols.map(col => `<th style="background-color: #1a73e8; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: bold; color: #ffffff;">${col}</th>`).join("")}
+            <tr style="background-color: #35CBC3; font-weight: bold; text-align: center; color: #ffffff;">
+              ${headerCols.map(col => `<th style="background-color: #35CBC3; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: bold; color: #ffffff;">${col}</th>`).join("")}
             </tr>
           </thead>
           <tbody>
@@ -1237,10 +1237,10 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
       <div className="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-2xl flex items-center justify-center p-4 select-none animate-in fade-in duration-200">
         <div className="w-full max-w-lg p-8 rounded-3xl bg-white border border-[#e2e8f0] shadow-2xl space-y-6 text-center animate-in zoom-in-95 duration-200">
           <div className="space-y-2">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shadow-xs">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center shadow-xs">
               <Lock className="w-7 h-7" />
             </div>
-            <h2 className="text-[22px] font-black text-[#071e49] tracking-tight">
+            <h2 className="text-[22px] font-black text-[#2C3968] tracking-tight">
               Autentikasi Basis Data RAG
             </h2>
             <p className="text-[12px] text-[#64748b]">
@@ -1263,8 +1263,8 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     pinError
                       ? "border-red-500 bg-red-50 text-red-900 focus:ring-2 focus:ring-red-400"
                       : digit
-                      ? "border-[#1a73e8] bg-blue-50/40 text-[#071e49] focus:ring-2 focus:ring-[#1a73e8]/30"
-                      : "border-[#cbd5e1] bg-white text-[#071e49] focus:border-[#1a73e8] focus:ring-2 focus:ring-[#1a73e8]/20"
+                      ? "border-[#35CBC3] bg-blue-50/40 text-[#2C3968] focus:ring-2 focus:ring-[#35CBC3]/30"
+                      : "border-[#cbd5e1] bg-white text-[#2C3968] focus:border-[#35CBC3] focus:ring-2 focus:ring-[#35CBC3]/20"
                   }`}
                 />
               ))}
@@ -1281,14 +1281,14 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           <div className="space-y-2 pt-1">
             <button
               onClick={() => verifyPin(pinDigits.join(""))}
-              className="w-full py-3 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[13px] font-bold shadow-xs transition-colors"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[13px] font-bold shadow-xs transition-colors"
             >
               Verifikasi & Buka Basis Data
             </button>
 
             <button
               onClick={onBackToDashboard}
-              className="w-full py-2 rounded-xl text-[12px] font-bold text-[#64748b] hover:text-[#071e49] hover:bg-slate-100 transition-colors flex items-center justify-center gap-1.5"
+              className="w-full py-2 rounded-xl text-[12px] font-bold text-[#64748b] hover:text-[#2C3968] hover:bg-slate-100 transition-colors flex items-center justify-center gap-1.5"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Kembali ke Dashboard Utama</span>
@@ -1312,7 +1312,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 bg-[#071e49] text-white rounded-2xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom duration-200 border border-slate-700">
+        <div className="fixed bottom-6 right-6 z-50 p-4 bg-[#2C3968] text-white rounded-2xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom duration-200 border border-slate-700">
           <Check className="w-5 h-5 text-emerald-400 shrink-0" />
           <span className="text-[13px] font-bold">{toastMessage}</span>
         </div>
@@ -1323,17 +1323,17 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         <div className="flex items-center gap-3">
           <button
             onClick={onBackToDashboard}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-[#071e49] border border-[#cbd5e1] text-[13px] font-bold shadow-xs transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-[#2C3968] border border-[#cbd5e1] text-[13px] font-bold shadow-xs transition-all"
           >
-            <ArrowLeft className="w-4 h-4 text-[#1a73e8]" />
+            <ArrowLeft className="w-4 h-4 text-light-sea-green" />
             <span>Kembali ke Dashboard Utama</span>
           </button>
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap">
           <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[12px] text-[#475569] shadow-2xs font-medium">
-            <Clock className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
-            <span>Terakhir Diperbarui: <strong className="text-[#071e49] font-bold">{lastUpdatedDate}</strong></span>
+            <Clock className="w-3.5 h-3.5 text-light-sea-green shrink-0" />
+            <span>Terakhir Diperbarui: <strong className="text-[#2C3968] font-bold">{lastUpdatedDate}</strong></span>
           </div>
 
           <span className="text-[11px] text-[#64748b] font-medium bg-white px-3 py-1.5 rounded-xl border border-[#e2e8f0] shadow-2xs">
@@ -1348,10 +1348,10 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#f1f5f9] pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="px-3.5 py-1 rounded-lg bg-[#1a73e8] text-white text-[13px] font-black tracking-wide uppercase shadow-xs">
+              <span className="px-3.5 py-1 rounded-lg bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[13px] font-black tracking-wide uppercase shadow-xs">
                 Sisi Pemerintah
               </span>
-              <h1 className="text-[22px] lg:text-[26px] font-black text-[#071e49] tracking-tight">
+              <h1 className="text-[22px] lg:text-[26px] font-black text-[#2C3968] tracking-tight">
                 Metode / Mekanisme AI
               </h1>
             </div>
@@ -1362,63 +1362,63 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         </div>
 
         {/* 1. Proses Pelatihan AI Badges */}
-        <div className="space-y-2.5">
-          <div className="flex items-center gap-2 text-[14px] font-black text-[#071e49]">
-            <div className="w-3 h-3 rounded-full bg-[#1a73e8]"></div>
+        <div className="space-y-2.5 font-sans">
+          <div className="flex items-center gap-2 text-[14px] font-bold text-ford-blue">
+            <div className="w-3 h-3 rounded-full bg-green-02"></div>
             <span>Proses Pelatihan AI:</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
             {/* Fine-tuning Card */}
-            <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] hover:border-[#1a73e8] flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-light-sea-green flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center font-bold shrink-0">
                   <Cpu className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-[13px] font-black text-[#071e49]">Fine-tuning</h4>
-                  <p className="text-[11px] text-[#1a73e8] font-bold leading-tight">
+                  <h4 className="text-[13px] font-bold text-ford-blue">Fine-tuning</h4>
+                  <p className="text-[11px] text-ford-blue/80 font-bold leading-tight">
                     MobileNetV3 Edge Stunting Screening
                   </p>
                 </div>
               </div>
-              <p className="text-[11px] text-[#64748b] leading-relaxed border-t border-slate-100 pt-2">
+              <p className="text-[11px] text-blue-gray leading-relaxed border-t border-slate-100 pt-2">
                 Deteksi cepat kondisi fisik dan tumbuh kembang anak untuk memetakan kebutuhan gizi di wilayah prioritas.
               </p>
             </div>
 
             {/* RAG Card */}
-            <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] hover:border-[#1a73e8] flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-light-sea-green flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center font-bold shrink-0">
                   <Search className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-[13px] font-black text-[#071e49]">Retrieval-Augmented Generation (RAG)</h4>
-                  <p className="text-[11px] text-[#1a73e8] font-bold leading-tight">
+                  <h4 className="text-[13px] font-bold text-ford-blue">Retrieval-Augmented Generation (RAG)</h4>
+                  <p className="text-[11px] text-ford-blue/80 font-bold leading-tight">
                     Pencarian 4 Data Pangan Terintegrasi
                   </p>
                 </div>
               </div>
-              <p className="text-[11px] text-[#64748b] leading-relaxed border-t border-slate-100 pt-2">
+              <p className="text-[11px] text-blue-gray leading-relaxed border-t border-slate-100 pt-2">
                 Mengambil data harga pasar, ketersediaan bahan pangan lokal, menu acuan, dan nilai gizi secara langsung.
               </p>
             </div>
 
             {/* Prompt Engineering Card */}
-            <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] hover:border-[#1a73e8] flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-light-sea-green flex flex-col justify-between gap-2.5 transition-all shadow-2xs">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center font-bold shrink-0">
                   <Sliders className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-[13px] font-black text-[#071e49]">Prompt Engineering</h4>
-                  <p className="text-[11px] text-[#1a73e8] font-bold leading-tight">
+                  <h4 className="text-[13px] font-bold text-ford-blue">Prompt Engineering</h4>
+                  <p className="text-[11px] text-ford-blue/80 font-bold leading-tight">
                     Standar Formula Menu & Pagu Biaya
                   </p>
                 </div>
               </div>
-              <p className="text-[11px] text-[#64748b] leading-relaxed border-t border-slate-100 pt-2">
+              <p className="text-[11px] text-blue-gray leading-relaxed border-t border-slate-100 pt-2">
                 Memastikan menu memenuhi prinsip 5 Bintang + Susu, cukup gizi stunting, dan tetap di bawah pagu Rp 15.000.
               </p>
             </div>
@@ -1426,66 +1426,66 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         </div>
 
         {/* 2. Interactive Flow AI */}
-        <div className="space-y-3 pt-2">
-          <div className="flex items-center gap-2 text-[14px] font-black text-[#071e49]">
-            <div className="w-3 h-3 rounded-full bg-[#1a73e8]"></div>
+        <div className="space-y-3 pt-2 font-sans">
+          <div className="flex items-center gap-2 text-[14px] font-bold text-ford-blue">
+            <div className="w-3 h-3 rounded-full bg-green-02"></div>
             <span>Flow AI:</span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center pt-1">
             {/* LEFT: 4 Inputs (Aligned with Master 1-4 Sources) */}
             <div className="lg:col-span-4 space-y-2.5">
-              <div className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
-                <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
+              <div className="p-3 rounded-2xl bg-white hover:bg-green-pale border border-slate-200 hover:border-light-sea-green flex items-center gap-3 transition-all shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center shrink-0">
                   <Fish className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
+                  <h4 className="text-[12px] font-bold text-ford-blue leading-tight">
                     Menerima data komoditas pangan daerah
                   </h4>
-                  <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
+                  <span className="text-[10px] text-blue-gray font-medium block mt-0.5">
                     Dinas Pertanian, Ketahanan Pangan, & Perikanan Kab. Gresik
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
-                <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
+              <div className="p-3 rounded-2xl bg-white hover:bg-green-pale border border-slate-200 hover:border-light-sea-green flex items-center gap-3 transition-all shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center shrink-0">
                   <Tag className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
+                  <h4 className="text-[12px] font-bold text-ford-blue leading-tight">
                     Menerima data harga pangan daerah
                   </h4>
-                  <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
+                  <span className="text-[10px] text-blue-gray font-medium block mt-0.5">
                     SISKAPERBAPO Jawa Timur
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
-                <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
+              <div className="p-3 rounded-2xl bg-white hover:bg-green-pale border border-slate-200 hover:border-light-sea-green flex items-center gap-3 transition-all shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center shrink-0">
                   <Utensils className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
+                  <h4 className="text-[12px] font-bold text-ford-blue leading-tight">
                     Menerima data menu makanan
                   </h4>
-                  <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
+                  <span className="text-[10px] text-blue-gray font-medium block mt-0.5">
                     Kementerian Kesehatan Republik Indonesia (Kemenkes RI)
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white hover:bg-[#f8fafd] border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
-                <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
+              <div className="p-3 rounded-2xl bg-white hover:bg-green-pale border border-slate-200 hover:border-light-sea-green flex items-center gap-3 transition-all shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center shrink-0">
                   <ClipboardCheck className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
+                  <h4 className="text-[12px] font-bold text-ford-blue leading-tight">
                     Menerima data angka gizi daerah
                   </h4>
-                  <span className="text-[10px] text-[#64748b] font-medium block mt-0.5">
+                  <span className="text-[10px] text-blue-gray font-medium block mt-0.5">
                     Tabel Komposisi Pangan Indonesia (TKPI 2019) Kemenkes RI
                   </span>
                 </div>
@@ -1493,56 +1493,56 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             </div>
 
             {/* CENTER: Main AI Engine Node */}
-            <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 rounded-3xl bg-[#f0f7ff] border-2 border-[#1a73e8] text-center space-y-3 shadow-sm">
-              <div className="w-12 h-12 rounded-full bg-[#1a73e8] text-white flex items-center justify-center shadow-md">
+            <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 rounded-3xl bg-green-pale border-2 border-light-sea-green text-center space-y-3 shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold flex items-center justify-center shadow-md">
                 <Utensils className="w-6 h-6" />
               </div>
-              <h3 className="text-[14px] font-black text-[#071e49] leading-tight">
+              <h3 className="text-[14px] font-bold text-ford-blue leading-tight">
                 Generate menu-menu teroptimal untuk suatu daerah
               </h3>
-              <p className="text-[11px] text-[#64748b] leading-relaxed">
+              <p className="text-[11px] text-blue-gray leading-relaxed">
                 Menggabungkan keempat data untuk menghasilkan pilihan menu-menu teroptimal untuk suatu daerah beserta harga anggaran untuk menu tersebut.
               </p>
-              <span className="text-[10px] font-bold text-[#1a73e8] bg-white px-3 py-0.5 rounded-full border border-[#dbeafe] shadow-2xs">
+              <span className="text-[10px] font-bold text-ford-blue bg-white px-3 py-1 rounded-full border border-green-02/40 shadow-2xs">
                 100% Autonomous LLM Grounding
               </span>
             </div>
 
             {/* RIGHT: 3 Outputs */}
             <div className="lg:col-span-4 space-y-2.5">
-              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
-                <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
+              <div className="p-3 rounded-2xl bg-white border border-slate-200 hover:border-light-sea-green flex items-center gap-3 transition-all shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center shrink-0">
                   <Calendar className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
+                  <h4 className="text-[12px] font-bold text-ford-blue leading-tight">
                     Generate rekomendasi pembuatan menu untuk satu minggu kedepan
                   </h4>
-                  <span className="text-[10px] text-[#64748b]">5 Hari Kerja Siklus MBG (TK - SMA)</span>
+                  <span className="text-[10px] text-blue-gray">5 Hari Kerja Siklus MBG (TK - SMA)</span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
-                <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
+              <div className="p-3 rounded-2xl bg-white border border-slate-200 hover:border-light-sea-green flex items-center gap-3 transition-all shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center shrink-0">
                   <DollarSign className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
+                  <h4 className="text-[12px] font-bold text-ford-blue leading-tight">
                     Generate anggaran yang diperlukan
                   </h4>
-                  <span className="text-[10px] text-[#64748b]">HPP Bahan Baku & Efisiensi Pagu Rp 15.000</span>
+                  <span className="text-[10px] text-blue-gray">HPP Bahan Baku & Efisiensi Pagu Rp 15.000</span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white border border-[#e2e8f0] hover:border-[#1a73e8] flex items-center gap-3 transition-all shadow-2xs">
-                <div className="w-9 h-9 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
+              <div className="p-3 rounded-2xl bg-white border border-slate-200 hover:border-light-sea-green flex items-center gap-3 transition-all shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center shrink-0">
                   <Package className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-[12px] font-bold text-[#071e49] leading-tight">
+                  <h4 className="text-[12px] font-bold text-ford-blue leading-tight">
                     Generate bahan pokok yang diperlukan
                   </h4>
-                  <span className="text-[10px] text-[#64748b]">Bill of Materials (BOM) Dapur SPPG</span>
+                  <span className="text-[10px] text-blue-gray">Bill of Materials (BOM) Dapur SPPG</span>
                 </div>
               </div>
             </div>
@@ -1560,7 +1560,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               onClick={() => setActiveDatasetTab("komoditas")}
               className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-all shrink-0 ${
                 activeDatasetTab === "komoditas"
-                  ? "bg-[#1a73e8] text-white shadow-xs"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                   : "text-[#475569] hover:bg-slate-100"
               }`}
             >
@@ -1570,7 +1570,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               onClick={() => setActiveDatasetTab("harga")}
               className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-all shrink-0 ${
                 activeDatasetTab === "harga"
-                  ? "bg-[#1a73e8] text-white shadow-xs"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                   : "text-[#475569] hover:bg-slate-100"
               }`}
             >
@@ -1580,7 +1580,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               onClick={() => setActiveDatasetTab("menu")}
               className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-all shrink-0 ${
                 activeDatasetTab === "menu"
-                  ? "bg-[#1a73e8] text-white shadow-xs"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                   : "text-[#475569] hover:bg-slate-100"
               }`}
             >
@@ -1590,7 +1590,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               onClick={() => setActiveDatasetTab("gizi")}
               className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-all shrink-0 ${
                 activeDatasetTab === "gizi"
-                  ? "bg-[#1a73e8] text-white shadow-xs"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                   : "text-[#475569] hover:bg-slate-100"
               }`}
             >
@@ -1600,7 +1600,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               onClick={() => setActiveDatasetTab("wilayah")}
               className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-all shrink-0 ${
                 activeDatasetTab === "wilayah"
-                  ? "bg-[#1a73e8] text-white shadow-xs"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                   : "text-[#475569] hover:bg-slate-100"
               }`}
             >
@@ -1612,16 +1612,16 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           <div className="flex items-center gap-2 self-end xl:self-auto shrink-0">
             <button
               onClick={() => handleDownloadExcelTemplate(activeDatasetTab)}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] border border-[#cbd5e1] transition-all shadow-2xs"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] border border-[#cbd5e1] transition-all shadow-2xs"
               title="Download Template Excel (.XLS)"
               aria-label="Download Template Excel (.XLS)"
             >
-              <Download className="w-4 h-4 text-[#1a73e8]" />
+              <Download className="w-4 h-4 text-light-sea-green" />
             </button>
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="p-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white transition-colors shadow-xs"
+              className="p-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue transition-colors shadow-xs"
               title="Upload File Excel / CSV"
               aria-label="Upload File Excel / CSV"
             >
@@ -1635,7 +1635,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           <div className="space-y-4">
             {/* Header */}
             <div>
-              <h3 className="text-[15px] font-bold text-[#071e49]">
+              <h3 className="text-[15px] font-bold text-[#2C3968]">
                 Tabel Master 1: Komoditas Pangan Kabupaten Gresik
               </h3>
               <p className="text-[11px] text-[#64748b]">
@@ -1652,13 +1652,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   placeholder="Cari kecamatan atau nama bahan pangan..."
                   value={commoditySearchQuery}
                   onChange={(e) => setCommoditySearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#1a73e8] shadow-2xs"
+                  className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#35CBC3] shadow-2xs"
                 />
               </div>
 
               {/* Clean Category Dropdown Filter with Custom Sleek Chevron Icon */}
               <div className="flex items-center gap-2 shrink-0">
-                <label htmlFor="category-select" className="text-[12px] font-bold text-[#071e49] hidden md:inline">
+                <label htmlFor="category-select" className="text-[12px] font-bold text-[#2C3968] hidden md:inline">
                   Filter Kategori:
                 </label>
                 <div className="relative">
@@ -1666,7 +1666,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     id="category-select"
                     value={selectedCategoryFilter}
                     onChange={(e) => setSelectedCategoryFilter(e.target.value)}
-                    className="appearance-none pl-3.5 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[12px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                    className="appearance-none pl-3.5 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[12px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
                   >
                     <option value="Semua">Semua</option>
                     <option value="Karbohidrat">Karbohidrat</option>
@@ -1686,13 +1686,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             <div className="overflow-x-auto overflow-y-auto max-h-[460px] rounded-xl border border-[#cbd5e1] shadow-xs">
               <table className="w-full text-left text-[12px] border-collapse bg-white">
                 <thead className="sticky top-0 z-10 shadow-xs">
-                  <tr className="bg-[#1a73e8] text-white font-bold divide-x divide-blue-400">
-                    <th className="py-2.5 px-3 w-12 text-center border-blue-400">No</th>
-                    <th className="py-2.5 px-4 border-blue-400 w-44 font-bold">Kecamatan</th>
-                    <th className="py-2.5 px-4 border-blue-400 font-bold">
+                  <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
+                    <th className="py-3 px-3 w-12 text-center text-white">No</th>
+                    <th className="py-3 px-4 w-44 font-bold text-white">Kecamatan</th>
+                    <th className="py-3 px-4 font-bold text-white">
                       Komoditas Pangan Tersedia {selectedCategoryFilter !== "Semua" ? `(${selectedCategoryFilter})` : "(Pasar / Petani Lokal)"}
                     </th>
-                    <th className="py-2.5 px-3 text-center border-blue-400 w-24 font-bold">Aksi</th>
+                    <th className="py-3 px-3 text-center w-24 font-bold text-white">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f1f5f9]">
@@ -1731,7 +1731,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                       return (
                         <tr key={d.no} className="hover:bg-slate-50 divide-x divide-slate-100">
                           <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">{d.no}</td>
-                          <td className="py-2.5 px-4 font-bold text-[#071e49]">
+                          <td className="py-2.5 px-4 font-bold text-[#2C3968]">
                             {d.name}
                             <span className="block text-[10px] text-slate-400 font-normal mt-0.5">
                               {d.activeItems.length} Bahan {selectedCategoryFilter !== "Semua" ? selectedCategoryFilter : "Terdata"}
@@ -1742,10 +1742,10 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                               {displayItems.map((item, idx) => (
                                 <span
                                   key={idx}
-                                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border ${
+                                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border ${
                                     selectedCategoryFilter !== "Semua"
-                                      ? "bg-blue-50/70 text-[#1a73e8] border-blue-200"
-                                      : "bg-slate-100 text-[#071e49] border-slate-200"
+                                      ? "bg-green-tint text-ford-blue border-green-02/30"
+                                      : "bg-slate-100 text-ford-blue border-slate-200"
                                   }`}
                                 >
                                   {item}
@@ -1755,7 +1755,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                               {remainingCount > 0 && (
                                 <button
                                   onClick={() => setSelectedDistrictModal(d)}
-                                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1a73e8] border border-blue-200 text-[11px] font-bold transition-colors cursor-pointer flex items-center gap-1"
+                                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-green-tint text-ford-blue border border-blue-200 text-[11px] font-bold transition-colors cursor-pointer flex items-center gap-1"
                                 >
                                   <span>+{remainingCount} bahan lainnya</span>
                                   <Eye className="w-3 h-3" />
@@ -1764,10 +1764,10 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                             </div>
                           </td>
                           <td className="py-2.5 px-3 text-center">
-                            <div className="flex items-center justify-center gap-1.5">
+                            <div className="flex items-center justify-center gap-1.5 font-sans">
                               <button
                                 onClick={() => setSelectedDistrictModal(d)}
-                                className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                                className="w-7 h-7 rounded-lg bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                                 title="Lihat semua bahan"
                               >
                                 <Eye className="w-3.5 h-3.5" />
@@ -1775,7 +1775,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                               {isMyExactDistrictRow(d.name) && (
                                 <button
                                   onClick={() => setEditingItem({ type: "komoditas", isNew: false, data: { ...d, itemsString: d.items.join(", ") } })}
-                                  className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                                  className="w-7 h-7 rounded-lg bg-blue-50 hover:bg-blue-100 text-ford-blue border border-ford-blue/20 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                                   title="Edit komoditas kecamatan"
                                 >
                                   <Edit2 className="w-3.5 h-3.5" />
@@ -1799,7 +1799,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <select
                     value={pageSize}
                     onChange={(e) => setPageSize(Number(e.target.value))}
-                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[12px] focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs"
+                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#2C3968] font-bold text-[12px] focus:outline-none focus:border-[#35CBC3] cursor-pointer shadow-2xs"
                   >
                     <option value={20}>20</option>
                     <option value={40}>40</option>
@@ -1816,7 +1816,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                   title="Halaman Sebelumnya"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -1854,8 +1854,8 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         onClick={() => setCurrentPage(num)}
                         className={`w-8 h-8 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center ${
                           isActive
-                            ? "bg-[#1a73e8] text-white shadow-2xs"
-                            : "bg-white text-[#071e49] border border-[#cbd5e1] hover:bg-slate-50"
+                            ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-2xs"
+                            : "bg-white text-[#2C3968] border border-[#cbd5e1] hover:bg-slate-50"
                         }`}
                       >
                         {num}
@@ -1867,7 +1867,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalCommodityPages))}
                   disabled={currentPage === totalCommodityPages}
-                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                   title="Halaman Selanjutnya"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -1881,7 +1881,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         {activeDatasetTab === "harga" && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-[15px] font-bold text-[#071e49] flex items-center gap-2">
+              <h3 className="text-[15px] font-bold text-[#2C3968] flex items-center gap-2">
                 <span>Tabel Master 2: Harga Harian Bahan Pokok (SISKAPERBAPO)</span>
                 <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                   Otomatis Sinkron dari Step 1 ({prices.length} Bahan Tanpa Duplikat)
@@ -1901,13 +1901,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   placeholder="Cari nama bahan pangan atau kecamatan..."
                   value={priceSearchQuery}
                   onChange={(e) => setPriceSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#1a73e8] shadow-2xs"
+                  className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#35CBC3] shadow-2xs"
                 />
               </div>
 
               {/* Category Dropdown Filter with Custom Chevron */}
               <div className="flex items-center gap-2 shrink-0">
-                <label htmlFor="price-category-select" className="text-[12px] font-bold text-[#071e49] hidden md:inline">
+                <label htmlFor="price-category-select" className="text-[12px] font-bold text-[#2C3968] hidden md:inline">
                   Filter Kategori:
                 </label>
                 <div className="relative">
@@ -1915,7 +1915,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     id="price-category-select"
                     value={priceCategoryFilter}
                     onChange={(e) => setPriceCategoryFilter(e.target.value)}
-                    className="appearance-none pl-3.5 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[12px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                    className="appearance-none pl-3.5 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[12px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
                   >
                     <option value="Semua">Semua</option>
                     <option value="Karbohidrat">Karbohidrat</option>
@@ -1935,13 +1935,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             <div className="overflow-x-auto overflow-y-auto max-h-[460px] rounded-xl border border-[#cbd5e1] shadow-xs">
               <table className="w-full text-left text-[12px] border-collapse bg-white">
                 <thead className="sticky top-0 z-10 shadow-xs">
-                  <tr className="bg-[#1a73e8] text-white font-bold divide-x divide-blue-400">
-                    <th className="py-2.5 px-3 w-12 text-center border-blue-400">No</th>
-                    <th className="py-2.5 px-4 border-blue-400 w-48 font-bold">Nama Bahan Pangan</th>
-                    <th className="py-2.5 px-4 border-blue-400 w-36 font-bold">Kategori</th>
-                    <th className="py-2.5 px-4 text-right border-blue-400 w-40 font-bold">Harga Satuan Pasar</th>
-                    <th className="py-2.5 px-4 border-blue-400 font-bold">Kecamatan</th>
-                    <th className="py-2.5 px-3 text-center border-blue-400 w-24 font-bold">Aksi</th>
+                  <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
+                    <th className="py-3 px-3 w-12 text-center text-white">No</th>
+                    <th className="py-3 px-4 w-48 font-bold text-white">Nama Bahan Pangan</th>
+                    <th className="py-3 px-4 w-36 font-bold text-white">Kategori</th>
+                    <th className="py-3 px-4 text-right w-40 font-bold text-white">Harga Satuan Pasar</th>
+                    <th className="py-3 px-4 font-bold text-white">Kecamatan</th>
+                    <th className="py-3 px-3 text-center w-24 font-bold text-white">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f1f5f9]">
@@ -1977,26 +1977,26 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   ) : (
                     paginatedPrices.map((p) => (
                       <tr key={p.no} className="hover:bg-slate-50 divide-x divide-slate-100">
-                        <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">{p.no}</td>
-                        <td className="py-2.5 px-4 font-bold text-[#071e49]">{p.item}</td>
+                        <td className="py-2.5 px-3 text-center font-bold text-blue-gray bg-slate-50/50">{p.no}</td>
+                        <td className="py-2.5 px-4 font-bold text-ford-blue">{p.item}</td>
                         <td className="py-2.5 px-4">
-                          <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-[#1a73e8] text-[11px] font-bold border border-blue-200">
+                          <span className="px-2.5 py-1 rounded-lg bg-green-tint text-ford-blue text-[11px] font-bold border border-green-02/30">
                             {p.category}
                           </span>
                         </td>
-                        <td className="py-2.5 px-4 text-right font-black text-[#1a73e8]">{p.price}</td>
-                        <td className="py-2.5 px-4 text-[#475569] font-medium">{p.districts}</td>
+                        <td className="py-2.5 px-4 text-right font-bold font-mono text-ford-blue text-[13px]">{p.price}</td>
+                        <td className="py-2.5 px-4 text-blue-gray font-medium">{p.districts}</td>
                         <td className="py-2.5 px-3 text-center">
                           {canUserEditDistrict(p.districts) ? (
                             <button
                               onClick={() => setEditingItem({ type: "harga", isNew: false, data: { ...p } })}
-                              className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                              className="w-7 h-7 rounded-lg bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105 mx-auto"
                               title="Edit harga pasar"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
                           ) : (
-                            <span className="text-[10px] text-slate-400 font-medium select-none">Read-only</span>
+                            <span className="text-[10px] text-blue-gray font-medium select-none">Read-only</span>
                           )}
                         </td>
                       </tr>
@@ -2014,7 +2014,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <select
                     value={pageSize}
                     onChange={(e) => setPageSize(Number(e.target.value))}
-                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[12px] focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs"
+                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#2C3968] font-bold text-[12px] focus:outline-none focus:border-[#35CBC3] cursor-pointer shadow-2xs"
                   >
                     <option value={20}>20</option>
                     <option value={40}>40</option>
@@ -2031,7 +2031,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                   title="Halaman Sebelumnya"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -2069,8 +2069,8 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         onClick={() => setCurrentPage(num)}
                         className={`w-8 h-8 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center ${
                           isActive
-                            ? "bg-[#1a73e8] text-white shadow-2xs"
-                            : "bg-white text-[#071e49] border border-[#cbd5e1] hover:bg-slate-50"
+                            ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-2xs"
+                            : "bg-white text-[#2C3968] border border-[#cbd5e1] hover:bg-slate-50"
                         }`}
                       >
                         {num}
@@ -2082,7 +2082,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPricePages))}
                   disabled={currentPage === totalPricePages}
-                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                   title="Halaman Selanjutnya"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -2109,9 +2109,9 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h3 className="text-[15px] font-bold text-[#071e49] flex items-center gap-2">
+                  <h3 className="text-[15px] font-bold text-[#2C3968] flex items-center gap-2">
                     <span>Tabel Master 3: Standar Menu Makanan</span>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1a73e8] border border-blue-200">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-green-tint text-ford-blue border border-blue-200">
                       Standar BGN RI & Pencegahan Stunting
                     </span>
                   </h3>
@@ -2136,7 +2136,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     type="button"
                     onClick={handleGenerateMenusAI}
                     disabled={isGeneratingMenus}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#1a73e8] border border-blue-200 text-[12px] font-bold transition-all shadow-2xs cursor-pointer disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-green-tint text-ford-blue border border-blue-200 text-[12px] font-bold transition-all shadow-2xs cursor-pointer disabled:opacity-50"
                   >
                     {isGeneratingMenus ? (
                       <>
@@ -2162,20 +2162,20 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     placeholder="Cari nama menu, sasaran, atau komposisi bahan..."
                     value={menuSearchQuery}
                     onChange={(e) => setMenuSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#1a73e8] shadow-2xs"
+                    className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#35CBC3] shadow-2xs"
                   />
                 </div>
 
                 {/* District Filter Dropdown for Menu */}
                 <div className="flex items-center gap-2 shrink-0">
-                  <label className="text-[12px] font-bold text-[#071e49] hidden md:inline">
+                  <label className="text-[12px] font-bold text-[#2C3968] hidden md:inline">
                     Filter Wilayah:
                   </label>
                   <div className="relative">
                     <select
                       value={menuDistrictFilter}
                       onChange={(e) => setMenuDistrictFilter(e.target.value)}
-                      className="appearance-none pl-3.5 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[12px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                      className="appearance-none pl-3.5 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[12px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
                     >
                       <option value="Semua">Semua Wilayah (18 Kecamatan)</option>
                       {GRESIK_DISTRICTS.map((d) => (
@@ -2193,23 +2193,23 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               <div className="overflow-x-auto overflow-y-auto max-h-[460px] rounded-xl border border-[#cbd5e1] shadow-xs">
                 <table className="w-full text-left text-[12px] border-collapse bg-white">
                   <thead className="sticky top-0 z-10 shadow-xs">
-                    <tr className="bg-[#1a73e8] text-white font-bold divide-x divide-blue-400">
-                      <th className="py-2.5 px-3 w-10 text-center border-blue-400">
+                    <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
+                      <th className="py-3 px-3 w-10 text-center">
                         <input
                           type="checkbox"
                           checked={isAllSelectedOnPage}
                           onChange={toggleSelectAllOnPage}
-                          className="w-4 h-4 rounded text-[#1a73e8] focus:ring-0 cursor-pointer accent-white"
+                          className="w-4 h-4 rounded text-ford-blue focus:ring-0 cursor-pointer accent-white"
                           title="Pilih semua di halaman ini"
                         />
                       </th>
-                      <th className="py-2.5 px-3 w-12 text-center border-blue-400">No</th>
-                      <th className="py-2.5 px-4 border-blue-400 w-52 font-bold">Nama Menu Standar</th>
-                      <th className="py-2.5 px-3 border-blue-400 w-36 font-bold">Wilayah</th>
-                      <th className="py-2.5 px-4 border-blue-400 w-32 font-bold">Sasaran</th>
-                      <th className="py-2.5 px-4 border-blue-400 font-bold">Komposisi Bahan Pokok</th>
-                      <th className="py-2.5 px-4 border-blue-400 w-52 font-bold">Target Gizi</th>
-                      <th className="py-2.5 px-3 text-center border-blue-400 w-24 font-bold">Aksi</th>
+                      <th className="py-3 px-3 w-12 text-center text-white">No</th>
+                      <th className="py-3 px-4 w-52 font-bold text-white">Nama Menu Standar</th>
+                      <th className="py-3 px-3 w-36 font-bold text-white">Wilayah</th>
+                      <th className="py-3 px-4 w-32 font-bold text-white">Sasaran</th>
+                      <th className="py-3 px-4 font-bold text-white">Komposisi Bahan Pokok</th>
+                      <th className="py-3 px-4 w-52 font-bold text-white">Target Gizi</th>
+                      <th className="py-3 px-3 text-center w-24 font-bold text-white">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#f1f5f9]">
@@ -2263,18 +2263,18 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                                 type="checkbox"
                                 checked={isSelected}
                                 onChange={() => toggleSelectMenu(r.no)}
-                                className="w-4 h-4 rounded text-[#1a73e8] focus:ring-0 cursor-pointer"
+                                className="w-4 h-4 rounded text-light-sea-green focus:ring-0 cursor-pointer"
                               />
                             </td>
                             <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">{r.no}</td>
-                            <td className="py-2.5 px-4 font-bold text-[#071e49]">{r.name}</td>
+                            <td className="py-2.5 px-4 font-bold text-[#2C3968]">{r.name}</td>
                             <td className="py-2.5 px-3">
-                              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-[#1a73e8] text-[10px] font-bold border border-blue-200 block truncate">
+                              <span className="px-2 py-0.5 rounded-md bg-green-tint text-ford-blue text-[10px] font-bold border border-blue-200 block truncate">
                                 {r.district || "Semua 18 Kecamatan"}
                               </span>
                             </td>
                             <td className="py-2.5 px-4">
-                              <span className="px-2.5 py-1 rounded-lg bg-slate-50 text-[#071e49] text-[11px] font-bold border border-slate-200">
+                              <span className="px-2.5 py-1 rounded-lg bg-slate-50 text-[#2C3968] text-[11px] font-bold border border-slate-200">
                                 {r.targetGroup}
                               </span>
                             </td>
@@ -2293,7 +2293,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                                           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100/90 border border-slate-200 text-[11px]"
                                         >
                                           <span className="font-bold text-slate-700">{catName}:</span>
-                                          <span className="font-semibold text-[#071e49]">{itemName}</span>
+                                          <span className="font-semibold text-[#2C3968]">{itemName}</span>
                                         </span>
                                       );
                                     }
@@ -2310,10 +2310,10 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                             </td>
                             <td className="py-2.5 px-4 font-bold text-emerald-700 text-[11px]">{r.nutritionTarget}</td>
                             <td className="py-2.5 px-3 text-center">
-                              <div className="flex items-center justify-center gap-1">
+                              <div className="flex items-center justify-center gap-1.5 font-sans">
                                 <button
                                   onClick={() => setEditingItem({ type: "menu", isNew: false, data: { ...r } })}
-                                  className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                                  className="w-7 h-7 rounded-lg bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                                   title="Edit menu"
                                 >
                                   <Edit2 className="w-3.5 h-3.5" />
@@ -2321,7 +2321,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                                 {isSuperAdmin && (
                                   <button
                                     onClick={() => handleDeleteRow("menu", r.no)}
-                                    className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                                    className="w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                                     title="Hapus menu ini"
                                   >
                                     <Trash2 className="w-3.5 h-3.5" />
@@ -2345,7 +2345,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     <select
                       value={pageSize}
                       onChange={(e) => setPageSize(Number(e.target.value))}
-                      className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[12px] focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs"
+                      className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#2C3968] font-bold text-[12px] focus:outline-none focus:border-[#35CBC3] cursor-pointer shadow-2xs"
                     >
                       <option value={20}>20</option>
                       <option value={40}>40</option>
@@ -2362,7 +2362,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <button
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
-                    className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                    className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                     title="Halaman Sebelumnya"
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -2389,9 +2389,9 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         disabled={typeof p !== "number"}
                         className={`w-8 h-8 rounded-xl text-[12px] font-bold transition-all ${
                           p === currentPage
-                            ? "bg-[#1a73e8] text-white shadow-xs"
+                            ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                             : typeof p === "number"
-                            ? "bg-white border border-[#cbd5e1] text-[#071e49] hover:bg-slate-50"
+                            ? "bg-white border border-[#cbd5e1] text-[#2C3968] hover:bg-slate-50"
                             : "bg-transparent text-[#64748b] cursor-default"
                         }`}
                       >
@@ -2403,7 +2403,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalRecipePages))}
                     disabled={currentPage === totalRecipePages || totalRecipePages === 0}
-                    className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                    className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                     title="Halaman Berikutnya"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -2419,7 +2419,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <h3 className="text-[15px] font-bold text-[#071e49] flex items-center gap-2">
+                <h3 className="text-[15px] font-bold text-[#2C3968] flex items-center gap-2">
                   <span>Tabel Master 4: Nilai Gizi Pangan Indonesia (TKPI 2019 Kemenkes RI)</span>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Standar 100g BDD Terverifikasi
@@ -2440,7 +2440,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   placeholder="Cari nama bahan pangan TKPI, kode (AP001), atau kelompok..."
                   value={nutritionSearchQuery}
                   onChange={(e) => setNutritionSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#1a73e8] shadow-2xs"
+                  className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#35CBC3] shadow-2xs"
                 />
               </div>
 
@@ -2451,7 +2451,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     id="nutrition-category-select"
                     value={selectedNutritionCategoryFilter}
                     onChange={(e) => setSelectedNutritionCategoryFilter(e.target.value)}
-                    className="appearance-none pl-3 pr-7 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[11px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                    className="appearance-none pl-3 pr-7 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[11px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
                   >
                     <option value="Semua">Semua Kelompok</option>
                     <option value="Serealia">Serealia</option>
@@ -2471,7 +2471,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <select
                     value={nutritionDistrictFilter}
                     onChange={(e) => setNutritionDistrictFilter(e.target.value)}
-                    className="appearance-none pl-3 pr-7 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[11px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                    className="appearance-none pl-3 pr-7 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[11px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
                   >
                     <option value="Semua">Semua Wilayah (18 Kecamatan)</option>
                     {GRESIK_DISTRICTS.map((d) => (
@@ -2489,94 +2489,94 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             <div className="overflow-x-auto overflow-y-auto max-h-[480px] rounded-xl border border-[#cbd5e1] shadow-xs">
               <table className="w-full text-left text-[11px] border-collapse bg-white whitespace-nowrap">
                 <thead className="sticky top-0 z-20 shadow-md text-white select-none">
-                  <tr className="bg-[#1a73e8] font-bold divide-x divide-blue-400">
-                    <th className="py-2.5 px-3 text-center w-12 bg-[#1a73e8] border-blue-400 cursor-help" title="Nomor urut data bahan pangan TKPI">
+                  <tr className="bg-ford-blue font-bold divide-x divide-white/15">
+                    <th className="py-2.5 px-3 text-center w-12 bg-ford-blue border-white/15 cursor-help text-white" title="Nomor urut data bahan pangan TKPI">
                       No
                     </th>
-                    <th className="py-2.5 px-3 font-mono font-bold w-24 bg-[#1a73e8] border-blue-400 cursor-help" title="Kode Unik Resmi Bahan Pangan dalam Tabel Komposisi Pangan Indonesia (TKPI 2019 Kemenkes RI)">
+                    <th className="py-2.5 px-3 font-mono font-bold w-24 bg-ford-blue border-white/15 cursor-help text-white" title="Kode Unik Resmi Bahan Pangan dalam Tabel Komposisi Pangan Indonesia (TKPI 2019 Kemenkes RI)">
                       Kode
                     </th>
-                    <th className="py-2.5 px-4 font-bold w-48 bg-[#1a73e8] border-blue-400 cursor-help" title="Nama Bahan Pangan terstandarisasi per 100 gram Bagian yang Dapat Dimakan (BDD)">
+                    <th className="py-2.5 px-4 font-bold w-48 bg-ford-blue border-white/15 cursor-help text-white" title="Nama Bahan Pangan terstandarisasi per 100 gram Bagian yang Dapat Dimakan (BDD)">
                       Nama Bahan (100g)
                     </th>
-                    <th className="py-2.5 px-3 w-28 bg-[#1a73e8] border-blue-400">
+                    <th className="py-2.5 px-3 w-28 bg-ford-blue border-white/15 text-white">
                       Wilayah
                     </th>
-                    <th className="py-2.5 px-3 w-32 bg-[#1a73e8] border-blue-400 cursor-help" title="Kelompok Komoditas Pangan (Serealia, Umbi, Ikan/Seafood, Daging, Telur, Susu, Sayuran, Buah)">
+                    <th className="py-2.5 px-3 w-32 bg-ford-blue border-white/15 cursor-help text-white" title="Kelompok Komoditas Pangan (Serealia, Umbi, Ikan/Seafood, Daging, Telur, Susu, Sayuran, Buah)">
                       Kelompok
                     </th>
-                    <th className="py-2.5 px-2.5 text-center w-20 bg-[#1a73e8] border-blue-400 cursor-help" title="Bentuk Fisik Bahan Pangan: Mentah (Segar) atau Olahan">
+                    <th className="py-2.5 px-2.5 text-center w-20 bg-ford-blue border-white/15 cursor-help text-white" title="Bentuk Fisik Bahan Pangan: Mentah (Segar) atau Olahan">
                       Bentuk
                     </th>
 
-                    {/* Makronutrisi Group */}
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Kadar Air (Moisture) dalam gram (g) per 100g BDD — Menentukan kesegaran dan kepadatan nutrisi bahan makanan">
+                    {/* Makronutrisi Group - Deep Ford Blue Theme */}
+                    <th className="py-2.5 px-3 text-right bg-[#1F2C54] border-white/15 cursor-help" title="Kadar Air (Moisture) dalam gram (g) per 100g BDD — Menentukan kesegaran dan kepadatan nutrisi bahan makanan">
                       Air (g)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Energi / Kalori Total dalam Kkal per 100g BDD — Sumber tenaga utama untuk metabolisme & aktivitas fisik harian anak">
+                    <th className="py-2.5 px-3 text-right bg-[#1F2C54] border-white/15 cursor-help" title="Energi / Kalori Total dalam Kkal per 100g BDD — Sumber tenaga utama untuk metabolisme & aktivitas fisik harian anak">
                       Energi (Kal)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Protein Total dalam gram (g) per 100g BDD — Zat pembangun sel, otot, dan pertumbuhan linear anak (Kunci Pencegahan Stunting)">
+                    <th className="py-2.5 px-3 text-right bg-[#131C38] border-white/15 font-black cursor-help" title="Protein Total dalam gram (g) per 100g BDD — Zat pembangun sel, otot, dan pertumbuhan linear anak (Kunci Pencegahan Stunting)">
                       Protein (g)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Lemak Total dalam gram (g) per 100g BDD — Sumber asam lemak esensial dan pelarut vitamin A, D, E, K">
+                    <th className="py-2.5 px-3 text-right bg-[#1F2C54] border-white/15 cursor-help" title="Lemak Total dalam gram (g) per 100g BDD — Sumber asam lemak esensial dan pelarut vitamin A, D, E, K">
                       Lemak (g)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Karbohidrat (KH) Total dalam gram (g) per 100g BDD — Sumber glukosa cepat untuk energi harian dan fungsi kognitif otak">
+                    <th className="py-2.5 px-3 text-right bg-[#1F2C54] border-white/15 cursor-help" title="Karbohidrat (KH) Total dalam gram (g) per 100g BDD — Sumber glukosa cepat untuk energi harian dan fungsi kognitif otak">
                       KH (g)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Serat Pangan (Dietary Fiber) dalam gram (g) per 100g BDD — Menjaga kesehatan saluran cerna dan mikrobioma usus anak">
+                    <th className="py-2.5 px-3 text-right bg-[#1F2C54] border-white/15 cursor-help" title="Serat Pangan (Dietary Fiber) dalam gram (g) per 100g BDD — Menjaga kesehatan saluran cerna dan mikrobioma usus anak">
                       Serat (g)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-blue-700 border-blue-500 cursor-help" title="Kadar Abu (Ash) dalam gram (g) per 100g BDD — Total kandungan mineral anorganik murni dalam bahan pangan">
+                    <th className="py-2.5 px-3 text-right bg-[#1F2C54] border-white/15 cursor-help" title="Kadar Abu (Ash) dalam gram (g) per 100g BDD — Total kandungan mineral anorganik murni dalam bahan pangan">
                       Abu (g)
                     </th>
 
-                    {/* Mineral Group */}
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Kalsium (Calcium / Ca) dalam miligram (mg) per 100g BDD — Pembentukan struktur tulang dan gigi yang kuat, mencegah gagal tumbuh">
+                    {/* Mineral Group - Midnight Ford Blue + Red Accent */}
+                    <th className="py-2.5 px-3 text-right bg-[#162044] border-white/15 cursor-help" title="Kalsium (Calcium / Ca) dalam miligram (mg) per 100g BDD — Pembentukan struktur tulang dan gigi yang kuat, mencegah gagal tumbuh">
                       Ca (mg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Fosfor (Phosphorus / P) dalam miligram (mg) per 100g BDD — Bekerja sinergis dengan kalsium untuk kepadatan tulang dan membran sel">
+                    <th className="py-2.5 px-3 text-right bg-[#162044] border-white/15 cursor-help" title="Fosfor (Phosphorus / P) dalam miligram (mg) per 100g BDD — Bekerja sinergis dengan kalsium untuk kepadatan tulang dan membran sel">
                       P (mg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-amber-600 border-amber-500 font-black cursor-help" title="Zat Besi (Iron / Fe) dalam miligram (mg) per 100g BDD — Pembentukan hemoglobin darah, mencegah anemia defisiensi besi & stunting kognitif">
+                    <th className="py-2.5 px-3 text-right bg-brand-red border-white/15 font-black cursor-help text-white" title="Zat Besi (Iron / Fe) dalam miligram (mg) per 100g BDD — Pembentukan hemoglobin darah, mencegah anemia defisiensi besi & stunting kognitif">
                       Fe (mg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Natrium (Sodium / Na) dalam miligram (mg) per 100g BDD — Elektrolit pengatur keseimbangan cairan tubuh dan transmisi impuls saraf">
+                    <th className="py-2.5 px-3 text-right bg-[#162044] border-white/15 cursor-help" title="Natrium (Sodium / Na) dalam miligram (mg) per 100g BDD — Elektrolit pengatur keseimbangan cairan tubuh dan transmisi impuls saraf">
                       Na (mg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Kalium (Potassium / K) dalam miligram (mg) per 100g BDD — Elektrolit penting untuk fungsi jantung, kontraksi otot, dan tekanan darah">
+                    <th className="py-2.5 px-3 text-right bg-[#162044] border-white/15 cursor-help" title="Kalium (Potassium / K) dalam miligram (mg) per 100g BDD — Elektrolit penting untuk fungsi jantung, kontraksi otot, dan tekanan darah">
                       K (mg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Seng (Zinc / Zn) dalam miligram (mg) per 100g BDD — Kofaktor enzim imunitas, perbaikan jaringan sel, dan pemacu pertumbuhan tinggi badan">
+                    <th className="py-2.5 px-3 text-right bg-[#162044] border-white/15 cursor-help" title="Seng (Zinc / Zn) dalam miligram (mg) per 100g BDD — Kofaktor enzim imunitas, perbaikan jaringan sel, dan pemacu pertumbuhan tinggi badan">
                       Zn (mg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-indigo-700 border-indigo-500 cursor-help" title="Tembaga (Copper / Cu) dalam miligram (mg) per 100g BDD — Mendukung penyerapan zat besi dan pembentukan sel darah merah">
+                    <th className="py-2.5 px-3 text-right bg-[#162044] border-white/15 cursor-help" title="Tembaga (Copper / Cu) dalam miligram (mg) per 100g BDD — Mendukung penyerapan zat besi dan pembentukan sel darah merah">
                       Cu (mg)
                     </th>
 
-                    {/* Vitamin Group */}
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Vitamin A (Retinol) dalam mikrogram (mcg) per 100g BDD — Menjaga kesehatan penglihatan, epitel, dan sistem kekebalan tubuh">
+                    {/* Vitamin Group - Emerald Green Theme */}
+                    <th className="py-2.5 px-3 text-right bg-[#065F46] border-white/15 cursor-help" title="Vitamin A (Retinol) dalam mikrogram (mcg) per 100g BDD — Menjaga kesehatan penglihatan, epitel, dan sistem kekebalan tubuh">
                       Vit. A (mcg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Beta-Karoten (β-Carotene) dalam mikrogram (mcg) per 100g BDD — Provitamin A alami dan antioksidan pelindung kerusakan sel">
+                    <th className="py-2.5 px-3 text-right bg-[#065F46] border-white/15 cursor-help" title="Beta-Karoten (β-Carotene) dalam mikrogram (mcg) per 100g BDD — Provitamin A alami dan antioksidan pelindung kerusakan sel">
                       β-Karoten (mcg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Tiamin (Vitamin B1) dalam miligram (mg) per 100g BDD — Mengubah karbohidrat menjadi energi dan menjaga kesehatan fungsi saraf">
+                    <th className="py-2.5 px-3 text-right bg-[#065F46] border-white/15 cursor-help" title="Tiamin (Vitamin B1) dalam miligram (mg) per 100g BDD — Mengubah karbohidrat menjadi energi dan menjaga kesehatan fungsi saraf">
                       B1 (mg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Riboflavin (Vitamin B2) dalam miligram (mg) per 100g BDD — Membantu produksi energi seluler dan kesehatan kulit/mata">
+                    <th className="py-2.5 px-3 text-right bg-[#065F46] border-white/15 cursor-help" title="Riboflavin (Vitamin B2) dalam miligram (mg) per 100g BDD — Membantu produksi energi seluler dan kesehatan kulit/mata">
                       B2 (mg)
                     </th>
-                    <th className="py-2.5 px-3 text-right bg-emerald-700 border-emerald-500 cursor-help" title="Vitamin C (Asam Askorbat) dalam miligram (mg) per 100g BDD — Antioksidan kuat dan peningkat penyerapan zat besi (Fe) dalam tubuh">
+                    <th className="py-2.5 px-3 text-right bg-emerald-600 border-white/15 font-bold cursor-help text-white" title="Vitamin C (Asam Askorbat) dalam miligram (mg) per 100g BDD — Antioksidan kuat dan peningkat penyerapan zat besi (Fe) dalam tubuh">
                       Vit. C (mg)
                     </th>
 
                     {/* Spesifikasi */}
-                    <th className="py-2.5 px-2.5 text-center w-16 bg-[#1a73e8] border-blue-400 cursor-help" title="Bagian yang Dapat Dimakan (Edible Portion / BDD) — Persentase bagian bersih yang bisa dimakan setelah dibersihkan dari tulang/kulit/sisik (misal: 100% untuk beras/daging tanpa tulang, 80% untuk bandeng, 58% untuk ayam utuh)">
+                    <th className="py-2.5 px-2.5 text-center w-16 bg-ford-blue border-white/15 cursor-help text-white" title="Bagian yang Dapat Dimakan (Edible Portion / BDD) — Persentase bagian bersih yang bisa dimakan setelah dibersihkan dari tulang/kulit/sisik (misal: 100% untuk beras/daging tanpa tulang, 80% untuk bandeng, 58% untuk ayam utuh)">
                       % BDD
                     </th>
-                    <th className="py-2.5 px-3 text-center w-20 bg-[#1a73e8] border-blue-400">Aksi</th>
+                    <th className="py-2.5 px-3 text-center w-20 bg-ford-blue border-white/15 text-white">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f1f5f9]">
@@ -2624,22 +2624,22 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   ) : (
                     paginatedNutrition.map((n) => (
                       <tr key={n.no} className="hover:bg-slate-50 divide-x divide-slate-100 transition-colors">
-                        <td className="py-2 px-3 text-center font-bold text-slate-500 bg-slate-50/50">{n.no}</td>
-                        <td className="py-2 px-3 font-mono font-bold text-[#1a73e8]">{n.code}</td>
-                        <td className="py-2 px-4 font-bold text-[#071e49]">{n.name}</td>
-                        <td className="py-2 px-3 text-[10px] font-bold text-[#1a73e8]">
+                        <td className="py-2 px-3 text-center font-bold text-blue-gray bg-slate-50/50">{n.no}</td>
+                        <td className="py-2 px-3 font-mono font-bold text-ford-blue">{n.code}</td>
+                        <td className="py-2 px-4 font-bold text-ford-blue">{n.name}</td>
+                        <td className="py-2 px-3 text-[11px] font-bold text-ford-blue">
                           {n.district || "Semua 18 Kecamatan"}
                         </td>
                         <td className="py-2 px-3">
-                          <span className="px-2 py-0.5 rounded-lg bg-blue-50 text-[#1a73e8] text-[10px] font-bold border border-blue-200">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-green-tint text-ford-blue text-[10px] font-bold border border-green-02/30 shadow-2xs">
                             {n.category || "-"}
                           </span>
                         </td>
-                        <td className="py-2 px-2.5 text-center text-[10px] font-semibold text-slate-600">{n.state || "-"}</td>
+                        <td className="py-2 px-2.5 text-center text-[10px] font-semibold text-blue-gray">{n.state || "-"}</td>
                         {/* Makronutrisi */}
                         <td className="py-2 px-3 text-right font-medium text-slate-700">{n.water ?? "-"}</td>
-                        <td className="py-2 px-3 text-right font-bold text-[#071e49] bg-slate-50/50">{n.calories ?? "-"}</td>
-                        <td className="py-2 px-3 text-right font-bold text-[#1a73e8] bg-blue-50/30">{n.protein ?? "-"}</td>
+                        <td className="py-2 px-3 text-right font-bold text-ford-blue bg-slate-50/50">{n.calories ?? "-"}</td>
+                        <td className="py-2 px-3 text-right font-bold text-ford-blue bg-slate-50/30">{n.protein ?? "-"}</td>
                         <td className="py-2 px-3 text-right font-medium text-slate-700">{n.fat ?? "-"}</td>
                         <td className="py-2 px-3 text-right font-medium text-slate-700">{n.carbs ?? "-"}</td>
                         <td className="py-2 px-3 text-right font-medium text-slate-700">{n.fiber ?? "-"}</td>
@@ -2661,22 +2661,22 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         {/* BDD */}
                         <td className="py-2 px-2.5 text-center font-bold text-slate-700">{n.bdd ?? 100}%</td>
                         <td className="py-2 px-3 text-center">
-                          <div className="flex items-center justify-center gap-1">
+                          <div className="flex items-center justify-center gap-1.5 font-sans">
                             {canUserEditDistrict(n.district) ? (
                               <button
                                 onClick={() => setEditingItem({ type: "gizi", isNew: false, data: { ...n } })}
-                                className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                                className="w-7 h-7 rounded-lg bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                                 title="Edit data gizi"
                               >
                                 <Edit2 className="w-3.5 h-3.5" />
                               </button>
                             ) : (
-                              <span className="text-[10px] text-slate-400 font-medium select-none">Read-only</span>
+                              <span className="text-[10px] text-blue-gray font-medium select-none">Read-only</span>
                             )}
                             {isSuperAdmin && (
                               <button
                                 onClick={() => handleDeleteRow("gizi", n.no)}
-                                className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                                className="w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                                 title="Hapus data gizi ini"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -2699,7 +2699,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <select
                     value={pageSize}
                     onChange={(e) => setPageSize(Number(e.target.value))}
-                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[12px] focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs"
+                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#2C3968] font-bold text-[12px] focus:outline-none focus:border-[#35CBC3] cursor-pointer shadow-2xs"
                   >
                     <option value={20}>20</option>
                     <option value={40}>40</option>
@@ -2716,7 +2716,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                   title="Halaman Sebelumnya"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -2753,8 +2753,8 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         onClick={() => setCurrentPage(num)}
                         className={`w-8 h-8 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center ${
                           isActive
-                            ? "bg-[#1a73e8] text-white shadow-2xs"
-                            : "bg-white text-[#071e49] border border-[#cbd5e1] hover:bg-slate-50"
+                            ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-2xs"
+                            : "bg-white text-[#2C3968] border border-[#cbd5e1] hover:bg-slate-50"
                         }`}
                       >
                         {num}
@@ -2766,7 +2766,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalNutritionPages))}
                   disabled={currentPage === totalNutritionPages || totalNutritionPages === 0}
-                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                   title="Halaman Selanjutnya"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -2790,7 +2790,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     placeholder="Cari nama kecamatan atau status risiko..."
                     value={districtSearchQuery}
                     onChange={(e) => setDistrictSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[12px] font-medium text-[#071e49] focus:outline-none focus:border-[#1a73e8] shadow-2xs"
+                    className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[12px] font-medium text-[#2C3968] focus:outline-none focus:border-[#35CBC3] shadow-2xs"
                   />
                 </div>
 
@@ -2799,7 +2799,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <select
                     value={districtRiskFilter}
                     onChange={(e) => setDistrictRiskFilter(e.target.value)}
-                    className="appearance-none pl-3 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[12px] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                    className="appearance-none pl-3 pr-8 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[12px] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
                   >
                     <option value="Semua">Semua Tingkat Risiko</option>
                     <option value="Rendah">Risiko Rendah (&lt; 12%)</option>
@@ -2812,7 +2812,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
 
               {/* Summary Stats Pill */}
               <div className="flex items-center gap-2 shrink-0">
-                <span className="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-[#1a73e8] text-[11px] font-bold">
+                <span className="px-3.5 py-1.5 rounded-xl bg-green-tint border border-green-02/40 text-ford-blue text-[12px] font-bold shadow-2xs">
                   Total Sasaran: {districts.reduce((acc, d) => acc + (Number(d.targetChildren) || 0), 0).toLocaleString("id-ID")} Siswa
                 </span>
               </div>
@@ -2822,12 +2822,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             <div className="overflow-x-auto overflow-y-auto max-h-[460px] rounded-xl border border-[#cbd5e1] shadow-xs">
               <table className="w-full text-left text-[12px] border-collapse bg-white">
                 <thead className="sticky top-0 z-10 shadow-xs">
-                  <tr className="bg-[#1a73e8] text-white font-bold divide-x divide-blue-400">
-                    <th className="py-2.5 px-3 w-12 text-center border-blue-400">No</th>
-                    <th className="py-2.5 px-4 border-blue-400 min-w-[200px] font-bold">Kecamatan</th>
-                    <th className="py-2.5 px-4 border-blue-400 min-w-[220px] text-right font-bold">Sasaran Siswa MBG</th>
-                    <th className="py-2.5 px-4 border-blue-400 min-w-[180px] text-center font-bold">Prevalensi Stunting (%)</th>
-                    <th className="py-2.5 px-3 text-center border-blue-400 w-24 font-bold">Aksi</th>
+                  <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
+                    <th className="py-3 px-3 w-12 text-center text-white">No</th>
+                    <th className="py-3 px-4 min-w-[200px] font-bold text-white">Kecamatan</th>
+                    <th className="py-3 px-4 min-w-[220px] text-right font-bold text-white">Sasaran Siswa MBG</th>
+                    <th className="py-3 px-4 min-w-[180px] text-center font-bold text-white">Prevalensi Stunting (%)</th>
+                    <th className="py-3 px-3 text-center w-24 font-bold text-white">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f1f5f9]">
@@ -2875,11 +2875,11 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">
                           {d.no || (currentPage - 1) * pageSize + idx + 1}
                         </td>
-                        <td className="py-2.5 px-4 font-bold text-[#071e49]">
+                        <td className="py-2.5 px-4 font-bold text-[#2C3968]">
                           {d.name}
                         </td>
-                        <td className="py-2.5 px-4 text-right font-mono font-bold text-[#1a73e8]">
-                          <span className="px-2.5 py-0.5 rounded-lg bg-blue-50/70 border border-blue-200 inline-block">
+                        <td className="py-2.5 px-4 text-right font-mono font-bold text-ford-blue">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-green-tint text-ford-blue border border-green-02/30 inline-block shadow-2xs">
                             {Number(d.targetChildren).toLocaleString("id-ID")} Siswa
                           </span>
                         </td>
@@ -2898,13 +2898,13 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                           {isMyExactDistrictRow(d.name) ? (
                             <button
                               onClick={() => setEditingItem({ type: "wilayah", isNew: false, data: { ...d } })}
-                              className="p-1.5 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                              className="w-7 h-7 rounded-lg bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105 mx-auto"
                               title="Edit Sasaran Siswa & Wilayah"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
                           ) : (
-                            <span className="text-[10px] text-slate-400 font-medium select-none">Read-only</span>
+                            <span className="text-[10px] text-blue-gray font-medium select-none">Read-only</span>
                           )}
                         </td>
                       </tr>
@@ -2922,7 +2922,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   <select
                     value={pageSize}
                     onChange={(e) => setPageSize(Number(e.target.value))}
-                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[12px] focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs"
+                    className="appearance-none pl-2.5 pr-7 py-1 rounded-lg bg-white border border-[#cbd5e1] text-[#2C3968] font-bold text-[12px] focus:outline-none focus:border-[#35CBC3] cursor-pointer shadow-2xs"
                   >
                     <option value={20}>20</option>
                     <option value={40}>40</option>
@@ -2939,7 +2939,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                   title="Halaman Sebelumnya"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -2976,8 +2976,8 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         onClick={() => setCurrentPage(num)}
                         className={`w-8 h-8 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center ${
                           isActive
-                            ? "bg-[#1a73e8] text-white shadow-2xs"
-                            : "bg-white text-[#071e49] border border-[#cbd5e1] hover:bg-slate-50"
+                            ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-2xs"
+                            : "bg-white text-[#2C3968] border border-[#cbd5e1] hover:bg-slate-50"
                         }`}
                       >
                         {num}
@@ -2989,7 +2989,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalDistrictPages))}
                   disabled={currentPage === totalDistrictPages || totalDistrictPages === 0}
-                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors flex items-center justify-center"
                   title="Halaman Selanjutnya"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -3006,7 +3006,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           <div className={`w-full ${editingItem.type === "gizi" ? "max-w-4xl" : editingItem.type === "menu" ? "max-w-2xl" : "max-w-xl"} max-h-[90vh] overflow-y-auto rounded-3xl bg-white border border-[#e2e8f0] shadow-2xl p-6 sm:p-7 space-y-4`}>
             <div className="flex items-center justify-between pb-3 border-b border-[#f1f5f9]">
               <div>
-                <h3 className="text-[16px] font-bold text-[#071e49]">
+                <h3 className="text-[16px] font-bold text-[#2C3968]">
                   {editingItem.isNew ? "Tambah Data Baru" : "Edit Baris Data"} (
                   {editingItem.type === "komoditas"
                     ? "Master Komoditas"
@@ -3033,7 +3033,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             {editingItem.type === "komoditas" && (
               <div className="space-y-3 text-[12px]">
                 <div>
-                  <label className="font-bold text-[#071e49] block mb-1">Nama Kecamatan:</label>
+                  <label className="font-bold text-[#2C3968] block mb-1">Nama Kecamatan:</label>
                   <input
                     type="text"
                     value={editingItem.data.name}
@@ -3043,14 +3043,14 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="font-bold text-[#071e49]">
+                    <label className="font-bold text-[#2C3968]">
                       Daftar Bahan Pangan (Pisahkan dengan koma):
                     </label>
                     <button
                       type="button"
                       onClick={handleRecommendCommodities}
                       disabled={isRecommendingCommodities}
-                      className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1a73e8] hover:text-[#155fc0] bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors border border-blue-200 cursor-pointer"
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-light-sea-green hover:text-[#22B5AC] bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors border border-blue-200 cursor-pointer"
                     >
                       {isRecommendingCommodities ? (
                         <>
@@ -3059,7 +3059,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-3 h-3 text-[#1a73e8]" />
+                          <Sparkles className="w-3 h-3 text-light-sea-green" />
                           <span>Rekomendasi AI</span>
                         </>
                       )}
@@ -3070,7 +3070,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     value={editingItem.data.itemsString}
                     onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, itemsString: e.target.value } })}
                     placeholder="Contoh: Beras, Daging Ayam, Ikan Bandeng, Telur Ayam, Susu Sapi, Bayam, Pisang..."
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#1a73e8] text-[12px] leading-relaxed font-medium bg-white shadow-2xs"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#35CBC3] text-[12px] leading-relaxed font-medium bg-white shadow-2xs"
                     autoFocus
                   />
                   {geminiReasoning && (
@@ -3087,7 +3087,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             {editingItem.type === "harga" && (
               <div className="space-y-3 text-[12px]">
                 <div>
-                  <label className="font-bold text-[#071e49] block mb-1">Nama Bahan Pangan:</label>
+                  <label className="font-bold text-[#2C3968] block mb-1">Nama Bahan Pangan:</label>
                   <input
                     type="text"
                     value={editingItem.data.item}
@@ -3098,16 +3098,16 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="font-bold text-[#071e49] block mb-1">Kategori:</label>
+                    <label className="font-bold text-[#2C3968] block mb-1">Kategori:</label>
                     <input
                       type="text"
                       value={editingItem.data.category}
                       onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#1a73e8] text-[12px] bg-white"
+                      className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#35CBC3] text-[12px] bg-white"
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-[#071e49] block mb-1">Kecamatan Tersedia:</label>
+                    <label className="font-bold text-[#2C3968] block mb-1">Kecamatan Tersedia:</label>
                     <input
                       type="text"
                       value={editingItem.data.districts}
@@ -3119,12 +3119,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="font-bold text-[#071e49]">Harga Pasar Acuan:</label>
+                    <label className="font-bold text-[#2C3968]">Harga Pasar Acuan:</label>
                     <button
                       type="button"
                       onClick={handleEstimateSinglePrice}
                       disabled={isEstimatingPrice}
-                      className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1a73e8] hover:text-[#155fc0] bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors border border-blue-200 cursor-pointer"
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-light-sea-green hover:text-[#22B5AC] bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors border border-blue-200 cursor-pointer"
                     >
                       {isEstimatingPrice ? (
                         <>
@@ -3133,7 +3133,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-3 h-3 text-[#1a73e8]" />
+                          <Sparkles className="w-3 h-3 text-light-sea-green" />
                           <span>Estimasi AI</span>
                         </>
                       )}
@@ -3144,7 +3144,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     value={editingItem.data.price}
                     onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, price: e.target.value } })}
                     placeholder="Contoh: Rp 28.000 / kg"
-                    className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#1a73e8] text-[13px] focus:outline-none focus:border-[#1a73e8] shadow-2xs bg-white"
+                    className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] font-bold text-light-sea-green text-[13px] focus:outline-none focus:border-[#35CBC3] shadow-2xs bg-white"
                     autoFocus
                   />
                   {geminiReasoning && (
@@ -3162,12 +3162,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               <div className="space-y-3 text-[12px]">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="font-bold text-[#071e49]">Nama Menu Masakan:</label>
+                    <label className="font-bold text-[#2C3968]">Nama Menu Masakan:</label>
                     <button
                       type="button"
                       onClick={handleCalculateNutritionAI}
                       disabled={isCalculatingNutrition || !editingItem.data.name}
-                      className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1a73e8] hover:text-[#155fc0] bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors border border-blue-200 cursor-pointer disabled:opacity-50"
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-light-sea-green hover:text-[#22B5AC] bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors border border-blue-200 cursor-pointer disabled:opacity-50"
                       title="AI akan otomatis menghitung Komposisi 5 Bintang & Target Gizi TKPI"
                     >
                       {isCalculatingNutrition ? (
@@ -3177,7 +3177,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-3 h-3 text-[#1a73e8]" />
+                          <Sparkles className="w-3 h-3 text-light-sea-green" />
                           <span>Hitung Gizi & Porsi AI</span>
                         </>
                       )}
@@ -3188,38 +3188,38 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     value={editingItem.data.name}
                     onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, name: e.target.value } })}
                     placeholder="Contoh: Nasi Bandeng Bakar & Sayur Kelor"
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] text-[13px] focus:outline-none focus:border-[#1a73e8] shadow-2xs bg-white"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#2C3968] text-[13px] focus:outline-none focus:border-[#35CBC3] shadow-2xs bg-white"
                     autoFocus
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-[#071e49] block mb-1">Kelompok Sasaran:</label>
+                  <label className="font-bold text-[#2C3968] block mb-1">Kelompok Sasaran:</label>
                   <input
                     type="text"
                     value={editingItem.data.targetGroup}
                     onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, targetGroup: e.target.value } })}
                     placeholder="Contoh: TK / SD / SMP"
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#1a73e8] text-[12px] bg-white"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#35CBC3] text-[12px] bg-white"
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-[#071e49] block mb-1">Komposisi 5 Bintang (Wajib Ada Susu):</label>
+                  <label className="font-bold text-[#2C3968] block mb-1">Komposisi 5 Bintang (Wajib Ada Susu):</label>
                   <textarea
                     rows={3}
                     value={editingItem.data.composition}
                     onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, composition: e.target.value } })}
                     placeholder="Contoh: Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Bandeng Bakar (80g) | Protein Nabati: Tahu Bacem (40g) | Sayuran: Sayur Bening Kelor (50g) | Buah: Semangka Segar (50g) | Susu: Susu Sapi Segar (150ml)"
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#1a73e8] text-[12px] leading-relaxed bg-white font-medium"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] focus:outline-none focus:border-[#35CBC3] text-[12px] leading-relaxed bg-white font-medium"
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-[#071e49] block mb-1">Target Angka Gizi (Kkal | Protein | Fe):</label>
+                  <label className="font-bold text-[#2C3968] block mb-1">Target Angka Gizi (Kkal | Protein | Fe):</label>
                   <input
                     type="text"
                     value={editingItem.data.nutritionTarget}
                     onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, nutritionTarget: e.target.value } })}
                     placeholder="Contoh: 640 Kkal | 26.5g Protein | 5.2mg Fe"
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-emerald-700 text-[12px] focus:outline-none focus:border-[#1a73e8] bg-white"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-emerald-700 text-[12px] focus:outline-none focus:border-[#35CBC3] bg-white"
                   />
                   {geminiReasoning && (
                     <p className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl mt-2 flex items-center gap-1.5 animate-in fade-in">
@@ -3229,12 +3229,12 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   )}
                 </div>
                 <div>
-                  <label className="font-bold text-[#071e49] block mb-1">Cakupan Wilayah / Kecamatan:</label>
+                  <label className="font-bold text-[#2C3968] block mb-1">Cakupan Wilayah / Kecamatan:</label>
                   <div className="relative">
                     <select
                       value={editingItem.data.district || (!isSuperAdmin && user?.regionLabel ? user.regionLabel : "Semua 18 Kecamatan")}
                       onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, district: e.target.value } })}
-                      className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] text-[12px] focus:outline-none focus:border-[#1a73e8] bg-white appearance-none cursor-pointer"
+                      className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#2C3968] text-[12px] focus:outline-none focus:border-[#35CBC3] bg-white appearance-none cursor-pointer"
                     >
                       <option value="Semua 18 Kecamatan">Semua 18 Kecamatan</option>
                       {GRESIK_DISTRICTS.map((d) => (
@@ -3285,7 +3285,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
 
                 {/* Group 1: Identitas Pangan */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-[#cbd5e1] space-y-3">
-                  <span className="font-bold text-[#071e49] block text-[11px] uppercase tracking-wide">
+                  <span className="font-bold text-[#2C3968] block text-[11px] uppercase tracking-wide">
                     1. Identitas Bahan Pangan
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
@@ -3298,7 +3298,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, code: e.target.value } })}
                         placeholder="Contoh: AP001"
                         className={`w-full px-3 py-2 rounded-xl border border-[#cbd5e1] font-mono font-bold ${
-                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-[#1a73e8] focus:outline-none focus:border-[#1a73e8]"
+                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-light-sea-green focus:outline-none focus:border-[#35CBC3]"
                         }`}
                       />
                     </div>
@@ -3311,7 +3311,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, name: e.target.value } })}
                         placeholder="Contoh: Ikan Bandeng Segar"
                         className={`w-full px-3 py-2 rounded-xl border border-[#cbd5e1] font-bold ${
-                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                         }`}
                       />
                     </div>
@@ -3324,7 +3324,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         disabled={!editingItem.isNew}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })}
                         className={`w-full px-3 py-2 rounded-xl border border-[#cbd5e1] font-semibold ${
-                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-slate-700 focus:outline-none focus:border-[#1a73e8]"
+                          !editingItem.isNew ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-slate-700 focus:outline-none focus:border-[#35CBC3]"
                         }`}
                       >
                         {["Serealia", "Umbi-umbian", "Ikan & Seafood", "Daging & Unggas", "Telur", "Susu", "Kacang-kacangan", "Sayuran", "Buah-buahan", "Pangan Lainnya"].map(c => (
@@ -3337,7 +3337,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                       <select
                         value={editingItem.data.state || "Mentah"}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, state: e.target.value } })}
-                        className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] bg-white font-semibold text-slate-700 focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] bg-white font-semibold text-slate-700 focus:outline-none focus:border-[#35CBC3]"
                       >
                         <option value="Mentah">Mentah</option>
                         <option value="Olahan">Olahan</option>
@@ -3349,7 +3349,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="number"
                         value={editingItem.data.bdd ?? 100}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, bdd: Number(e.target.value) } })}
-                        className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] bg-white font-bold text-slate-700 text-center focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-3 py-2 rounded-xl border border-[#cbd5e1] bg-white font-bold text-slate-700 text-center focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                   </div>
@@ -3357,7 +3357,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
 
                 {/* Group 2: Makronutrisi */}
                 <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-200 space-y-3">
-                  <span className="font-bold text-[#1a73e8] block text-[11px] uppercase tracking-wide">
+                  <span className="font-bold text-light-sea-green block text-[11px] uppercase tracking-wide">
                     2. Makronutrisi Pokok (per 100g)
                   </span>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
@@ -3367,7 +3367,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.water ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, water: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3376,7 +3376,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.calories ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, calories: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white font-bold text-[#071e49] text-right text-[12px] focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white font-bold text-[#2C3968] text-right text-[12px] focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3385,7 +3385,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.protein ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, protein: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white font-bold text-[#1a73e8] text-right text-[12px] focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white font-bold text-light-sea-green text-right text-[12px] focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3394,7 +3394,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.fat ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fat: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3403,7 +3403,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.carbs ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, carbs: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3412,7 +3412,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.fiber ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fiber: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                   </div>
@@ -3430,7 +3430,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.calcium ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, calcium: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3439,7 +3439,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.phosphorus ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, phosphorus: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3457,7 +3457,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.sodium ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, sodium: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3466,7 +3466,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.potassium ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, potassium: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3475,7 +3475,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.zinc ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, zinc: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                   </div>
@@ -3493,7 +3493,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.retinol ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, retinol: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3502,7 +3502,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.bCarotene ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, bCarotene: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3511,7 +3511,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.thiamin ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, thiamin: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white text-right text-[12px] font-medium focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                     <div>
@@ -3520,7 +3520,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         type="text"
                         value={editingItem.data.vitaminC ?? ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, vitaminC: e.target.value } })}
-                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white font-bold text-emerald-700 text-right text-[12px] focus:outline-none focus:border-[#1a73e8]"
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-[#cbd5e1] bg-white font-bold text-emerald-700 text-right text-[12px] focus:outline-none focus:border-[#35CBC3]"
                       />
                     </div>
                   </div>
@@ -3551,7 +3551,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-[#1a73e8] block mb-1">
+                    <label className="font-bold text-ford-blue block mb-1">
                       Sasaran Siswa MBG (Jumlah Anak):
                     </label>
                     <input
@@ -3559,7 +3559,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                       value={editingItem.data.targetChildren || 0}
                       autoFocus
                       onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, targetChildren: Number(e.target.value) } })}
-                      className="w-full px-3 py-2 rounded-xl bg-blue-50 border border-blue-300 font-mono font-bold text-[#1a73e8] text-[13px] focus:outline-none focus:border-[#1a73e8]"
+                      className="w-full px-3 py-2 rounded-xl bg-blue-50 border border-blue-300 font-mono font-bold text-light-sea-green text-[13px] focus:outline-none focus:border-[#35CBC3]"
                     />
                   </div>
                 </div>
@@ -3587,7 +3587,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
               </button>
               <button
                 onClick={handleSaveEdit}
-                className="px-5 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold shadow-xs transition-colors"
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold shadow-xs transition-colors"
               >
                 Simpan Perubahan
               </button>
@@ -3604,10 +3604,10 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
             <div className="flex items-center justify-between border-b border-[#f1f5f9] pb-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-[16px] font-bold text-[#071e49]">
+                  <h3 className="text-[16px] font-bold text-[#2C3968]">
                     {selectedDistrictModal.name}
                   </h3>
-                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1a73e8] border border-blue-200">
+                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-green-tint text-ford-blue border border-blue-200">
                     {selectedDistrictModal.items.length} Komoditas Pangan
                   </span>
                 </div>
@@ -3647,7 +3647,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   return (
                     <div key={cat} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-[#071e49] text-[12px]">{cat}</span>
+                        <span className="font-bold text-[#2C3968] text-[12px]">{cat}</span>
                         <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">
                           {itemsInCat.length} bahan
                         </span>
@@ -3656,7 +3656,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                         {itemsInCat.map((item, iIdx) => (
                           <span
                             key={iIdx}
-                            className="px-2.5 py-1 rounded-lg bg-white text-[#071e49] text-[11px] font-semibold border border-slate-200 shadow-2xs"
+                            className="px-2.5 py-1 rounded-lg bg-white text-[#2C3968] text-[11px] font-semibold border border-slate-200 shadow-2xs"
                           >
                             {item}
                           </span>
@@ -3682,7 +3682,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
                   setSelectedDistrictModal(null);
                   setEditingItem({ type: "komoditas", isNew: false, data: toEdit });
                 }}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold shadow-xs transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold shadow-xs transition-colors cursor-pointer"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 <span>Edit Komoditas Kecamatan</span>

@@ -8,7 +8,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#1a73e8",
+  themeColor: "#4DE0A3",
 };
 
 export const metadata: Metadata = {
@@ -35,10 +35,10 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Kcal" />
-        <meta name="theme-color" content="#1a73e8" />
+        <meta name="theme-color" content="#4DE0A3" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
       </head>
-      <body className="bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
+      <body className="bg-[#F8FAFC] text-ford-blue min-h-screen flex flex-col font-sans selection:bg-green-02/30 selection:text-ford-blue">
         <AuthProvider>
           {children}
         </AuthProvider>
@@ -46,3 +46,4 @@ export default function RootLayout({
     </html>
   );
 }
+

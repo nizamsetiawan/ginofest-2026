@@ -36,10 +36,10 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
           <LogOut className="w-6 h-6" />
         </div>
         <div>
-          <h3 className="text-[16px] font-black text-[#071e49]">Keluar dari Akun?</h3>
+          <h3 className="text-[16px] font-black text-[#2C3968]">Keluar dari Akun?</h3>
           <p className="text-[12px] text-[#64748b] mt-1.5 leading-relaxed">
             Apakah Anda yakin ingin mengakhiri sesi akun{" "}
-            <strong className="text-[#071e49] font-bold">{displayName}</strong>{" "}
+            <strong className="text-[#2C3968] font-bold">{displayName}</strong>{" "}
             ({displayRegion})?
           </p>
         </div>
@@ -48,7 +48,7 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] text-[12px] font-bold transition-colors cursor-pointer"
+            className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] text-[12px] font-bold transition-colors cursor-pointer"
           >
             Batal
           </button>

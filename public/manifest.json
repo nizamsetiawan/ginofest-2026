@@ -4,8 +4,8 @@
   "description": "Smart screening awal indikasi malnutrisi anak melalui analisis visual pertumbuhan & kuesioner interaktif AI",
   "start_url": "/masyarakat",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1a73e8",
+  "background_color": "#F8FAFC",
+  "theme_color": "#4DE0A3",
   "orientation": "portrait-primary",
   "icons": [
     {

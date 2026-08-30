@@ -51,11 +51,11 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <HelpCircle className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-[16px] font-black text-[#071e49]">Pusat Bantuan & Panduan</h3>
+              <h3 className="text-[16px] font-black text-[#2C3968]">Pusat Bantuan & Panduan</h3>
               <p className="text-[11px] text-[#64748b]">
                 Panduan operasional sistem G-Scan dan AI Makan Bergizi Gratis
               </p>
@@ -73,11 +73,11 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
         {/* AI Assistant Banner */}
         <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#1a73e8] text-white flex items-center justify-center font-bold shadow-xs">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold flex items-center justify-center font-bold shadow-xs">
               <Bot className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-[12px] font-bold text-[#071e49]">Butuh bantuan interaktif cepat?</h4>
+              <h4 className="text-[12px] font-bold text-[#2C3968]">Butuh bantuan interaktif cepat?</h4>
               <p className="text-[11px] text-[#64748b]">Tanyakan apa saja kepada Asisten AI G-Scan</p>
             </div>
           </div>
@@ -86,7 +86,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
               onClose();
               onOpenChat();
             }}
-            className="px-3.5 py-1.5 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[11px] font-bold transition-all shrink-0 cursor-pointer shadow-xs"
+            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[11px] font-bold transition-all shrink-0 cursor-pointer shadow-xs"
           >
             Tanya AI
           </button>
@@ -94,8 +94,8 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
 
         {/* FAQ Accordion */}
         <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-          <h4 className="text-[12px] font-bold text-[#071e49] flex items-center gap-1.5 pt-1">
-            <BookOpen className="w-4 h-4 text-[#1a73e8]" />
+          <h4 className="text-[12px] font-bold text-[#2C3968] flex items-center gap-1.5 pt-1">
+            <BookOpen className="w-4 h-4 text-light-sea-green" />
             <span>Pertanyaan yang Sering Diajukan (FAQ)</span>
           </h4>
 
@@ -109,11 +109,11 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
                 >
                   <button
                     onClick={() => toggleFAQ(idx)}
-                    className="w-full p-3.5 text-left flex items-center justify-between gap-3 font-bold text-[12px] text-[#071e49] hover:text-[#1a73e8] transition-colors cursor-pointer"
+                    className="w-full p-3.5 text-left flex items-center justify-between gap-3 font-bold text-[12px] text-[#2C3968] hover:text-light-sea-green transition-colors cursor-pointer"
                   >
                     <span>{faq.question}</span>
                     {isOpen ? (
-                      <ChevronUp className="w-4 h-4 text-[#1a73e8] shrink-0" />
+                      <ChevronUp className="w-4 h-4 text-light-sea-green shrink-0" />
                     ) : (
                       <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
                     )}
@@ -130,10 +130,10 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
 
           {/* Contact Support */}
           <div className="mt-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 text-[11px] text-[#64748b] space-y-1.5">
-            <p className="font-bold text-[#071e49]">Helpdesk Teknis Dinas Kesehatan Kab. Gresik:</p>
+            <p className="font-bold text-[#2C3968]">Helpdesk Teknis Dinas Kesehatan Kab. Gresik:</p>
             <div className="flex flex-wrap items-center gap-4 text-[11px]">
               <span className="flex items-center gap-1">
-                <Mail className="w-3.5 h-3.5 text-[#1a73e8]" />
+                <Mail className="w-3.5 h-3.5 text-light-sea-green" />
                 <span>dinkes@gresikkab.go.id</span>
               </span>
               <span className="flex items-center gap-1">
@@ -148,7 +148,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
         <div className="pt-2 border-t border-slate-100 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] text-[12px] font-bold transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] text-[12px] font-bold transition-colors cursor-pointer"
           >
             Tutup
           </button>

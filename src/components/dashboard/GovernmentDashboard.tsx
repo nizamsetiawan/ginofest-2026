@@ -83,7 +83,7 @@ export const GovernmentDashboard: React.FC = () => {
       districtId: user?.districtId || "all",
       initials: (user?.name || "AK").slice(0, 2).toUpperCase(),
       email: user?.email || "admin@gresik.go.id",
-      avatarBg: "#1a73e8",
+      avatarBg: "#35CBC3",
       stats: { totalChildren: 0, stuntingCases: 0, targetSchools: 0, coveragePct: 0 }
     };
   }, [user]);
@@ -111,7 +111,7 @@ export const GovernmentDashboard: React.FC = () => {
   // 3. IF RAG DATABASE IS ACTIVE: RENDER IN FULLSCREEN
   if (activeNav === "rag_db") {
     return (
-      <div className="min-h-screen bg-[#f8fafc] text-[#071e49] selection:bg-[#dbeafe] selection:text-[#1a73e8]">
+      <div className="min-h-screen bg-[#F8FAFC] text-ford-blue selection:bg-green-02/30 selection:text-ford-blue font-sans">
         <RAGKnowledgeBaseView onBackToDashboard={() => setActiveNav("scan")} />
         <SetupPinModal isOpen={isSetupPinOpen} onClose={() => setIsSetupPinOpen(false)} />
       </div>
@@ -119,7 +119,7 @@ export const GovernmentDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#ffffff] text-[#071e49] flex selection:bg-[#dbeafe] selection:text-[#1a73e8]">
+    <div className="min-h-screen bg-[#ffffff] text-ford-blue flex selection:bg-green-02/30 selection:text-ford-blue font-sans">
       {/* 1. Left Sidebar */}
       <NuSantapSidebar
         activeNav={activeNav}

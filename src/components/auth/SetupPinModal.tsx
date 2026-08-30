@@ -96,40 +96,40 @@ export const SetupPinModal: React.FC<SetupPinModalProps> = ({ isOpen, onClose })
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 select-none animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-[#e2e8f0] shadow-2xl p-6 sm:p-7 space-y-5 animate-in zoom-in-95 duration-200 text-center">
+    <div className="fixed inset-0 z-[1000] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 select-none animate-in fade-in duration-200 font-sans">
+      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-7 space-y-5 animate-in zoom-in-95 duration-200 text-center">
         {/* Header Icon */}
-        <div className="w-14 h-14 mx-auto rounded-2xl bg-blue-50 text-[#1a73e8] border border-blue-200 flex items-center justify-center shadow-xs">
+        <div className="w-14 h-14 mx-auto rounded-2xl bg-green-tint text-ford-blue border border-green-02/30 flex items-center justify-center shadow-xs">
           <KeyRound className="w-7 h-7" />
         </div>
 
         <div>
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#1a73e8] border border-blue-200 uppercase tracking-wider mb-1.5">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-tint text-ford-blue border border-green-02/30 uppercase tracking-wider mb-1.5">
             Aktivasi Pertama Kali
           </span>
-          <h2 className="text-[18px] font-black text-[#071e49] tracking-tight">
+          <h2 className="text-[18px] font-bold text-ford-blue tracking-tight">
             Setup Kode PIN Otorisasi 8 Digit
           </h2>
-          <p className="text-[12px] text-[#64748b] mt-1">
-            Selamat datang, <strong className="text-[#071e49]">{user.name}</strong> ({user.regionLabel}). Buat PIN 8 digit untuk mengamankan akses data wilayah Anda.
+          <p className="text-[12px] text-blue-gray mt-1 font-medium">
+            Selamat datang, <strong className="text-ford-blue">{user.name}</strong> ({user.regionLabel}). Buat PIN 8 digit untuk mengamankan akses data wilayah Anda.
           </p>
         </div>
 
         {isSuccess ? (
           <div className="py-6 space-y-2 animate-in zoom-in-90 duration-200">
-            <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <div className="w-12 h-12 mx-auto rounded-full bg-green-tint text-green-02 flex items-center justify-center">
               <Check className="w-6 h-6 stroke-[3]" />
             </div>
-            <p className="text-[13px] font-bold text-emerald-700">
+            <p className="text-[13px] font-bold text-ford-blue">
               PIN & Akun Berhasil Diaktivasi!
             </p>
-            <p className="text-[11px] text-slate-500">Mengarahkan ke dashboard sistem...</p>
+            <p className="text-[11px] text-blue-gray">Mengarahkan ke dashboard sistem...</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 text-left">
             {/* PIN INPUT */}
             <div>
-              <label className="block text-[11px] font-bold text-[#071e49] mb-1.5">
+              <label className="block text-[11px] font-bold text-ford-blue mb-1.5">
                 Buat PIN 8 Digit Baru:
               </label>
               <div className="flex items-center justify-between gap-1 sm:gap-1.5">
@@ -142,7 +142,7 @@ export const SetupPinModal: React.FC<SetupPinModalProps> = ({ isOpen, onClose })
                     value={digit}
                     onChange={(e) => handleDigitChange(idx, e.target.value, pinDigits, setPinDigits, pinRefs)}
                     onKeyDown={(e) => handleKeyDown(idx, e, pinDigits, pinRefs)}
-                    className="w-10 h-11 text-center font-mono font-black text-[16px] text-[#071e49] bg-[#f8fafc] border border-[#cbd5e1] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1a73e8]/30 focus:border-[#1a73e8] transition-all"
+                    className="w-10 h-11 text-center font-mono font-bold text-[16px] text-ford-blue bg-[#F8FAFC] border border-[#cbd5e1] rounded-xl focus:outline-none focus:ring-2 focus:ring-green-02/20 focus:border-light-sea-green transition-all"
                   />
                 ))}
               </div>
@@ -150,7 +150,7 @@ export const SetupPinModal: React.FC<SetupPinModalProps> = ({ isOpen, onClose })
 
             {/* CONFIRM PIN INPUT */}
             <div>
-              <label className="block text-[11px] font-bold text-[#071e49] mb-1.5">
+              <label className="block text-[11px] font-bold text-ford-blue mb-1.5">
                 Ulangi Konfirmasi PIN:
               </label>
               <div className="flex items-center justify-between gap-1 sm:gap-1.5">
@@ -163,7 +163,7 @@ export const SetupPinModal: React.FC<SetupPinModalProps> = ({ isOpen, onClose })
                     value={digit}
                     onChange={(e) => handleDigitChange(idx, e.target.value, confirmDigits, setConfirmDigits, confirmRefs)}
                     onKeyDown={(e) => handleKeyDown(idx, e, confirmDigits, confirmRefs)}
-                    className="w-10 h-11 text-center font-mono font-black text-[16px] text-[#071e49] bg-[#f8fafc] border border-[#cbd5e1] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1a73e8]/30 focus:border-[#1a73e8] transition-all"
+                    className="w-10 h-11 text-center font-mono font-bold text-[16px] text-ford-blue bg-[#F8FAFC] border border-[#cbd5e1] rounded-xl focus:outline-none focus:ring-2 focus:ring-green-02/20 focus:border-light-sea-green transition-all"
                   />
                 ))}
               </div>
@@ -171,7 +171,7 @@ export const SetupPinModal: React.FC<SetupPinModalProps> = ({ isOpen, onClose })
 
             {/* OPTIONAL NEW PASSWORD */}
             <div>
-              <label className="block text-[11px] font-bold text-[#071e49] mb-1">
+              <label className="block text-[11px] font-bold text-ford-blue mb-1">
                 Kata Sandi Baru (Opsional):
               </label>
               <div className="relative">
@@ -180,16 +180,16 @@ export const SetupPinModal: React.FC<SetupPinModalProps> = ({ isOpen, onClose })
                   placeholder="Ganti kata sandi login (opsional)..."
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 text-[12px] bg-[#f8fafc] border border-[#cbd5e1] rounded-xl text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                  className="w-full pl-9 pr-4 py-2.5 text-[12px] bg-[#F8FAFC] border border-[#cbd5e1] rounded-xl text-ford-blue focus:outline-none focus:border-light-sea-green"
                 />
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-blue-gray absolute left-3 top-1/2 -translate-y-1/2" />
               </div>
             </div>
 
             {/* ERROR ALERT */}
             {errorMsg && (
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium flex items-center gap-2 animate-in fade-in">
-                <AlertCircle className="w-4 h-4 shrink-0" />
+              <div className="p-3 rounded-xl bg-red-50 border border-brand-red/30 text-brand-red text-[11px] font-medium flex items-center gap-2 animate-in fade-in">
+                <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -199,16 +199,16 @@ export const SetupPinModal: React.FC<SetupPinModalProps> = ({ isOpen, onClose })
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold text-[13px] shadow-sm transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold text-[13px] shadow-xs transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin text-ford-blue" />
                     <span>Menyimpan PIN...</span>
                   </>
                 ) : (
                   <>
-                    <ShieldCheck className="w-4 h-4" />
+                    <ShieldCheck className="w-4 h-4 text-ford-blue" />
                     <span>Simpan & Masuk Dashboard</span>
                   </>
                 )}

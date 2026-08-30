@@ -33,7 +33,7 @@ export const GresikVectorMap: React.FC<GresikVectorMapProps> = ({
         <span className="font-semibold text-[#222222]">Tingkat Risiko Stunting:</span>
         <div className="flex items-center gap-3 flex-wrap">
           <span className="inline-flex items-center gap-1 font-medium text-[#1e7d36]">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#2bb34d]"></span> Rendah (&lt;10%)
+            <span className="w-2.5 h-2.5 rounded-full bg-[#4DE0A3]"></span> Rendah (&lt;10%)
           </span>
           <span className="inline-flex items-center gap-1 font-medium text-[#b56114]">
             <span className="w-2.5 h-2.5 rounded-full bg-[#f68a22]"></span> Waspada (10-14%)
@@ -49,10 +49,10 @@ export const GresikVectorMap: React.FC<GresikVectorMapProps> = ({
         {/* ZONA 1: KEPULAUAN BAWEAN */}
         <div className="p-3 rounded-xl bg-[#f0f6ff]/50 border border-[#d1e3fa]">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold text-[#1a73e8] uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-light-sea-green uppercase tracking-wider">
               🌊 Zona Kepulauan Bawean (Terluar)
             </span>
-            <span className="text-[11px] text-[#1a73e8] font-medium">2 Kecamatan</span>
+            <span className="text-[11px] text-light-sea-green font-medium">2 Kecamatan</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {baweanDistricts.map((d) => (
@@ -153,7 +153,7 @@ const DistrictButton: React.FC<{
     }
     return (
       <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-[#1e7d36] bg-[#d5f0db] px-1.5 py-0.5 rounded">
-        <CheckCircle className="w-2.5 h-2.5 text-[#2bb34d]" />
+        <CheckCircle className="w-2.5 h-2.5 text-green-02" />
         {district.stuntingRate}%
       </span>
     );

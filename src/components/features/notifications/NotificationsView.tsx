@@ -99,11 +99,11 @@ export const NotificationsView: React.FC = () => {
 
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
-      case "master": return <Database className="w-5 h-5 text-[#1a73e8]" />;
-      case "generate": return <Sparkles className="w-5 h-5 text-[#1a73e8]" />;
+      case "master": return <Database className="w-5 h-5 text-light-sea-green" />;
+      case "generate": return <Sparkles className="w-5 h-5 text-light-sea-green" />;
       case "screening": return <AlertCircle className="w-5 h-5 text-amber-600" />;
       case "settings": return <Check className="w-5 h-5 text-blue-600" />;
-      default: return <Bell className="w-5 h-5 text-[#1a73e8]" />;
+      default: return <Bell className="w-5 h-5 text-light-sea-green" />;
     }
   };
 
@@ -125,14 +125,14 @@ export const NotificationsView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <Bell className="w-5 h-5" />
             </div>
-            <h1 className="text-[22px] font-black text-[#071e49] tracking-tight">
+            <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
               Pusat Notifikasi
             </h1>
             {unreadCount > 0 && (
-              <span className="px-2.5 py-0.5 rounded-full bg-[#1a73e8] text-white text-[11px] font-black shadow-xs">
+              <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[11px] font-black shadow-xs">
                 {unreadCount} Baru
               </span>
             )}
@@ -146,7 +146,7 @@ export const NotificationsView: React.FC = () => {
           <button
             onClick={handleRefresh}
             disabled={isSyncing}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-[#071e49] text-[12px] font-bold transition-all cursor-pointer shadow-2xs disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-[#2C3968] text-[12px] font-bold transition-all cursor-pointer shadow-2xs disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin" : ""}`} />
             <span>Refresh</span>
@@ -155,7 +155,7 @@ export const NotificationsView: React.FC = () => {
             <button
               onClick={handleMarkAllRead}
               disabled={isSyncing}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold transition-all cursor-pointer shadow-xs disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-all cursor-pointer shadow-xs disabled:opacity-50"
             >
               <CheckCheck className="w-3.5 h-3.5" />
               <span>Tandai Semua Dibaca</span>
@@ -179,8 +179,8 @@ export const NotificationsView: React.FC = () => {
             onClick={() => setActiveCategory(tab.id)}
             className={`px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer shrink-0 ${
               activeCategory === tab.id
-                ? "bg-[#1a73e8] text-white shadow-xs"
-                : "bg-white border border-[#cbd5e1] text-slate-600 hover:text-[#071e49]"
+                ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                : "bg-white border border-[#cbd5e1] text-slate-600 hover:text-[#2C3968]"
             }`}
           >
             {tab.label}
@@ -213,7 +213,7 @@ export const NotificationsView: React.FC = () => {
             >
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 {!n.isRead ? (
-                  <span className="w-2 h-2 rounded-full bg-[#1a73e8] shrink-0"></span>
+                  <span className="w-2 h-2 rounded-full bg-[#35CBC3] shrink-0"></span>
                 ) : (
                   <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0"></span>
                 )}
@@ -221,7 +221,7 @@ export const NotificationsView: React.FC = () => {
                 <div className="min-w-0 flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-bold text-[#071e49] truncate group-hover:text-[#1a73e8] transition-colors">
+                      <span className="text-[12px] font-bold text-[#2C3968] truncate group-hover:text-light-sea-green transition-colors">
                         {n.title}
                       </span>
                       <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-slate-100 text-slate-600 border border-slate-200 uppercase shrink-0">
@@ -254,17 +254,17 @@ export const NotificationsView: React.FC = () => {
                   {getCategoryIcon(activeModalNotif.category)}
                 </div>
                 <div>
-                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#1a73e8] mb-1">
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-tint text-ford-blue mb-1">
                     {getCategoryLabel(activeModalNotif.category)}
                   </span>
-                  <h2 className="text-[16px] font-black text-[#071e49] tracking-tight leading-tight">
+                  <h2 className="text-[16px] font-black text-[#2C3968] tracking-tight leading-tight">
                     {activeModalNotif.title}
                   </h2>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedNotif(null)}
-                className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-[#071e49] transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-[#2C3968] transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -273,11 +273,11 @@ export const NotificationsView: React.FC = () => {
             {/* Timestamps */}
             <div className="flex flex-wrap items-center gap-4 text-[11px] text-[#64748b] bg-[#f8fafc] p-3 rounded-2xl border border-[#e2e8f0]">
               <div className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#1a73e8]" />
+                <Calendar className="w-3.5 h-3.5 text-light-sea-green" />
                 <span>{formatFullDate(activeModalNotif.createdAtIso)}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#1a73e8]" />
+                <Clock className="w-3.5 h-3.5 text-light-sea-green" />
                 <span>{formatTime(activeModalNotif.createdAtIso)}</span>
               </div>
             </div>
@@ -285,7 +285,7 @@ export const NotificationsView: React.FC = () => {
             {/* Description Body */}
             <div className="space-y-2">
               <span className="text-[11px] font-bold text-[#64748b] block">Rincian Aktivitas:</span>
-              <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] text-[13px] text-[#071e49] leading-relaxed">
+              <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] text-[13px] text-[#2C3968] leading-relaxed">
                 {activeModalNotif.description}
               </div>
             </div>
@@ -302,7 +302,7 @@ export const NotificationsView: React.FC = () => {
 
               <button
                 onClick={() => setSelectedNotif(null)}
-                className="px-5 py-2.5 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold shadow-xs transition-colors cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold shadow-xs transition-colors cursor-pointer"
               >
                 Tutup
               </button>

@@ -744,7 +744,7 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 sm:static sm:min-h-screen bg-white sm:bg-slate-950 flex justify-center items-center selection:bg-[#1a73e8] selection:text-white p-0 sm:p-4 overflow-hidden">
+    <div className="fixed inset-0 sm:static sm:min-h-screen bg-[#F8FAFC] sm:bg-slate-950 flex justify-center items-center selection:bg-green-02/30 selection:text-ford-blue p-0 sm:p-4 overflow-hidden font-sans">
       {/* Native Mobile Smartphone Frame (Compact .APK proportions) */}
       <div 
         onTouchStart={handleTouchStart}
@@ -759,36 +759,36 @@ export const CitizenMobileApp: React.FC = () => {
             <div className="space-y-4 flex flex-col items-center">
               {/* App Logo with Pulse Radar */}
               <div className="relative">
-                <div className="absolute -inset-3 rounded-2xl bg-[#1a73e8]/20 blur-md animate-ping"></div>
+                <div className="absolute -inset-3 rounded-2xl bg-green-02/20 blur-md animate-ping"></div>
                 <img src="/logo_app.svg" alt="Kcal" className="w-14 h-14 rounded-2xl shadow-md relative z-10 animate-bounce" />
               </div>
 
               <div className="space-y-1">
-                <h3 className="text-[15px] font-black text-[#071e49]">
+                <h3 className="text-[15px] font-bold text-ford-blue">
                   Memperbarui Aplikasi Kcal...
                 </h3>
-                <p className="text-[11px] text-slate-500 font-medium max-w-[220px]">
+                <p className="text-[11px] text-blue-gray font-medium max-w-[220px]">
                   Mengunduh pembaruan sistem terbaru dari server
                 </p>
               </div>
 
               {/* Progress dots */}
               <div className="flex items-center gap-1.5 pt-2">
-                <div className="w-2 h-2 rounded-full bg-[#1a73e8] animate-bounce [animation-delay:-0.3s]"></div>
-                <div className="w-2 h-2 rounded-full bg-[#1a73e8] animate-bounce [animation-delay:-0.15s]"></div>
-                <div className="w-2 h-2 rounded-full bg-[#1a73e8] animate-bounce"></div>
+                <div className="w-2 h-2 rounded-full bg-green-02 animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-2 h-2 rounded-full bg-light-sea-green animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-2 h-2 rounded-full bg-ford-blue animate-bounce"></div>
               </div>
             </div>
           </div>
         )}
 
         {/* ═══ NATIVE TOP STATUS BAR (Visible on Desktop preview) ═══ */}
-        <div className="hidden sm:flex h-8 px-4 pt-1.5 items-center justify-between bg-white text-slate-800 select-none shrink-0 z-50">
+        <div className="hidden sm:flex h-8 px-4 pt-1.5 items-center justify-between bg-white text-ford-blue select-none shrink-0 z-50">
           <span className="text-[11px] font-bold tracking-tight">9:41</span>
           <div className="w-16 h-3 bg-slate-900 rounded-full flex items-center justify-center">
             <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
           </div>
-          <div className="flex items-center gap-1.5 text-slate-700">
+          <div className="flex items-center gap-1.5 text-blue-gray">
             <Signal className="w-2.5 h-2.5" />
             <Wifi className="w-2.5 h-2.5" />
             <Battery className="w-3 h-3 fill-current" />
@@ -804,17 +804,17 @@ export const CitizenMobileApp: React.FC = () => {
           }}
           className="overflow-hidden transition-all duration-150 ease-out flex items-center justify-center pointer-events-none shrink-0 z-40 bg-white/95"
         >
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/95 border border-blue-200 text-[#1a73e8] text-[10.5px] font-bold shadow-xs">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-tint/95 border border-green-02/30 text-ford-blue text-[10.5px] font-bold shadow-xs">
             <RefreshCw
-              className={`w-3.5 h-3.5 ${isPullRefreshing ? "animate-spin" : ""}`}
+              className={`w-3.5 h-3.5 text-light-sea-green ${isPullRefreshing ? "animate-spin" : ""}`}
               style={{ transform: `rotate(${pullY * 6}deg)` }}
             />
             <span>
               {isPullRefreshing
                 ? "Menyegarkan data..."
                 : pullY >= 45
-                ? "Lepaskan untuk menyegarkan"
-                : "Tarik untuk menyegarkan"}
+                ? "Lepaskan untuk memuat ulang"
+                : "Tarik untuk segarkan"}
             </span>
           </div>
         </div>
@@ -825,12 +825,12 @@ export const CitizenMobileApp: React.FC = () => {
         {currentScreen === "splash" && (
           <div 
             onClick={() => setCurrentScreen("login")}
-            className="flex-1 bg-gradient-to-b from-[#ffffff] via-[#f0f6ff] to-[#e8f0fe] flex flex-col items-center justify-center p-5 text-center animate-in fade-in duration-300 cursor-pointer select-none"
+            className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-green-tint/40 to-[#F8FAFC] flex flex-col items-center justify-center p-5 text-center animate-in fade-in duration-300 cursor-pointer select-none font-sans"
           >
             <div className="space-y-4 flex flex-col items-center">
               {/* App Logo with Pulse Ring */}
               <div className="relative">
-                <div className="absolute -inset-3 rounded-2xl bg-[#1a73e8]/20 blur-lg animate-pulse"></div>
+                <div className="absolute -inset-3 rounded-3xl bg-green-02/25 blur-lg animate-pulse"></div>
                 <img
                   src="/logo_app.svg"
                   alt="Kcal Logo"
@@ -840,29 +840,29 @@ export const CitizenMobileApp: React.FC = () => {
 
               {/* Title & Tagline */}
               <div className="space-y-1.5 relative z-10 max-w-[260px]">
-                <h1 className="text-[22px] font-black text-[#071e49] tracking-tight">
+                <h1 className="text-[24px] font-bold text-ford-blue tracking-tight">
                   Kcal
                 </h1>
-                <p className="text-[11px] font-medium text-[#071e49] leading-relaxed">
+                <p className="text-[11.5px] font-medium text-blue-gray leading-relaxed">
                   &ldquo;Smart screening awal indikasi malnutrisi anak melalui analisis visual pertumbuhan & kuesioner interaktif AI&rdquo;
                 </p>
                 <div className="pt-0.5">
-                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1a73e8] text-[9.5px] font-black border border-blue-200 tracking-wide">
+                  <span className="inline-block px-3 py-0.5 rounded-full bg-green-tint text-ford-blue text-[9.5px] font-bold border border-green-02/40 tracking-wide">
                     Ginofest 2026
                   </span>
                 </div>
               </div>
 
               {/* Subtle Loading Dots */}
-              <div className="flex items-center gap-1 pt-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#1a73e8] animate-bounce [animation-delay:-0.3s]"></div>
-                <div className="w-1.5 h-1.5 rounded-full bg-[#1a73e8] animate-bounce [animation-delay:-0.15s]"></div>
-                <div className="w-1.5 h-1.5 rounded-full bg-[#1a73e8] animate-bounce"></div>
+              <div className="flex items-center gap-1.5 pt-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-02 animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-light-sea-green animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-ford-blue animate-bounce"></div>
               </div>
 
               {/* Version Text below Loading Dots */}
               <div className="pt-1.5">
-                <span className="text-[10px] font-bold text-slate-400 tracking-wider">
+                <span className="text-[10px] font-bold text-blue-gray/60 tracking-wider">
                   v1.0.0
                 </span>
               </div>
@@ -878,7 +878,7 @@ export const CitizenMobileApp: React.FC = () => {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200 overscroll-contain"
+            className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200 overscroll-contain font-sans"
           >
             {/* Top Bar: Install APK Button & Country Flag */}
             <div className="flex items-center justify-between pb-2">
@@ -886,49 +886,49 @@ export const CitizenMobileApp: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleInstallPWA}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#1a73e8] text-[10.5px] font-black transition-all cursor-pointer shadow-2xs"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-green-tint hover:bg-green-02/20 border border-green-02/40 text-ford-blue text-[10.5px] font-bold transition-all cursor-pointer shadow-2xs"
                 >
-                  <Download className="w-3 h-3" />
+                  <Download className="w-3 h-3 text-light-sea-green" />
                   <span>Pasang Aplikasi (.APK)</span>
                 </button>
               ) : (
                 <div></div>
               )}
 
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-slate-600">
+              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-blue-gray">
                 <span>🇮🇩</span>
                 <span>ID</span>
               </div>
             </div>
 
-            {/* GreatDay Styled Logo & Subtitle */}
+            {/* Logo & Subtitle */}
             <div className="text-center space-y-1 pt-1 pb-4">
               <div className="flex items-center justify-center gap-2">
                 <img src="/logo_app.svg" alt="Kcal" className="w-9 h-9 rounded-xl shadow-xs" />
-                <span className="text-[22px] font-black text-[#071e49] tracking-tight">
-                  Kcal<span className="text-[#1a73e8]">.</span>
+                <span className="text-[24px] font-bold text-ford-blue tracking-tight">
+                  Kcal<span className="text-green-02">.</span>
                 </span>
               </div>
-              <p className="text-[11px] text-[#64748b] font-medium">
+              <p className="text-[12px] text-blue-gray font-medium">
                 Pantau menu MBG & gizi anak setiap hari!
               </p>
             </div>
 
-            {/* Success Snackbar (e.g. after Registration or Password Reset) */}
+            {/* Success Snackbar */}
             {authSuccessSnackbar && (
-              <div className="mb-3 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11.5px] font-medium flex items-start gap-2 animate-in fade-in slide-in-from-top-2 shadow-2xs">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div className="mb-3 p-3 rounded-2xl bg-green-tint border border-green-02/40 text-ford-blue text-[11.5px] font-medium flex items-start gap-2 animate-in fade-in slide-in-from-top-2 shadow-2xs">
+                <CheckCircle2 className="w-4 h-4 text-green-02 shrink-0 mt-0.5" />
                 <div className="space-y-0.5">
-                  <p className="font-bold text-emerald-900">Pendaftaran Berhasil!</p>
-                  <p className="text-[10.5px] text-emerald-700 leading-snug">{authSuccessSnackbar}</p>
+                  <p className="font-bold text-ford-blue">Pendaftaran Berhasil!</p>
+                  <p className="text-[10.5px] text-blue-gray leading-snug">{authSuccessSnackbar}</p>
                 </div>
               </div>
             )}
 
             {/* Error Message if any */}
             {authError && (
-              <div className="mb-3 p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium flex items-center gap-2 animate-in shake">
-                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+              <div className="mb-3 p-2.5 rounded-xl bg-red-50 border border-brand-red/30 text-brand-red text-[11px] font-medium flex items-center gap-2 animate-in shake">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0 text-brand-red" />
                 <span>{authError}</span>
               </div>
             )}
@@ -937,7 +937,7 @@ export const CitizenMobileApp: React.FC = () => {
             <form onSubmit={handleLogin} className="space-y-3">
               {/* Alamat Email */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-[#475569] block">
+                <label className="text-[11px] font-bold text-ford-blue block">
                   Alamat Email
                 </label>
                 <input
@@ -945,13 +945,13 @@ export const CitizenMobileApp: React.FC = () => {
                   placeholder="Masukkan alamat email"
                   value={loginIdentifier}
                   onChange={(e) => setLoginIdentifier(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[12px] text-[#071e49] font-medium focus:bg-white focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8]/20 transition-all placeholder:text-slate-400"
+                  className="w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border border-[#cbd5e1] text-[12px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-light-sea-green focus:ring-1 focus:ring-green-02/30 transition-all placeholder:text-blue-gray/60"
                 />
               </div>
 
               {/* Kata Sandi */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-[#475569] block">
+                <label className="text-[11px] font-bold text-ford-blue block">
                   Kata Sandi
                 </label>
                 <div className="relative">
@@ -960,12 +960,12 @@ export const CitizenMobileApp: React.FC = () => {
                     placeholder="Masukkan kata sandi"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full pl-3 pr-9 py-2 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[12px] text-[#071e49] font-medium focus:bg-white focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8]/20 transition-all placeholder:text-slate-400"
+                    className="w-full pl-3 pr-9 py-2 rounded-xl bg-[#F8FAFC] border border-[#cbd5e1] text-[12px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-light-sea-green focus:ring-1 focus:ring-green-02/30 transition-all placeholder:text-blue-gray/60"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer p-1"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-blue-gray hover:text-ford-blue cursor-pointer p-1"
                   >
                     {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
@@ -974,20 +974,20 @@ export const CitizenMobileApp: React.FC = () => {
 
               {/* Kecamatan / Wilayah Asal */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-[#475569] block">
-                  Kecamatan Domisili <span className="text-red-500">*</span>
+                <label className="text-[11px] font-bold text-ford-blue block">
+                  Kecamatan Domisili <span className="text-brand-red">*</span>
                 </label>
                 <div className="relative">
                   <select
                     value={loginDistrict}
                     onChange={(e) => setLoginDistrict(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-xl bg-slate-50 border text-[12px] font-medium focus:bg-white focus:outline-none transition-all cursor-pointer ${
-                      !loginDistrict ? "text-slate-400 border-[#cbd5e1]" : "text-[#071e49] font-bold border-[#cbd5e1] focus:border-[#1a73e8]"
+                    className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[12px] font-medium focus:bg-white focus:outline-none transition-all cursor-pointer ${
+                      !loginDistrict ? "text-blue-gray/60 border-[#cbd5e1]" : "text-ford-blue font-bold border-[#cbd5e1] focus:border-light-sea-green"
                     }`}
                   >
                     <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
                     {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                      <option key={d.id} value={d.name} className="text-[#071e49] font-medium">Kecamatan {d.name}</option>
+                      <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
                     ))}
                   </select>
                 </div>
@@ -995,12 +995,12 @@ export const CitizenMobileApp: React.FC = () => {
 
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between text-[11px] pt-0.5">
-                <label className="flex items-center gap-1.5 text-[#475569] font-medium cursor-pointer">
+                <label className="flex items-center gap-1.5 text-blue-gray font-medium cursor-pointer">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-3.5 h-3.5 rounded text-[#1a73e8] focus:ring-0 cursor-pointer accent-[#1a73e8]"
+                    className="w-3.5 h-3.5 rounded text-light-sea-green focus:ring-0 cursor-pointer accent-light-sea-green"
                   />
                   <span>Tetap masuk</span>
                 </label>
@@ -1015,7 +1015,7 @@ export const CitizenMobileApp: React.FC = () => {
                     setAuthError("");
                     setCurrentScreen("forgot_password");
                   }}
-                  className="text-[#64748b] hover:text-[#1a73e8] font-semibold transition-colors cursor-pointer"
+                  className="text-blue-gray hover:text-light-sea-green font-semibold transition-colors cursor-pointer"
                 >
                   Lupa Kata Sandi?
                 </button>
@@ -1026,7 +1026,7 @@ export const CitizenMobileApp: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmittingAuth}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12.5px] font-bold shadow-sm shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[13px] font-bold shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSubmittingAuth ? (
                     <>
@@ -1041,7 +1041,7 @@ export const CitizenMobileApp: React.FC = () => {
             </form>
 
             {/* Link: Register Switcher */}
-            <div className="pt-5 pb-3 text-center text-[11.5px] text-[#64748b]">
+            <div className="pt-5 pb-3 text-center text-[11.5px] text-blue-gray">
               <span>Belum punya akun? </span>
               <button
                 type="button"
@@ -1049,7 +1049,7 @@ export const CitizenMobileApp: React.FC = () => {
                   setAuthError("");
                   setCurrentScreen("register");
                 }}
-                className="text-[#1a73e8] font-black hover:underline cursor-pointer ml-1"
+                className="text-light-sea-green font-bold hover:underline cursor-pointer ml-1"
               >
                 Daftar Sekarang
               </button>
@@ -1061,7 +1061,7 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 3. SCREEN: REGISTER (Clean & Compact Form)               */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "register" && (
-          <div className="flex-1 bg-white flex flex-col px-5 pt-4 pb-6 overflow-y-auto animate-in fade-in duration-200">
+          <div className="flex-1 bg-white flex flex-col px-5 pt-4 pb-6 overflow-y-auto animate-in fade-in duration-200 font-sans">
             {/* Top Navigation & Flag */}
             <div className="flex items-center justify-between pb-2 mb-1">
               <button
@@ -1071,13 +1071,13 @@ export const CitizenMobileApp: React.FC = () => {
                   setFieldErrors({});
                   setCurrentScreen("login");
                 }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-600 hover:text-[#071e49] transition-all cursor-pointer shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-blue-gray hover:text-ford-blue transition-all cursor-pointer shadow-2xs"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Kembali</span>
               </button>
 
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-slate-600">
+              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-blue-gray">
                 <span>🇮🇩</span>
                 <span>ID</span>
               </div>
@@ -1087,20 +1087,20 @@ export const CitizenMobileApp: React.FC = () => {
             <div className="text-center space-y-0.5 pt-1 pb-3">
               <div className="flex items-center justify-center gap-1.5">
                 <img src="/logo_app.svg" alt="Kcal" className="w-8 h-8 rounded-xl shadow-xs" />
-                <span className="text-[20px] font-black text-[#071e49] tracking-tight">
-                  Kcal<span className="text-[#1a73e8]">.</span>
+                <span className="text-[20px] font-bold text-ford-blue tracking-tight">
+                  Kcal<span className="text-green-02">.</span>
                 </span>
               </div>
-              <h2 className="text-[14px] font-black text-[#071e49]">Daftar Akun</h2>
-              <p className="text-[10px] text-[#64748b]">
+              <h2 className="text-[14px] font-bold text-ford-blue">Daftar Akun</h2>
+              <p className="text-[10px] text-blue-gray">
                 Daftarkan akun keluarga untuk memantau menu MBG & gizi anak
               </p>
             </div>
 
             {/* Global Error Banner if any */}
             {authError && (
-              <div className="mb-2.5 p-2 rounded-xl bg-red-50 border border-red-200 text-red-700 text-[10.5px] font-medium flex items-center gap-1.5 animate-in shake">
-                <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-600" />
+              <div className="mb-2.5 p-2 rounded-xl bg-red-50 border border-brand-red/30 text-brand-red text-[10.5px] font-medium flex items-center gap-1.5 animate-in shake">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0 text-brand-red" />
                 <span>{authError}</span>
               </div>
             )}
@@ -1108,8 +1108,8 @@ export const CitizenMobileApp: React.FC = () => {
             <form onSubmit={handleRegister} className="space-y-2.5">
               {/* 1. Nama Lengkap */}
               <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-slate-700 block">
-                  Nama Lengkap <span className="text-red-500">*</span>
+                <label className="text-[10.5px] font-bold text-ford-blue block">
+                  Nama Lengkap <span className="text-brand-red">*</span>
                 </label>
                 <input
                   type="text"
@@ -1119,19 +1119,19 @@ export const CitizenMobileApp: React.FC = () => {
                     setRegFullName(e.target.value);
                     if (fieldErrors.fullName) setFieldErrors((p) => ({ ...p, fullName: "" }));
                   }}
-                  className={`w-full px-3 py-2 rounded-xl bg-slate-50 border text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none transition-all ${
-                    fieldErrors.fullName ? "border-red-400 bg-red-50/40 focus:border-red-500" : "border-[#cbd5e1] focus:border-[#1a73e8]"
+                  className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                    fieldErrors.fullName ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
                   }`}
                 />
                 {fieldErrors.fullName && (
-                  <p className="text-[9.5px] text-red-600 font-semibold">{fieldErrors.fullName}</p>
+                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.fullName}</p>
                 )}
               </div>
 
               {/* 2. Alamat Email */}
               <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-slate-700 block">
-                  Alamat Email <span className="text-red-500">*</span>
+                <label className="text-[10.5px] font-bold text-ford-blue block">
+                  Alamat Email <span className="text-brand-red">*</span>
                 </label>
                 <input
                   type="email"
@@ -1141,19 +1141,19 @@ export const CitizenMobileApp: React.FC = () => {
                     setRegEmail(e.target.value);
                     if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: "" }));
                   }}
-                  className={`w-full px-3 py-2 rounded-xl bg-slate-50 border text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none transition-all ${
-                    fieldErrors.email ? "border-red-400 bg-red-50/40 focus:border-red-500" : "border-[#cbd5e1] focus:border-[#1a73e8]"
+                  className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                    fieldErrors.email ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
                   }`}
                 />
                 {fieldErrors.email && (
-                  <p className="text-[9.5px] text-red-600 font-semibold">{fieldErrors.email}</p>
+                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.email}</p>
                 )}
               </div>
 
               {/* 3. Nomor WhatsApp / Telp */}
               <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-slate-700 block">
-                  Nomor WhatsApp / HP <span className="text-red-500">*</span>
+                <label className="text-[10.5px] font-bold text-ford-blue block">
+                  Nomor WhatsApp / HP <span className="text-brand-red">*</span>
                 </label>
                 <input
                   type="tel"
@@ -1163,19 +1163,19 @@ export const CitizenMobileApp: React.FC = () => {
                     setRegPhone(e.target.value);
                     if (fieldErrors.phone) setFieldErrors((p) => ({ ...p, phone: "" }));
                   }}
-                  className={`w-full px-3 py-2 rounded-xl bg-slate-50 border text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none transition-all ${
-                    fieldErrors.phone ? "border-red-400 bg-red-50/40 focus:border-red-500" : "border-[#cbd5e1] focus:border-[#1a73e8]"
+                  className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                    fieldErrors.phone ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
                   }`}
                 />
                 {fieldErrors.phone && (
-                  <p className="text-[9.5px] text-red-600 font-semibold">{fieldErrors.phone}</p>
+                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.phone}</p>
                 )}
               </div>
 
               {/* 4. Kecamatan Domisili */}
               <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-slate-700 block">
-                  Kecamatan Domisili <span className="text-red-500">*</span>
+                <label className="text-[10.5px] font-bold text-ford-blue block">
+                  Kecamatan Domisili <span className="text-brand-red">*</span>
                 </label>
                 <select
                   value={regDistrict}
@@ -1183,28 +1183,28 @@ export const CitizenMobileApp: React.FC = () => {
                     setRegDistrict(e.target.value);
                     if (fieldErrors.district) setFieldErrors((p) => ({ ...p, district: "" }));
                   }}
-                  className={`w-full px-3 py-2 rounded-xl bg-slate-50 border text-[11.5px] font-medium transition-all cursor-pointer ${
+                  className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium transition-all cursor-pointer ${
                     fieldErrors.district
-                      ? "border-red-400 bg-red-50/40 text-red-700 focus:border-red-500"
+                      ? "border-brand-red bg-red-50/40 text-brand-red focus:border-brand-red"
                       : !regDistrict
-                      ? "border-[#cbd5e1] text-slate-400"
-                      : "border-[#cbd5e1] text-[#071e49] font-bold focus:border-[#1a73e8]"
+                      ? "border-[#cbd5e1] text-blue-gray/60"
+                      : "border-[#cbd5e1] text-ford-blue font-bold focus:border-light-sea-green"
                   }`}
                 >
                   <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
                   {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                    <option key={d.id} value={d.name} className="text-[#071e49] font-medium">Kecamatan {d.name}</option>
+                    <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
                   ))}
                 </select>
                 {fieldErrors.district && (
-                  <p className="text-[9.5px] text-red-600 font-semibold">{fieldErrors.district}</p>
+                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.district}</p>
                 )}
               </div>
 
               {/* 5. Kata Sandi */}
               <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-slate-700 block">
-                  Kata Sandi <span className="text-red-500">*</span>
+                <label className="text-[10.5px] font-bold text-ford-blue block">
+                  Kata Sandi <span className="text-brand-red">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -1215,27 +1215,27 @@ export const CitizenMobileApp: React.FC = () => {
                       setRegPassword(e.target.value);
                       if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: "" }));
                     }}
-                    className={`w-full pl-3 pr-9 py-2 rounded-xl bg-slate-50 border text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none transition-all ${
-                      fieldErrors.password ? "border-red-400 bg-red-50/40 focus:border-red-500" : "border-[#cbd5e1] focus:border-[#1a73e8]"
+                    className={`w-full pl-3 pr-9 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                      fieldErrors.password ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowRegPassword(!showRegPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-blue-gray hover:text-ford-blue p-1 cursor-pointer"
                   >
                     {showRegPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
                 </div>
                 {fieldErrors.password && (
-                  <p className="text-[9.5px] text-red-600 font-semibold">{fieldErrors.password}</p>
+                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.password}</p>
                 )}
               </div>
 
               {/* 6. Konfirmasi Kata Sandi */}
               <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-slate-700 block">
-                  Konfirmasi Kata Sandi <span className="text-red-500">*</span>
+                <label className="text-[10.5px] font-bold text-ford-blue block">
+                  Konfirmasi Kata Sandi <span className="text-brand-red">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -1246,20 +1246,20 @@ export const CitizenMobileApp: React.FC = () => {
                       setRegConfirmPassword(e.target.value);
                       if (fieldErrors.confirmPassword) setFieldErrors((p) => ({ ...p, confirmPassword: "" }));
                     }}
-                    className={`w-full pl-3 pr-9 py-2 rounded-xl bg-slate-50 border text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none transition-all ${
-                      fieldErrors.confirmPassword ? "border-red-400 bg-red-50/40 focus:border-red-500" : "border-[#cbd5e1] focus:border-[#1a73e8]"
+                    className={`w-full pl-3 pr-9 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                      fieldErrors.confirmPassword ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-blue-gray hover:text-ford-blue p-1 cursor-pointer"
                   >
                     {showRegConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
                 </div>
                 {fieldErrors.confirmPassword && (
-                  <p className="text-[9.5px] text-red-600 font-semibold">{fieldErrors.confirmPassword}</p>
+                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.confirmPassword}</p>
                 )}
               </div>
 
@@ -1267,7 +1267,7 @@ export const CitizenMobileApp: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmittingAuth}
-                className="w-full py-2.5 px-4 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold shadow-sm shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 mt-3 disabled:opacity-50"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12.5px] font-bold shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 mt-3 disabled:opacity-50"
               >
                 {isSubmittingAuth ? (
                   <>
@@ -1281,7 +1281,7 @@ export const CitizenMobileApp: React.FC = () => {
             </form>
 
             {/* Bottom: Login Link */}
-            <div className="mt-auto pt-4 pb-1 text-center text-[11px] text-[#64748b]">
+            <div className="mt-auto pt-4 pb-1 text-center text-[11px] text-blue-gray">
               <span>Sudah memiliki akun? </span>
               <button
                 type="button"
@@ -1290,7 +1290,7 @@ export const CitizenMobileApp: React.FC = () => {
                   setFieldErrors({});
                   setCurrentScreen("login");
                 }}
-                className="text-[#1a73e8] font-bold hover:underline cursor-pointer"
+                className="text-light-sea-green font-bold hover:underline cursor-pointer"
               >
                 Masuk di Sini
               </button>
@@ -1302,15 +1302,15 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 4. SCREEN: ATUR ULANG KATA SANDI (3-Step OTP Verification)*/}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "forgot_password" && (
-          <div className="flex-1 bg-white flex flex-col px-5 pt-4 pb-6 overflow-y-auto animate-in fade-in duration-200 relative">
+          <div className="flex-1 bg-white flex flex-col px-5 pt-4 pb-6 overflow-y-auto animate-in fade-in duration-200 relative font-sans">
             {/* Simulated Email Pop-up Notification */}
             {simulatedEmailNotification && (
-              <div className="mb-2.5 p-2.5 rounded-xl bg-blue-50 border border-blue-200 shadow-md text-slate-800 text-[11px] flex items-center justify-between gap-2 animate-in slide-in-from-top-4 duration-300">
+              <div className="mb-2.5 p-2.5 rounded-xl bg-green-tint border border-green-02/40 shadow-md text-ford-blue text-[11px] flex items-center justify-between gap-2 animate-in slide-in-from-top-4 duration-300">
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm">📩</span>
                   <div>
-                    <p className="font-extrabold text-[#071e49] text-[10px]">Email Masuk (Simulasi):</p>
-                    <p className="text-[10px] text-slate-600">Kode OTP Anda: <span className="font-mono font-black text-[#1a73e8] tracking-widest text-[12px]">{simulatedEmailNotification}</span></p>
+                    <p className="font-bold text-ford-blue text-[10px]">Email Masuk (Simulasi):</p>
+                    <p className="text-[10px] text-blue-gray">Kode OTP Anda: <span className="font-mono font-bold text-light-sea-green tracking-widest text-[12px]">{simulatedEmailNotification}</span></p>
                   </div>
                 </div>
                 {forgotStep === 2 && (
@@ -1320,7 +1320,7 @@ export const CitizenMobileApp: React.FC = () => {
                       setInputOtp(simulatedEmailNotification);
                       setSimulatedEmailNotification(null);
                     }}
-                    className="px-2 py-0.5 rounded-md bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold text-[9.5px] cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-light-sea-green hover:bg-green-02 text-ford-blue font-bold font-bold text-[9.5px] cursor-pointer"
                   >
                     Gunakan
                   </button>
@@ -1328,7 +1328,7 @@ export const CitizenMobileApp: React.FC = () => {
               </div>
             )}
 
-            {/* Top Navigation & Flag */}
+            {/* Top Navigation */}
             <div className="flex items-center justify-between pb-2 mb-1">
               <button
                 type="button"
@@ -1344,13 +1344,13 @@ export const CitizenMobileApp: React.FC = () => {
                     setForgotStep(2);
                   }
                 }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-600 hover:text-[#071e49] transition-all cursor-pointer shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-blue-gray hover:text-ford-blue transition-all cursor-pointer shadow-2xs"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>{forgotStep === 1 ? "Kembali ke Login" : "Sebelumnya"}</span>
               </button>
 
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-slate-600">
+              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-blue-gray">
                 <span>🇮🇩</span>
                 <span>ID</span>
               </div>
@@ -1360,44 +1360,44 @@ export const CitizenMobileApp: React.FC = () => {
             <div className="text-center space-y-0.5 pt-1 pb-2">
               <div className="flex items-center justify-center gap-1.5">
                 <img src="/logo_app.svg" alt="Kcal" className="w-8 h-8 rounded-xl shadow-xs" />
-                <span className="text-[20px] font-black text-[#071e49] tracking-tight">
-                  Kcal<span className="text-[#1a73e8]">.</span>
+                <span className="text-[20px] font-bold text-ford-blue tracking-tight">
+                  Kcal<span className="text-green-02">.</span>
                 </span>
               </div>
-              <h2 className="text-[14px] font-black text-[#071e49]">Atur Ulang Kata Sandi</h2>
-              <p className="text-[10px] text-[#64748b]">
+              <h2 className="text-[14px] font-bold text-ford-blue">Atur Ulang Kata Sandi</h2>
+              <p className="text-[10px] text-blue-gray">
                 Verifikasi akun via email & Cloud Firestore
               </p>
             </div>
 
             {/* 3-Step Progress Indicator */}
-            <div className="flex items-center justify-between px-2 py-1.5 mb-3 rounded-xl bg-slate-50 border border-slate-200 text-[10px] font-bold">
-              <div className={`flex items-center gap-1 ${forgotStep >= 1 ? "text-[#1a73e8]" : "text-slate-400"}`}>
-                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${forgotStep >= 1 ? "bg-[#1a73e8] text-white" : "bg-slate-200 text-slate-500"}`}>1</span>
+            <div className="flex items-center justify-between px-2 py-1.5 mb-3 rounded-xl bg-[#F8FAFC] border border-slate-200 text-[10px] font-bold">
+              <div className={`flex items-center gap-1 ${forgotStep >= 1 ? "text-light-sea-green" : "text-blue-gray/60"}`}>
+                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${forgotStep >= 1 ? "bg-light-sea-green text-ford-blue font-bold" : "bg-slate-200 text-slate-500"}`}>1</span>
                 <span>Email</span>
               </div>
               <div className="w-3 h-0.5 bg-slate-200"></div>
-              <div className={`flex items-center gap-1 ${forgotStep >= 2 ? "text-[#1a73e8]" : "text-slate-400"}`}>
-                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${forgotStep >= 2 ? "bg-[#1a73e8] text-white" : "bg-slate-200 text-slate-500"}`}>2</span>
+              <div className={`flex items-center gap-1 ${forgotStep >= 2 ? "text-light-sea-green" : "text-blue-gray/60"}`}>
+                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${forgotStep >= 2 ? "bg-light-sea-green text-ford-blue font-bold" : "bg-slate-200 text-slate-500"}`}>2</span>
                 <span>OTP</span>
               </div>
               <div className="w-3 h-0.5 bg-slate-200"></div>
-              <div className={`flex items-center gap-1 ${forgotStep === 3 ? "text-[#1a73e8]" : "text-slate-400"}`}>
-                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${forgotStep === 3 ? "bg-[#1a73e8] text-white" : "bg-slate-200 text-slate-500"}`}>3</span>
+              <div className={`flex items-center gap-1 ${forgotStep === 3 ? "text-light-sea-green" : "text-blue-gray/60"}`}>
+                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${forgotStep === 3 ? "bg-light-sea-green text-ford-blue font-bold" : "bg-slate-200 text-slate-500"}`}>3</span>
                 <span>Sandi Baru</span>
               </div>
             </div>
 
             {/* Error & Success Feedback Alerts */}
             {resetErrorMsg && (
-              <div className="mb-2.5 p-2 rounded-xl bg-red-50 border border-red-200 text-red-700 text-[10.5px] font-medium flex items-center gap-1.5 animate-in shake">
-                <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-600" />
+              <div className="mb-2.5 p-2 rounded-xl bg-red-50 border border-brand-red/30 text-brand-red text-[10.5px] font-medium flex items-center gap-1.5 animate-in shake">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0 text-brand-red" />
                 <span>{resetErrorMsg}</span>
               </div>
             )}
             {resetSuccessMsg && (
-              <div className="mb-2.5 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10.5px] font-medium flex items-center gap-1.5 animate-in zoom-in-95">
-                <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-emerald-600" />
+              <div className="mb-2.5 p-2 rounded-xl bg-green-tint border border-green-02/40 text-ford-blue text-[10.5px] font-medium flex items-center gap-1.5 animate-in zoom-in-95">
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-green-02" />
                 <span>{resetSuccessMsg}</span>
               </div>
             )}
@@ -1406,8 +1406,8 @@ export const CitizenMobileApp: React.FC = () => {
             {forgotStep === 1 && (
               <form onSubmit={handleSendOtp} className="space-y-3 animate-in fade-in duration-200">
                 <div className="space-y-0.5">
-                  <label className="text-[10.5px] font-bold text-slate-700 block">
-                    Alamat Email Terdaftar <span className="text-red-500">*</span>
+                  <label className="text-[10.5px] font-bold text-ford-blue block">
+                    Alamat Email Terdaftar <span className="text-brand-red">*</span>
                   </label>
                   <input
                     type="email"
@@ -1415,30 +1415,30 @@ export const CitizenMobileApp: React.FC = () => {
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     required
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8]"
+                    className="w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border border-[#cbd5e1] text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-light-sea-green"
                   />
                 </div>
 
                 <div className="space-y-0.5">
-                  <label className="text-[10.5px] font-bold text-slate-700 block">
-                    Kecamatan Domisili <span className="text-red-500">*</span>
+                  <label className="text-[10.5px] font-bold text-ford-blue block">
+                    Kecamatan Domisili <span className="text-brand-red">*</span>
                   </label>
                   <select
                     value={forgotDistrict}
                     onChange={(e) => setForgotDistrict(e.target.value)}
                     required
-                    className={`w-full px-3 py-2 rounded-xl bg-slate-50 border text-[11.5px] font-medium transition-all cursor-pointer ${
-                      !forgotDistrict ? "text-slate-400 border-[#cbd5e1]" : "text-[#071e49] font-bold border-[#cbd5e1] focus:border-[#1a73e8]"
+                    className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium transition-all cursor-pointer ${
+                      !forgotDistrict ? "text-blue-gray/60 border-[#cbd5e1]" : "text-ford-blue font-bold border-[#cbd5e1] focus:border-light-sea-green"
                     }`}
                   >
                     <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
                     {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                      <option key={d.id} value={d.name} className="text-[#071e49] font-medium">Kecamatan {d.name}</option>
+                      <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
                     ))}
                   </select>
                 </div>
 
-                <p className="text-[10.5px] text-slate-500 leading-relaxed pt-0.5">
+                <p className="text-[10.5px] text-blue-gray leading-relaxed pt-0.5">
                   Kami akan mengirimkan 6 digit kode OTP ke email di atas untuk memvalidasi kepemilikan akun.
                 </p>
 
@@ -1446,7 +1446,7 @@ export const CitizenMobileApp: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isResettingPassword}
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold text-[12px] shadow-sm shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold text-[12.5px] shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                   >
                     {isResettingPassword ? (
                       <>
@@ -1467,13 +1467,13 @@ export const CitizenMobileApp: React.FC = () => {
             {/* ═══ TAHAP 2: INPUT KODE VERIFIKASI (OTP) ═══ */}
             {forgotStep === 2 && (
               <form onSubmit={handleVerifyOtp} className="space-y-3.5 animate-in fade-in duration-200">
-                <div className="p-2.5 rounded-xl bg-blue-50/70 border border-blue-100 text-[10.5px] text-blue-900 leading-relaxed">
+                <div className="p-2.5 rounded-xl bg-green-tint/80 border border-green-02/30 text-[10.5px] text-ford-blue leading-relaxed">
                   Kode verifikasi 6 digit telah dikirimkan ke <span className="font-bold">{forgotEmail}</span>.
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10.5px] font-bold text-slate-700 block text-center">
-                    Masukkan 6 Digit Kode OTP <span className="text-red-500">*</span>
+                  <label className="text-[10.5px] font-bold text-ford-blue block text-center">
+                    Masukkan 6 Digit Kode OTP <span className="text-brand-red">*</span>
                   </label>
                   <input
                     type="text"
@@ -1483,19 +1483,19 @@ export const CitizenMobileApp: React.FC = () => {
                     onChange={(e) => setInputOtp(e.target.value.replace(/\D/g, ""))}
                     required
                     autoFocus
-                    className="w-full py-2.5 px-3 rounded-xl bg-slate-50 border-2 border-[#1a73e8]/30 focus:border-[#1a73e8] text-center font-mono text-[18px] tracking-[0.3em] font-black text-[#071e49] focus:bg-white focus:outline-none transition-all placeholder:tracking-normal placeholder:text-slate-300"
+                    className="w-full py-2.5 px-3 rounded-xl bg-[#F8FAFC] border-2 border-green-02/40 focus:border-light-sea-green text-center font-mono text-[18px] tracking-[0.3em] font-bold text-ford-blue focus:bg-white focus:outline-none transition-all placeholder:tracking-normal placeholder:text-slate-300"
                   />
                 </div>
 
                 {/* Resend OTP button & timer */}
-                <div className="text-center text-[10.5px] text-slate-500">
+                <div className="text-center text-[10.5px] text-blue-gray">
                   {otpResendCountdown > 0 ? (
-                    <span>Kirim ulang kode dalam <strong className="text-[#1a73e8]">{otpResendCountdown}s</strong></span>
+                    <span>Kirim ulang kode dalam <strong className="text-light-sea-green">{otpResendCountdown}s</strong></span>
                   ) : (
                     <button
                       type="button"
                       onClick={(e) => handleSendOtp(e)}
-                      className="text-[#1a73e8] font-bold hover:underline cursor-pointer"
+                      className="text-light-sea-green font-bold hover:underline cursor-pointer"
                     >
                       Kirim Ulang Kode OTP
                     </button>
@@ -1506,14 +1506,14 @@ export const CitizenMobileApp: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setForgotStep(1)}
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[12px] transition-colors cursor-pointer text-center"
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-ford-blue font-bold text-[12px] transition-colors cursor-pointer text-center"
                   >
                     Ubah Email
                   </button>
                   <button
                     type="submit"
                     disabled={inputOtp.length < 6}
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold text-[12px] shadow-sm shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold text-[12.5px] shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                   >
                     <span>Verifikasi</span>
                   </button>
@@ -1524,13 +1524,13 @@ export const CitizenMobileApp: React.FC = () => {
             {/* ═══ TAHAP 3: BUAT KATA SANDI BARU ═══ */}
             {forgotStep === 3 && (
               <form onSubmit={handleSaveNewPassword} className="space-y-3 animate-in fade-in duration-200">
-                <div className="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 text-[10.5px] text-emerald-900 leading-relaxed">
+                <div className="p-2.5 rounded-xl bg-green-tint border border-green-02/40 text-[10.5px] text-ford-blue leading-relaxed">
                   ✅ Email terverifikasi. Masukkan kata sandi baru untuk akun Anda.
                 </div>
 
                 <div className="space-y-0.5">
-                  <label className="text-[10.5px] font-bold text-slate-700 block">
-                    Kata Sandi Baru <span className="text-red-500">*</span>
+                  <label className="text-[10.5px] font-bold text-ford-blue block">
+                    Kata Sandi Baru <span className="text-brand-red">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -1539,12 +1539,12 @@ export const CitizenMobileApp: React.FC = () => {
                       value={forgotNewPassword}
                       onChange={(e) => setForgotNewPassword(e.target.value)}
                       required
-                      className="w-full pl-3 pr-9 py-2 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8]"
+                      className="w-full pl-3 pr-9 py-2 rounded-xl bg-[#F8FAFC] border border-[#cbd5e1] text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-light-sea-green"
                     />
                     <button
                       type="button"
                       onClick={() => setShowForgotPass(!showForgotPass)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-blue-gray hover:text-ford-blue p-1 cursor-pointer"
                     >
                       {showForgotPass ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
@@ -1552,8 +1552,8 @@ export const CitizenMobileApp: React.FC = () => {
                 </div>
 
                 <div className="space-y-0.5">
-                  <label className="text-[10.5px] font-bold text-slate-700 block">
-                    Konfirmasi Kata Sandi Baru <span className="text-red-500">*</span>
+                  <label className="text-[10.5px] font-bold text-ford-blue block">
+                    Konfirmasi Kata Sandi Baru <span className="text-brand-red">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -1562,12 +1562,12 @@ export const CitizenMobileApp: React.FC = () => {
                       value={forgotConfirmPassword}
                       onChange={(e) => setForgotConfirmPassword(e.target.value)}
                       required
-                      className="w-full pl-3 pr-9 py-2 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8]"
+                      className="w-full pl-3 pr-9 py-2 rounded-xl bg-[#F8FAFC] border border-[#cbd5e1] text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-light-sea-green"
                     />
                     <button
                       type="button"
                       onClick={() => setShowForgotConfirmPass(!showForgotConfirmPass)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-blue-gray hover:text-ford-blue p-1 cursor-pointer"
                     >
                       {showForgotConfirmPass ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
@@ -1583,14 +1583,14 @@ export const CitizenMobileApp: React.FC = () => {
                       setForgotStep(1);
                       setCurrentScreen("login");
                     }}
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[12px] transition-colors cursor-pointer text-center"
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-ford-blue font-bold text-[12px] transition-colors cursor-pointer text-center"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
                     disabled={isResettingPassword}
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold text-[12px] shadow-sm shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold text-[12.5px] shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                   >
                     {isResettingPassword ? (
                       <>
@@ -1611,19 +1611,19 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 5. SCREEN: MAIN APP (Logged in Citizen Portal)           */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "main" && (
-          <div className="flex-1 flex flex-col bg-[#f8fafc] h-full w-full overflow-hidden relative">
+          <div className="flex-1 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
             {/* Top Bar Header for secondary tabs */}
             {activeTab !== "home" && (
-              <header className="shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-2xs z-30">
+              <header className="shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-2xs z-30 font-sans">
                 <div className="flex items-center gap-2.5">
                   <img src="/logo_app.svg" alt="Kcal" className="w-8 h-8 rounded-xl shadow-xs" />
                   <div>
-                    <h3 className="text-[12.5px] font-black text-[#071e49] leading-tight">
+                    <h3 className="text-[13px] font-bold text-ford-blue leading-tight">
                       {citizenUser?.name || "Warga Gresik"}
                     </h3>
-                    <p className="text-[10px] text-slate-500 flex items-center gap-1 font-medium mt-0.5">
-                      <MapPin className="w-2.5 h-2.5 text-[#1a73e8]" />
-                      <span>Kec. {citizenUser?.district || "Kebomas"}</span>
+                    <p className="text-[10px] text-blue-gray flex items-center gap-1 font-medium mt-0.5">
+                      <MapPin className="w-2.5 h-2.5 text-light-sea-green" />
+                      <span>Kec. {citizenUser?.district || "Kebomas"}, Gresik</span>
                     </p>
                   </div>
                 </div>
@@ -1648,7 +1648,7 @@ export const CitizenMobileApp: React.FC = () => {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="flex-1 p-3.5 space-y-3.5 overflow-y-auto pb-6 overscroll-contain"
+              className="flex-1 p-3.5 space-y-3.5 overflow-y-auto pb-6 overscroll-contain font-sans"
             >
               {/* TAB 1: BERANDA WARGA (Exact Match of Reference UI Layout & Palette) */}
               {activeTab === "home" && (
@@ -1656,21 +1656,21 @@ export const CitizenMobileApp: React.FC = () => {
                   {/* ═══ TOP DYNAMIC ATMOSPHERE BANNER (Suasana Malam / Pagi / Siang / Sore) ═══ */}
                   <div className={`px-4 pt-3.5 pb-4 space-y-3 rounded-b-[28px] shadow-lg relative overflow-hidden text-white transition-all duration-700 ${
                     timeOfDay === "night"
-                      ? "bg-gradient-to-b from-[#071426] via-[#0d1f3c] to-[#081b38] border-b border-blue-950/80"
+                      ? "bg-gradient-to-b from-[#131C38] via-[#1E2950] to-[#2C3968] border-b border-ford-blue/80"
                       : timeOfDay === "morning"
-                      ? "bg-gradient-to-b from-[#1e40af] via-[#3b82f6] to-[#60a5fa] border-b border-blue-400/40"
+                      ? "bg-gradient-to-b from-ford-blue via-light-sea-green to-green-02 border-b border-green-02/40"
                       : timeOfDay === "afternoon"
-                      ? "bg-gradient-to-b from-[#1d4ed8] via-[#2563eb] to-[#38bdf8] border-b border-blue-400/40"
-                      : "bg-gradient-to-b from-[#1e3a8a] via-[#4338ca] to-[#f59e0b]/40 border-b border-indigo-900/60"
+                      ? "bg-gradient-to-b from-ford-blue via-[#22B5AC] to-brand-blue border-b border-brand-blue/40"
+                      : "bg-gradient-to-b from-ford-blue via-[#1E2950] to-brand-orange/40 border-b border-brand-orange/30"
                   }`}>
                     {/* Ambient Glows & Twinkling Stars (Night Theme) */}
                     {timeOfDay === "night" && (
                       <>
-                        <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-blue-500/15 blur-3xl pointer-events-none"></div>
-                        <div className="absolute -bottom-10 left-1/3 w-40 h-40 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none"></div>
-                        <div className="absolute top-3 left-1/4 w-1.5 h-1.5 rounded-full bg-blue-200/70 animate-ping duration-1000"></div>
-                        <div className="absolute top-6 right-1/4 w-1 h-1 rounded-full bg-amber-200/90 animate-pulse"></div>
-                        <div className="absolute bottom-4 right-1/3 w-1.5 h-1.5 rounded-full bg-indigo-200/60 animate-pulse"></div>
+                        <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-green-02/15 blur-3xl pointer-events-none"></div>
+                        <div className="absolute -bottom-10 left-1/3 w-40 h-40 rounded-full bg-light-sea-green/10 blur-2xl pointer-events-none"></div>
+                        <div className="absolute top-3 left-1/4 w-1.5 h-1.5 rounded-full bg-green-02/70 animate-ping duration-1000"></div>
+                        <div className="absolute top-6 right-1/4 w-1 h-1 rounded-full bg-brand-orange/90 animate-pulse"></div>
+                        <div className="absolute bottom-4 right-1/3 w-1.5 h-1.5 rounded-full bg-brand-blue/60 animate-pulse"></div>
                         <div className="absolute top-4 right-12 w-1 h-1 rounded-full bg-white/80 animate-pulse"></div>
                       </>
                     )}
@@ -1681,28 +1681,28 @@ export const CitizenMobileApp: React.FC = () => {
                         {/* Atmosphere Pill */}
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10.5px] font-bold shadow-inner ${
                           timeOfDay === "night"
-                            ? "bg-blue-900/70 border border-blue-400/30 text-blue-200"
+                            ? "bg-white/10 border border-green-02/30 text-green-02"
                             : "bg-white/20 border border-white/30 text-white backdrop-blur-sm"
                         }`}>
                           {timeOfDay === "night" ? (
                             <>
-                              <Moon className="w-3 h-3 text-blue-300 animate-pulse" />
+                              <Moon className="w-3 h-3 text-green-02 animate-pulse" />
                               <span>Suasana Malam</span>
-                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping"></span>
+                              <span className="w-1.5 h-1.5 rounded-full bg-green-02 animate-ping"></span>
                             </>
                           ) : timeOfDay === "morning" ? (
                             <>
-                              <Sunrise className="w-3 h-3 text-amber-300" />
+                              <Sunrise className="w-3 h-3 text-brand-orange" />
                               <span>Suasana Pagi</span>
                             </>
                           ) : timeOfDay === "afternoon" ? (
                             <>
-                              <Sun className="w-3 h-3 text-amber-300" />
+                              <Sun className="w-3 h-3 text-brand-orange" />
                               <span>Suasana Siang</span>
                             </>
                           ) : (
                             <>
-                              <Sunset className="w-3 h-3 text-amber-300" />
+                              <Sunset className="w-3 h-3 text-brand-orange" />
                               <span>Suasana Sore</span>
                             </>
                           )}
@@ -1710,7 +1710,7 @@ export const CitizenMobileApp: React.FC = () => {
 
                         {/* Location Pill */}
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[10.5px] font-bold text-blue-100 backdrop-blur-sm truncate">
-                          <MapPin className="w-3 h-3 text-blue-300 shrink-0" />
+                          <MapPin className="w-3 h-3 text-green-02 shrink-0" />
                           <span className="truncate">Kec. {citizenUser?.district || "Kebomas"}, Gresik</span>
                         </span>
                       </div>
@@ -1726,51 +1726,51 @@ export const CitizenMobileApp: React.FC = () => {
                       </button>
                     </div>
 
-                    {/* Greeting & User Name Row (Matching Web Dashboard NuSantapHeader) */}
+                    {/* Greeting & User Name Row */}
                     <div className="relative z-10 space-y-0.5 pt-1">
-                      <h1 className="text-[17px] font-black tracking-tight text-white flex items-center gap-1.5 flex-wrap">
+                      <h1 className="text-[18px] font-bold tracking-tight text-white flex items-center gap-1.5 flex-wrap">
                         <span>{greetingText},</span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-sky-300 to-indigo-200">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-02 via-light-sea-green to-brand-blue">
                           {citizenUser?.name || "Muhammad Nizam Setiawan"}
                         </span>
                         <span className="inline-block animate-bounce">{greetingEmoji}</span>
                       </h1>
-                      <p className="text-[10.5px] text-blue-200/80 leading-relaxed font-medium">
+                      <p className="text-[11px] text-blue-100/80 leading-relaxed font-medium">
                         Dashboard Pemantauan MBG & Intervensi Gizi tetap aktif dan tersinkronisasi 24/7.
                       </p>
                     </div>
 
                     {/* Hero Card: Today's Schedule & Real-time Clock */}
-                    <div className="relative z-10 bg-white rounded-2xl p-3.5 shadow-sm border border-slate-100 text-slate-800 space-y-2.5">
+                    <div className="relative z-10 bg-white rounded-2xl p-3.5 shadow-sm border border-slate-100 text-ford-blue space-y-2.5">
                       <div className="flex items-start justify-between">
                         <div>
-                          <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                          <div className="flex items-center gap-1.5 text-[11px] text-blue-gray font-medium">
                             <span>Today</span>
-                            <span className="font-bold text-slate-800 text-[12px]">{currentDateStr}</span>
+                            <span className="font-bold text-ford-blue text-[12px]">{currentDateStr}</span>
                           </div>
-                          <p className="text-[10px] text-slate-400 mt-0.5">
-                            Shift: <span className="font-semibold text-slate-700">Menu MBG Siang Terdistribusi</span>
+                          <p className="text-[10px] text-blue-gray mt-0.5">
+                            Shift: <span className="font-bold text-ford-blue">Menu MBG Siang Terdistribusi</span>
                           </p>
                         </div>
 
-                        {/* Real-time Clock Badge matching Web Dashboard */}
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 text-white text-[11px] font-mono font-bold shadow-xs">
-                          <Clock className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
+                        {/* Real-time Clock Badge */}
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-ford-blue text-white text-[11px] font-mono font-bold shadow-xs">
+                          <Clock className="w-3.5 h-3.5 text-green-02 animate-pulse" />
                           <span>{currentTimeStr}</span>
                         </div>
                       </div>
 
                       {/* In / Out Nutritional Timing */}
                       <div className="flex items-center justify-between pt-1.5 text-[11px] font-bold border-t border-slate-100">
-                        <div className="flex items-center gap-1.5 text-emerald-600">
-                          <Clock className="w-3.5 h-3.5" />
-                          <span className="text-slate-700 font-bold">07:30</span>
-                          <span className="text-slate-400 font-normal">In (Sarapan)</span>
+                        <div className="flex items-center gap-1.5 text-light-sea-green">
+                          <Clock className="w-3.5 h-3.5 text-green-02" />
+                          <span className="text-ford-blue font-bold">07:30</span>
+                          <span className="text-blue-gray font-normal">In (Sarapan)</span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-rose-600">
+                        <div className="flex items-center gap-1.5 text-brand-red">
                           <Clock className="w-3.5 h-3.5" />
-                          <span className="text-slate-700 font-bold">12:00</span>
-                          <span className="text-slate-400 font-normal">Out (MBG Siang)</span>
+                          <span className="text-ford-blue font-bold">12:00</span>
+                          <span className="text-blue-gray font-normal">Out (MBG Siang)</span>
                         </div>
                       </div>
                     </div>
@@ -1787,10 +1787,10 @@ export const CitizenMobileApp: React.FC = () => {
                           onClick={() => setActiveTab("screening")}
                           className="flex flex-col items-center gap-1.5 p-1 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
                         >
-                          <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-slate-50 group-hover:border-[#1a73e8] group-hover:bg-blue-50 flex items-center justify-center text-slate-700 group-hover:text-[#1a73e8] transition-all">
+                          <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-[#F8FAFC] group-hover:border-green-02 group-hover:bg-green-tint flex items-center justify-center text-ford-blue group-hover:text-light-sea-green transition-all">
                             <Activity className="w-4 h-4" />
                           </div>
-                          <span className="text-[10px] font-semibold text-slate-600 leading-tight">
+                          <span className="text-[10px] font-bold text-ford-blue leading-tight">
                             Skrining Gizi
                           </span>
                         </button>
@@ -1801,10 +1801,10 @@ export const CitizenMobileApp: React.FC = () => {
                           onClick={() => setActiveTab("menu")}
                           className="flex flex-col items-center gap-1.5 p-1 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
                         >
-                          <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-slate-50 group-hover:border-[#1a73e8] group-hover:bg-blue-50 flex items-center justify-center text-slate-700 group-hover:text-[#1a73e8] transition-all">
+                          <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-[#F8FAFC] group-hover:border-green-02 group-hover:bg-green-tint flex items-center justify-center text-ford-blue group-hover:text-light-sea-green transition-all">
                             <Utensils className="w-4 h-4" />
                           </div>
-                          <span className="text-[10px] font-semibold text-slate-600 leading-tight">
+                          <span className="text-[10px] font-bold text-ford-blue leading-tight">
                             Menu MBG
                           </span>
                         </button>
@@ -1815,10 +1815,10 @@ export const CitizenMobileApp: React.FC = () => {
                           onClick={() => setActiveTab("complaint")}
                           className="flex flex-col items-center gap-1.5 p-1 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
                         >
-                          <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-slate-50 group-hover:border-[#1a73e8] group-hover:bg-blue-50 flex items-center justify-center text-slate-700 group-hover:text-[#1a73e8] transition-all">
+                          <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-[#F8FAFC] group-hover:border-brand-orange group-hover:bg-amber-50 flex items-center justify-center text-ford-blue group-hover:text-brand-orange transition-all">
                             <MessageSquare className="w-4 h-4" />
                           </div>
-                          <span className="text-[10px] font-semibold text-slate-600 leading-tight">
+                          <span className="text-[10px] font-bold text-ford-blue leading-tight">
                             Aduan MBG
                           </span>
                         </button>
@@ -1829,17 +1829,17 @@ export const CitizenMobileApp: React.FC = () => {
                           onClick={() => setActiveTab("ai_chat")}
                           className="flex flex-col items-center gap-1.5 p-1 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
                         >
-                          <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-slate-50 group-hover:border-[#1a73e8] group-hover:bg-blue-50 flex items-center justify-center text-slate-700 group-hover:text-[#1a73e8] transition-all">
+                          <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-[#F8FAFC] group-hover:border-brand-blue group-hover:bg-blue-50 flex items-center justify-center text-ford-blue group-hover:text-brand-blue transition-all">
                             <Sparkles className="w-4 h-4" />
                           </div>
-                          <span className="text-[10px] font-semibold text-slate-600 leading-tight">
+                          <span className="text-[10px] font-bold text-ford-blue leading-tight">
                             Tanya AI
                           </span>
                         </button>
                       </div>
 
                       {/* Floating Chevron Center Divider */}
-                      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-white border border-slate-200 shadow-xs flex items-center justify-center text-slate-400">
+                      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-white border border-slate-200 shadow-xs flex items-center justify-center text-blue-gray">
                         <ChevronRight className="w-3 h-3 rotate-90" />
                       </div>
                     </div>
@@ -1849,36 +1849,36 @@ export const CitizenMobileApp: React.FC = () => {
                       {/* Card 1: Status Gizi Anak */}
                       <div
                         onClick={() => setActiveTab("screening")}
-                        className="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs hover:border-[#1a73e8] transition-all cursor-pointer space-y-2"
+                        className="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs hover:border-green-02/60 transition-all cursor-pointer space-y-2"
                       >
                         <div className="flex items-center justify-between">
-                          <h4 className="text-[11.5px] font-black text-[#071e49]">Status Gizi Anak</h4>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                          <h4 className="text-[12px] font-bold text-ford-blue">Status Gizi Anak</h4>
+                          <ChevronRight className="w-3.5 h-3.5 text-blue-gray" />
                         </div>
-                        <p className="text-[9.5px] text-slate-400">Pemeriksaan Terakhir</p>
+                        <p className="text-[9.5px] text-blue-gray">Pemeriksaan Terakhir</p>
                         <div className="space-y-1">
                           <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-emerald-500 h-full rounded-full w-full"></div>
+                            <div className="bg-green-02 h-full rounded-full w-full"></div>
                           </div>
-                          <span className="text-[10px] font-bold text-slate-600 block text-right">Optimal / Normal</span>
+                          <span className="text-[10px] font-bold text-light-sea-green block text-right">Optimal / Normal</span>
                         </div>
                       </div>
 
                       {/* Card 2: Kebutuhan AKG */}
                       <div
                         onClick={() => setActiveTab("menu")}
-                        className="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs hover:border-[#1a73e8] transition-all cursor-pointer space-y-2"
+                        className="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs hover:border-light-sea-green/60 transition-all cursor-pointer space-y-2"
                       >
                         <div className="flex items-center justify-between">
-                          <h4 className="text-[11.5px] font-black text-[#071e49]">Kecukupan AKG</h4>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                          <h4 className="text-[12px] font-bold text-ford-blue">Kecukupan AKG</h4>
+                          <ChevronRight className="w-3.5 h-3.5 text-blue-gray" />
                         </div>
-                        <p className="text-[9.5px] text-slate-400">Target Harian MBG</p>
+                        <p className="text-[9.5px] text-blue-gray">Target Harian MBG</p>
                         <div className="space-y-1">
                           <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-[#1a73e8] h-full rounded-full w-[95%]"></div>
+                            <div className="bg-light-sea-green h-full rounded-full w-[95%]"></div>
                           </div>
-                          <span className="text-[10px] font-bold text-slate-600 block text-right">95% Terpenuhi</span>
+                          <span className="text-[10px] font-bold text-light-sea-green block text-right">95% Terpenuhi</span>
                         </div>
                       </div>
                     </div>
@@ -1887,21 +1887,21 @@ export const CitizenMobileApp: React.FC = () => {
                     <div className="border-b border-slate-200 flex items-center justify-around text-[12px] font-bold pt-1">
                       <button
                         type="button"
-                        className="pb-2 border-b-2 border-[#1a73e8] text-[#1a73e8] flex-1 text-center cursor-pointer"
+                        className="pb-2 border-b-2 border-green-02 text-ford-blue flex-1 text-center cursor-pointer"
                       >
                         Edukasi Gizi
                       </button>
                       <button
                         type="button"
                         onClick={() => setActiveTab("menu")}
-                        className="pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex-1 text-center cursor-pointer"
+                        className="pb-2 border-b-2 border-transparent text-blue-gray hover:text-ford-blue flex-1 text-center cursor-pointer"
                       >
                         Jadwal MBG
                       </button>
                       <button
                         type="button"
                         onClick={() => setActiveTab("screening")}
-                        className="pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex-1 text-center cursor-pointer"
+                        className="pb-2 border-b-2 border-transparent text-blue-gray hover:text-ford-blue flex-1 text-center cursor-pointer"
                       >
                         Dashboard
                       </button>
@@ -1909,36 +1909,36 @@ export const CitizenMobileApp: React.FC = () => {
 
                     {/* Community Story Input Bar */}
                     <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-[12px] font-bold text-slate-700 shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-green-tint border border-green-02/30 flex items-center justify-center text-[12px] font-bold text-ford-blue shrink-0">
                         {citizenUser?.name ? citizenUser.name.charAt(0).toUpperCase() : "W"}
                       </div>
-                      <div className="flex-1 bg-white border border-slate-200 rounded-full px-3 py-1.5 text-[11px] text-slate-400 shadow-2xs">
+                      <div className="flex-1 bg-white border border-slate-200 rounded-full px-3 py-1.5 text-[11px] text-blue-gray shadow-2xs">
                         Tanyakan menu gizi atau info posyandu...
                       </div>
                       <button
                         type="button"
                         onClick={() => setActiveTab("ai_chat")}
-                        className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-[#1a73e8] shadow-2xs cursor-pointer shrink-0"
+                        className="p-2 rounded-xl bg-white border border-slate-200 text-light-sea-green hover:bg-green-tint shadow-2xs cursor-pointer shrink-0"
                       >
-                        <Sparkles className="w-4 h-4 text-[#1a73e8]" />
+                        <Sparkles className="w-4 h-4 text-light-sea-green" />
                       </button>
                     </div>
 
                     {/* Feed Item Card: Tip Gizi Dinkes Gresik */}
                     <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-xs space-y-2.5">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 text-[#1a73e8] flex items-center justify-center font-bold text-[12px]">
+                        <div className="w-8 h-8 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center font-bold text-[12px]">
                           🏥
                         </div>
                         <div>
-                          <h4 className="text-[11.5px] font-bold text-[#071e49]">Dinas Kesehatan Kab. Gresik</h4>
-                          <p className="text-[9.5px] text-slate-400">Tim Nutrisi MBG • 2 jam lalu</p>
+                          <h4 className="text-[12px] font-bold text-ford-blue">Dinas Kesehatan Kab. Gresik</h4>
+                          <p className="text-[9.5px] text-blue-gray">Tim Nutrisi MBG • 2 jam lalu</p>
                         </div>
                       </div>
-                      <p className="text-[11px] text-slate-700 leading-relaxed">
+                      <p className="text-[11.5px] text-ford-blue/90 leading-relaxed">
                         Ikan Bandeng dan Kerapu Gresik terbukti memiliki asam amino esensial dan Omega-3 yang setara dengan ikan salmon, sangat efektif mendukung kecerdasan otak siswa sekolah dasar! 🐟✨
                       </p>
-                      <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+                      <div className="flex items-center justify-between text-[10px] text-blue-gray pt-1 border-t border-slate-100">
                         <span>❤️ 142 Warga Suka</span>
                         <span>💬 18 Komentar Diskusi</span>
                       </div>
@@ -1952,42 +1952,42 @@ export const CitizenMobileApp: React.FC = () => {
                 <div className="space-y-3 animate-in fade-in duration-200">
                   <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-blue-50 text-[#1a73e8] flex items-center justify-center">
+                      <div className="w-7 h-7 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center">
                         <Activity className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <h3 className="text-[13px] font-bold text-[#071e49]">Skrining Gizi & Stunting AI</h3>
-                        <p className="text-[10px] text-slate-500">Standar Antropometri WHO & Kemenkes RI</p>
+                        <h3 className="text-[14px] font-bold text-ford-blue">Skrining Gizi & Stunting AI</h3>
+                        <p className="text-[10px] text-blue-gray">Standar Antropometri WHO & Kemenkes RI</p>
                       </div>
                     </div>
 
                     <div className="space-y-2 pt-0.5">
                       <div>
-                        <label className="text-[10.5px] font-bold text-slate-700 block mb-0.5">Nama Lengkap Anak</label>
+                        <label className="text-[10.5px] font-bold text-ford-blue block mb-0.5">Nama Lengkap Anak</label>
                         <input
                           type="text"
                           placeholder="Contoh: Muhammad Rayhan"
                           value={childName}
                           onChange={(e) => setChildName(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] font-medium text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8]"
+                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] rounded-xl border border-slate-200 text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-light-sea-green"
                         />
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[10.5px] font-bold text-slate-700 block mb-0.5">Jenis Kelamin</label>
+                          <label className="text-[10.5px] font-bold text-ford-blue block mb-0.5">Jenis Kelamin</label>
                           <div className="grid grid-cols-2 gap-1 bg-slate-100 p-0.5 rounded-xl">
                             <button
                               type="button"
                               onClick={() => setChildGender("L")}
-                              className={`py-1 text-[10px] font-bold rounded-lg transition-all ${childGender === "L" ? "bg-white text-[#1a73e8] shadow-2xs" : "text-slate-500"}`}
+                              className={`py-1 text-[10px] font-bold rounded-lg transition-all ${childGender === "L" ? "bg-white text-ford-blue shadow-2xs" : "text-blue-gray"}`}
                             >
                               Laki-laki
                             </button>
                             <button
                               type="button"
                               onClick={() => setChildGender("P")}
-                              className={`py-1 text-[10px] font-bold rounded-lg transition-all ${childGender === "P" ? "bg-white text-pink-600 shadow-2xs" : "text-slate-500"}`}
+                              className={`py-1 text-[10px] font-bold rounded-lg transition-all ${childGender === "P" ? "bg-white text-brand-red shadow-2xs" : "text-blue-gray"}`}
                             >
                               Perempuan
                             </button>
@@ -1995,38 +1995,38 @@ export const CitizenMobileApp: React.FC = () => {
                         </div>
 
                         <div>
-                          <label className="text-[10.5px] font-bold text-slate-700 block mb-0.5">Usia (Bulan)</label>
+                          <label className="text-[10.5px] font-bold text-ford-blue block mb-0.5">Usia (Bulan)</label>
                           <input
                             type="number"
                             min="0"
                             max="60"
                             value={childAgeMonths}
                             onChange={(e) => setChildAgeMonths(Number(e.target.value))}
-                            className="w-full px-2.5 py-1 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] font-bold text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8]"
+                            className="w-full px-2.5 py-1 bg-[#F8FAFC] rounded-xl border border-slate-200 text-[11.5px] font-bold text-ford-blue focus:bg-white focus:outline-none focus:border-light-sea-green"
                           />
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[10.5px] font-bold text-slate-700 block mb-0.5">Berat Badan (kg)</label>
+                          <label className="text-[10.5px] font-bold text-ford-blue block mb-0.5">Berat Badan (kg)</label>
                           <input
                             type="number"
                             step="0.1"
                             value={childWeightKg}
                             onChange={(e) => setChildWeightKg(Number(e.target.value))}
-                            className="w-full px-2.5 py-1 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] font-bold text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8]"
+                            className="w-full px-2.5 py-1 bg-[#F8FAFC] rounded-xl border border-slate-200 text-[11.5px] font-bold text-ford-blue focus:bg-white focus:outline-none focus:border-light-sea-green"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[10.5px] font-bold text-slate-700 block mb-0.5">Tinggi Badan (cm)</label>
+                          <label className="text-[10.5px] font-bold text-ford-blue block mb-0.5">Tinggi Badan (cm)</label>
                           <input
                             type="number"
                             step="0.5"
                             value={childHeightCm}
                             onChange={(e) => setChildHeightCm(Number(e.target.value))}
-                            className="w-full px-2.5 py-1 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] font-bold text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8]"
+                            className="w-full px-2.5 py-1 bg-[#F8FAFC] rounded-xl border border-slate-200 text-[11.5px] font-bold text-ford-blue focus:bg-white focus:outline-none focus:border-light-sea-green"
                           />
                         </div>
                       </div>
@@ -2034,7 +2034,7 @@ export const CitizenMobileApp: React.FC = () => {
                       <button
                         onClick={handleCalculateNutrition}
                         disabled={isCalculating}
-                        className="w-full py-2 bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[11.5px] font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 mt-1"
+                        className="w-full py-2.5 bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 mt-1"
                       >
                         {isCalculating ? "Menganalisis Kurva WHO..." : "Analisis Status Gizi"}
                       </button>
@@ -2046,21 +2046,21 @@ export const CitizenMobileApp: React.FC = () => {
                     <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-md space-y-2 animate-in zoom-in-95 duration-200">
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-[9px] font-bold uppercase text-slate-400">Hasil Evaluasi</span>
-                          <h4 className="text-[13px] font-black text-[#071e49]">{childName}</h4>
+                          <span className="text-[9px] font-bold uppercase text-blue-gray">Hasil Evaluasi</span>
+                          <h4 className="text-[13px] font-bold text-ford-blue">{childName}</h4>
                         </div>
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${screeningResult.color}`}>
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${screeningResult.color}`}>
                           {screeningResult.status}
                         </span>
                       </div>
 
-                      <p className="text-[10.5px] text-slate-600 leading-relaxed font-medium bg-slate-50 p-2 rounded-xl border border-slate-100">
+                      <p className="text-[10.5px] text-ford-blue leading-relaxed font-medium bg-[#F8FAFC] p-2 rounded-xl border border-slate-100">
                         {screeningResult.description}
                       </p>
 
                       <div className="space-y-1">
-                        <h5 className="text-[10.5px] font-bold text-[#071e49]">Rekomendasi Tindakan:</h5>
-                        <ul className="text-[10px] text-slate-600 space-y-0.5 pl-4 list-disc">
+                        <h5 className="text-[10.5px] font-bold text-ford-blue">Rekomendasi Tindakan:</h5>
+                        <ul className="text-[10px] text-blue-gray space-y-0.5 pl-4 list-disc">
                           {screeningResult.recommendations.map((rec, i) => (
                             <li key={i}>{rec}</li>
                           ))}
@@ -2075,8 +2075,8 @@ export const CitizenMobileApp: React.FC = () => {
               {activeTab === "menu" && (
                 <div className="space-y-2.5 animate-in fade-in duration-200">
                   <div className="p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-0.5">
-                    <h3 className="text-[13px] font-black text-[#071e49]">Jadwal Menu MBG Mingguan</h3>
-                    <p className="text-[10px] text-slate-500">Kecamatan {citizenUser?.district || "Kebomas"}</p>
+                    <h3 className="text-[14px] font-bold text-ford-blue">Jadwal Menu MBG Mingguan</h3>
+                    <p className="text-[10px] text-blue-gray">Kecamatan {citizenUser?.district || "Kebomas"}</p>
                   </div>
 
                   {[
@@ -2088,11 +2088,11 @@ export const CitizenMobileApp: React.FC = () => {
                   ].map((m, idx) => (
                     <div key={idx} className="p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="px-2 py-0.5 rounded-md bg-[#071e49] text-white text-[9.5px] font-bold">{m.day}</span>
-                        <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">{m.cal}</span>
+                        <span className="px-2 py-0.5 rounded-md bg-ford-blue text-white text-[9.5px] font-bold">{m.day}</span>
+                        <span className="text-[9.5px] font-bold text-ford-blue bg-green-tint px-2 py-0.5 rounded-full border border-green-02/40">{m.cal}</span>
                       </div>
-                      <h4 className="text-[11.5px] font-bold text-[#071e49]">{m.menu}</h4>
-                      <p className="text-[10.5px] text-slate-500">{m.side}</p>
+                      <h4 className="text-[12px] font-bold text-ford-blue">{m.menu}</h4>
+                      <p className="text-[10.5px] text-blue-gray">{m.side}</p>
                     </div>
                   ))}
                 </div>
@@ -2103,25 +2103,25 @@ export const CitizenMobileApp: React.FC = () => {
                 <div className="space-y-3 animate-in fade-in duration-200">
                   <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                      <div className="w-7 h-7 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center">
                         <MessageSquare className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <h3 className="text-[13px] font-bold text-[#071e49]">Aduan & Masukan Program MBG</h3>
-                        <p className="text-[10px] text-slate-500">Langsung masuk ke Dashboard Super Admin</p>
+                        <h3 className="text-[14px] font-bold text-ford-blue">Aduan & Masukan Program MBG</h3>
+                        <p className="text-[10px] text-blue-gray">Langsung masuk ke Dashboard Super Admin</p>
                       </div>
                     </div>
 
                     {submittedTicket ? (
-                      <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-1.5">
-                        <CheckCircle2 className="w-6 h-6 text-emerald-600 mx-auto" />
-                        <h4 className="text-[12px] font-bold text-emerald-800">Laporan Terkirim!</h4>
-                        <p className="text-[10.5px] text-emerald-700">
-                          Nomor Tiket: <strong className="font-mono bg-emerald-100 px-1.5 py-0.5 rounded">{submittedTicket}</strong>
+                      <div className="p-3 rounded-2xl bg-green-tint border border-green-02/40 text-center space-y-1.5">
+                        <CheckCircle2 className="w-6 h-6 text-green-02 mx-auto" />
+                        <h4 className="text-[12px] font-bold text-ford-blue">Laporan Terkirim!</h4>
+                        <p className="text-[10.5px] text-blue-gray">
+                          Nomor Tiket: <strong className="font-mono bg-white px-1.5 py-0.5 rounded text-ford-blue border border-green-02/30">{submittedTicket}</strong>
                         </p>
                         <button
                           onClick={() => setSubmittedTicket(null)}
-                          className="mt-1 px-3 py-1 bg-emerald-600 text-white rounded-xl text-[10.5px] font-bold"
+                          className="mt-1 px-3 py-1 bg-green-02 text-ford-blue rounded-xl text-[10.5px] font-bold cursor-pointer"
                         >
                           Kirim Aduan Baru
                         </button>
@@ -2129,11 +2129,11 @@ export const CitizenMobileApp: React.FC = () => {
                     ) : (
                       <form onSubmit={handleSubmitComplaint} className="space-y-2.5">
                         <div>
-                          <label className="text-[10.5px] font-bold text-slate-700 block mb-0.5">Kategori Aduan</label>
+                          <label className="text-[10.5px] font-bold text-ford-blue block mb-0.5">Kategori Aduan</label>
                           <select
                             value={complaintCategory}
                             onChange={(e) => setComplaintCategory(e.target.value)}
-                            className="w-full px-2.5 py-1.5 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] font-bold text-[#071e49]"
+                            className="w-full px-2.5 py-1.5 bg-[#F8FAFC] rounded-xl border border-slate-200 text-[11.5px] font-bold text-ford-blue"
                           >
                             <option value="Kualitas Menu MBG">Kualitas & Rasa Makanan MBG</option>
                             <option value="Ketepatan Waktu">Keterlambatan Pengiriman Menu</option>
@@ -2143,21 +2143,21 @@ export const CitizenMobileApp: React.FC = () => {
                         </div>
 
                         <div>
-                          <label className="text-[10.5px] font-bold text-slate-700 block mb-0.5">Isi Keluhan</label>
+                          <label className="text-[10.5px] font-bold text-ford-blue block mb-0.5">Isi Keluhan</label>
                           <textarea
                             rows={3}
                             placeholder="Tuliskan keluhan atau saran Anda..."
                             value={complaintMessage}
                             onChange={(e) => setComplaintMessage(e.target.value)}
                             required
-                            className="w-full px-2.5 py-1.5 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] font-medium text-[#071e49]"
+                            className="w-full px-2.5 py-1.5 bg-[#F8FAFC] rounded-xl border border-slate-200 text-[11.5px] font-medium text-ford-blue focus:outline-none focus:border-light-sea-green"
                           />
                         </div>
 
                         <button
                           type="submit"
                           disabled={isSubmittingComplaint}
-                          className="w-full py-2 bg-[#071e49] text-white text-[11.5px] font-bold rounded-xl shadow-2xs"
+                          className="w-full py-2.5 bg-ford-blue text-white text-[12px] font-bold rounded-xl shadow-2xs hover:bg-ford-blue/90 cursor-pointer"
                         >
                           {isSubmittingComplaint ? "Mengirim Laporan..." : "Kirim Laporan Resmi"}
                         </button>
@@ -2171,16 +2171,16 @@ export const CitizenMobileApp: React.FC = () => {
               {activeTab === "ai_chat" && (
                 <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2.5 animate-in fade-in duration-200">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center">
                       <Sparkles className="w-3.5 h-3.5" />
                     </div>
                     <div>
-                      <h3 className="text-[13px] font-bold text-[#071e49]">K-Bot Asisten Gizi AI</h3>
-                      <p className="text-[10px] text-slate-500">Tanya seputar MPASI & gizi pangan lokal Gresik</p>
+                      <h3 className="text-[14px] font-bold text-ford-blue">K-Bot Asisten Gizi AI</h3>
+                      <p className="text-[10px] text-blue-gray">Tanya seputar MPASI & gizi pangan lokal Gresik</p>
                     </div>
                   </div>
 
-                  <div className="p-2.5 bg-blue-50/70 rounded-xl border border-blue-100 text-[11px] text-blue-900 leading-relaxed">
+                  <div className="p-2.5 bg-green-tint/70 rounded-xl border border-green-02/30 text-[11.5px] text-ford-blue leading-relaxed">
                     <span className="font-bold">Halo Bunda/Ayah! 🤖</span> Saya K-Bot. Konsultasikan kebutuhan nutrisi si kecil atau cari resep bergizi murah khas Gresik di sini.
                   </div>
 
@@ -2193,7 +2193,7 @@ export const CitizenMobileApp: React.FC = () => {
                       <button
                         key={idx}
                         onClick={() => alert(`Pertanyaan: "${q}"\n\nJawaban K-Bot: Ikan Bandeng dan Kerapu Gresik memiliki kandungan asam lemak Omega-3 dan Protein tinggi 20g/100g yang sangat baik untuk kecerdasan otak balita.`)}
-                        className="w-full text-left p-2 rounded-xl bg-slate-50 border border-slate-200 text-[10.5px] text-slate-700 font-medium shadow-2xs hover:bg-blue-50 hover:border-blue-200 transition-colors"
+                        className="w-full text-left p-2.5 rounded-xl bg-[#F8FAFC] border border-slate-200 text-[11px] text-ford-blue font-medium shadow-2xs hover:bg-green-tint/50 hover:border-green-02/40 transition-colors cursor-pointer"
                       >
                         💡 {q}
                       </button>
@@ -2202,28 +2202,28 @@ export const CitizenMobileApp: React.FC = () => {
                 </div>
               )}
 
-              {/* TAB 5: PROFIL WARGA */}
+              {/* TAB 6: PROFIL WARGA */}
               {activeTab === "profile" && (
                 <div className="space-y-3.5 animate-in fade-in duration-200">
                   {/* Citizen Profile Card */}
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-[#071e49] to-[#1a73e8] text-white space-y-3 shadow-md">
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-ford-blue via-[#1E2950] to-light-sea-green text-white space-y-3 shadow-md">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center text-[18px] font-black text-white shadow-inner">
+                      <div className="w-12 h-12 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center text-[18px] font-bold text-white shadow-inner">
                         {citizenUser?.name ? citizenUser.name.charAt(0).toUpperCase() : "W"}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <h3 className="text-[14px] font-black leading-tight truncate">
+                          <h3 className="text-[15px] font-bold leading-tight truncate">
                             {citizenUser?.name || "Warga Gresik"}
                           </h3>
-                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <ShieldCheck className="w-3.5 h-3.5 text-green-02 shrink-0" />
                         </div>
                         <p className="text-[11px] text-blue-100 truncate mt-0.5">
                           {citizenUser?.email || "warga@gresik.id"}
                         </p>
                         <div className="flex items-center gap-1 mt-1">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 text-[9px] font-bold text-blue-100 border border-white/20">
-                            <MapPin className="w-2.5 h-2.5 text-amber-300" />
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 text-[9.5px] font-bold text-blue-100 border border-white/20">
+                            <MapPin className="w-2.5 h-2.5 text-brand-orange" />
                             <span>Kec. {citizenUser?.district || "Kebomas"}</span>
                           </span>
                         </div>
@@ -2233,23 +2233,23 @@ export const CitizenMobileApp: React.FC = () => {
                     {/* Quick Stats Grid */}
                     <div className="grid grid-cols-3 gap-1.5 pt-1 text-center border-t border-white/10">
                       <div className="p-1.5 rounded-xl bg-white/10">
-                        <span className="block text-[12px] font-black text-white">1</span>
-                        <span className="text-[9px] text-blue-100">Anak Dipantau</span>
+                        <span className="block text-[13px] font-bold text-white">1</span>
+                        <span className="text-[9.5px] text-blue-100">Anak Dipantau</span>
                       </div>
                       <div className="p-1.5 rounded-xl bg-white/10">
-                        <span className="block text-[12px] font-black text-emerald-300">Optimal</span>
-                        <span className="text-[9px] text-blue-100">Status Gizi</span>
+                        <span className="block text-[13px] font-bold text-green-02">Optimal</span>
+                        <span className="text-[9.5px] text-blue-100">Status Gizi</span>
                       </div>
                       <div className="p-1.5 rounded-xl bg-white/10">
-                        <span className="block text-[12px] font-black text-amber-300">MBG</span>
-                        <span className="text-[9px] text-blue-100">Aktif Sekolah</span>
+                        <span className="block text-[13px] font-bold text-brand-orange">MBG</span>
+                        <span className="text-[9.5px] text-blue-100">Aktif Sekolah</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Menu & Layanan Warga */}
                   <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2">
-                    <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-1">
+                    <h4 className="text-[11px] font-bold text-blue-gray uppercase tracking-wider px-1">
                       Layanan & Pengaturan
                     </h4>
 
@@ -2257,43 +2257,43 @@ export const CitizenMobileApp: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setActiveTab("screening")}
-                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-bold text-[11.5px] transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-ford-blue font-bold text-[11.5px] transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-blue-50 text-[#1a73e8] flex items-center justify-center">
+                          <div className="w-7 h-7 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center">
                             <Activity className="w-3.5 h-3.5" />
                           </div>
                           <span>Riwayat Skrining Gizi AI</span>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                        <ChevronRight className="w-4 h-4 text-blue-gray" />
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setActiveTab("complaint")}
-                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-bold text-[11.5px] transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-ford-blue font-bold text-[11.5px] transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                          <div className="w-7 h-7 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center">
                             <MessageSquare className="w-3.5 h-3.5" />
                           </div>
                           <span>Pusat Pengaduan Menu MBG</span>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                        <ChevronRight className="w-4 h-4 text-blue-gray" />
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setActiveTab("ai_chat")}
-                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-bold text-[11.5px] transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-ford-blue font-bold text-[11.5px] transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                          <div className="w-7 h-7 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center">
                             <Sparkles className="w-3.5 h-3.5" />
                           </div>
                           <span>Konsultasi Nutrisi K-Bot AI</span>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                        <ChevronRight className="w-4 h-4 text-blue-gray" />
                       </button>
                     </div>
                   </div>
@@ -2308,7 +2308,7 @@ export const CitizenMobileApp: React.FC = () => {
                         setCitizenUser(null);
                         setCurrentScreen("login");
                       }}
-                      className="w-full py-2.5 px-4 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-[12px] font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
+                      className="w-full py-2.5 px-4 rounded-xl bg-red-50 hover:bg-red-100 border border-brand-red/30 text-brand-red text-[12px] font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
                     >
                       <LogOut className="w-3.5 h-3.5" />
                       <span>Keluar dari Akun</span>
@@ -2319,17 +2319,17 @@ export const CitizenMobileApp: React.FC = () => {
             </main>
 
             {/* Bottom Navigation Bar with Prominent Floating 'Analisis' Button */}
-            <div className="shrink-0 bg-white border-t border-slate-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.06)] pb-safe-nav pt-1 relative">
+            <div className="shrink-0 bg-white border-t border-slate-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.06)] pb-safe-nav pt-1 relative font-sans">
               <nav className="px-2 flex items-center justify-around">
                 {/* 1. Beranda */}
                 <button
                   type="button"
                   onClick={() => setActiveTab("home")}
                   className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl transition-all cursor-pointer ${
-                    activeTab === "home" ? "text-[#1a73e8] font-bold" : "text-slate-400 font-medium hover:text-slate-600"
+                    activeTab === "home" ? "text-light-sea-green font-bold" : "text-blue-gray font-medium hover:text-ford-blue"
                   }`}
                 >
-                  <div className={`p-1 rounded-xl transition-all ${activeTab === "home" ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
+                  <div className={`p-1 rounded-xl transition-all ${activeTab === "home" ? "bg-green-tint text-ford-blue" : "text-blue-gray"}`}>
                     <Home className={`w-4 h-4 transition-transform ${activeTab === "home" ? "scale-110" : ""}`} />
                   </div>
                   <span className="text-[10px] tracking-tight">Beranda</span>
@@ -2340,10 +2340,10 @@ export const CitizenMobileApp: React.FC = () => {
                   type="button"
                   onClick={() => setActiveTab("menu")}
                   className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl transition-all cursor-pointer ${
-                    activeTab === "menu" ? "text-[#1a73e8] font-bold" : "text-slate-400 font-medium hover:text-slate-600"
+                    activeTab === "menu" ? "text-light-sea-green font-bold" : "text-blue-gray font-medium hover:text-ford-blue"
                   }`}
                 >
-                  <div className={`p-1 rounded-xl transition-all ${activeTab === "menu" ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
+                  <div className={`p-1 rounded-xl transition-all ${activeTab === "menu" ? "bg-green-tint text-ford-blue" : "text-blue-gray"}`}>
                     <Utensils className={`w-4 h-4 transition-transform ${activeTab === "menu" ? "scale-110" : ""}`} />
                   </div>
                   <span className="text-[10px] tracking-tight">Menu</span>
@@ -2354,14 +2354,14 @@ export const CitizenMobileApp: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setActiveTab("screening")}
-                    className={`w-12 h-12 rounded-full bg-gradient-to-tr from-[#071e49] via-[#1a73e8] to-[#2563eb] text-white flex items-center justify-center shadow-lg shadow-blue-500/35 border-[3px] border-white active:scale-95 transition-all cursor-pointer ${
-                      activeTab === "screening" ? "ring-2 ring-[#1a73e8] scale-105" : "hover:shadow-blue-500/50"
+                    className={`w-12 h-12 rounded-full bg-gradient-to-tr from-ford-blue via-light-sea-green to-green-02 text-white flex items-center justify-center shadow-lg shadow-green-02/35 border-[3px] border-white active:scale-95 transition-all cursor-pointer ${
+                      activeTab === "screening" ? "ring-2 ring-green-02 scale-105" : "hover:shadow-green-02/50"
                     }`}
                   >
                     <Activity className="w-5 h-5 animate-pulse" />
                   </button>
-                  <span className={`text-[10px] font-black tracking-tight mt-0.5 ${
-                    activeTab === "screening" ? "text-[#1a73e8]" : "text-slate-600"
+                  <span className={`text-[10px] font-bold tracking-tight mt-0.5 ${
+                    activeTab === "screening" ? "text-light-sea-green font-bold" : "text-ford-blue font-bold"
                   }`}>
                     Analisis
                   </span>
@@ -2372,10 +2372,10 @@ export const CitizenMobileApp: React.FC = () => {
                   type="button"
                   onClick={() => setActiveTab("ai_chat")}
                   className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl transition-all cursor-pointer ${
-                    activeTab === "ai_chat" ? "text-[#1a73e8] font-bold" : "text-slate-400 font-medium hover:text-slate-600"
+                    activeTab === "ai_chat" ? "text-light-sea-green font-bold" : "text-blue-gray font-medium hover:text-ford-blue"
                   }`}
                 >
-                  <div className={`p-1 rounded-xl transition-all ${activeTab === "ai_chat" ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
+                  <div className={`p-1 rounded-xl transition-all ${activeTab === "ai_chat" ? "bg-green-tint text-ford-blue" : "text-blue-gray"}`}>
                     <MessageSquare className={`w-4 h-4 transition-transform ${activeTab === "ai_chat" ? "scale-110" : ""}`} />
                   </div>
                   <span className="text-[10px] tracking-tight">Chat</span>
@@ -2386,10 +2386,10 @@ export const CitizenMobileApp: React.FC = () => {
                   type="button"
                   onClick={() => setActiveTab("profile")}
                   className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl transition-all cursor-pointer ${
-                    activeTab === "profile" ? "text-[#1a73e8] font-bold" : "text-slate-400 font-medium hover:text-slate-600"
+                    activeTab === "profile" ? "text-light-sea-green font-bold" : "text-blue-gray font-medium hover:text-ford-blue"
                   }`}
                 >
-                  <div className={`p-1 rounded-xl transition-all ${activeTab === "profile" ? "bg-blue-50 text-[#1a73e8]" : "text-slate-400"}`}>
+                  <div className={`p-1 rounded-xl transition-all ${activeTab === "profile" ? "bg-green-tint text-ford-blue" : "text-blue-gray"}`}>
                     <User className={`w-4 h-4 transition-transform ${activeTab === "profile" ? "scale-110" : ""}`} />
                   </div>
                   <span className="text-[10px] tracking-tight">Profil</span>
@@ -2406,22 +2406,22 @@ export const CitizenMobileApp: React.FC = () => {
 
         {/* ═══ FLOATING PWA / APK INSTALL BANNER ═══ */}
         {showInstallBanner && !isStandalone && (
-          <div className="absolute bottom-3 left-3 right-3 z-50 bg-[#071e49]/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-blue-400/30 flex items-center justify-between gap-2 animate-in slide-in-from-bottom-5 duration-300">
+          <div className="absolute bottom-3 left-3 right-3 z-50 bg-ford-blue/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-green-02/30 flex items-center justify-between gap-2 animate-in slide-in-from-bottom-5 duration-300 font-sans">
             <div className="flex items-center gap-2.5 min-w-0">
               <img src="/logo_app.svg" alt="Kcal" className="w-8 h-8 rounded-xl shadow-xs shrink-0" />
               <div className="min-w-0">
-                <h4 className="text-[11.5px] font-black text-white leading-tight flex items-center gap-1.5 truncate">
+                <h4 className="text-[12px] font-bold text-white leading-tight flex items-center gap-1.5 truncate">
                   <span>Pasang Aplikasi Kcal</span>
-                  <span className="text-[8.5px] px-1.5 py-0.2 bg-emerald-500 text-white rounded font-bold uppercase">APK</span>
+                  <span className="text-[8.5px] px-1.5 py-0.2 bg-green-02 text-ford-blue rounded font-bold uppercase">APK</span>
                 </h4>
-                <p className="text-[10px] text-blue-200 truncate">Akses cepat di layar utama HP</p>
+                <p className="text-[10px] text-blue-100 truncate">Akses cepat di layar utama HP</p>
               </div>
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <button
                 type="button"
                 onClick={handleInstallPWA}
-                className="px-2.5 py-1.5 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[10.5px] font-bold shadow-xs cursor-pointer flex items-center gap-1"
+                className="px-2.5 py-1.5 rounded-xl bg-green-02 hover:bg-light-sea-green text-ford-blue text-[10.5px] font-bold shadow-xs cursor-pointer flex items-center gap-1"
               >
                 <Download className="w-3 h-3" />
                 <span>Pasang</span>
@@ -2440,33 +2440,33 @@ export const CitizenMobileApp: React.FC = () => {
 
         {/* ═══ IOS INSTALL GUIDE MODAL ═══ */}
         {showIOSModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 font-sans">
             <div className="bg-white rounded-3xl p-5 max-w-xs w-full space-y-4 text-center animate-in slide-in-from-bottom-6 shadow-2xl">
-              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#1a73e8] mx-auto flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-green-tint text-ford-blue mx-auto flex items-center justify-center">
                 <Smartphone className="w-6 h-6" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-[15px] font-black text-[#071e49]">Pasang di Layar Utama iPhone</h3>
-                <p className="text-[11px] text-slate-500">Jadikan Kcal seperti aplikasi bawaan iOS:</p>
+                <h3 className="text-[15px] font-bold text-ford-blue">Pasang di Layar Utama iPhone</h3>
+                <p className="text-[11px] text-blue-gray">Jadikan Kcal seperti aplikasi bawaan iOS:</p>
               </div>
-              <div className="p-3 bg-slate-50 rounded-2xl text-left text-[11px] space-y-2.5 text-slate-700">
+              <div className="p-3 bg-[#F8FAFC] rounded-2xl text-left text-[11px] space-y-2.5 text-ford-blue">
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-[#1a73e8] text-white text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
-                  <span>Ketuk tombol <strong>Bagikan (Share)</strong> <Share className="w-3.5 h-3.5 inline text-[#1a73e8] mx-0.5" /> di Safari.</span>
+                  <span className="w-5 h-5 rounded-full bg-light-sea-green text-ford-blue font-bold text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
+                  <span>Ketuk tombol <strong>Bagikan (Share)</strong> <Share className="w-3.5 h-3.5 inline text-light-sea-green mx-0.5" /> di Safari.</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-[#1a73e8] text-white text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
+                  <span className="w-5 h-5 rounded-full bg-light-sea-green text-ford-blue font-bold text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
                   <span>Pilih opsi <strong>&quot;Tambah ke Layar Utama&quot;</strong>.</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-[#1a73e8] text-white text-[10px] font-bold flex items-center justify-center shrink-0">3</span>
+                  <span className="w-5 h-5 rounded-full bg-light-sea-green text-ford-blue font-bold text-[10px] font-bold flex items-center justify-center shrink-0">3</span>
                   <span>Ketuk <strong>&quot;Tambah&quot;</strong> di pojok kanan atas.</span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowIOSModal(false)}
-                className="w-full py-2.5 bg-[#071e49] hover:bg-[#1a73e8] text-white rounded-xl font-bold text-[12px] transition-colors cursor-pointer"
+                className="w-full py-2.5 bg-ford-blue hover:bg-light-sea-green text-ford-blue font-bold rounded-xl font-bold text-[12px] transition-colors cursor-pointer"
               >
                 Mengerti
               </button>
@@ -2476,61 +2476,61 @@ export const CitizenMobileApp: React.FC = () => {
 
         {/* ═══ NATIVE DEVICE PERMISSIONS REQUEST MODAL (.APK EXPERIENCE) ═══ */}
         {showPermissionDialog && (
-          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 animate-in fade-in duration-300 font-sans">
             <div className="bg-white rounded-3xl p-5 max-w-[340px] w-full space-y-3.5 shadow-2xl border border-slate-200 animate-in slide-in-from-bottom-8 duration-300 text-left">
               {/* Header with App Logo */}
               <div className="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
                 <img src="/logo_app.svg" alt="Kcal" className="w-9 h-9 rounded-2xl shadow-xs shrink-0" />
                 <div>
-                  <h3 className="text-[13.5px] font-black text-[#071e49] leading-tight">
+                  <h3 className="text-[14px] font-bold text-ford-blue leading-tight">
                     Izin Akses Aplikasi Kcal
                   </h3>
-                  <p className="text-[10px] text-slate-500">
+                  <p className="text-[10px] text-blue-gray">
                     Ginofest 2026 • Pemkab Gresik
                   </p>
                 </div>
               </div>
 
-              <p className="text-[11px] text-slate-600 leading-relaxed">
+              <p className="text-[11px] text-blue-gray leading-relaxed">
                 Untuk pengalaman optimal layaknya aplikasi mobile native, Kcal memerlukan izin perangkat berikut:
               </p>
 
               {/* Permission List */}
               <div className="space-y-2">
                 {/* 1. Kamera & Galeri */}
-                <div className="flex items-start gap-2 p-2 rounded-2xl bg-blue-50/60 border border-blue-100">
-                  <div className="w-6 h-6 rounded-lg bg-blue-100 text-[#1a73e8] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="flex items-start gap-2 p-2 rounded-2xl bg-green-tint/60 border border-green-02/30">
+                  <div className="w-6 h-6 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center shrink-0 mt-0.5">
                     <Camera className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <h4 className="text-[11px] font-bold text-[#071e49]">Kamera & Galeri Foto</h4>
-                    <p className="text-[9.5px] text-slate-500 leading-tight">
+                    <h4 className="text-[11.5px] font-bold text-ford-blue">Kamera & Galeri Foto</h4>
+                    <p className="text-[9.5px] text-blue-gray leading-tight">
                       Diperlukan untuk skrining visual stunting & upload foto aduan.
                     </p>
                   </div>
                 </div>
 
                 {/* 2. Lokasi GPS */}
-                <div className="flex items-start gap-2 p-2 rounded-2xl bg-emerald-50/60 border border-emerald-100">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="flex items-start gap-2 p-2 rounded-2xl bg-green-tint/60 border border-green-02/30">
+                  <div className="w-6 h-6 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center shrink-0 mt-0.5">
                     <Navigation className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <h4 className="text-[11px] font-bold text-[#071e49]">Lokasi Wilayah (GPS)</h4>
-                    <p className="text-[9.5px] text-slate-500 leading-tight">
+                    <h4 className="text-[11.5px] font-bold text-ford-blue">Lokasi Wilayah (GPS)</h4>
+                    <p className="text-[9.5px] text-blue-gray leading-tight">
                       Mendeteksi kecamatan domisili Anda di Gresik secara otomatis.
                     </p>
                   </div>
                 </div>
 
                 {/* 3. Notifikasi */}
-                <div className="flex items-start gap-2 p-2 rounded-2xl bg-purple-50/60 border border-purple-100">
-                  <div className="w-6 h-6 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="flex items-start gap-2 p-2 rounded-2xl bg-amber-50/60 border border-brand-orange/30">
+                  <div className="w-6 h-6 rounded-lg bg-amber-100 text-brand-orange flex items-center justify-center shrink-0 mt-0.5">
                     <Bell className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <h4 className="text-[11px] font-bold text-[#071e49]">Notifikasi Pengingat</h4>
-                    <p className="text-[9.5px] text-slate-500 leading-tight">
+                    <h4 className="text-[11.5px] font-bold text-ford-blue">Notifikasi Pengingat</h4>
+                    <p className="text-[9.5px] text-blue-gray leading-tight">
                       Update jadwal menu MBG harian dan status tindak lanjut aduan.
                     </p>
                   </div>
@@ -2543,7 +2543,7 @@ export const CitizenMobileApp: React.FC = () => {
                   type="button"
                   onClick={handleGrantAllPermissions}
                   disabled={isRequestingPermissions}
-                  className="w-full py-2.5 px-4 bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold text-[12px] rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold text-[12.5px] rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Izinkan Semua Izin Perangkat</span>
@@ -2554,7 +2554,7 @@ export const CitizenMobileApp: React.FC = () => {
                     localStorage.setItem("kcal_permissions_dialog_handled", "true");
                     setShowPermissionDialog(false);
                   }}
-                  className="w-full py-1.5 text-slate-500 hover:text-slate-700 font-semibold text-[10.5px] cursor-pointer text-center"
+                  className="w-full py-1.5 text-blue-gray hover:text-ford-blue font-semibold text-[10.5px] cursor-pointer text-center"
                 >
                   Nanti Saja
                 </button>

@@ -24,13 +24,13 @@ export const ScreeningView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <QrCode className="w-5 h-5" />
             </div>
-            <h1 className="text-[22px] font-black text-[#071e49] tracking-tight">
+            <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
               Scan QR Code
             </h1>
-            <span className="text-[10px] bg-blue-100 text-[#1a73e8] px-2.5 py-0.5 rounded-full font-bold">
+            <span className="text-[10px] bg-green-tint text-ford-blue px-2.5 py-0.5 rounded-full font-bold">
               Demo Warga
             </span>
           </div>
@@ -42,7 +42,7 @@ export const ScreeningView: React.FC = () => {
         {step === "input" && (
           <button
             onClick={startAnalysis}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[12px] font-bold text-white bg-[#1a73e8] hover:bg-[#155fc0] shadow-xs transition-all cursor-pointer self-start sm:self-auto"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[12px] font-bold text-white bg-[#35CBC3] hover:bg-[#22B5AC] shadow-xs transition-all cursor-pointer self-start sm:self-auto"
           >
             <ScanLine className="w-4 h-4" />
             <span>Mulai Analisis AI</span>
@@ -53,7 +53,7 @@ export const ScreeningView: React.FC = () => {
         {step === "result" && (
           <button
             onClick={resetScreening}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[12px] font-bold text-[#071e49] bg-white border border-[#cbd5e1] hover:bg-slate-50 shadow-2xs transition-all cursor-pointer self-start sm:self-auto"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[12px] font-bold text-[#2C3968] bg-white border border-[#cbd5e1] hover:bg-slate-50 shadow-2xs transition-all cursor-pointer self-start sm:self-auto"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Uji Data Lain</span>
@@ -64,8 +64,8 @@ export const ScreeningView: React.FC = () => {
       {/* Step: Input Form */}
       {step === "input" && (
         <div className="space-y-4">
-          <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200 text-[12px] text-[#071e49] flex items-start gap-2.5">
-            <ShieldCheck className="w-5 h-5 text-[#1a73e8] shrink-0 mt-0.5" />
+          <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200 text-[12px] text-[#2C3968] flex items-start gap-2.5">
+            <ShieldCheck className="w-5 h-5 text-light-sea-green shrink-0 mt-0.5" />
             <span>
               Form ini mensimulasikan modul penapisan fisik anak berbasis Computer Vision dan Kuesioner GenAI yang digunakan kader Posyandu & orang tua di Gresik.
             </span>
@@ -74,21 +74,21 @@ export const ScreeningView: React.FC = () => {
           <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 text-[12px]">
               <div>
-                <label className="block font-bold text-[#071e49] mb-1.5">Nama Anak / Balita</label>
+                <label className="block font-bold text-[#2C3968] mb-1.5">Nama Anak / Balita</label>
                 <input
                   type="text"
                   value={formData.childName}
                   onChange={(e) => setFormData({ ...formData, childName: e.target.value })}
-                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#1a73e8]/20 focus:border-[#1a73e8] focus:outline-none transition-all"
+                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#35CBC3]/20 focus:border-[#35CBC3] focus:outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#071e49] mb-1.5">Kecamatan Domisili</label>
+                <label className="block font-bold text-[#2C3968] mb-1.5">Kecamatan Domisili</label>
                 <select
                   value={formData.districtId}
                   onChange={(e) => setFormData({ ...formData, districtId: e.target.value })}
-                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#1a73e8]/20 focus:border-[#1a73e8] focus:outline-none transition-all"
+                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#35CBC3]/20 focus:border-[#35CBC3] focus:outline-none transition-all"
                 >
                   {GRESIK_DISTRICTS.map((d) => (
                     <option key={d.id} value={d.id}>
@@ -99,41 +99,41 @@ export const ScreeningView: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-bold text-[#071e49] mb-1.5">Usia (Bulan)</label>
+                <label className="block font-bold text-[#2C3968] mb-1.5">Usia (Bulan)</label>
                 <input
                   type="number"
                   value={formData.ageMonths}
                   onChange={(e) => setFormData({ ...formData, ageMonths: Number(e.target.value) })}
-                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#1a73e8]/20 focus:border-[#1a73e8] focus:outline-none transition-all"
+                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#35CBC3]/20 focus:border-[#35CBC3] focus:outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#071e49] mb-1.5">Tinggi Badan (cm)</label>
+                <label className="block font-bold text-[#2C3968] mb-1.5">Tinggi Badan (cm)</label>
                 <input
                   type="number"
                   step="0.1"
                   value={formData.heightCm}
                   onChange={(e) => setFormData({ ...formData, heightCm: Number(e.target.value) })}
-                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#1a73e8]/20 focus:border-[#1a73e8] focus:outline-none transition-all"
+                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#35CBC3]/20 focus:border-[#35CBC3] focus:outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#071e49] mb-1.5">Berat Badan (kg)</label>
+                <label className="block font-bold text-[#2C3968] mb-1.5">Berat Badan (kg)</label>
                 <input
                   type="number"
                   step="0.1"
                   value={formData.weightKg}
                   onChange={(e) => setFormData({ ...formData, weightKg: Number(e.target.value) })}
-                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#1a73e8]/20 focus:border-[#1a73e8] focus:outline-none transition-all"
+                  className="w-full p-3 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] focus:bg-white focus:ring-2 focus:ring-[#35CBC3]/20 focus:border-[#35CBC3] focus:outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#071e49] mb-1.5">Simulasi Input Foto Fisik CV</label>
-                <div className="border-2 border-dashed border-[#cbd5e1] hover:border-[#1a73e8] rounded-xl p-3 text-center bg-[#f8fafc] cursor-pointer flex items-center justify-center gap-2 text-slate-600 h-[46px] transition-colors">
-                  <Camera className="w-4 h-4 text-[#1a73e8]" />
+                <label className="block font-bold text-[#2C3968] mb-1.5">Simulasi Input Foto Fisik CV</label>
+                <div className="border-2 border-dashed border-[#cbd5e1] hover:border-light-sea-green rounded-xl p-3 text-center bg-[#f8fafc] cursor-pointer flex items-center justify-center gap-2 text-slate-600 h-[46px] transition-colors">
+                  <Camera className="w-4 h-4 text-light-sea-green" />
                   <span className="font-semibold text-[11px]">Foto Postur Terlampir (Demo)</span>
                 </div>
               </div>
@@ -146,11 +146,11 @@ export const ScreeningView: React.FC = () => {
       {step === "analyzing" && (
         <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-12">
           <div className="flex flex-col items-center justify-center text-center space-y-5">
-            <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-blue-50 text-[#1a73e8] animate-pulse">
+            <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-green-tint text-ford-blue animate-pulse">
               <ScanLine className="w-10 h-10 animate-spin" />
             </div>
             <div>
-              <h3 className="font-black text-[18px] text-[#071e49]">
+              <h3 className="font-black text-[18px] text-[#2C3968]">
                 Memproses Analisis Antropometri & Multi-modal AI...
               </h3>
               <p className="text-[13px] text-[#64748b] mt-1.5 max-w-md mx-auto leading-relaxed">
@@ -182,15 +182,15 @@ export const ScreeningView: React.FC = () => {
           </div>
 
           <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-6 space-y-4">
-            <h4 className="font-bold text-[14px] text-[#071e49] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#1a73e8]" />
+            <h4 className="font-bold text-[14px] text-[#2C3968] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-light-sea-green" />
               <span>Rekomendasi AI Intervensi Gizi Lokal Gresik</span>
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[12px]">
               {result.localFoodRecommendations.map((food, idx) => (
                 <div key={idx} className="p-4 rounded-2xl bg-blue-50/50 border border-blue-200 flex items-start gap-2.5">
-                  <CheckCircle2 className="w-5 h-5 text-[#1a73e8] shrink-0 mt-0.5" />
-                  <span className="text-[#071e49] font-medium leading-relaxed">
+                  <CheckCircle2 className="w-5 h-5 text-light-sea-green shrink-0 mt-0.5" />
+                  <span className="text-[#2C3968] font-medium leading-relaxed">
                     <strong>{food.foodName} ({food.origin}):</strong> {food.benefits}
                   </span>
                 </div>

@@ -29,7 +29,10 @@ import {
   RefreshCw,
   Calendar,
   Building2,
-  Download
+  Download,
+  Sparkles,
+  LineChart as LineChartIcon,
+  Table as TableIcon
 } from "lucide-react";
 
 interface ScanResultsViewProps {
@@ -43,7 +46,7 @@ const CustomTrendTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-white p-3.5 rounded-2xl shadow-xl border border-[#e2e8f0] space-y-2 min-w-[190px]">
         <div className="flex items-center justify-between border-b border-[#f1f5f9] pb-1.5">
-          <span className="text-[13px] font-black text-[#071e49]">
+          <span className="text-[13px] font-black text-[#2C3968]">
             Tahun {label}
           </span>
         </div>
@@ -52,21 +55,21 @@ const CustomTrendTooltip = ({ active, payload, label }: any) => {
             const isStunting = entry.dataKey === "totalStunting" || entry.dataKey === "balitaStunting";
             const isSembuh = entry.dataKey === "totalSembuh" || entry.dataKey === "balitaSembuh";
             const colorClass = isStunting 
-              ? "text-red-600 bg-red-50 border-red-100" 
+              ? "text-brand-red bg-red-50 border-red-200" 
               : isSembuh 
-              ? "text-[#1a73e8] bg-blue-50 border-blue-100" 
-              : "text-emerald-600 bg-emerald-50 border-emerald-100";
+              ? "text-ford-blue bg-green-tint border-green-02/40" 
+              : "text-emerald-700 bg-emerald-50 border-emerald-200";
 
             return (
               <div key={index} className="flex items-center justify-between gap-3">
-                <span className="text-[#64748b] font-medium flex items-center gap-1.5">
+                <span className="text-blue-gray font-medium flex items-center gap-1.5">
                   <span 
                     className="w-2.5 h-2.5 rounded-full shrink-0" 
                     style={{ backgroundColor: entry.color }}
                   />
                   {entry.name}
                 </span>
-                <span className={`font-black px-2 py-0.5 rounded-md border text-[11px] ${colorClass}`}>
+                <span className={`font-bold px-2 py-0.5 rounded-md border text-[11px] ${colorClass}`}>
                   {Number(entry.value).toLocaleString("id-ID")}
                 </span>
               </div>
@@ -83,9 +86,9 @@ const CustomTrendTooltip = ({ active, payload, label }: any) => {
 const CustomDistrictTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-3.5 rounded-2xl shadow-xl border border-[#e2e8f0] space-y-2 min-w-[200px]">
-        <div className="flex items-center justify-between border-b border-[#f1f5f9] pb-1.5">
-          <span className="text-[13px] font-black text-[#071e49]">
+      <div className="bg-white p-3.5 rounded-2xl shadow-xl border border-slate-200 space-y-2 min-w-[200px] font-sans">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+          <span className="text-[13px] font-bold text-ford-blue">
             Kec. {label}
           </span>
         </div>
@@ -94,21 +97,21 @@ const CustomDistrictTooltip = ({ active, payload, label }: any) => {
             const isStunting = entry.dataKey === "balitaStunting";
             const isSembuh = entry.dataKey === "balitaSembuh";
             const colorClass = isStunting 
-              ? "text-red-600 bg-red-50 border-red-100" 
+              ? "text-brand-red bg-red-50 border-red-200" 
               : isSembuh 
-              ? "text-[#1a73e8] bg-blue-50 border-blue-100" 
-              : "text-emerald-600 bg-emerald-50 border-emerald-100";
+              ? "text-ford-blue bg-green-tint border-green-02/40" 
+              : "text-emerald-700 bg-emerald-50 border-emerald-200";
 
             return (
               <div key={index} className="flex items-center justify-between gap-3">
-                <span className="text-[#64748b] font-medium flex items-center gap-1.5">
+                <span className="text-blue-gray font-medium flex items-center gap-1.5">
                   <span 
                     className="w-2.5 h-2.5 rounded-full shrink-0" 
                     style={{ backgroundColor: entry.color }}
                   />
                   {entry.name}
                 </span>
-                <span className={`font-black px-2 py-0.5 rounded-md border text-[11px] ${colorClass}`}>
+                <span className={`font-bold px-2 py-0.5 rounded-md border text-[11px] ${colorClass}`}>
                   {Number(entry.value).toLocaleString("id-ID")}
                 </span>
               </div>
@@ -187,57 +190,57 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
 
   // 3 Summary Cards
   const renderSummaryCards = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-sans">
       {/* 1. Balita Stunting */}
-      <div className="bg-white rounded-2xl p-4 border border-[#e2e8f0] shadow-xs flex items-center gap-3.5">
-        <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex items-center gap-3.5 hover:border-brand-red/40 transition-all">
+        <div className="w-12 h-12 rounded-2xl bg-red-50 text-brand-red flex items-center justify-center shrink-0 border border-brand-red/30 shadow-2xs">
           <Activity className="w-6 h-6" />
         </div>
         <div>
-          <span className="text-[12px] font-bold text-[#64748b] block">
+          <span className="text-[12px] font-bold text-blue-gray block">
             Balita Stunting ({selectedYear})
           </span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-[22px] font-black text-red-600 tracking-tight">
+            <span className="text-[24px] font-bold text-brand-red tracking-tight">
               {totals.stunting.toLocaleString("id-ID")}
             </span>
-            <span className="text-[11px] text-[#64748b] font-medium">Jiwa</span>
+            <span className="text-[11px] text-blue-gray font-medium">Jiwa</span>
           </div>
         </div>
       </div>
 
       {/* 2. Balita Sembuh */}
-      <div className="bg-white rounded-2xl p-4 border border-[#e2e8f0] shadow-xs flex items-center gap-3.5">
-        <div className="w-12 h-12 rounded-2xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shrink-0">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex items-center gap-3.5 hover:border-ford-blue/40 transition-all">
+        <div className="w-12 h-12 rounded-2xl bg-blue-50 text-ford-blue flex items-center justify-center shrink-0 border border-ford-blue/20 shadow-2xs">
           <HeartHandshake className="w-6 h-6" />
         </div>
         <div>
-          <span className="text-[12px] font-bold text-[#64748b] block">
+          <span className="text-[12px] font-bold text-blue-gray block">
             Balita Sembuh ({selectedYear})
           </span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-[22px] font-black text-[#1a73e8] tracking-tight">
+            <span className="text-[24px] font-bold text-ford-blue tracking-tight">
               {totals.sembuh.toLocaleString("id-ID")}
             </span>
-            <span className="text-[11px] text-[#64748b] font-medium">Jiwa</span>
+            <span className="text-[11px] text-blue-gray font-medium">Jiwa</span>
           </div>
         </div>
       </div>
 
       {/* 3. Balita Lulus */}
-      <div className="bg-white rounded-2xl p-4 border border-[#e2e8f0] shadow-xs flex items-center gap-3.5">
-        <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex items-center gap-3.5 hover:border-emerald-300 transition-all">
+        <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200 shadow-2xs">
           <GraduationCap className="w-6 h-6" />
         </div>
         <div>
-          <span className="text-[12px] font-bold text-[#64748b] block">
+          <span className="text-[12px] font-bold text-blue-gray block">
             Balita Lulus ({selectedYear})
           </span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-[22px] font-black text-emerald-600 tracking-tight">
+            <span className="text-[24px] font-bold text-emerald-600 tracking-tight">
               {totals.lulus.toLocaleString("id-ID")}
             </span>
-            <span className="text-[11px] text-[#64748b] font-medium">Jiwa</span>
+            <span className="text-[11px] text-blue-gray font-medium">Jiwa</span>
           </div>
         </div>
       </div>
@@ -289,25 +292,25 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
 
   // Reusable Line & Bar Charts
   const renderCharts = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* 1. Multi-Year Trend Chart (2022 - 2026) */}
-      <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-2 border-b border-slate-100">
           <div>
-            <h2 className="text-[16px] font-black text-[#071e49]">
+            <h2 className="text-[16px] font-bold text-ford-blue">
               Tren Kasus Stunting Kabupaten Gresik (2022 - 2026)
             </h2>
-            <p className="text-[12px] text-[#64748b]">
+            <p className="text-[12px] text-blue-gray">
               Perbandingan tren tahunan balita stunting, sembuh, dan lulus
             </p>
           </div>
 
           <button
             onClick={() => downloadChartAsPng("chart-trend-stunting", `Grafik_Tren_Stunting_Gresik_2022_2026`)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#071e49] text-[11px] font-bold transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-ford-blue text-[11px] font-bold transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
             title="Unduh Grafik sebagai Gambar (PNG)"
           >
-            <Download className="w-3.5 h-3.5 text-[#1a73e8]" />
+            <Download className="w-3.5 h-3.5 text-light-sea-green" />
             <span>Unduh PNG</span>
           </button>
         </div>
@@ -317,38 +320,38 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={MULTI_YEAR_TREND_DATA} margin={{ top: 10, right: 30, left: 10, bottom: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="year" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={{ stroke: "#e2e8f0" }} />
-                <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="year" tick={{ fontSize: 12, fill: "#748DA6" }} axisLine={{ stroke: "#e2e8f0" }} />
+                <YAxis tick={{ fontSize: 11, fill: "#748DA6" }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTrendTooltip />} />
                 <Legend verticalAlign="top" height={36} iconType="circle" />
                 <Line 
                   name="Balita Stunting" 
                   type="monotone" 
                   dataKey="totalStunting" 
-                  stroke="#dc2626" 
+                  stroke="#F0284A" 
                   strokeWidth={2.5} 
-                  dot={{ r: 4.5, fill: "#dc2626" }} 
+                  dot={{ r: 4.5, fill: "#F0284A" }} 
                 />
                 <Line 
                   name="Balita Sembuh" 
                   type="monotone" 
                   dataKey="totalSembuh" 
-                  stroke="#1a73e8" 
+                  stroke="#2C3968" 
                   strokeWidth={2.5} 
-                  dot={{ r: 4.5, fill: "#1a73e8" }} 
+                  dot={{ r: 4.5, fill: "#2C3968" }} 
                 />
                 <Line 
                   name="Balita Lulus" 
                   type="monotone" 
                   dataKey="totalLulus" 
-                  stroke="#059669" 
+                  stroke="#10B981" 
                   strokeWidth={2.5} 
-                  dot={{ r: 4.5, fill: "#059669" }} 
+                  dot={{ r: 4.5, fill: "#10B981" }} 
                 />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-[#64748b] text-[13px] animate-pulse">
+            <div className="w-full h-full flex items-center justify-center text-blue-gray text-[13px] animate-pulse">
               Memuat grafik tren...
             </div>
           )}
@@ -356,23 +359,23 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
       </div>
 
       {/* 2. Bar Chart Per-Kecamatan (Tahun Terpilih) */}
-      <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-2 border-b border-slate-100">
           <div>
-            <h2 className="text-[16px] font-black text-[#071e49]">
+            <h2 className="text-[16px] font-bold text-ford-blue">
               Distribusi 18 Kecamatan Tahun {selectedYear}
             </h2>
-            <p className="text-[12px] text-[#64748b]">
+            <p className="text-[12px] text-blue-gray">
               Perbandingan Balita Stunting, Sembuh, dan Lulus per Kecamatan
             </p>
           </div>
 
           <button
             onClick={() => downloadChartAsPng("chart-district-distribution", `Grafik_Distribusi_Kecamatan_${selectedYear}`)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#071e49] text-[11px] font-bold transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-ford-blue text-[11px] font-bold transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
             title="Unduh Grafik sebagai Gambar (PNG)"
           >
-            <Download className="w-3.5 h-3.5 text-[#1a73e8]" />
+            <Download className="w-3.5 h-3.5 text-light-sea-green" />
             <span>Unduh PNG</span>
           </button>
         </div>
@@ -384,18 +387,18 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis 
                   dataKey="kecamatan" 
-                  tick={{ fontSize: 10, fill: "#64748b" }} 
+                  tick={{ fontSize: 10, fill: "#748DA6" }} 
                   interval={0} 
                   angle={-45} 
                   textAnchor="end"
                   height={50}
                 />
-                <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "#748DA6" }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomDistrictTooltip />} />
                 <Legend verticalAlign="top" height={36} iconType="circle" />
-                <Bar name="Balita Stunting" dataKey="balitaStunting" fill="#dc2626" radius={[4, 4, 0, 0]} />
-                <Bar name="Balita Sembuh" dataKey="balitaSembuh" fill="#1a73e8" radius={[4, 4, 0, 0]} />
-                <Bar name="Balita Lulus" dataKey="balitaLulus" fill="#059669" radius={[4, 4, 0, 0]} />
+                <Bar name="Balita Stunting" dataKey="balitaStunting" fill="#F0284A" radius={[4, 4, 0, 0]} />
+                <Bar name="Balita Sembuh" dataKey="balitaSembuh" fill="#2C3968" radius={[4, 4, 0, 0]} />
+                <Bar name="Balita Lulus" dataKey="balitaLulus" fill="#10B981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -423,7 +426,7 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
 
   // Reusable Table Section
   const renderTableSection = () => (
-    <div className="space-y-4">
+    <div className="space-y-4 font-sans">
       {/* Search Input Filter */}
       <div className="flex items-center justify-between gap-3 pt-1">
         <div className="relative flex-1 max-w-md">
@@ -432,32 +435,32 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
             placeholder="Cari kecamatan atau kode wilayah..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-2 text-[13px] bg-white border border-[#e2e8f0] rounded-xl text-[#071e49] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#1a73e8] transition-all"
+            className="w-full pl-8 pr-3 py-2 text-[13px] bg-white border border-slate-200 rounded-xl text-ford-blue placeholder:text-blue-gray/60 focus:outline-none focus:border-light-sea-green transition-all font-medium"
           />
-          <Search className="w-4 h-4 text-[#94a3b8] absolute left-2.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-blue-gray absolute left-2.5 top-1/2 -translate-y-1/2" />
         </div>
-        <span className="text-[12px] text-[#64748b] font-medium hidden sm:inline">
+        <span className="text-[12px] text-blue-gray font-medium hidden sm:inline">
           Menampilkan {filteredRecords.length} Kecamatan (Tahun {selectedYear})
         </span>
       </div>
 
       {/* Table Container */}
-      <div className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden shadow-xs">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-[13px] border-collapse">
             <thead>
-              <tr className="border-b border-[#e2e8f0] bg-[#f8fafc] text-[#071e49] font-bold text-[12px]">
+              <tr className="border-b border-slate-200 bg-[#F8FAFC] text-ford-blue font-bold text-[12px]">
                 <th className="py-3 px-4">No</th>
                 <th className="py-3 px-4">Kode Wilayah</th>
                 <th className="py-3 px-4">Kecamatan</th>
-                <th className="py-3 px-4 text-center text-red-600 font-black">Balita Stunting</th>
-                <th className="py-3 px-4 text-center text-[#1a73e8] font-black">Balita Sembuh</th>
-                <th className="py-3 px-4 text-center text-emerald-600 font-black">Balita Lulus</th>
+                <th className="py-3 px-4 text-center text-brand-red font-bold">Balita Stunting</th>
+                <th className="py-3 px-4 text-center font-bold text-ford-blue">Balita Sembuh</th>
+                <th className="py-3 px-4 text-center font-bold text-emerald-600">Balita Lulus</th>
                 <th className="py-3 px-4 text-center">Status Intervensi</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-[#f1f5f9]">
+            <tbody className="divide-y divide-slate-100 font-sans">
               {isLoadingApi ? (
                 Array.from({ length: 6 }).map((_, rIdx) => (
                   <tr key={rIdx} className="divide-x divide-slate-100 animate-pulse">
@@ -489,29 +492,29 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
                   <tr 
                     key={row.kodeWilayah || idx}
                     onClick={() => setSelectedDistrictId(row.kecamatan.toLowerCase())}
-                    className="hover:bg-[#f0f7ff] transition-colors cursor-pointer"
+                    className="hover:bg-green-tint/40 transition-colors cursor-pointer"
                   >
-                    <td className="py-3 px-4 text-[#64748b] text-[12px]">
+                    <td className="py-3 px-4 text-blue-gray text-[12px]">
                       {idx + 1}
                     </td>
-                    <td className="py-3 px-4 font-mono font-bold text-[#1a73e8] text-[12px]">
+                    <td className="py-3 px-4 font-mono font-bold text-ford-blue text-[12px]">
                       {row.kodeWilayah}
                     </td>
-                    <td className="py-3 px-4 font-bold text-[#071e49]">
+                    <td className="py-3 px-4 font-bold text-ford-blue">
                       Kec. {row.kecamatan}
                     </td>
-                    <td className="py-3 px-4 text-center font-bold text-red-600">
+                    <td className="py-3 px-4 text-center font-bold text-brand-red">
                       {row.balitaStunting}
                     </td>
-                    <td className="py-3 px-4 text-center font-bold text-[#1a73e8]">
+                    <td className="py-3 px-4 text-center font-bold text-ford-blue">
                       {row.balitaSembuh}
                     </td>
                     <td className="py-3 px-4 text-center font-bold text-emerald-600">
                       {row.balitaLulus}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <span className="inline-flex items-center gap-1 font-bold text-[#1a73e8] bg-[#e8f0fe] px-2.5 py-0.5 rounded-full text-[11px]">
-                        <CheckCircle2 className="w-3 h-3 text-[#1a73e8]" />
+                      <span className="inline-flex items-center gap-1 font-bold text-ford-blue bg-green-tint border border-green-02/40 px-2.5 py-0.5 rounded-full text-[11px] shadow-2xs">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-green-02" />
                         MBG Terlaksana
                       </span>
                     </td>
@@ -519,7 +522,7 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-[#64748b]">
+                  <td colSpan={7} className="py-8 text-center text-blue-gray">
                     Tidak ada kecamatan yang sesuai dengan pencarian
                   </td>
                 </tr>
@@ -532,83 +535,84 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* 1. Page Title & Top Control Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-[26px] font-black text-[#071e49] tracking-tight">
+          <h1 className="text-[26px] font-bold text-ford-blue tracking-tight">
             Hasil Scan & Data Stunting
           </h1>
-          <p className="text-[12px] text-[#64748b] mt-0.5 flex items-center gap-1.5">
-            <Building2 className="w-3.5 h-3.5 text-[#1a73e8]" />
-            <span>Sumber: <strong className="text-[#071e49] font-bold">{apiSource}</strong></span>
+          <p className="text-[13px] text-blue-gray">
+            Rekapitulasi resmi angka stunting, balita sembuh, dan lulus per kecamatan se-Kabupaten Gresik
           </p>
         </div>
 
-        {/* Refresh Button */}
-        <button 
+        <button
           onClick={() => fetchYearData(selectedYear)}
           disabled={isLoadingApi}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[12px] font-semibold text-[#1a73e8] bg-[#e8f0fe] hover:bg-[#dbeafe] rounded-xl transition-all shadow-2xs shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[12px] font-bold text-ford-blue bg-green-tint hover:bg-green-tint/80 border border-green-02/40 rounded-xl transition-all shadow-2xs shrink-0 self-start sm:self-auto cursor-pointer"
           title="Perbarui Data"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoadingApi ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-3.5 h-3.5 text-light-sea-green ${isLoadingApi ? "animate-spin" : ""}`} />
           <span>Perbarui Data</span>
         </button>
       </div>
 
       {/* 2. Top Navigation Bar: Sub-Tabs on Left + Year Selector on Right */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 p-1.5 rounded-2xl bg-white border border-[#e2e8f0] shadow-xs">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 p-1.5 rounded-2xl bg-white border border-slate-200 shadow-xs">
         {/* Capsule Sub-tabs */}
-        <div className="inline-flex p-1 rounded-xl bg-[#edf2f7]">
+        <div className="inline-flex p-1 rounded-2xl bg-slate-100/90 border border-slate-200">
           <button
             onClick={() => setSubTab("utama")}
-            className={`px-5 py-1.5 rounded-lg text-[13px] font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-xl text-[13px] font-bold transition-all cursor-pointer ${
               subTab === "utama"
-                ? "bg-white text-[#1a73e8] shadow-xs"
-                : "text-[#64748b] hover:text-[#1a73e8]"
+                ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue shadow-xs"
+                : "text-blue-gray hover:text-ford-blue hover:bg-white/60"
             }`}
           >
-            Tab Utama
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Tab Utama</span>
           </button>
 
           <button
             onClick={() => setSubTab("grafik")}
-            className={`px-5 py-1.5 rounded-lg text-[13px] font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-xl text-[13px] font-bold transition-all cursor-pointer ${
               subTab === "grafik"
-                ? "bg-white text-[#1a73e8] shadow-xs"
-                : "text-[#64748b] hover:text-[#1a73e8]"
+                ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue shadow-xs"
+                : "text-blue-gray hover:text-ford-blue hover:bg-white/60"
             }`}
           >
-            Tab Grafik
+            <LineChartIcon className="w-3.5 h-3.5" />
+            <span>Tab Grafik</span>
           </button>
 
           <button
             onClick={() => setSubTab("tabel")}
-            className={`px-5 py-1.5 rounded-lg text-[13px] font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-xl text-[13px] font-bold transition-all cursor-pointer ${
               subTab === "tabel"
-                ? "bg-white text-[#1a73e8] shadow-xs"
-                : "text-[#64748b] hover:text-[#1a73e8]"
+                ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue shadow-xs"
+                : "text-blue-gray hover:text-ford-blue hover:bg-white/60"
             }`}
           >
-            Tab Tabel
+            <TableIcon className="w-3.5 h-3.5" />
+            <span>Tab Tabel</span>
           </button>
         </div>
 
         {/* Global Year Selector in Header */}
         <div className="flex items-center gap-1.5 overflow-x-auto px-1 py-0.5">
-          <span className="text-[12px] font-bold text-[#64748b] shrink-0 mr-1 flex items-center gap-1">
-            <Calendar className="w-3.5 h-3.5 text-[#1a73e8]" />
+          <span className="text-[12px] font-bold text-blue-gray shrink-0 mr-1 flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 text-light-sea-green" />
             Tahun:
           </span>
           {["2026", "2025", "2024", "2023", "2022"].map((yr) => (
             <button
               key={yr}
               onClick={() => setSelectedYear(yr)}
-              className={`px-3 py-1.5 rounded-xl text-[12px] font-bold transition-all shrink-0 ${
+              className={`px-3 py-1.5 rounded-xl text-[12px] font-bold transition-all shrink-0 cursor-pointer ${
                 selectedYear === yr
-                  ? "bg-[#1a73e8] text-white shadow-xs"
-                  : "bg-slate-50 text-[#64748b] hover:bg-slate-100 hover:text-[#071e49]"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                  : "bg-slate-50 text-blue-gray hover:bg-slate-100 hover:text-ford-blue"
               }`}
             >
               {yr === "2026" ? "2026 (Terkini)" : yr}

@@ -67,7 +67,7 @@ export const GresikMap: React.FC<GresikMapProps> = ({
                 : "text-[#64748b] hover:text-[#222222]"
             }`}
           >
-            <Map className="w-3.5 h-3.5 text-[#1a73e8]" />
+            <Map className="w-3.5 h-3.5 text-light-sea-green" />
             <span>Peta GIS Satelit</span>
           </button>
           <button
@@ -137,7 +137,7 @@ export const GresikMap: React.FC<GresikMapProps> = ({
                 </div>
                 <div className="p-2.5 rounded-lg bg-white border border-[#e2e8f0]">
                   <span className="text-[10px] text-[#a5b0b7] block">Cakupan MBG</span>
-                  <span className="text-[15px] font-extrabold text-[#2bb34d]">
+                  <span className="text-[15px] font-extrabold text-green-02">
                     {currentDistrict.coverageMBG}%
                   </span>
                 </div>
@@ -157,14 +157,14 @@ export const GresikMap: React.FC<GresikMapProps> = ({
 
               {/* Local Commodity Recommendation */}
               <div className="p-3 rounded-xl bg-[#f0f6ff] border border-[#d1e3fa]">
-                <div className="flex items-center gap-1.5 text-[12px] font-bold text-[#1a73e8] mb-1">
-                  <Fish className="w-3.5 h-3.5 text-[#1a73e8]" />
+                <div className="flex items-center gap-1.5 text-[12px] font-bold text-light-sea-green mb-1">
+                  <Fish className="w-3.5 h-3.5 text-light-sea-green" />
                   <span>Potensi Pangan Unggulan Daerah</span>
                 </div>
                 <p className="text-[13px] font-semibold text-[#222222]">
                   {currentDistrict.localCommodity}
                 </p>
-                <div className="mt-2 pt-2 border-t border-[#d1e3fa]/60 flex items-center justify-between text-[11px] text-[#1a73e8]">
+                <div className="mt-2 pt-2 border-t border-[#d1e3fa]/60 flex items-center justify-between text-[11px] text-light-sea-green">
                   <span>Fokus Nutrisi:</span>
                   <strong className="font-semibold text-[#222222]">{currentDistrict.deficiencyFocus}</strong>
                 </div>

@@ -439,48 +439,48 @@ Berikan jawaban yang luwes dan ramah.`;
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <HelpCircle className="w-5 h-5" />
             </div>
-            <h1 className="text-[22px] font-black text-[#071e49] tracking-tight">
+            <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
               Pusat Bantuan
             </h1>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-[#1a73e8] text-[11px] font-bold border border-blue-200">
-              <Sparkles className="w-3.5 h-3.5 text-[#1a73e8]" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-tint text-ford-blue text-[11px] font-bold border border-blue-200">
+              <Sparkles className="w-3.5 h-3.5 text-light-sea-green" />
               <span>K-Bot Assistant</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             </span>
           </div>
           <p className="text-[12px] text-[#64748b]">
-            Riwayat chat tersimpan otomatis ke Cloud Firestore — ketik <code className="text-[#1a73e8] bg-blue-50 px-1.5 py-0.5 rounded font-bold">/</code> untuk topik cepat atau ketik <code className="text-[#1a73e8] bg-blue-50 px-1.5 py-0.5 rounded font-bold">/komplain</code> untuk layanan keluhan
+            Riwayat chat tersimpan otomatis ke Cloud Firestore — ketik <code className="text-ford-blue bg-blue-50 px-1.5 py-0.5 rounded font-bold">/</code> untuk topik cepat atau ketik <code className="text-ford-blue bg-blue-50 px-1.5 py-0.5 rounded font-bold">/komplain</code> untuk layanan keluhan
           </p>
         </div>
 
         {/* Action Buttons (Compact Icon Buttons) */}
-        <div className="flex items-center gap-1.5 self-start sm:self-auto">
+        <div className="flex items-center gap-1.5 self-start sm:self-auto font-sans">
           <button
             onClick={() => setIsComplaintModalOpen(true)}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-[#1a73e8] bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all cursor-pointer shadow-2xs"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-ford-blue bg-green-tint hover:bg-green-02/30 border border-green-02/40 transition-all cursor-pointer shadow-2xs hover:scale-105"
             title="Kirim Komplain / Aduan Baru"
           >
-            <MessageSquare className="w-4 h-4" />
+            <MessageSquare className="w-4 h-4 text-ford-blue" />
           </button>
 
           <button
             onClick={handleOpenTrack}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer shadow-2xs"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-ford-blue bg-green-tint hover:bg-green-02/30 border border-green-02/40 transition-all cursor-pointer shadow-2xs hover:scale-105"
             title="Lacak Status Aduan (Track Aduan)"
           >
-            <ClipboardList className="w-4 h-4" />
+            <ClipboardList className="w-4 h-4 text-ford-blue" />
           </button>
 
           {messages.length > 1 && (
             <button
               onClick={() => setIsConfirmClearOpen(true)}
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-all cursor-pointer shadow-2xs"
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-brand-red bg-red-50 hover:bg-red-100 border border-brand-red/30 transition-all cursor-pointer shadow-2xs hover:scale-105"
               title="Hapus Riwayat Percakapan"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-4 h-4 text-brand-red" />
             </button>
           )}
         </div>
@@ -514,19 +514,19 @@ Berikan jawaban yang luwes dan ramah.`;
                 className={`flex gap-3 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 {msg.sender === "bot" && (
-                  <div className="w-8 h-8 rounded-xl bg-[#1a73e8] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
                     <Bot className="w-4 h-4" />
                   </div>
                 )}
                 <div
                   className={`p-4 rounded-2xl max-w-[85%] text-[12px] leading-relaxed whitespace-pre-line shadow-xs ${
                     msg.sender === "user"
-                      ? "bg-[#1a73e8] text-white rounded-tr-none"
-                      : "bg-white text-[#071e49] rounded-tl-none border border-[#e2e8f0]"
+                      ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold rounded-tr-none"
+                      : "bg-white text-[#2C3968] rounded-tl-none border border-[#e2e8f0]"
                   }`}
                 >
                   {msg.isAiGenerated && (
-                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#1a73e8] mb-1 pb-1 border-b border-slate-100">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-light-sea-green mb-1 pb-1 border-b border-slate-100">
                       <Sparkles className="w-3 h-3" />
                       <span>Jawaban dari K-Bot</span>
                     </div>
@@ -534,7 +534,7 @@ Berikan jawaban yang luwes dan ramah.`;
                   {msg.text}
                 </div>
                 {msg.sender === "user" && (
-                  <div className="w-8 h-8 rounded-xl bg-[#071e49] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                  <div className="w-8 h-8 rounded-xl bg-[#2C3968] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
                     <User className="w-4 h-4" />
                   </div>
                 )}
@@ -544,11 +544,11 @@ Berikan jawaban yang luwes dan ramah.`;
 
           {isTyping && (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-[#1a73e8] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold flex items-center justify-center shrink-0 shadow-xs">
                 <Bot className="w-4 h-4" />
               </div>
               <div className="p-3.5 rounded-2xl rounded-tl-none bg-white border border-[#e2e8f0] text-[12px] text-[#64748b] flex items-center gap-2 shadow-xs">
-                <Sparkles className="w-4 h-4 text-[#1a73e8] animate-spin" />
+                <Sparkles className="w-4 h-4 text-light-sea-green animate-spin" />
                 <span>K-Bot sedang menyiapkan jawaban untuk Anda...</span>
               </div>
             </div>
@@ -560,7 +560,7 @@ Berikan jawaban yang luwes dan ramah.`;
         {/* Command Suggestions Popup (Loaded from Firestore) */}
         {showCommands && filteredCommands.length > 0 && (
           <div className="mx-4 mb-2 bg-white border border-[#cbd5e1] rounded-2xl shadow-xl max-h-60 overflow-y-auto divide-y divide-slate-100 animate-in slide-in-from-bottom-2">
-            <div className="px-3.5 py-1.5 bg-blue-50/60 text-[10px] font-bold text-[#1a73e8] flex items-center justify-between sticky top-0 backdrop-blur-sm">
+            <div className="px-3.5 py-1.5 bg-blue-50/60 text-[10px] font-bold text-light-sea-green flex items-center justify-between sticky top-0 backdrop-blur-sm">
               <span className="flex items-center gap-1">
                 <Command className="w-3 h-3" />
                 Daftar Topik Bantuan ({filteredCommands.length} topik)
@@ -574,10 +574,10 @@ Berikan jawaban yang luwes dan ramah.`;
                 className="w-full text-left px-4 py-2.5 hover:bg-blue-50 transition-colors flex items-center justify-between gap-3 cursor-pointer group"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <code className="text-[11px] font-mono font-bold text-[#1a73e8] bg-blue-50 group-hover:bg-[#1a73e8] group-hover:text-white px-2 py-0.5 rounded transition-colors shrink-0">
+                  <code className="text-[11px] font-mono font-bold text-ford-blue bg-blue-50 group-hover:bg-[#35CBC3] group-hover:text-white px-2 py-0.5 rounded transition-colors shrink-0">
                     {cmd.command}
                   </code>
-                  <span className="text-[12px] text-[#071e49] font-medium truncate">{cmd.question}</span>
+                  <span className="text-[12px] text-[#2C3968] font-medium truncate">{cmd.question}</span>
                 </div>
                 <span className="text-[10px] text-[#64748b] bg-slate-100 px-2 py-0.5 rounded-full shrink-0 font-medium">
                   {cmd.category}
@@ -601,16 +601,16 @@ Berikan jawaban yang luwes dan ramah.`;
                 value={inputText}
                 onChange={(e) => handleInputChange(e.target.value)}
                 disabled={isTyping}
-                className="w-full px-4 py-2.5 text-[12px] bg-[#f8fafc] border border-[#cbd5e1] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1a73e8]/20 focus:border-[#1a73e8] transition-all pr-10 disabled:opacity-50"
+                className="w-full px-4 py-2.5 text-[12px] bg-[#f8fafc] border border-[#cbd5e1] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#35CBC3]/20 focus:border-[#35CBC3] transition-all pr-10 disabled:opacity-50"
               />
               <Slash className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2" />
             </div>
             <button
               type="submit"
               disabled={!inputText.trim() || isTyping}
-              className="p-2.5 bg-[#1a73e8] hover:bg-[#155fc0] disabled:opacity-40 text-white rounded-xl shadow-xs transition-colors cursor-pointer flex items-center justify-center shrink-0"
+              className="p-2.5 bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 disabled:opacity-40 text-ford-blue font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center shrink-0"
             >
-              {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 text-ford-blue" />}
             </button>
           </form>
         </div>
@@ -622,11 +622,11 @@ Berikan jawaban yang luwes dan ramah.`;
           <div className="w-full max-w-lg p-6 sm:p-7 rounded-3xl bg-white border border-[#e2e8f0] shadow-2xl space-y-5 animate-in zoom-in-95 duration-200">
             {/* Header */}
             <div className="flex items-center gap-3 pb-3 border-b border-[#f1f5f9]">
-              <div className="w-11 h-11 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center shadow-xs shrink-0">
+              <div className="w-11 h-11 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center shadow-xs shrink-0">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-[17px] font-black text-[#071e49] tracking-tight">
+                <h2 className="text-[17px] font-black text-[#2C3968] tracking-tight">
                   Layanan Pengaduan & Keluhan Sistem
                 </h2>
                 <p className="text-[11px] text-[#64748b]">
@@ -638,33 +638,33 @@ Berikan jawaban yang luwes dan ramah.`;
             <form onSubmit={handleSubmitComplaint} className="space-y-3.5 text-[12px]">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-bold text-[#071e49] mb-1">Nama Pengirim</label>
+                  <label className="block text-[11px] font-bold text-[#2C3968] mb-1">Nama Pengirim</label>
                   <input
                     type="text"
                     required
                     value={complaintName}
                     onChange={(e) => setComplaintName(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#071e49] mb-1">Kontak (Email / No. HP)</label>
+                  <label className="block text-[11px] font-bold text-[#2C3968] mb-1">Kontak (Email / No. HP)</label>
                   <input
                     type="text"
                     required
                     value={complaintContact}
                     onChange={(e) => setComplaintContact(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-[#071e49] mb-1">Kategori Kendala</label>
+                <label className="block text-[11px] font-bold text-[#2C3968] mb-1">Kategori Kendala</label>
                 <select
                   value={complaintCategory}
                   onChange={(e) => setComplaintCategory(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] text-[#071e49] font-medium focus:outline-none focus:border-[#1a73e8] cursor-pointer"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] text-[#2C3968] font-medium focus:outline-none focus:border-[#35CBC3] cursor-pointer"
                 >
                   <option value="Kendala Fitur / Generate Menu">Kendala Perencana Menu MBG</option>
                   <option value="Basis Data & Upload Excel">Kendala Basis Data RAG / Upload Excel</option>
@@ -676,25 +676,25 @@ Berikan jawaban yang luwes dan ramah.`;
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-[#071e49] mb-1">Rincian Keluhan / Masukan</label>
+                <label className="block text-[11px] font-bold text-[#2C3968] mb-1">Rincian Keluhan / Masukan</label>
                 <textarea
                   rows={4}
                   required
                   placeholder="Ceritakan kendala, bug, atau masukan yang Anda alami secara detail..."
                   value={complaintMessage}
                   onChange={(e) => setComplaintMessage(e.target.value)}
-                  className="w-full p-3 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] text-[#071e49] focus:outline-none focus:border-[#1a73e8] leading-relaxed resize-none"
+                  className="w-full p-3 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] text-[#2C3968] focus:outline-none focus:border-[#35CBC3] leading-relaxed resize-none"
                 />
               </div>
 
               {/* Gmail Destination Card */}
               <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#1a73e8] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold flex items-center justify-center shrink-0 shadow-2xs">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-[10px] font-bold text-[#1a73e8] uppercase tracking-wider block">Tujuan Pengiriman Langsung</span>
-                  <span className="text-[12px] font-bold text-[#071e49] font-mono block truncate">takathasan82@gmail.com</span>
+                  <span className="text-[10px] font-bold text-light-sea-green uppercase tracking-wider block">Tujuan Pengiriman Langsung</span>
+                  <span className="text-[12px] font-bold text-[#2C3968] font-mono block truncate">takathasan82@gmail.com</span>
                   <span className="text-[10px] text-[#64748b] block mt-0.5">Otomatis tersimpan di database & diteruskan ke Gmail</span>
                 </div>
               </div>
@@ -705,14 +705,14 @@ Berikan jawaban yang luwes dan ramah.`;
                   type="button"
                   onClick={() => setIsComplaintModalOpen(false)}
                   disabled={isSubmittingComplaint}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] font-bold text-[12px] transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] font-bold text-[12px] transition-colors cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={!complaintMessage.trim() || isSubmittingComplaint}
-                  className="px-5 py-2.5 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold text-[12px] shadow-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold text-[12px] shadow-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {isSubmittingComplaint ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                   <span>Kirim & Teruskan Keluhan</span>
@@ -734,13 +734,13 @@ Berikan jawaban yang luwes dan ramah.`;
                   <ClipboardList className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-[16px] font-black text-[#071e49]">Status Pengaduan Saya</h2>
+                  <h2 className="text-[16px] font-black text-[#2C3968]">Status Pengaduan Saya</h2>
                   <p className="text-[11px] text-[#64748b]">Pantau status tiket aduan yang telah Anda kirimkan</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
-                <button onClick={loadMyComplaints} disabled={isLoadingTrack} className="p-1.5 rounded-lg text-slate-400 hover:text-[#1a73e8] hover:bg-blue-50 cursor-pointer transition-colors">
-                  <RefreshCw className={`w-4 h-4 ${isLoadingTrack ? "animate-spin text-[#1a73e8]" : ""}`} />
+                <button onClick={loadMyComplaints} disabled={isLoadingTrack} className="p-1.5 rounded-lg text-slate-400 hover:text-light-sea-green hover:bg-blue-50 cursor-pointer transition-colors">
+                  <RefreshCw className={`w-4 h-4 ${isLoadingTrack ? "animate-spin text-light-sea-green" : ""}`} />
                 </button>
                 <button onClick={() => setIsTrackModalOpen(false)} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer transition-colors">
                   <X className="w-4 h-4" />
@@ -755,7 +755,7 @@ Berikan jawaban yang luwes dan ramah.`;
               ) : myComplaints.length === 0 ? (
                 <div className="text-center py-12 space-y-2">
                   <ClipboardList className="w-10 h-10 text-slate-300 mx-auto" />
-                  <p className="text-[13px] font-bold text-[#071e49]">Belum ada pengaduan</p>
+                  <p className="text-[13px] font-bold text-[#2C3968]">Belum ada pengaduan</p>
                   <p className="text-[11px] text-[#64748b]">Gunakan tombol "Kirim Komplain" untuk menyampaikan keluhan atau masukan.</p>
                 </div>
               ) : (
@@ -773,7 +773,7 @@ Berikan jawaban yang luwes dan ramah.`;
                     <div key={c.id || idx} className="p-4 rounded-2xl border border-[#e2e8f0] bg-white space-y-2.5 hover:border-slate-300 transition-colors">
                       {/* Top row: category + status */}
                       <div className="flex items-center justify-between gap-2">
-                        <span className="px-2.5 py-0.5 rounded-lg bg-blue-50 text-[#1a73e8] text-[10px] font-bold border border-blue-100">
+                        <span className="px-2.5 py-0.5 rounded-lg bg-green-tint text-ford-blue text-[10px] font-bold border border-blue-100">
                           {c.category}
                         </span>
                         <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${cfg.color}`}>
@@ -819,7 +819,7 @@ Berikan jawaban yang luwes dan ramah.`;
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-[15px] font-black text-[#071e49]">Hapus Riwayat Chat?</h3>
+              <h3 className="text-[15px] font-black text-[#2C3968]">Hapus Riwayat Chat?</h3>
               <p className="text-[12px] text-[#64748b] mt-1">
                 Seluruh percakapan dengan K-Bot akan dihapus secara permanen dari Cloud Firestore.
               </p>
@@ -829,7 +829,7 @@ Berikan jawaban yang luwes dan ramah.`;
               <button
                 onClick={() => setIsConfirmClearOpen(false)}
                 disabled={isClearing}
-                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] text-[12px] font-bold transition-colors cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] text-[12px] font-bold transition-colors cursor-pointer"
               >
                 Batal
               </button>

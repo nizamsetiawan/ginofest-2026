@@ -40,11 +40,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <Settings className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-[16px] font-black text-[#071e49]">Pengaturan Sistem</h3>
+              <h3 className="text-[16px] font-black text-[#2C3968]">Pengaturan Sistem</h3>
               <p className="text-[11px] text-[#64748b]">
                 Konfigurasi aplikasi, integrasi AI, dan basis data MBG
               </p>
@@ -67,7 +67,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                 Akun Administrator Aktif:
               </span>
-              <h4 className="font-bold text-[#071e49] text-[13px] mt-0.5">
+              <h4 className="font-bold text-[#2C3968] text-[13px] mt-0.5">
                 {currentAdmin.name} ({currentAdmin.regionLabel})
               </h4>
               <p className="text-[11px] text-[#64748b]">{currentAdmin.email}</p>
@@ -77,7 +77,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 onClose();
                 onOpenAdminSwitch();
               }}
-              className="px-3 py-1.5 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[11px] hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
+              className="px-3 py-1.5 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold text-[11px] hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
             >
               Ganti Akun
             </button>
@@ -87,7 +87,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           <div className="space-y-3">
             {/* Pagu BGN */}
             <div>
-              <label className="font-bold text-[#071e49] block mb-1">
+              <label className="font-bold text-[#2C3968] block mb-1">
                 Standar Pagu Resmi MBG (per Porsi):
               </label>
               <div className="flex items-center gap-2">
@@ -106,8 +106,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             {/* AI Engine Status */}
             <div className="p-3.5 rounded-2xl bg-blue-50/50 border border-blue-200 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-[#071e49] flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-[#1a73e8]" />
+                <span className="font-bold text-[#2C3968] flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-light-sea-green" />
                   <span>AI Engine & RAG Pipeline</span>
                 </span>
                 <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold">
@@ -122,7 +122,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             {/* Cloud Firestore Status */}
             <div className="p-3.5 rounded-2xl bg-emerald-50/40 border border-emerald-200 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-[#071e49] flex items-center gap-1.5">
+                <span className="font-bold text-[#2C3968] flex items-center gap-1.5">
                   <Database className="w-4 h-4 text-emerald-700" />
                   <span>Cloud Firestore Persistence</span>
                 </span>
@@ -146,13 +146,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] text-[12px] font-bold transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] text-[12px] font-bold transition-colors cursor-pointer"
           >
             Tutup
           </button>
           <button
             onClick={handleSave}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold transition-all cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-all cursor-pointer shadow-xs"
           >
             {isSaved ? (
               <>

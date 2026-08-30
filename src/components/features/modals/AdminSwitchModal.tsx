@@ -104,11 +104,11 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-[#1a73e8] flex items-center justify-center shadow-2xs">
+            <div className="w-8 h-8 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center shadow-2xs">
               <ArrowLeftRight className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-[15px] font-black text-[#071e49] tracking-tight">
+              <h3 className="text-[15px] font-black text-[#2C3968] tracking-tight">
                 Ganti Akun Pengguna
               </h3>
               <p className="text-[11px] text-[#64748b]">
@@ -119,7 +119,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-[#071e49] hover:bg-slate-100 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-[#2C3968] hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -135,7 +135,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
               placeholder="Cari nama, email, atau kecamatan..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 rounded-xl border border-[#cbd5e1] text-[12px] text-[#071e49] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-[#1a73e8] transition-all font-medium"
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 rounded-xl border border-[#cbd5e1] text-[12px] text-[#2C3968] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-[#35CBC3] transition-all font-medium"
             />
           </div>
 
@@ -146,7 +146,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
               onClick={() => setRoleFilter("all")}
               className={`px-3 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 roleFilter === "all"
-                  ? "bg-[#071e49] text-white shadow-2xs"
+                  ? "bg-[#2C3968] text-white shadow-2xs"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
@@ -157,7 +157,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
               onClick={() => setRoleFilter("super_admin")}
               className={`px-3 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
                 roleFilter === "super_admin"
-                  ? "bg-[#1a73e8] text-white shadow-2xs"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-2xs"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
@@ -169,7 +169,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
               onClick={() => setRoleFilter("admin_kecamatan")}
               className={`px-3 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
                 roleFilter === "admin_kecamatan"
-                  ? "bg-[#1a73e8] text-white shadow-2xs"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-2xs"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
@@ -200,7 +200,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
           ) : filteredUsers.length === 0 ? (
             <div className="py-10 text-center space-y-1.5">
               <Users className="w-8 h-8 text-slate-300 mx-auto" />
-              <p className="text-[13px] font-bold text-[#071e49]">
+              <p className="text-[13px] font-bold text-[#2C3968]">
                 Tidak ada akun yang sesuai pencarian
               </p>
               <p className="text-[11px] text-[#64748b]">
@@ -219,14 +219,14 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
                   onClick={() => handleSelectUser(u)}
                   className={`w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all cursor-pointer border ${
                     isCurrent
-                      ? "bg-blue-50/70 border-[#1a73e8] shadow-xs ring-1 ring-[#1a73e8]/20"
-                      : "bg-white border-[#e2e8f0] hover:border-[#1a73e8] hover:bg-slate-50/80"
+                      ? "bg-blue-50/70 border-[#35CBC3] shadow-xs ring-1 ring-[#35CBC3]/20"
+                      : "bg-white border-[#e2e8f0] hover:border-light-sea-green hover:bg-slate-50/80"
                   }`}
                 >
                   {/* Avatar */}
                   <div
                     className="w-10 h-10 rounded-xl text-white font-black text-[12px] flex items-center justify-center shrink-0 shadow-2xs"
-                    style={{ backgroundColor: u.avatarBg || (isSuper ? "#071e49" : "#1a73e8") }}
+                    style={{ backgroundColor: u.avatarBg || (isSuper ? "#2C3968" : "#35CBC3") }}
                   >
                     {u.initials || u.name.slice(0, 2).toUpperCase()}
                   </div>
@@ -234,11 +234,11 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
                   {/* Account Details */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <h4 className="text-[13px] font-bold text-[#071e49] truncate">
+                      <h4 className="text-[13px] font-bold text-[#2C3968] truncate">
                         {u.name}
                       </h4>
                       {isCurrent && (
-                        <span className="px-1.5 py-0.2 rounded bg-blue-100 text-[#1a73e8] text-[9px] font-extrabold uppercase shrink-0">
+                        <span className="px-1.5 py-0.2 rounded bg-green-tint text-ford-blue text-[9px] font-extrabold uppercase shrink-0">
                           Aktif
                         </span>
                       )}
@@ -249,7 +249,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
                     <p className="text-[10px] font-medium text-slate-500 truncate mt-0.5 flex items-center gap-1">
                       <span>{u.regionLabel || "Kabupaten Gresik"}</span>
                       {u.districtId && u.districtId !== "all" && (
-                        <span className="font-mono text-[9px] text-[#1a73e8] bg-blue-50 px-1 rounded">
+                        <span className="font-mono text-[9px] text-light-sea-green bg-blue-50 px-1 rounded">
                           {u.districtId}
                         </span>
                       )}
@@ -270,7 +270,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
                     </span>
 
                     {isCurrent && (
-                      <div className="w-5 h-5 rounded-full bg-[#1a73e8] text-white flex items-center justify-center shrink-0">
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold flex items-center justify-center shrink-0">
                         <Check className="w-3 h-3 stroke-[3]" />
                       </div>
                     )}
@@ -290,7 +290,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
                 onClose();
                 onNavigateToUserManagement();
               }}
-              className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#1a73e8] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-[11px] font-bold text-light-sea-green hover:underline cursor-pointer"
             >
               <Users className="w-3.5 h-3.5" />
               <span>Buka Kelola Pengguna</span>
@@ -305,7 +305,7 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] text-[12px] font-bold transition-colors cursor-pointer"
+            className="py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] text-[12px] font-bold transition-colors cursor-pointer"
           >
             Tutup
           </button>

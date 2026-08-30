@@ -174,17 +174,17 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-[#e2e8f0] h-screen flex flex-col justify-between p-4 select-none shrink-0 sticky top-0">
+    <aside className="w-64 bg-white border-r border-[#e2e8f0] h-screen flex flex-col justify-between p-4 select-none shrink-0 sticky top-0 font-sans">
       {/* Top Section */}
       <div className="space-y-4">
         {/* Brand Logo */}
-        <div className="flex items-center gap-1.5 px-2 py-1">
+        <div className="flex items-center gap-2 px-2 py-1">
           <img
             src="/logo_app.svg"
             alt="Kcal Logo"
-            className="w-8 h-8 rounded-lg shadow-xs"
+            className="w-8 h-8 rounded-xl shadow-xs"
           />
-          <span className="text-[18px] font-black text-[#071e49] tracking-tight">
+          <span className="text-[20px] font-bold text-ford-blue tracking-tight">
             Kcal
           </span>
         </div>
@@ -196,17 +196,17 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
             placeholder="Cari menu & fitur..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-3 pr-8 py-2 text-[13px] bg-white border border-[#e2e8f0] rounded-xl placeholder:text-[#94a3b8] text-[#071e49] focus:outline-none focus:border-[#1a73e8] transition-all"
+            className="w-full pl-3 pr-8 py-2 text-[13px] bg-[#F8FAFC] border border-[#e2e8f0] rounded-xl placeholder:text-blue-gray text-ford-blue focus:outline-none focus:border-light-sea-green focus:bg-white transition-all font-medium"
           />
           {searchTerm ? (
             <button
               onClick={() => setSearchTerm("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-[#94a3b8] hover:text-[#071e49] cursor-pointer"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-blue-gray hover:text-ford-blue cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <Search className="w-4 h-4 text-[#94a3b8] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-blue-gray absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           )}
         </div>
 
@@ -220,23 +220,23 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
                 key={item.key}
                 onClick={() => handleSelectNav(item.key)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] font-semibold transition-all cursor-pointer ${isActive
-                    ? "bg-[#e8f0fe] text-[#1a73e8] font-bold"
-                    : "text-[#475569] hover:bg-slate-50 hover:text-[#1a73e8]"
+                    ? "bg-green-tint text-ford-blue font-bold shadow-2xs border border-green-02/30"
+                    : "text-blue-gray hover:bg-[#F8FAFC] hover:text-ford-blue"
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className="w-4 h-4" />
+                  <Icon className={`w-4 h-4 ${isActive ? "text-light-sea-green" : "text-blue-gray"}`} />
                   <span>{item.label}</span>
                 </div>
                 {searchTerm && (
-                  <ChevronRight className="w-3.5 h-3.5 text-[#94a3b8] opacity-60" />
+                  <ChevronRight className="w-3.5 h-3.5 text-blue-gray opacity-60" />
                 )}
               </button>
             );
           })}
 
           {filteredItems.length === 0 && (
-            <div className="py-6 px-3 text-center text-[12px] text-[#94a3b8] bg-slate-50 rounded-xl border border-dashed border-[#e2e8f0]">
+            <div className="py-6 px-3 text-center text-[12px] text-blue-gray bg-slate-50 rounded-xl border border-dashed border-[#e2e8f0]">
               Menu "{searchTerm}" tidak ditemukan
             </div>
           )}
@@ -245,7 +245,7 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
 
       {/* Bottom Section */}
       <div className="space-y-4 pt-4 border-t border-[#f1f5f9]">
-        <div className="space-y-1 text-[13px] text-[#475569]">
+        <div className="space-y-1 text-[13px] text-blue-gray">
           {bottomItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeNav === item.key;
@@ -254,16 +254,16 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
                 key={item.key}
                 onClick={() => handleSelectNav(item.key)}
                 className={`w-full flex items-center justify-between px-3.5 py-2 rounded-xl transition-all font-medium cursor-pointer ${isActive
-                    ? "bg-[#e8f0fe] text-[#1a73e8] font-bold"
-                    : "hover:bg-slate-50 hover:text-[#1a73e8]"
+                    ? "bg-green-tint text-ford-blue font-bold shadow-2xs border border-green-02/30"
+                    : "hover:bg-[#F8FAFC] hover:text-ford-blue"
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className={`w-4 h-4 ${isActive ? "text-[#1a73e8]" : "text-[#64748b]"}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? "text-light-sea-green" : "text-blue-gray"}`} />
                   <span>{item.label}</span>
                 </div>
                 {item.badgeCount && item.badgeCount > 0 ? (
-                  <span className="w-2 h-2 rounded-full bg-[#1a73e8]"></span>
+                  <span className="w-2 h-2 rounded-full bg-green-02"></span>
                 ) : null}
               </button>
             );
@@ -278,10 +278,10 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
                 setIsLogoutConfirmOpen(true);
               }
             }}
-            className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-[13px] font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-all cursor-pointer"
+            className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-[13px] font-bold text-brand-red hover:bg-red-50 transition-all cursor-pointer"
             title="Keluar dari sesi akun saat ini"
           >
-            <LogOut className="w-4 h-4 text-red-500" />
+            <LogOut className="w-4 h-4 text-brand-red" />
             <span>Keluar Akun</span>
           </button>
         </div>
@@ -289,23 +289,23 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
         {/* User Info Card */}
         <button
           onClick={() => setActiveNav("settings")}
-          className="w-full flex items-center gap-2.5 p-2 rounded-2xl bg-white border border-[#e2e8f0] hover:border-[#1a73e8] hover:bg-[#e8f0fe]/30 transition-all text-left group shadow-xs cursor-pointer"
+          className="w-full flex items-center gap-2.5 p-2 rounded-2xl bg-white border border-[#e2e8f0] hover:border-light-sea-green hover:bg-green-tint/40 transition-all text-left group shadow-xs cursor-pointer"
         >
           <div className="shrink-0">
             <div
-              className="w-9 h-9 rounded-full text-white font-black text-[11px] flex items-center justify-center shadow-xs"
-              style={{ backgroundColor: currentAdmin.avatarBg || "#1a73e8" }}
+              className="w-9 h-9 rounded-xl text-white font-black text-[11px] flex items-center justify-center shadow-xs"
+              style={{ backgroundColor: currentAdmin.avatarBg || "#35CBC3" }}
             >
               {currentAdmin.initials}
             </div>
           </div>
 
           <div className="flex-1 overflow-hidden truncate">
-            <h4 className="text-[11px] font-bold text-[#071e49] truncate group-hover:text-[#1a73e8] transition-colors">
+            <h4 className="text-[11px] font-bold text-ford-blue truncate group-hover:text-light-sea-green transition-colors">
               {currentAdmin.name}
             </h4>
-            <p className="text-[10px] text-[#64748b] truncate">
-              {currentAdmin.regionLabel} • <span className="font-semibold text-[#1a73e8]">{currentAdmin.role === "Kabupaten" ? "Super Admin" : "Kecamatan"}</span>
+            <p className="text-[10px] text-blue-gray truncate">
+              {currentAdmin.regionLabel} • <span className="font-semibold text-light-sea-green">{currentAdmin.role === "Kabupaten" ? "Super Admin" : "Kecamatan"}</span>
             </p>
           </div>
         </button>
@@ -320,3 +320,4 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
     </aside>
   );
 };
+

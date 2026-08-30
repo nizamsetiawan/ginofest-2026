@@ -26,7 +26,7 @@ const USERS_TO_SEED = [
     password: "password123",
     isPinConfigured: true,
     initials: "NS",
-    avatarBg: "#071e49",
+    avatarBg: "#2C3968",
     createdAt: new Date().toISOString(),
   },
   {
@@ -40,7 +40,7 @@ const USERS_TO_SEED = [
     password: "password123",
     isPinConfigured: true,
     initials: "TH",
-    avatarBg: "#071e49",
+    avatarBg: "#2C3968",
     createdAt: new Date().toISOString(),
   },
   // 18 Admin Kecamatan
@@ -55,7 +55,7 @@ const USERS_TO_SEED = [
     password: "password123",
     isPinConfigured: false,
     initials: "KB",
-    avatarBg: "#1a73e8",
+    avatarBg: "#35CBC3",
     createdAt: new Date().toISOString(),
   },
   {

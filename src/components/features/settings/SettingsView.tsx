@@ -261,7 +261,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-24 space-x-2">
-        <Loader2 className="w-6 h-6 text-[#1a73e8] animate-spin" />
+        <Loader2 className="w-6 h-6 text-light-sea-green animate-spin" />
         <span className="text-[13px] text-[#64748b]">Memuat pengaturan dari Firestore...</span>
       </div>
     );
@@ -273,10 +273,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <Settings className="w-5 h-5" />
             </div>
-            <h1 className="text-[22px] font-black text-[#071e49] tracking-tight">Pengaturan</h1>
+            <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">Pengaturan</h1>
           </div>
           <p className="text-[12px] text-[#64748b]">
             Konfigurasi lengkap sistem, integrasi, kredensial, dan informasi perangkat tersinkronisasi ke Cloud Firestore
@@ -285,7 +285,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto disabled:opacity-60"
+          className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto disabled:opacity-60"
         >
           {isSaved ? <><Check className="w-4 h-4" /><span>Tersimpan di Firestore!</span></> : isSaving ? <><Loader2 className="w-4 h-4 animate-spin" /><span>Menyimpan...</span></> : <><Save className="w-4 h-4" /><span>Simpan Pengaturan</span></>}
         </button>
@@ -293,19 +293,19 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       {/* ═══ Section 1: Admin Profile ═══ */}
       <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5">
-        <h3 className="text-[13px] font-bold text-[#071e49] flex items-center gap-2 mb-4">
-          <Users className="w-4 h-4 text-[#1a73e8]" />
+        <h3 className="text-[13px] font-bold text-[#2C3968] flex items-center gap-2 mb-4">
+          <Users className="w-4 h-4 text-light-sea-green" />
           Administrator Aktif
         </h3>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0]">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-[#1a73e8] text-white font-black text-[14px] flex items-center justify-center shadow-xs shrink-0">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold font-black text-[14px] flex items-center justify-center shadow-xs shrink-0">
               {currentAdmin.initials}
             </div>
             <div className="text-[12px]">
-              <h4 className="text-[14px] font-bold text-[#071e49]">{currentAdmin.name}</h4>
+              <h4 className="text-[14px] font-bold text-[#2C3968]">{currentAdmin.name}</h4>
               <p className="text-[#64748b]">{currentAdmin.email}</p>
-              <p className="text-[#1a73e8] font-bold mt-0.5">
+              <p className="text-ford-blue font-bold mt-0.5">
                 {currentAdmin.regionLabel} • <span className="font-extrabold">{isSuperAdmin ? "Super Admin" : "Admin Kecamatan"}</span>
               </p>
             </div>
@@ -313,7 +313,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           {isSuperAdmin ? (
             <button
               onClick={onOpenAdminSwitch}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[12px] hover:border-[#1a73e8] transition-all cursor-pointer shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold text-[12px] hover:border-light-sea-green transition-all cursor-pointer shadow-2xs"
             >
               <ArrowLeftRight className="w-3.5 h-3.5" />
               Ganti Akun
@@ -330,9 +330,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       {/* ═══ Section 2: Config Grid ═══ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 space-y-3">
-          <h3 className="text-[13px] font-bold text-[#071e49]">Siklus Hari Kerja MBG</h3>
+          <h3 className="text-[13px] font-bold text-[#2C3968]">Siklus Hari Kerja MBG</h3>
           <div className="relative">
-            <select value={cycleDays} onChange={(e) => setCycleDays(Number(e.target.value) as 5 | 6)} className="w-full px-3.5 py-2.5 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] font-bold text-[12px] text-[#071e49] focus:outline-none focus:border-[#1a73e8] appearance-none pr-10 cursor-pointer">
+            <select value={cycleDays} onChange={(e) => setCycleDays(Number(e.target.value) as 5 | 6)} className="w-full px-3.5 py-2.5 rounded-xl bg-[#f8fafc] border border-[#cbd5e1] font-bold text-[12px] text-[#2C3968] focus:outline-none focus:border-[#35CBC3] appearance-none pr-10 cursor-pointer">
               <option value={5}>5 Hari (Senin – Jumat)</option>
               <option value={6}>6 Hari (Senin – Sabtu)</option>
             </select>
@@ -341,7 +341,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
 
         <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 space-y-3">
-          <h3 className="text-[13px] font-bold text-[#071e49]">Pagu Resmi BGN Per Porsi</h3>
+          <h3 className="text-[13px] font-bold text-[#2C3968]">Pagu Resmi BGN Per Porsi</h3>
           <input type="text" value="Rp 15.000 / porsi / anak / hari" disabled className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 border border-[#cbd5e1] font-bold text-[12px] text-slate-500 cursor-not-allowed" />
           <p className="text-[10px] text-slate-400">Standar nasional BGN RI 2026 — tidak dapat diubah</p>
         </div>
@@ -350,15 +350,15 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       {/* ═══ Section 3: API Keys & Credentials (Synced with Firestore) ═══ */}
       <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-[13px] font-bold text-[#071e49] flex items-center gap-2">
-            <Key className="w-4 h-4 text-[#1a73e8]" />
+          <h3 className="text-[13px] font-bold text-[#2C3968] flex items-center gap-2">
+            <Key className="w-4 h-4 text-light-sea-green" />
             Kredensial & API Keys
-            <span className="text-[10px] font-bold text-[#1a73e8] bg-blue-50 px-2 py-0.5 rounded-md">Sync Firestore</span>
+            <span className="text-[10px] font-bold text-light-sea-green bg-blue-50 px-2 py-0.5 rounded-md">Sync Firestore</span>
           </h3>
           {isSuperAdmin ? (
             <button
               onClick={requestAuth}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-[#1a73e8] bg-blue-50 hover:bg-blue-100 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-light-sea-green bg-blue-50 hover:bg-blue-100 transition-all cursor-pointer"
             >
               {showKeys && isAuthenticated ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               {showKeys && isAuthenticated ? "Sembunyikan" : "Buka / Ubah Kunci"}
@@ -375,16 +375,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           {/* Gemini API Key */}
           <div className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <Sparkles className="w-4 h-4 text-[#1a73e8] shrink-0" />
+              <Sparkles className="w-4 h-4 text-light-sea-green shrink-0" />
               <div className="min-w-0 flex-1">
-                <span className="font-bold text-[#071e49] block">Gemini API Key</span>
+                <span className="font-bold text-[#2C3968] block">Gemini API Key</span>
                 {isAuthenticated && isSuperAdmin ? (
                   <input
                     type="text"
                     value={geminiApiKey}
                     onChange={(e) => setGeminiApiKey(e.target.value)}
                     placeholder="Masukkan Gemini API Key..."
-                    className="w-full mt-1 px-3 py-1.5 text-[11px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                    className="w-full mt-1 px-3 py-1.5 text-[11px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                   />
                 ) : (
                   <code className="text-[10px] text-[#64748b] font-mono block truncate">{maskKey(geminiApiKey || "NOT_SET")}</code>
@@ -410,13 +410,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 <Hash className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <div className="min-w-0 flex-1">
-                  <span className="font-bold text-[#071e49] block text-[11px]">{item.label}</span>
+                  <span className="font-bold text-[#2C3968] block text-[11px]">{item.label}</span>
                   {isAuthenticated && isSuperAdmin ? (
                     <input
                       type="text"
                       value={item.value}
                       onChange={(e) => item.setter(e.target.value)}
-                      className="w-full mt-1 px-3 py-1.5 text-[11px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                      className="w-full mt-1 px-3 py-1.5 text-[11px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                     />
                   ) : (
                     <code className="text-[10px] text-[#64748b] font-mono block truncate">{maskKey(item.value)}</code>
@@ -442,38 +442,38 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       {/* ═══ Section 4: PIN Security & Change PIN ═══ */}
       <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 space-y-4">
-        <h3 className="text-[13px] font-bold text-[#071e49] flex items-center gap-2">
-          <KeyRound className="w-4 h-4 text-[#1a73e8]" />
+        <h3 className="text-[13px] font-bold text-[#2C3968] flex items-center gap-2">
+          <KeyRound className="w-4 h-4 text-light-sea-green" />
           Keamanan & Ubah PIN Akses
-          <span className="text-[10px] font-bold text-[#1a73e8] bg-blue-50 px-2 py-0.5 rounded-md">Sync Firestore</span>
+          <span className="text-[10px] font-bold text-light-sea-green bg-blue-50 px-2 py-0.5 rounded-md">Sync Firestore</span>
         </h3>
         
         {isSuperAdmin && isAuthenticated ? (
           <div className="p-4 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] space-y-3">
             <div className="flex items-center gap-2 text-[12px]">
               <span className="text-[#64748b]">PIN Akses Master Saat Ini:</span>
-              <code className="font-mono font-bold text-[#1a73e8] bg-blue-50 px-2 py-0.5 rounded">{authPin}</code>
+              <code className="font-mono font-bold text-ford-blue bg-blue-50 px-2 py-0.5 rounded">{authPin}</code>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-[12px]">
               <div>
-                <label className="block text-[11px] font-bold text-[#071e49] mb-1">PIN Akses Baru</label>
+                <label className="block text-[11px] font-bold text-[#2C3968] mb-1">PIN Akses Baru</label>
                 <input
                   type="text"
                   placeholder="Masukkan PIN baru..."
                   value={newPin}
                   onChange={(e) => { setNewPin(e.target.value); setPinChangeMsg(""); }}
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] font-mono text-[12px] text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] font-mono text-[12px] text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#071e49] mb-1">Konfirmasi PIN Baru</label>
+                <label className="block text-[11px] font-bold text-[#2C3968] mb-1">Konfirmasi PIN Baru</label>
                 <input
                   type="text"
                   placeholder="Ulangi PIN baru..."
                   value={confirmNewPin}
                   onChange={(e) => { setConfirmNewPin(e.target.value); setPinChangeMsg(""); }}
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] font-mono text-[12px] text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] font-mono text-[12px] text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                 />
               </div>
             </div>
@@ -490,21 +490,21 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         ) : isSuperAdmin ? (
           <div className="p-4 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] flex items-center justify-between gap-4">
             <div className="text-[12px]">
-              <span className="font-bold text-[#071e49] block">PIN Akses Administrator</span>
+              <span className="font-bold text-[#2C3968] block">PIN Akses Administrator</span>
               <span className="text-[#64748b] text-[11px]">PIN master terlindungi. Masukkan PIN otorisasi untuk mengubah.</span>
             </div>
             <button
               onClick={requestAuth}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] font-bold text-[12px] hover:border-[#1a73e8] transition-all cursor-pointer shadow-2xs shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] font-bold text-[12px] hover:border-light-sea-green transition-all cursor-pointer shadow-2xs shrink-0"
             >
-              <Shield className="w-3.5 h-3.5 text-[#1a73e8]" />
+              <Shield className="w-3.5 h-3.5 text-light-sea-green" />
               Verifikasi untuk Ubah PIN
             </button>
           </div>
         ) : (
           <div className="p-4 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] flex items-center justify-between gap-4">
             <div className="text-[12px]">
-              <span className="font-bold text-[#071e49] block">PIN Akses Master Sistem</span>
+              <span className="font-bold text-[#2C3968] block">PIN Akses Master Sistem</span>
               <span className="text-[#64748b] text-[11px]">Kewenangan pengubahan PIN master sistem hanya dimiliki oleh Super Admin.</span>
             </div>
             <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-bold text-[11px] shrink-0">
@@ -517,16 +517,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       {/* ═══ Section 5: Cloud Firestore Collections (NO EMOJI ICONS) ═══ */}
       <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 space-y-4">
-        <h3 className="text-[13px] font-bold text-[#071e49] flex items-center gap-2">
-          <Database className="w-4 h-4 text-[#1a73e8]" />
+        <h3 className="text-[13px] font-bold text-[#2C3968] flex items-center gap-2">
+          <Database className="w-4 h-4 text-light-sea-green" />
           Cloud Firestore — {FIRESTORE_COLLECTIONS.length} Koleksi Aktif
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {FIRESTORE_COLLECTIONS.map((col) => (
             <div key={col.name} className="px-3.5 py-3 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] flex items-start gap-2.5 text-[11px]">
-              <div className="w-2 h-2 rounded-full bg-[#1a73e8] mt-1 shrink-0"></div>
+              <div className="w-2 h-2 rounded-full bg-[#35CBC3] mt-1 shrink-0"></div>
               <div className="min-w-0">
-                <code className="font-bold text-[#071e49] font-mono block text-[11px] truncate">{col.name}</code>
+                <code className="font-bold text-[#2C3968] font-mono block text-[11px] truncate">{col.name}</code>
                 <span className="text-[#64748b] block truncate mt-0.5">{col.desc}</span>
               </div>
             </div>
@@ -537,41 +537,41 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       {/* ═══ Section 6: AI & System Status ═══ */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center shrink-0"><Sparkles className="w-5 h-5" /></div>
-          <div className="text-[12px]"><h4 className="font-bold text-[#071e49]">AI Engine</h4><p className="text-[11px] text-[#64748b]">Gemini 1.5 Flash</p><span className="text-[10px] font-bold text-emerald-700">● Aktif</span></div>
+          <div className="w-10 h-10 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center shrink-0"><Sparkles className="w-5 h-5" /></div>
+          <div className="text-[12px]"><h4 className="font-bold text-[#2C3968]">AI Engine</h4><p className="text-[11px] text-[#64748b]">Gemini 1.5 Flash</p><span className="text-[10px] font-bold text-emerald-700">● Aktif</span></div>
         </div>
         <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center shrink-0"><Database className="w-5 h-5" /></div>
-          <div className="text-[12px]"><h4 className="font-bold text-[#071e49]">RAG Pipeline</h4><p className="text-[11px] text-[#64748b]">4 Master Dataset</p><span className="text-[10px] font-bold text-emerald-700">● Terhubung</span></div>
+          <div className="w-10 h-10 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center shrink-0"><Database className="w-5 h-5" /></div>
+          <div className="text-[12px]"><h4 className="font-bold text-[#2C3968]">RAG Pipeline</h4><p className="text-[11px] text-[#64748b]">4 Master Dataset</p><span className="text-[10px] font-bold text-emerald-700">● Terhubung</span></div>
         </div>
         <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center shrink-0"><Server className="w-5 h-5" /></div>
-          <div className="text-[12px]"><h4 className="font-bold text-[#071e49]">Cloud Firestore</h4><p className="text-[11px] text-[#64748b]">{FIRESTORE_COLLECTIONS.length} Koleksi</p><span className="text-[10px] font-bold text-emerald-700">● Online</span></div>
+          <div className="w-10 h-10 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center shrink-0"><Server className="w-5 h-5" /></div>
+          <div className="text-[12px]"><h4 className="font-bold text-[#2C3968]">Cloud Firestore</h4><p className="text-[11px] text-[#64748b]">{FIRESTORE_COLLECTIONS.length} Koleksi</p><span className="text-[10px] font-bold text-emerald-700">● Online</span></div>
         </div>
       </div>
 
       {/* ═══ Section 7: Device & Browser Info ═══ */}
       <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 space-y-4">
-        <h3 className="text-[13px] font-bold text-[#071e49] flex items-center gap-2">
-          <Monitor className="w-4 h-4 text-[#1a73e8]" />
+        <h3 className="text-[13px] font-bold text-[#2C3968] flex items-center gap-2">
+          <Monitor className="w-4 h-4 text-light-sea-green" />
           Informasi Perangkat & Browser
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-[11px]">
           {[
-            { icon: <Globe className="w-3.5 h-3.5 text-[#1a73e8]" />, label: "Browser", value: deviceInfo.browser },
-            { icon: <Monitor className="w-3.5 h-3.5 text-[#1a73e8]" />, label: "Sistem Operasi", value: deviceInfo.os },
-            { icon: <Smartphone className="w-3.5 h-3.5 text-[#1a73e8]" />, label: "Resolusi Layar", value: deviceInfo.screen },
-            { icon: <Globe className="w-3.5 h-3.5 text-[#1a73e8]" />, label: "Bahasa", value: deviceInfo.language },
-            { icon: <Clock className="w-3.5 h-3.5 text-[#1a73e8]" />, label: "Timezone", value: deviceInfo.timezone },
-            { icon: <Cpu className="w-3.5 h-3.5 text-[#1a73e8]" />, label: "CPU Cores", value: deviceInfo.cores },
-            { icon: <HardDrive className="w-3.5 h-3.5 text-[#1a73e8]" />, label: "Device Memory", value: deviceInfo.memory },
-            { icon: <Wifi className="w-3.5 h-3.5 text-[#1a73e8]" />, label: "Koneksi", value: deviceInfo.connection },
+            { icon: <Globe className="w-3.5 h-3.5 text-light-sea-green" />, label: "Browser", value: deviceInfo.browser },
+            { icon: <Monitor className="w-3.5 h-3.5 text-light-sea-green" />, label: "Sistem Operasi", value: deviceInfo.os },
+            { icon: <Smartphone className="w-3.5 h-3.5 text-light-sea-green" />, label: "Resolusi Layar", value: deviceInfo.screen },
+            { icon: <Globe className="w-3.5 h-3.5 text-light-sea-green" />, label: "Bahasa", value: deviceInfo.language },
+            { icon: <Clock className="w-3.5 h-3.5 text-light-sea-green" />, label: "Timezone", value: deviceInfo.timezone },
+            { icon: <Cpu className="w-3.5 h-3.5 text-light-sea-green" />, label: "CPU Cores", value: deviceInfo.cores },
+            { icon: <HardDrive className="w-3.5 h-3.5 text-light-sea-green" />, label: "Device Memory", value: deviceInfo.memory },
+            { icon: <Wifi className="w-3.5 h-3.5 text-light-sea-green" />, label: "Koneksi", value: deviceInfo.connection },
           ].map((item, idx) => (
             <div key={idx} className="px-3 py-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex items-center gap-2">
               {item.icon}
               <div className="min-w-0">
                 <span className="text-[#64748b] block text-[10px]">{item.label}</span>
-                <span className="font-bold text-[#071e49] block truncate">{item.value}</span>
+                <span className="font-bold text-[#2C3968] block truncate">{item.value}</span>
               </div>
             </div>
           ))}
@@ -584,8 +584,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       {/* ═══ Section 8: App Info ═══ */}
       <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5">
-        <h3 className="text-[13px] font-bold text-[#071e49] flex items-center gap-2 mb-3">
-          <Globe className="w-4 h-4 text-[#1a73e8]" />
+        <h3 className="text-[13px] font-bold text-[#2C3968] flex items-center gap-2 mb-3">
+          <Globe className="w-4 h-4 text-light-sea-green" />
           Informasi Aplikasi
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
@@ -601,7 +601,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           ].map((item, idx) => (
             <div key={idx} className="px-3 py-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
               <span className="text-[#64748b] block text-[10px]">{item.label}</span>
-              <span className="font-bold text-[#071e49]">{item.value}</span>
+              <span className="font-bold text-[#2C3968]">{item.value}</span>
             </div>
           ))}
         </div>
@@ -641,10 +641,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <div className="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-2xl flex items-center justify-center p-4 select-none animate-in fade-in duration-200">
           <div className="w-full max-w-lg p-8 rounded-3xl bg-white border border-[#e2e8f0] shadow-2xl space-y-6 text-center animate-in zoom-in-95 duration-200">
             <div className="space-y-2">
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center shadow-xs">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center shadow-xs">
                 <Lock className="w-7 h-7" />
               </div>
-              <h2 className="text-[22px] font-black text-[#071e49] tracking-tight">
+              <h2 className="text-[22px] font-black text-[#2C3968] tracking-tight">
                 Autentikasi Administrator Pengaturan
               </h2>
               <p className="text-[12px] text-[#64748b]">
@@ -667,8 +667,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                       pinError
                         ? "border-red-500 bg-red-50 text-red-900 focus:ring-2 focus:ring-red-400"
                         : digit
-                        ? "border-[#1a73e8] bg-blue-50/40 text-[#071e49] focus:ring-2 focus:ring-[#1a73e8]/30"
-                        : "border-[#cbd5e1] bg-white text-[#071e49] focus:border-[#1a73e8] focus:ring-2 focus:ring-[#1a73e8]/20"
+                        ? "border-[#35CBC3] bg-blue-50/40 text-[#2C3968] focus:ring-2 focus:ring-[#35CBC3]/30"
+                        : "border-[#cbd5e1] bg-white text-[#2C3968] focus:border-[#35CBC3] focus:ring-2 focus:ring-[#35CBC3]/20"
                     }`}
                   />
                 ))}
@@ -685,7 +685,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="space-y-2 pt-1">
               <button
                 onClick={() => verifyPin(pinDigits.join(""))}
-                className="w-full py-3 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[13px] font-bold shadow-xs transition-colors cursor-pointer"
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[13px] font-bold shadow-xs transition-colors cursor-pointer"
               >
                 Verifikasi & Buka Kredensial
               </button>
@@ -696,7 +696,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   setPinError(false);
                   setPinDigits(Array(PIN_LENGTH).fill(""));
                 }}
-                className="w-full py-2 rounded-xl text-[12px] font-bold text-[#64748b] hover:text-[#071e49] hover:bg-slate-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-2 rounded-xl text-[12px] font-bold text-[#64748b] hover:text-[#2C3968] hover:bg-slate-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 Batal
               </button>

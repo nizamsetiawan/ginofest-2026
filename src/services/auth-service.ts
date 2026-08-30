@@ -37,7 +37,7 @@ export const DEFAULT_FALLBACK_USERS: KcalUser[] = [
     password: "password123",
     isPinConfigured: true,
     initials: "NS",
-    avatarBg: "#071e49",
+    avatarBg: "#2C3968",
     createdAt: "2026-08-29T00:00:00.000Z",
   },
   {
@@ -51,7 +51,7 @@ export const DEFAULT_FALLBACK_USERS: KcalUser[] = [
     password: "password123",
     isPinConfigured: true,
     initials: "TH",
-    avatarBg: "#071e49",
+    avatarBg: "#2C3968",
     createdAt: "2026-08-29T00:00:00.000Z",
   },
   {
@@ -65,7 +65,7 @@ export const DEFAULT_FALLBACK_USERS: KcalUser[] = [
     password: "password123",
     isPinConfigured: false,
     initials: "KB",
-    avatarBg: "#1a73e8",
+    avatarBg: "#35CBC3",
     createdAt: "2026-08-29T00:00:00.000Z",
   },
   {
@@ -79,7 +79,7 @@ export const DEFAULT_FALLBACK_USERS: KcalUser[] = [
     password: "password123",
     isPinConfigured: false,
     initials: "GK",
-    avatarBg: "#2bb34d",
+    avatarBg: "#4DE0A3",
     createdAt: "2026-08-29T00:00:00.000Z",
   },
   {

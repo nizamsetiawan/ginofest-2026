@@ -29,7 +29,7 @@ export const CommodityMarketView: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between pb-4 mb-4 border-b border-[#e2e8f0] gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#f0f6ff] text-[#1a73e8] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#f0f6ff] text-light-sea-green flex items-center justify-center">
               <Fish className="w-4 h-4" />
             </div>
             <h2 className="text-[15px] font-bold text-[#222222]">
@@ -101,7 +101,7 @@ export const CommodityMarketView: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-1 text-[11px]">
                     {item.priceChange <= 0 ? (
-                      <span className="text-[#2bb34d] font-semibold inline-flex items-center">
+                      <span className="text-green-02 font-semibold inline-flex items-center">
                         <TrendingDown className="w-2.5 h-2.5 mr-0.5" />
                         {item.priceChange}% (Stabil)
                       </span>

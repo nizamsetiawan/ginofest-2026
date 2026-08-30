@@ -88,7 +88,7 @@ export const NotificationListSkeleton: React.FC<{ count?: number }> = ({ count =
 
 export const DashboardAppSkeleton: React.FC = () => {
   return (
-    <div className="min-h-screen bg-white text-[#071e49] flex selection:bg-[#dbeafe]">
+    <div className="min-h-screen bg-white text-[#2C3968] flex selection:bg-[#dbeafe]">
       {/* Sidebar Skeleton */}
       <aside className="w-64 border-r border-[#e2e8f0] bg-[#f8fafc] p-4 flex flex-col justify-between shrink-0 min-h-screen animate-pulse">
         <div className="space-y-6">

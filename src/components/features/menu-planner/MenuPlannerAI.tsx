@@ -453,9 +453,9 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
     const rowsHtml = logisticsBOM.map((item, idx) => `
       <tr>
         <td style="border: 1px solid #cbd5e1; text-align: center; font-weight: bold; padding: 8px;">${idx + 1}</td>
-        <td style="border: 1px solid #cbd5e1; font-weight: bold; color: #071e49; padding: 8px 12px;">${item.item}</td>
-        <td style="border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: #1a73e8; padding: 8px 12px;">${item.volume}</td>
-        <td style="border: 1px solid #cbd5e1; text-align: right; font-weight: bold; color: #071e49; padding: 8px 12px;">Rp ${Math.round(item.totalCost).toLocaleString("id-ID")}</td>
+        <td style="border: 1px solid #cbd5e1; font-weight: bold; color: #2C3968; padding: 8px 12px;">${item.item}</td>
+        <td style="border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: #35CBC3; padding: 8px 12px;">${item.volume}</td>
+        <td style="border: 1px solid #cbd5e1; text-align: right; font-weight: bold; color: #2C3968; padding: 8px 12px;">Rp ${Math.round(item.totalCost).toLocaleString("id-ID")}</td>
       </tr>
     `).join("");
 
@@ -468,12 +468,12 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
         <table border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
           <thead>
             <tr>
-              <th colspan="4" style="background-color: #071e49; color: #ffffff; font-size: 14pt; padding: 12px; text-align: center; font-weight: bold;">
+              <th colspan="4" style="background-color: #2C3968; color: #ffffff; font-size: 14pt; padding: 12px; text-align: center; font-weight: bold;">
                 LAPORAN KEBUTUHAN BAHAN POKOK & ANGGARAN PROGRAM MAKAN BERGIZI GRATIS (MBG)
               </th>
             </tr>
             <tr>
-              <th colspan="4" style="background-color: #f1f5f9; color: #071e49; font-size: 11pt; padding: 8px; text-align: center;">
+              <th colspan="4" style="background-color: #f1f5f9; color: #2C3968; font-size: 11pt; padding: 8px; text-align: center;">
                 Wilayah Kec. ${currentDistrictInfo.name} • Periode: ${currentPeriodInfo.label} • Sasaran: ${targetStudents.toLocaleString("id-ID")} Siswa (${includeSaturday ? "Siklus 6 Hari MBG" : "Siklus 5 Hari MBG"})
               </th>
             </tr>
@@ -482,26 +482,26 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               <td colspan="2" style="background-color: #f8fafc; font-weight: bold; padding: 6px 10px; text-align: right; border: 1px solid #cbd5e1;">Rp ${budgetSummary.totalPlafonWeekly?.toLocaleString("id-ID")}</td>
             </tr>
             <tr>
-              <td colspan="2" style="background-color: #e8f0fe; font-weight: bold; color: #1a73e8; padding: 6px 10px; border: 1px solid #cbd5e1;">Realisasi Estimasi Biaya HPP:</td>
-              <td colspan="2" style="background-color: #e8f0fe; font-weight: bold; color: #1a73e8; padding: 6px 10px; text-align: right; border: 1px solid #cbd5e1;">Rp ${budgetSummary.totalCostWeekly?.toLocaleString("id-ID")}</td>
+              <td colspan="2" style="background-color: #e8f0fe; font-weight: bold; color: #35CBC3; padding: 6px 10px; border: 1px solid #cbd5e1;">Realisasi Estimasi Biaya HPP:</td>
+              <td colspan="2" style="background-color: #e8f0fe; font-weight: bold; color: #35CBC3; padding: 6px 10px; text-align: right; border: 1px solid #cbd5e1;">Rp ${budgetSummary.totalCostWeekly?.toLocaleString("id-ID")}</td>
             </tr>
             <tr>
               <td colspan="2" style="background-color: #ecfdf5; font-weight: bold; color: #047857; padding: 6px 10px; border: 1px solid #cbd5e1;">Estimasi Penghematan Kas APBD:</td>
               <td colspan="2" style="background-color: #ecfdf5; font-weight: bold; color: #047857; padding: 6px 10px; text-align: right; border: 1px solid #cbd5e1;">Rp ${budgetSummary.totalSavingsWeekly?.toLocaleString("id-ID")}</td>
             </tr>
             <tr style="height: 10px;"><td colspan="4" style="border: none;"></td></tr>
-            <tr style="background-color: #1a73e8; font-weight: bold; text-align: center; color: #ffffff;">
-              <th style="background-color: #1a73e8; border: 1px solid #cbd5e1; padding: 10px; font-weight: bold; color: #ffffff; width: 50px;">No</th>
-              <th style="background-color: #1a73e8; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: bold; color: #ffffff; text-align: left;">Komoditas Bahan Pokok</th>
-              <th style="background-color: #1a73e8; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: bold; color: #ffffff; text-align: center;">Volume Pengadaan (Kebutuhan Riil)</th>
-              <th style="background-color: #1a73e8; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: bold; color: #ffffff; text-align: right;">Estimasi Anggaran Pengadaan (Rp)</th>
+            <tr style="background-color: #35CBC3; font-weight: bold; text-align: center; color: #ffffff;">
+              <th style="background-color: #35CBC3; border: 1px solid #cbd5e1; padding: 10px; font-weight: bold; color: #ffffff; width: 50px;">No</th>
+              <th style="background-color: #35CBC3; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: bold; color: #ffffff; text-align: left;">Komoditas Bahan Pokok</th>
+              <th style="background-color: #35CBC3; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: bold; color: #ffffff; text-align: center;">Volume Pengadaan (Kebutuhan Riil)</th>
+              <th style="background-color: #35CBC3; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: bold; color: #ffffff; text-align: right;">Estimasi Anggaran Pengadaan (Rp)</th>
             </tr>
           </thead>
           <tbody>
             ${rowsHtml}
             <tr style="background-color: #f8fafc; font-weight: bold;">
-              <td colspan="3" style="border: 1px solid #cbd5e1; padding: 10px 14px; text-align: right; font-weight: bold; color: #071e49;">TOTAL REALISASI HPP:</td>
-              <td style="border: 1px solid #cbd5e1; padding: 10px 14px; text-align: right; font-weight: bold; color: #1a73e8;">Rp ${budgetSummary.totalCostWeekly?.toLocaleString("id-ID")}</td>
+              <td colspan="3" style="border: 1px solid #cbd5e1; padding: 10px 14px; text-align: right; font-weight: bold; color: #2C3968;">TOTAL REALISASI HPP:</td>
+              <td style="border: 1px solid #cbd5e1; padding: 10px 14px; text-align: right; font-weight: bold; color: #35CBC3;">Rp ${budgetSummary.totalCostWeekly?.toLocaleString("id-ID")}</td>
             </tr>
           </tbody>
         </table>
@@ -575,25 +575,25 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-[22px] lg:text-[25px] font-black text-[#071e49] tracking-tight">
+              <h1 className="text-[22px] lg:text-[25px] font-black text-[#2C3968] tracking-tight">
                 Perencana Menu MBG
               </h1>
 
               {/* Filter Kecamatan */}
               <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border text-[12px] font-bold shadow-2xs ${
                 isKecamatanAdmin
-                  ? "bg-slate-50 border-blue-200 text-[#071e49]"
-                  : "bg-white border-[#cbd5e1] text-[#071e49]"
+                  ? "bg-slate-50 border-blue-200 text-[#2C3968]"
+                  : "bg-white border-[#cbd5e1] text-[#2C3968]"
               }`}>
                 {isKecamatanAdmin ? (
-                  <Lock className="w-3.5 h-3.5 text-[#1a73e8]" />
+                  <Lock className="w-3.5 h-3.5 text-light-sea-green" />
                 ) : (
-                  <MapPin className="w-3.5 h-3.5 text-[#1a73e8]" />
+                  <MapPin className="w-3.5 h-3.5 text-light-sea-green" />
                 )}
                 {isKecamatanAdmin ? (
-                  <span className="font-bold text-[#1a73e8]">
+                  <span className="font-bold text-ford-blue">
                     Kec. {GRESIK_DISTRICTS.find((d) => d.id === targetDistrictId)?.name || user?.regionLabel}
-                    <span className="ml-1 text-[10px] text-slate-500 font-medium">(Terkunci Wilayah Anda)</span>
+                    <span className="ml-1 text-[10px] text-blue-gray font-medium">(Terkunci Wilayah Anda)</span>
                   </span>
                 ) : (
                   <select
@@ -611,8 +611,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               </div>
 
               {/* Filter Periode Bulan & Tahun */}
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-white border border-[#cbd5e1] text-[12px] font-bold text-[#071e49] shadow-2xs">
-                <Calendar className="w-3.5 h-3.5 text-[#1a73e8]" />
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-white border border-[#cbd5e1] text-[12px] font-bold text-[#2C3968] shadow-2xs">
+                <Calendar className="w-3.5 h-3.5 text-light-sea-green" />
                 <select
                   value={selectedPeriod}
                   onChange={(e) => handlePeriodChange(e.target.value)}
@@ -638,14 +638,14 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0 font-sans">
             {/* Icon Button: Laporan Logistik (BOM) */}
             <button
               onClick={() => setIsLogisticsModalOpen(true)}
-              className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] transition-all cursor-pointer border border-slate-200"
+              className="p-2.5 rounded-xl bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 transition-all cursor-pointer shadow-2xs hover:scale-105"
               title="Laporan Logistik & Bill of Materials (BOM)"
             >
-              <Package className="w-4 h-4 text-[#1a73e8]" />
+              <Package className="w-4 h-4 text-ford-blue" />
             </button>
 
             {/* Icon Button: Reset / Hapus Menu Plan (Only when generated) */}
@@ -653,10 +653,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               <button
                 onClick={() => setIsResetConfirmModalOpen(true)}
                 disabled={isDeleting}
-                className="p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition-all cursor-pointer border border-rose-200"
+                className="p-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 transition-all cursor-pointer shadow-2xs hover:scale-105"
                 title="Batalkan & Bersihkan Hasil Generate Bulan Ini"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-4 h-4 text-brand-red" />
               </button>
             )}
 
@@ -664,7 +664,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <button
               onClick={() => setIsConfirmModalOpen(true)}
               disabled={isGenerating}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold shadow-xs transition-all cursor-pointer disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold shadow-xs transition-all cursor-pointer disabled:opacity-60"
             >
               {isGenerating ? (
                 <>
@@ -688,8 +688,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               onClick={() => setViewMode("list")}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
                 viewMode === "list"
-                  ? "bg-[#1a73e8] text-white shadow-xs"
-                  : "text-slate-600 hover:text-[#071e49]"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                  : "text-slate-600 hover:text-[#2C3968]"
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
@@ -700,8 +700,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               onClick={() => setViewMode("calendar")}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
                 viewMode === "calendar"
-                  ? "bg-[#1a73e8] text-white shadow-xs"
-                  : "text-slate-600 hover:text-[#071e49]"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                  : "text-slate-600 hover:text-[#2C3968]"
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
@@ -712,8 +712,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               onClick={() => setViewMode("yearly")}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
                 viewMode === "yearly"
-                  ? "bg-[#1a73e8] text-white shadow-xs"
-                  : "text-slate-600 hover:text-[#071e49]"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                  : "text-slate-600 hover:text-[#2C3968]"
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
@@ -725,8 +725,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
       {/* Toast Notification */}
       {selectedRecipeToast && (
-        <div className="p-3 bg-[#e8f0fe] border border-[#badafe] text-[#1a73e8] rounded-xl text-[12px] font-bold flex items-center gap-2 animate-in fade-in">
-          <Check className="w-4 h-4 shrink-0" />
+        <div className="p-3 bg-green-tint border border-green-02/40 text-ford-blue rounded-2xl text-[12px] font-bold flex items-center gap-2.5 animate-in fade-in shadow-2xs">
+          <div className="w-5 h-5 rounded-full bg-green-02 text-ford-blue flex items-center justify-center shrink-0">
+            <Check className="w-3.5 h-3.5 stroke-[3]" />
+          </div>
           <span>{selectedRecipeToast}</span>
         </div>
       )}
@@ -734,12 +736,12 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       {/* 2. CONDITIONAL CONTENT: EMPTY STATE OR GENERATED SCHEDULE */}
       {!hasGenerated ? (
         <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#e2e8f0] shadow-2xs text-center space-y-3">
-          <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center mx-auto">
+          <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center mx-auto">
             <Sparkles className="w-5 h-5" />
           </div>
 
           <div className="max-w-sm mx-auto space-y-1">
-            <h3 className="text-[14px] sm:text-[15px] font-bold text-[#071e49]">
+            <h3 className="text-[14px] sm:text-[15px] font-bold text-[#2C3968]">
               Belum Ada Jadwal Menu (Kec. {currentDistrictInfo.name} • {currentPeriodInfo.label})
             </h3>
             <p className="text-[11px] text-[#64748b] leading-relaxed">
@@ -751,7 +753,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <button
               onClick={() => setIsConfirmModalOpen(true)}
               disabled={isGenerating}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold shadow-2xs transition-all cursor-pointer disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold shadow-2xs transition-all cursor-pointer disabled:opacity-60"
             >
               {isGenerating ? (
                 <>
@@ -777,23 +779,23 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 {currentDays.map((dayItem, idx) => (
                   <div
                     key={dayItem.day}
-                    className="bg-white rounded-3xl p-4 sm:p-5 border border-[#e2e8f0] hover:border-[#1a73e8] hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4"
+                    className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 hover:border-light-sea-green hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 font-sans"
                   >
                     {/* Kolom 1: Hari & Tanggal */}
                     <div className="w-full sm:w-40 shrink-0 flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-2xl bg-blue-50/80 border border-blue-100 flex flex-col items-center justify-center shrink-0">
-                        <span className="text-[10px] font-black text-[#1a73e8] uppercase tracking-wider">
+                      <div className="w-11 h-11 rounded-2xl bg-green-tint border border-green-02/40 flex flex-col items-center justify-center shrink-0 shadow-2xs">
+                        <span className="text-[10px] font-bold text-ford-blue uppercase tracking-wider">
                           {dayItem.day.slice(0, 3)}
                         </span>
-                        <span className="text-[13px] font-black text-[#071e49] leading-tight">
+                        <span className="text-[13px] font-bold text-ford-blue leading-tight">
                           {dayItem.dateStr.split(" ")[0]}
                         </span>
                       </div>
                       <div>
-                        <h3 className="text-[14px] font-black text-[#071e49]">
+                        <h3 className="text-[14px] font-bold text-ford-blue">
                           {dayItem.day}
                         </h3>
-                        <span className="text-[11px] text-slate-400 font-medium">
+                        <span className="text-[11px] text-blue-gray font-medium">
                           {dayItem.dateStr}
                         </span>
                       </div>
@@ -801,7 +803,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
                     {/* Kolom 2: Nama Menu Bersih & Jelas */}
                     <div className="flex-1">
-                      <h4 className="text-[14px] font-bold text-[#071e49] leading-snug">
+                      <h4 className="text-[14px] font-bold text-ford-blue leading-snug">
                         {dayItem.menuTitle || "Belum ada menu!"}
                       </h4>
                     </div>
@@ -809,7 +811,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                     {/* Kolom 3: Biaya HPP, Tombol Ikon Detail & Ikon Ganti */}
                     <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                       {/* HPP Biaya */}
-                      <span className="text-[12px] font-black text-[#1a73e8] bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200">
+                      <span className="text-[12px] font-bold text-ford-blue bg-green-tint px-3 py-1.5 rounded-xl border border-green-02/40 shadow-2xs">
                         Rp {dayItem.cost.toLocaleString("id-ID")}
                       </span>
 
@@ -819,19 +821,19 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                           setSelectedDayForDetail(dayItem);
                           setIsDetailModalOpen(true);
                         }}
-                        className="p-2 rounded-xl bg-slate-100 hover:bg-blue-50 hover:text-[#1a73e8] text-[#071e49] transition-all flex items-center justify-center cursor-pointer border border-slate-200 hover:border-blue-200"
+                        className="w-8 h-8 rounded-xl bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 flex items-center justify-center transition-all shadow-2xs hover:scale-105 cursor-pointer"
                         title="Detail Gizi & Komposisi 5 Bintang"
                       >
-                        <Info className="w-3.5 h-3.5" />
+                        <Info className="w-4 h-4 text-ford-blue" />
                       </button>
 
                       {/* Tombol Ikon Generate/Ganti Menu */}
                       <button
                         onClick={() => handleOpenChangeRecipeModal(idx)}
-                        className="p-2 rounded-xl bg-slate-100 hover:bg-[#1a73e8] text-slate-500 hover:text-white transition-all cursor-pointer border border-slate-200 hover:border-[#1a73e8]"
+                        className="w-8 h-8 rounded-xl bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 flex items-center justify-center transition-all shadow-2xs hover:scale-105 cursor-pointer"
                         title="Ganti / Generate Resep Lain"
                       >
-                        <RefreshCw className="w-3.5 h-3.5" />
+                        <RefreshCw className="w-4 h-4 text-ford-blue" />
                       </button>
                     </div>
                   </div>
@@ -841,7 +843,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               {/* RAG-Style Pagination for 4 Weeks Cycle */}
               <div className="bg-white rounded-3xl p-4 border border-[#e2e8f0] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[12px]">
                 <div className="text-slate-500">
-                  Menampilkan <span className="font-bold text-[#071e49]">Minggu {selectedWeek}</span> dari 4 Siklus Bulanan ({includeSaturday ? "6" : "5"} Hari Kerja MBG)
+                  Menampilkan <span className="font-bold text-[#2C3968]">Minggu {selectedWeek}</span> dari 4 Siklus Bulanan ({includeSaturday ? "6" : "5"} Hari Kerja MBG)
                 </div>
 
                 <div className="flex items-center gap-1 self-center sm:self-auto">
@@ -859,7 +861,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                       onClick={() => setSelectedWeek(p)}
                       className={`w-8 h-8 rounded-xl font-bold transition-colors cursor-pointer ${
                         p === selectedWeek
-                          ? "bg-[#1a73e8] text-white shadow-xs"
+                          ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                           : "bg-[#f8fafc] text-slate-600 hover:bg-slate-100 border border-slate-200"
                       }`}
                     >
@@ -883,8 +885,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
           {viewMode === "calendar" && (
             <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#e2e8f0] shadow-xs space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                <h3 className="text-[14px] font-bold text-[#071e49] flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#1a73e8]" />
+                <h3 className="text-[14px] font-bold text-[#2C3968] flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-light-sea-green" />
                   <span>Kalender MBG 1 Bulan Penuh ({currentPeriodInfo.label} • 20 Hari Kerja)</span>
                 </h3>
                 <span className="text-[11px] text-[#64748b]">
@@ -906,17 +908,17 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                             setSelectedDayForDetail(d);
                             setIsDetailModalOpen(true);
                           }}
-                          className="p-3 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] hover:border-[#1a73e8] hover:shadow-2xs transition-all cursor-pointer"
+                          className="p-3 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] hover:border-light-sea-green hover:shadow-2xs transition-all cursor-pointer"
                         >
                           <div className="flex items-center justify-between text-[11px] font-bold pb-1 border-b border-slate-200">
-                            <span className="text-[#071e49]">{d.day}</span>
+                            <span className="text-[#2C3968]">{d.day}</span>
                             <span className="text-slate-400">{d.dateStr.split(" ")[0]} {d.dateStr.split(" ")[1]}</span>
                           </div>
-                          <p className="text-[11px] font-bold text-[#071e49] pt-1.5 line-clamp-2 leading-tight">
+                          <p className="text-[11px] font-bold text-[#2C3968] pt-1.5 line-clamp-2 leading-tight">
                             {d.menuTitle}
                           </p>
                           <div className="flex items-center justify-between pt-2 text-[10px]">
-                            <span className="text-[#1a73e8] font-bold">{d.calories} Kkal</span>
+                            <span className="text-ford-blue font-bold">{d.calories} Kkal</span>
                             <span className="text-slate-700 font-bold">Rp {d.cost.toLocaleString("id-ID")}</span>
                           </div>
                         </div>
@@ -933,15 +935,15 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#e2e8f0] shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100">
                 <div>
-                  <h3 className="text-[15px] font-bold text-[#071e49] flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-[#1a73e8]" />
+                  <h3 className="text-[15px] font-bold text-[#2C3968] flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-light-sea-green" />
                     <span>Kalender Perencanaan Tahunan (Agustus 2026 – Juli 2027)</span>
                   </h3>
                   <p className="text-[11px] text-[#64748b] mt-0.5">
                     Pilih periode bulan untuk melihat, menyusun, atau mengelola rancangan menu MBG Kec. {currentDistrictInfo.name}
                   </p>
                 </div>
-                <span className="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-[#1a73e8] text-[11px] font-bold self-start sm:self-auto">
+                <span className="px-3.5 py-1.5 rounded-xl bg-green-tint border border-green-02/40 text-ford-blue text-[12px] font-bold self-start sm:self-auto shadow-2xs">
                   {targetStudents.toLocaleString("id-ID")} Siswa Sasaran
                 </span>
               </div>
@@ -971,7 +973,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                       key={periodKey}
                       className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
                         isSelected
-                          ? "bg-blue-50/60 border-[#1a73e8] shadow-2xs"
+                          ? "bg-blue-50/60 border-[#35CBC3] shadow-2xs"
                           : "bg-[#f8fafc] border-[#e2e8f0] hover:border-slate-300"
                       }`}
                     >
@@ -985,7 +987,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                               Terencana & Aktif
                             </span>
                           ) : isSelected ? (
-                            <span className="px-2 py-0.5 rounded-md bg-blue-100 text-[#1a73e8] text-[10px] font-bold">
+                            <span className="px-2 py-0.5 rounded-md bg-green-tint text-ford-blue text-[10px] font-bold">
                               Periode Terpilih
                             </span>
                           ) : (
@@ -994,7 +996,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                             </span>
                           )}
                         </div>
-                        <h5 className="text-[13px] font-black text-[#071e49]">
+                        <h5 className="text-[13px] font-black text-[#2C3968]">
                           {m.label}
                         </h5>
                         <p className="text-[10px] text-slate-500">
@@ -1009,8 +1011,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                         }}
                         className={`w-full py-1.5 px-3 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                           isSelected
-                            ? "bg-[#1a73e8] text-white shadow-2xs hover:bg-[#155fc0]"
-                            : "bg-white text-[#071e49] border border-[#cbd5e1] hover:bg-slate-50"
+                            ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-2xs hover:bg-[#22B5AC]"
+                            : "bg-white text-[#2C3968] border border-[#cbd5e1] hover:bg-slate-50"
                         }`}
                       >
                         <span>Buka Rencana Menu</span>
@@ -1037,7 +1039,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-[17px] font-black text-[#071e49]">
+              <h3 className="text-[17px] font-black text-[#2C3968]">
                 Batalkan & Bersihkan Menu?
               </h3>
               <p className="text-[12px] text-[#64748b] leading-relaxed">
@@ -1052,7 +1054,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               <button
                 onClick={() => setIsResetConfirmModalOpen(false)}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] text-[12px] font-bold transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] text-[12px] font-bold transition-colors cursor-pointer"
               >
                 Batal
               </button>
@@ -1087,11 +1089,11 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-[16px] font-black text-[#071e49]">
+                  <h3 className="text-[16px] font-black text-[#2C3968]">
                     Konfirmasi Perencanaan Menu
                   </h3>
                   <p className="text-[11px] text-[#64748b]">
@@ -1111,12 +1113,12 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <div className="space-y-3 bg-[#f8fafc] p-4 rounded-2xl border border-slate-200 text-[12px]">
               <div className="flex items-center justify-between">
                 <span className="text-slate-500">Wilayah Sasaran:</span>
-                <strong className="text-[#071e49] font-bold">Kec. {currentDistrictInfo.name}</strong>
+                <strong className="text-[#2C3968] font-bold">Kec. {currentDistrictInfo.name}</strong>
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="text-slate-500">Periode Kalender:</span>
-                <strong className="text-[#1a73e8] font-bold">{currentPeriodInfo.label}</strong>
+                <strong className="text-ford-blue font-bold">{currentPeriodInfo.label}</strong>
               </div>
 
               {/* Opsi Pola Hari Sekolah: 5 Hari vs 6 Hari */}
@@ -1128,7 +1130,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                     onClick={() => handleDaysModeChange(false)}
                     className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer ${
                       !includeSaturday
-                        ? "bg-[#1a73e8] text-white border-[#1a73e8] shadow-2xs"
+                        ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold border-[#35CBC3] shadow-2xs"
                         : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
@@ -1139,7 +1141,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                     onClick={() => handleDaysModeChange(true)}
                     className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer ${
                       includeSaturday
-                        ? "bg-[#1a73e8] text-white border-[#1a73e8] shadow-2xs"
+                        ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold border-[#35CBC3] shadow-2xs"
                         : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
@@ -1150,7 +1152,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
               <div className="flex items-center justify-between pt-2 border-t border-slate-200 text-[11px] text-slate-500">
                 <span>Pagu Efisiensi:</span>
-                <span className="font-bold text-[#071e49]">Maks. Rp 15.000 / porsi</span>
+                <span className="font-bold text-[#2C3968]">Maks. Rp 15.000 / porsi</span>
               </div>
             </div>
 
@@ -1158,7 +1160,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setIsConfirmModalOpen(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] text-[12px] font-bold transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] text-[12px] font-bold transition-colors cursor-pointer"
               >
                 Batal
               </button>
@@ -1167,7 +1169,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                   setIsConfirmModalOpen(false);
                   handleTriggerAIGeneration();
                 }}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold transition-colors cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-colors cursor-pointer shadow-xs"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Mulai Generate</span>
@@ -1179,28 +1181,28 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
       {/* 3A. MODAL: DETAIL GIZI & KOMPOSISI 5 BINTANG */}
       {isDetailModalOpen && selectedDayForDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in font-sans">
           <div 
-            className="w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-[#cbd5e1] space-y-4 animate-in zoom-in-95"
+            className="w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold text-[#1a73e8] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+                  <span className="text-[11px] font-bold text-ford-blue bg-green-tint px-2.5 py-0.5 rounded-lg border border-green-02/40">
                     {selectedDayForDetail.day}, {selectedDayForDetail.dateStr}
                   </span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-blue-gray font-medium">
                     Kec. {currentDistrictInfo.name}
                   </span>
                 </div>
-                <h3 className="text-[15px] sm:text-[16px] font-black text-[#071e49] mt-1 leading-snug">
+                <h3 className="text-[15px] sm:text-[16px] font-bold text-ford-blue mt-1 leading-snug">
                   {selectedDayForDetail.menuTitle}
                 </h3>
               </div>
               <button 
                 onClick={() => setIsDetailModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-blue-gray hover:text-ford-blue hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1208,44 +1210,44 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
             {/* Komposisi 5 Bintang + Susu */}
             <div className="space-y-2">
-              <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <h4 className="text-[11px] font-bold text-blue-gray uppercase tracking-wider">
                 Formula 5 Bintang + Susu (BGN / Kemenkes RI)
               </h4>
-              <div className="space-y-1.5 bg-[#f8fafc] p-3.5 rounded-2xl border border-slate-200">
+              <div className="space-y-1.5 bg-[#F8FAFC] p-3.5 rounded-2xl border border-slate-200">
                 {selectedDayForDetail.composition?.split("•").map((item, idx) => (
                   <div key={idx} className="flex items-center gap-2 text-[12px]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#1a73e8] shrink-0"></div>
-                    <span className="font-semibold text-[#071e49]">{item.trim()}</span>
+                    <div className="w-2 h-2 rounded-full bg-green-02 shrink-0"></div>
+                    <span className="font-bold text-ford-blue">{item.trim()}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Nutrisi Lab AKG (Blue Theme Cohesive) */}
+            {/* Nutrisi Lab AKG (High Contrast Green Tint Theme) */}
             <div className="space-y-2">
-              <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <h4 className="text-[11px] font-bold text-blue-gray uppercase tracking-wider">
                 Analisis Nilai Gizi Lab (TKPI 2019)
               </h4>
               <div className="grid grid-cols-3 gap-2.5 text-center">
-                <div className="p-3 rounded-2xl bg-[#e8f0fe] border border-[#badafe]">
-                  <span className="text-[10px] text-slate-600 font-bold block">Energi:</span>
-                  <strong className="text-[14px] font-black text-[#1a73e8]">{selectedDayForDetail.calories} Kkal</strong>
+                <div className="p-3 rounded-2xl bg-green-tint border border-green-02/40 shadow-2xs">
+                  <span className="text-[10px] text-blue-gray font-bold block">Energi:</span>
+                  <strong className="text-[15px] font-bold text-ford-blue">{selectedDayForDetail.calories} Kkal</strong>
                 </div>
-                <div className="p-3 rounded-2xl bg-[#e8f0fe] border border-[#badafe]">
-                  <span className="text-[10px] text-slate-600 font-bold block">Protein:</span>
-                  <strong className="text-[14px] font-black text-[#1a73e8]">{selectedDayForDetail.protein || 32.5} g</strong>
+                <div className="p-3 rounded-2xl bg-green-tint border border-green-02/40 shadow-2xs">
+                  <span className="text-[10px] text-blue-gray font-bold block">Protein:</span>
+                  <strong className="text-[15px] font-bold text-ford-blue">{selectedDayForDetail.protein || 32.5} g</strong>
                 </div>
-                <div className="p-3 rounded-2xl bg-[#e8f0fe] border border-[#badafe]">
-                  <span className="text-[10px] text-slate-600 font-bold block">Zat Besi (Fe):</span>
-                  <strong className="text-[14px] font-black text-[#1a73e8]">{selectedDayForDetail.iron || 6.2} mg</strong>
+                <div className="p-3 rounded-2xl bg-green-tint border border-green-02/40 shadow-2xs">
+                  <span className="text-[10px] text-blue-gray font-bold block">Zat Besi (Fe):</span>
+                  <strong className="text-[15px] font-bold text-ford-blue">{selectedDayForDetail.iron || 6.2} mg</strong>
                 </div>
               </div>
             </div>
 
             {/* Biaya HPP */}
-            <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between text-[12px]">
-              <span className="text-slate-500 font-medium">Estimasi HPP Bahan Baku:</span>
-              <strong className="text-[#1a73e8] font-black text-[14px]">
+            <div className="p-3.5 bg-[#F8FAFC] rounded-2xl border border-slate-200 flex items-center justify-between text-[12px]">
+              <span className="text-blue-gray font-medium">Estimasi HPP Bahan Baku:</span>
+              <strong className="text-ford-blue font-bold text-[15px]">
                 Rp {selectedDayForDetail.cost.toLocaleString("id-ID")} / porsi
               </strong>
             </div>
@@ -1253,7 +1255,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <div className="pt-1 text-right">
               <button
                 onClick={() => setIsDetailModalOpen(false)}
-                className="px-5 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold transition-colors cursor-pointer shadow-xs"
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-colors cursor-pointer shadow-xs"
               >
                 Tutup
               </button>
@@ -1271,11 +1273,11 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
                   <Utensils className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-[16px] font-black text-[#071e49]">
+                  <h3 className="text-[16px] font-black text-[#2C3968]">
                     Pilih Menu Alternatif ({currentDays[selectedDayIdxForChange]?.day}, {currentDays[selectedDayIdxForChange]?.dateStr})
                   </h3>
                   <p className="text-[11px] text-[#64748b]">
@@ -1297,17 +1299,17 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 <button
                   key={rIdx}
                   onClick={() => handleApplyRecipeFromModal(recipe)}
-                  className="w-full p-3.5 rounded-2xl bg-[#f8fafc] hover:bg-[#e8f0fe] border border-[#e2e8f0] hover:border-[#badafe] text-left transition-all flex items-center justify-between gap-3 group cursor-pointer"
+                  className="w-full p-3.5 rounded-2xl bg-[#F8FAFC] hover:bg-green-tint/60 border border-slate-200 hover:border-green-02/40 text-left transition-all flex items-center justify-between gap-3 group cursor-pointer shadow-2xs"
                 >
                   <div>
-                    <span className="text-[13px] font-bold text-[#071e49] group-hover:text-[#1a73e8] block">
+                    <span className="text-[13px] font-bold text-ford-blue group-hover:text-light-sea-green block">
                       {recipe}
                     </span>
-                    <span className="text-[10px] text-slate-400 mt-0.5 block">
+                    <span className="text-[10px] text-blue-gray mt-0.5 block">
                       Komoditas Pangan Lokal Kec. {currentDistrictInfo.name} • Formula 5 Bintang Kemenkes
                     </span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] shrink-0 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="w-4 h-4 text-blue-gray group-hover:text-light-sea-green shrink-0 group-hover:translate-x-1 transition-transform" />
                 </button>
               ))}
             </div>
@@ -1315,7 +1317,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <div className="pt-2 border-t border-slate-100 text-right">
               <button
                 onClick={() => setIsChangeRecipeModalOpen(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] text-[12px] font-bold transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] text-[12px] font-bold transition-colors cursor-pointer"
               >
                 Batal
               </button>
@@ -1328,12 +1330,12 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       {isGenerating && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
           <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#cbd5e1] space-y-5 animate-in zoom-in-95 text-center">
-            <div className="w-14 h-14 rounded-full bg-blue-50 text-[#1a73e8] flex items-center justify-center mx-auto shadow-inner">
+            <div className="w-14 h-14 rounded-full bg-green-tint text-ford-blue flex items-center justify-center mx-auto shadow-inner">
               <Sparkles className="w-7 h-7 animate-pulse" />
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-[16px] font-black text-[#071e49]">
+              <h3 className="text-[16px] font-black text-[#2C3968]">
                 AI Sedang Meriset Menu MBG...
               </h3>
               <p className="text-[11px] text-[#64748b]">
@@ -1402,42 +1404,36 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             className="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#cbd5e1] space-y-4 animate-in zoom-in-95 duration-150 max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-[#f1f5f9]">
-              <div className="flex items-center gap-3 text-[#071e49]">
-                <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-green-tint text-ford-blue border border-green-02/40 flex items-center justify-center font-bold">
                   <Package className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-[16px] font-black tracking-tight">
-                    Laporan Kebutuhan Bahan Pokok & Anggaran MBG
+                  <h3 className="text-[16px] font-bold text-ford-blue">
+                    Laporan Logistik & Bill of Materials (BOM)
                   </h3>
-                  <p className="text-[11px] text-[#64748b]">
-                    {hasGenerated
-                      ? `Wilayah Kec. ${currentDistrictInfo.name} (${targetStudents.toLocaleString("id-ID")} Siswa • Siklus ${includeSaturday ? "6 Hari" : "5 Hari"} MBG)`
-                      : `Wilayah Kec. ${currentDistrictInfo.name} • ${currentPeriodInfo.label}`}
+                  <p className="text-[11px] text-blue-gray">
+                    Kebutuhan belanja bahan baku SPPG Kec. {currentDistrictInfo.name} ({currentPeriodInfo.label})
                   </p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsLogisticsModalOpen(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
-                title="Tutup dialog"
+                className="p-1.5 rounded-lg text-blue-gray hover:text-ford-blue hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {!hasGenerated ? (
-              <div className="py-12 px-6 text-center space-y-4">
-                <div className="w-14 h-14 rounded-full bg-blue-50 text-[#1a73e8] flex items-center justify-center mx-auto border border-blue-100 shadow-inner">
-                  <Package className="w-7 h-7" />
-                </div>
-                <div className="max-w-md mx-auto space-y-1.5">
-                  <h4 className="text-[15px] font-bold text-[#071e49]">
-                    Belum Ada Laporan Bahan Pokok & Anggaran
-                  </h4>
-                  <p className="text-[12px] text-[#64748b] leading-relaxed">
-                    Laporan Bill of Materials (BOM) dan kalkulasi efisiensi anggaran akan terisi secara otomatis setelah rancangan menu untuk Kec. {currentDistrictInfo.name} ({currentPeriodInfo.label}) di-generate oleh AI.
+            {/* Content: Empty State or Logistics Table */}
+            {logisticsBOM.length === 0 ? (
+              <div className="p-12 text-center space-y-3 bg-[#F8FAFC] rounded-2xl border border-slate-200 my-auto">
+                <Package className="w-10 h-10 text-blue-gray mx-auto" />
+                <div className="space-y-1">
+                  <h4 className="font-bold text-ford-blue text-[14px]">Belum Ada Data Bahan Baku</h4>
+                  <p className="text-[11px] text-blue-gray max-w-sm mx-auto">
+                    Silakan klik tombol &ldquo;Generate&rdquo; terlebih dahulu untuk menyusun menu dan mengkalkulasi kebutuhan belanja bahan baku.
                   </p>
                 </div>
                 <div className="pt-2">
@@ -1446,7 +1442,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                       setIsLogisticsModalOpen(false);
                       setIsConfirmModalOpen(true);
                     }}
-                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold transition-all cursor-pointer shadow-xs"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold shadow-xs transition-all cursor-pointer"
                   >
                     <Sparkles className="w-4 h-4" />
                     <span>Generate Menu Sekarang</span>
@@ -1458,21 +1454,21 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 {/* Budget Summary Mini Cards */}
                 {budgetSummary && (
                   <div className="grid grid-cols-3 gap-2.5">
-                    <div className="p-3.5 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0]">
-                      <span className="text-[10px] text-[#64748b] font-bold block">Pagu Resmi BGN (Rp 15.000):</span>
-                      <strong className="text-[14px] font-black text-[#071e49]">
+                    <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-slate-200">
+                      <span className="text-[10px] text-blue-gray font-bold block">Pagu Resmi BGN (Rp 15.000):</span>
+                      <strong className="text-[14px] font-bold text-ford-blue">
                         Rp {budgetSummary.totalPlafonWeekly?.toLocaleString("id-ID")}
                       </strong>
                     </div>
-                    <div className="p-3.5 rounded-2xl bg-blue-50/50 border border-blue-200">
-                      <span className="text-[10px] text-[#1a73e8] font-bold block">Realisasi Biaya HPP:</span>
-                      <strong className="text-[14px] font-black text-[#1a73e8]">
+                    <div className="p-3.5 rounded-2xl bg-green-tint border border-green-02/40 shadow-2xs">
+                      <span className="text-[10px] text-blue-gray font-bold block">Realisasi Biaya HPP:</span>
+                      <strong className="text-[14px] font-bold text-ford-blue">
                         Rp {budgetSummary.totalCostWeekly?.toLocaleString("id-ID")}
                       </strong>
                     </div>
-                    <div className="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200">
-                      <span className="text-[10px] text-emerald-800 font-bold block">Penghematan APBD:</span>
-                      <strong className="text-[14px] font-black text-emerald-700">
+                    <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 shadow-2xs">
+                      <span className="text-[10px] text-emerald-700 font-bold block">Penghematan APBD:</span>
+                      <strong className="text-[14px] font-bold text-emerald-700">
                         Rp {budgetSummary.totalSavingsWeekly?.toLocaleString("id-ID")}
                       </strong>
                     </div>
@@ -1480,25 +1476,25 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 )}
 
                 {/* Table of BOM Logistics */}
-                <div className="flex-1 overflow-y-auto rounded-2xl border border-[#e2e8f0] max-h-72">
+                <div className="flex-1 overflow-y-auto rounded-2xl border border-slate-200 max-h-72">
                   <table className="w-full text-left text-[12px] border-collapse">
-                    <thead className="bg-[#f8fafc] text-[#071e49] font-bold sticky top-0 border-b border-[#e2e8f0]">
+                    <thead className="bg-[#F8FAFC] text-ford-blue font-bold sticky top-0 border-b border-slate-200">
                       <tr>
                         <th className="py-3 px-4">Komoditas Bahan Pokok</th>
                         <th className="py-3 px-4 text-center">Volume Pengadaan (Kebutuhan Riil)</th>
                         <th className="py-3 px-4 text-right">Estimasi Anggaran Pengadaan</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#f1f5f9]">
+                    <tbody className="divide-y divide-slate-100">
                       {logisticsBOM.map((item, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/70">
-                          <td className="py-3 px-4 font-bold text-[#071e49] text-[13px]">{item.item}</td>
-                          <td className="py-3 px-4 text-center font-mono font-bold text-[#1a73e8]">
-                            <span className="px-3 py-1 rounded-lg bg-blue-50/80 border border-blue-200 inline-block text-[12px]">
+                          <td className="py-3 px-4 font-bold text-ford-blue text-[13px]">{item.item}</td>
+                          <td className="py-3 px-4 text-center font-mono font-bold text-ford-blue">
+                            <span className="px-3 py-1 rounded-lg bg-green-tint border border-green-02/40 inline-block text-[12px]">
                               {item.volume}
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-right font-bold text-[#071e49] text-[13px]">
+                          <td className="py-3 px-4 text-right font-bold text-ford-blue text-[13px]">
                             Rp {Math.round(item.totalCost).toLocaleString("id-ID")}
                           </td>
                         </tr>
@@ -1508,19 +1504,19 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 </div>
 
                 {/* Footer */}
-                <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[11px] text-[#64748b]">
+                <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[11px] text-blue-gray">
                   <span>Plafon Resmi: Rp 15.000 / porsi • 100% Pangan Lokal Terpenuhi</span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleDownloadBOMExcel}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold transition-colors cursor-pointer shadow-xs"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold transition-colors cursor-pointer shadow-xs"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Download Excel (.XLS)</span>
                     </button>
                     <button
                       onClick={() => setIsLogisticsModalOpen(false)}
-                      className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#071e49] font-bold transition-colors cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-ford-blue font-bold transition-colors cursor-pointer"
                     >
                       Tutup
                     </button>

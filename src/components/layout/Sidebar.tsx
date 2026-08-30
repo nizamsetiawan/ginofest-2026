@@ -47,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             {!isCollapsed && (
               <div className="truncate">
-                <h2 className="text-[13px] font-bold text-[#071e49] truncate">
+                <h2 className="text-[13px] font-bold text-[#2C3968] truncate">
                   Data Siswa & Gizi
                 </h2>
                 <p className="text-[11px] text-[#a5b0b7] truncate">
@@ -59,7 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <button 
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 rounded-md text-[#a5b0b7] hover:text-[#071e49] hover:bg-slate-100 transition-colors"
+            className="p-1 rounded-md text-[#a5b0b7] hover:text-[#2C3968] hover:bg-slate-100 transition-colors"
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
@@ -88,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {!isCollapsed ? (
             <button
               onClick={() => setIsManagementOpen(!isManagementOpen)}
-              className="flex items-center justify-between w-full px-2 py-1 text-[11px] font-bold text-[#64748b] uppercase tracking-wider hover:text-[#071e49]"
+              className="flex items-center justify-between w-full px-2 py-1 text-[11px] font-bold text-[#64748b] uppercase tracking-wider hover:text-[#2C3968]"
             >
               <span>Manajemen MBG</span>
               {isManagementOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -129,7 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {!isCollapsed ? (
             <button
               onClick={() => setIsReportOpen(!isReportOpen)}
-              className="flex items-center justify-between w-full px-2 py-1 text-[11px] font-bold text-[#64748b] uppercase tracking-wider hover:text-[#071e49]"
+              className="flex items-center justify-between w-full px-2 py-1 text-[11px] font-bold text-[#64748b] uppercase tracking-wider hover:text-[#2C3968]"
             >
               <span>Laporan & Evaluasi</span>
               {isReportOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -197,11 +197,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       title={isCollapsed ? label : undefined}
       className={`flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-[13px] font-medium transition-all ${
         isActive
-          ? "bg-[#fff8f0] text-[#071e49] font-black border-l-4 border-[#071e49] shadow-xs"
-          : "text-[#475569] hover:bg-slate-100 hover:text-[#071e49]"
+          ? "bg-[#fff8f0] text-[#2C3968] font-black border-l-4 border-[#2C3968] shadow-xs"
+          : "text-[#475569] hover:bg-slate-100 hover:text-[#2C3968]"
       } ${isCollapsed ? "justify-center px-0" : ""}`}
     >
-      <span className={isActive ? "text-[#071e49]" : "text-[#64748b]"}>{icon}</span>
+      <span className={isActive ? "text-[#2C3968]" : "text-[#64748b]"}>{icon}</span>
       {!isCollapsed && <span className="truncate flex-1 text-left">{label}</span>}
     </button>
   );

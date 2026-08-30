@@ -18,7 +18,7 @@ export const ADMIN_PROFILES: AdminProfile[] = [
     email: "nizamsetiawan15@gmail.com",
     role: "Kabupaten",
     initials: "NS",
-    avatarBg: "#071e49",
+    avatarBg: "#2C3968",
   },
   {
     id: "admin-manyar",
@@ -28,7 +28,7 @@ export const ADMIN_PROFILES: AdminProfile[] = [
     email: "daffa.manyar@gresik.go.id",
     role: "Kecamatan",
     initials: "DA",
-    avatarBg: "#1a73e8",
+    avatarBg: "#35CBC3",
   },
   {
     id: "admin-sidayu",
@@ -38,7 +38,7 @@ export const ADMIN_PROFILES: AdminProfile[] = [
     email: "anwar.sidayu@gresik.go.id",
     role: "Kecamatan",
     initials: "AS",
-    avatarBg: "#2bb34d",
+    avatarBg: "#4DE0A3",
   },
   {
     id: "admin-bawean",

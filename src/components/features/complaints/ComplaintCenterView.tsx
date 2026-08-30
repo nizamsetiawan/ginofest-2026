@@ -99,7 +99,7 @@ export const ComplaintCenterView: React.FC = () => {
     return (
       <div className="p-8 text-center bg-white rounded-3xl border border-red-200 shadow-sm space-y-3">
         <Lock className="w-12 h-12 text-red-500 mx-auto" />
-        <h2 className="text-[18px] font-bold text-[#071e49]">Akses Khusus Super Admin</h2>
+        <h2 className="text-[18px] font-bold text-[#2C3968]">Akses Khusus Super Admin</h2>
         <p className="text-[12px] text-[#64748b]">
           Pusat Aduan & Masukan hanya dapat diakses oleh Administrator Utama Kabupaten Gresik.
         </p>
@@ -121,10 +121,10 @@ export const ComplaintCenterView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <MessageSquare className="w-5 h-5" />
             </div>
-            <h1 className="text-[22px] font-black text-[#071e49] tracking-tight">
+            <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
               Pusat Aduan & Masukan
             </h1>
             {totalBaru > 0 && (
@@ -142,10 +142,10 @@ export const ComplaintCenterView: React.FC = () => {
           <button
             onClick={loadComplaints}
             disabled={isLoading}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-[#071e49] text-[12px] font-bold transition-all cursor-pointer shadow-2xs disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-[#2C3968] text-[12px] font-bold transition-all cursor-pointer shadow-2xs disabled:opacity-50"
             title="Muat Ulang Data"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-[#1a73e8]" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-light-sea-green" : ""}`} />
             <span>Refresh</span>
           </button>
         </div>
@@ -166,8 +166,8 @@ export const ComplaintCenterView: React.FC = () => {
               onClick={() => setStatusFilter(tab.id as StatusFilter)}
               className={`px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer shrink-0 ${
                 statusFilter === tab.id
-                  ? "bg-[#1a73e8] text-white shadow-xs"
-                  : "bg-white border border-[#cbd5e1] text-slate-600 hover:text-[#071e49]"
+                  ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                  : "bg-white border border-[#cbd5e1] text-slate-600 hover:text-[#2C3968]"
               }`}
             >
               {tab.label}
@@ -183,7 +183,7 @@ export const ComplaintCenterView: React.FC = () => {
             placeholder="Cari pengirim, pesan, kategori..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#1a73e8] shadow-2xs font-medium"
+            className="w-full pl-8 pr-3 py-1.5 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#35CBC3] shadow-2xs font-medium"
           />
         </div>
       </div>
@@ -195,7 +195,7 @@ export const ComplaintCenterView: React.FC = () => {
         ) : filteredComplaints.length === 0 ? (
           <div className="p-12 text-center bg-white rounded-2xl border border-[#e2e8f0] space-y-2">
             <MessageSquare className="w-8 h-8 text-slate-300 mx-auto" />
-            <p className="font-bold text-[#071e49] text-[13px]">Belum ada tiket pengaduan yang sesuai filter</p>
+            <p className="font-bold text-[#2C3968] text-[13px]">Belum ada tiket pengaduan yang sesuai filter</p>
             <p className="text-[11px] text-[#64748b]">Laporan pengaduan baru dari masyarakat akan otomatis tercatat di sini.</p>
           </div>
         ) : (
@@ -209,17 +209,17 @@ export const ComplaintCenterView: React.FC = () => {
                 {/* Top: Sender info & status */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <div className="w-7 h-7 rounded-lg bg-[#1a73e8] text-white font-bold text-[10px] flex items-center justify-center shrink-0 shadow-2xs">
+                    <div className="w-7 h-7 rounded-lg bg-green-tint text-ford-blue border border-green-02/40 font-bold text-[10px] flex items-center justify-center shrink-0 shadow-2xs">
                       {c.senderName.slice(0, 2).toUpperCase()}
                     </div>
-                    <span className="font-bold text-[12px] text-[#071e49]">{c.senderName}</span>
+                    <span className="font-bold text-[12px] text-ford-blue">{c.senderName}</span>
                     {c.senderContact && (
-                      <span className="text-[11px] font-mono text-[#1a73e8] flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
+                      <span className="text-[11px] font-mono text-blue-gray flex items-center gap-1">
+                        <Mail className="w-3 h-3 text-light-sea-green" />
                         {c.senderContact}
                       </span>
                     )}
-                    <span className="px-2 py-0.5 rounded-md bg-blue-50 text-[#1a73e8] text-[10px] font-bold border border-blue-100">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-green-tint text-ford-blue text-[10px] font-bold border border-green-02/30">
                       {c.category}
                     </span>
                   </div>
@@ -231,14 +231,14 @@ export const ComplaintCenterView: React.FC = () => {
                 </div>
 
                 {/* Message */}
-                <p className="p-3 bg-[#f8fafc] rounded-xl border border-slate-200 text-[12px] text-slate-700 leading-relaxed font-medium">
+                <p className="p-3 bg-[#F8FAFC] rounded-xl border border-slate-200 text-[12px] text-ford-blue leading-relaxed font-medium">
                   &ldquo;{c.message}&rdquo;
                 </p>
 
                 {/* Response Notes */}
                 {c.responseNotes && (
-                  <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800">
-                    <span className="font-bold text-[10px] uppercase text-emerald-600">Catatan Tindak Lanjut: </span>
+                  <div className="p-2.5 bg-green-tint rounded-xl border border-green-02/40 text-[11px] text-ford-blue font-medium">
+                    <span className="font-bold text-[10px] uppercase text-ford-blue">Catatan Tindak Lanjut: </span>
                     {c.responseNotes}
                   </div>
                 )}
@@ -264,7 +264,7 @@ export const ComplaintCenterView: React.FC = () => {
                           handleUpdateStatus(c.id!, status);
                         }
                       }}
-                      className="px-2.5 py-1 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[11px] text-[#071e49] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-[#1a73e8] w-full sm:w-56 font-medium"
+                      className="px-2.5 py-1 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[11px] text-[#2C3968] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-[#35CBC3] w-full sm:w-56 font-medium"
                     />
 
                     {/* Status Dropdown Selector */}
@@ -272,7 +272,7 @@ export const ComplaintCenterView: React.FC = () => {
                       <select
                         value={status}
                         onChange={(e) => handleUpdateStatus(c.id!, e.target.value as "baru" | "proses" | "selesai")}
-                        className="appearance-none text-center pl-3.5 pr-7 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-[#cbd5e1] text-[11px] font-bold text-[#071e49] focus:bg-white focus:outline-none focus:border-[#1a73e8] cursor-pointer shadow-2xs transition-all"
+                        className="appearance-none text-center pl-3.5 pr-7 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-[#cbd5e1] text-[11px] font-bold text-[#2C3968] focus:bg-white focus:outline-none focus:border-[#35CBC3] cursor-pointer shadow-2xs transition-all"
                         title="Ubah Status Tiket Aduan"
                       >
                         <option value="baru">Baru</option>

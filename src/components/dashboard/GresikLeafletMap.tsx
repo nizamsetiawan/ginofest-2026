@@ -79,7 +79,7 @@ export const GresikLeafletMap: React.FC<GresikLeafletMapProps> = ({
                 pathOptions={{
                   fillColor: color,
                   fillOpacity: isSelected ? 0.95 : 0.75,
-                  color: isSelected ? "#071e49" : "#ffffff",
+                  color: isSelected ? "#2C3968" : "#ffffff",
                   weight: isSelected ? 3 : 2,
                 }}
                 eventHandlers={{
@@ -89,7 +89,7 @@ export const GresikLeafletMap: React.FC<GresikLeafletMapProps> = ({
                 <Popup className="gscan-popup">
                   <div className="p-1 min-w-[200px]">
                     <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-[#e2e8f0]">
-                      <span className="font-extrabold text-[13px] text-[#071e49]">
+                      <span className="font-extrabold text-[13px] text-[#2C3968]">
                         Kec. {district.name}
                       </span>
                       <span
@@ -105,7 +105,7 @@ export const GresikLeafletMap: React.FC<GresikLeafletMapProps> = ({
                         <span className="flex items-center gap-1 text-[#64748b]">
                           <Users className="w-3 h-3 text-[#a5b0b7]" /> Target Siswa:
                         </span>
-                        <strong className="text-[#071e49]">
+                        <strong className="text-[#2C3968]">
                           {formatNumber(district.targetChildren)}
                         </strong>
                       </div>
@@ -121,16 +121,16 @@ export const GresikLeafletMap: React.FC<GresikLeafletMapProps> = ({
 
                       <div className="pt-1.5 mt-1.5 border-t border-[#e2e8f0]">
                         <span className="flex items-center gap-1 text-[11px] text-[#64748b] mb-0.5">
-                          <Fish className="w-3 h-3 text-[#071e49]" /> Komoditas Lokal:
+                          <Fish className="w-3 h-3 text-[#2C3968]" /> Komoditas Lokal:
                         </span>
-                        <p className="text-[11px] font-semibold text-[#071e49]">
+                        <p className="text-[11px] font-semibold text-[#2C3968]">
                           {district.localCommodity}
                         </p>
                       </div>
 
                       <button
                         onClick={() => onSelectDistrict(district.id)}
-                        className="w-full mt-2 py-1 px-2 text-[11px] font-bold text-white bg-[#071e49] hover:bg-[#0d2a63] rounded-lg transition-colors"
+                        className="w-full mt-2 py-1 px-2 text-[11px] font-bold text-white bg-[#2C3968] hover:bg-[#0d2a63] rounded-lg transition-colors"
                       >
                         Pilih & Analisis Detail
                       </button>
@@ -145,7 +145,7 @@ export const GresikLeafletMap: React.FC<GresikLeafletMapProps> = ({
 
       {/* Floating Info Overlay */}
       <div className="absolute bottom-3 left-3 z-[1000] bg-white/95 backdrop-blur-md px-3 py-2 rounded-xl border border-[#e2e8f0] shadow-sm text-[12px]">
-        <span className="font-bold text-[#071e49] block mb-1">Peta Risiko Gizi Gresik</span>
+        <span className="font-bold text-[#2C3968] block mb-1">Peta Risiko Gizi Gresik</span>
         <div className="flex items-center gap-2 text-[11px] text-[#64748b]">
           <span className="inline-flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-[#92d05d]"></span> Rendah

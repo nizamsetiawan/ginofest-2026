@@ -69,7 +69,7 @@ export const UserManagementView: React.FC = () => {
     districtId: "kebomas",
     regionLabel: "Kec. Kebomas",
     initials: "AK",
-    avatarBg: "#1a73e8",
+    avatarBg: "#35CBC3",
     isPinConfigured: true,
   });
 
@@ -143,7 +143,7 @@ export const UserManagementView: React.FC = () => {
         districtId: "kebomas",
         regionLabel: "Kec. Kebomas",
         initials: "AK",
-        avatarBg: "#1a73e8",
+        avatarBg: "#35CBC3",
         isPinConfigured: true,
       });
       loadData();
@@ -235,7 +235,7 @@ export const UserManagementView: React.FC = () => {
     return (
       <div className="p-8 text-center bg-white rounded-3xl border border-red-200 shadow-sm space-y-3">
         <Lock className="w-12 h-12 text-red-500 mx-auto" />
-        <h2 className="text-[18px] font-bold text-[#071e49]">Akses Dibatasi Khusus Super Admin</h2>
+        <h2 className="text-[18px] font-bold text-[#2C3968]">Akses Dibatasi Khusus Super Admin</h2>
         <p className="text-[12px] text-[#64748b]">
           Menu Manajemen Pengguna hanya dapat diakses oleh akun Administrator Utama (Super Admin Kabupaten Gresik).
         </p>
@@ -257,13 +257,13 @@ export const UserManagementView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-blue-50 text-[#1a73e8] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
               <Users className="w-5 h-5" />
             </div>
-            <h1 className="text-[22px] font-black text-[#071e49] tracking-tight">
+            <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
               Manajemen Pengguna & Hak Akses
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1a73e8] text-[11px] font-bold border border-blue-200">
+            <span className="px-2.5 py-0.5 rounded-full bg-green-tint text-ford-blue text-[11px] font-bold border border-blue-200">
               {totalUsers} Akun Resmi
             </span>
           </div>
@@ -276,15 +276,15 @@ export const UserManagementView: React.FC = () => {
           <button
             onClick={loadData}
             disabled={isLoading}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-[#071e49] text-[12px] font-bold transition-all cursor-pointer shadow-2xs disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-[#2C3968] text-[12px] font-bold transition-all cursor-pointer shadow-2xs disabled:opacity-50"
             title="Refresh Data"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-[#1a73e8]" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-light-sea-green" : ""}`} />
             <span>Refresh</span>
           </button>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white text-[12px] font-bold transition-all cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-all cursor-pointer shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Tambah Pengguna</span>
@@ -299,8 +299,8 @@ export const UserManagementView: React.FC = () => {
             onClick={() => setActiveTab("users")}
             className={`px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
               activeTab === "users"
-                ? "bg-[#1a73e8] text-white shadow-xs"
-                : "bg-white border border-[#cbd5e1] text-slate-600 hover:text-[#071e49]"
+                ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                : "bg-white border border-[#cbd5e1] text-slate-600 hover:text-[#2C3968]"
             }`}
           >
             <Users className="w-3.5 h-3.5" />
@@ -311,8 +311,8 @@ export const UserManagementView: React.FC = () => {
             onClick={() => setActiveTab("logs")}
             className={`px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
               activeTab === "logs"
-                ? "bg-[#1a73e8] text-white shadow-xs"
-                : "bg-white border border-[#cbd5e1] text-slate-600 hover:text-[#071e49]"
+                ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                : "bg-white border border-[#cbd5e1] text-slate-600 hover:text-[#2C3968]"
             }`}
           >
             <History className="w-3.5 h-3.5" />
@@ -322,9 +322,9 @@ export const UserManagementView: React.FC = () => {
 
         {/* Compact Stat Badge */}
         <div className="flex items-center gap-2 text-[11px] font-bold text-[#64748b] bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 self-start sm:self-auto shrink-0">
-          <span className="text-[#071e49]">{superAdminCount} Super Admin</span>
+          <span className="text-[#2C3968]">{superAdminCount} Super Admin</span>
           <span>•</span>
-          <span className="text-[#071e49]">{kecamatanCount} Admin Kecamatan</span>
+          <span className="text-[#2C3968]">{kecamatanCount} Admin Kecamatan</span>
         </div>
       </div>
 
@@ -340,7 +340,7 @@ export const UserManagementView: React.FC = () => {
                 placeholder="Cari nama, email, atau kecamatan..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#1a73e8] shadow-2xs font-medium"
+                className="w-full pl-9 pr-3 py-1.5 bg-white rounded-xl border border-[#cbd5e1] text-[12px] focus:outline-none focus:border-[#35CBC3] shadow-2xs font-medium"
               />
             </div>
 
@@ -348,7 +348,7 @@ export const UserManagementView: React.FC = () => {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="pl-3 pr-7 py-1.5 rounded-xl bg-white border border-[#cbd5e1] text-[#071e49] text-[12px] font-bold focus:outline-none focus:border-[#1a73e8] shadow-2xs cursor-pointer"
+                className="pl-3 pr-7 py-1.5 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[12px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
               >
                 <option value="all">Semua Role ({users.length})</option>
                 <option value="super_admin">Super Admin ({superAdminCount})</option>
@@ -358,17 +358,17 @@ export const UserManagementView: React.FC = () => {
           </div>
 
           {/* RAG-Styled Spreadsheet Table */}
-          <div className="overflow-x-auto rounded-xl border border-[#cbd5e1] shadow-xs">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
             <table className="w-full text-left text-[12px] border-collapse bg-white">
               <thead className="sticky top-0 z-10 shadow-xs">
-                <tr className="bg-[#1a73e8] text-white font-bold divide-x divide-blue-400">
-                  <th className="py-2.5 px-3 w-10 text-center border-blue-400">No</th>
-                  <th className="py-2.5 px-4 border-blue-400 font-bold">Nama Pengguna</th>
-                  <th className="py-2.5 px-4 border-blue-400 font-bold">Email Akun</th>
-                  <th className="py-2.5 px-3.5 border-blue-400 font-bold text-center w-36">Role Akses</th>
-                  <th className="py-2.5 px-4 border-blue-400 font-bold">Wilayah Tugas</th>
-                  <th className="py-2.5 px-3.5 border-blue-400 font-bold text-center w-28">PIN Bypass</th>
-                  <th className="py-2.5 px-3 border-blue-400 text-center w-28 font-bold">Aksi</th>
+                <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
+                  <th className="py-3 px-3 w-10 text-center text-white">No</th>
+                  <th className="py-3 px-4 font-bold text-white">Nama Pengguna</th>
+                  <th className="py-3 px-4 font-bold text-white">Email Akun</th>
+                  <th className="py-3 px-3.5 font-bold text-center w-36 text-white">Role Akses</th>
+                  <th className="py-3 px-4 font-bold text-white">Wilayah Tugas</th>
+                  <th className="py-3 px-3.5 font-bold text-center w-28 text-white">PIN Bypass</th>
+                  <th className="py-3 px-3 text-center w-28 font-bold text-white">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f1f5f9]">
@@ -414,45 +414,45 @@ export const UserManagementView: React.FC = () => {
                 ) : (
                   filteredUsers.map((u, idx) => (
                     <tr key={u.id} className="hover:bg-slate-50 divide-x divide-slate-100 transition-colors">
-                      <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">
+                      <td className="py-2.5 px-3 text-center font-bold text-blue-gray bg-slate-50/50">
                         {idx + 1}
                       </td>
                       <td className="py-2.5 px-4">
                         <div className="flex items-center gap-2.5">
                           <div
-                            className="w-7 h-7 rounded-lg text-white font-black text-[10px] flex items-center justify-center shrink-0 shadow-2xs"
-                            style={{ backgroundColor: u.avatarBg || "#1a73e8" }}
+                            className="w-7 h-7 rounded-lg text-ford-blue font-bold text-[10px] flex items-center justify-center shrink-0 shadow-2xs"
+                            style={{ backgroundColor: u.avatarBg || "#E6FAF2" }}
                           >
                             {u.initials || u.name.slice(0, 2).toUpperCase()}
                           </div>
-                          <span className="font-bold text-[#071e49] text-[12px]">{u.name}</span>
+                          <span className="font-bold text-ford-blue text-[12px]">{u.name}</span>
                         </div>
                       </td>
-                      <td className="py-2.5 px-4 font-mono text-[11px] text-[#1a73e8] font-medium">
+                      <td className="py-2.5 px-4 font-mono text-[11.5px] text-ford-blue font-bold">
                         {u.email}
                       </td>
                       <td className="py-2.5 px-3.5 text-center">
                         <span
                           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
                             u.role === "super_admin"
-                              ? "bg-blue-50 text-blue-700 border-blue-200"
-                              : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              ? "bg-green-tint text-ford-blue border-green-02/40"
+                              : "bg-blue-50 text-brand-blue border-brand-blue/30"
                           }`}
                         >
                           <Shield className="w-3 h-3" />
                           {u.role === "super_admin" ? "Super Admin" : "Kecamatan"}
                         </span>
                       </td>
-                      <td className="py-2.5 px-4 text-slate-700 font-medium text-[12px]">
+                      <td className="py-2.5 px-4 text-ford-blue font-medium text-[12px]">
                         {u.regionLabel}
                       </td>
                       <td className="py-2.5 px-3.5 text-center">
-                        <code className="px-2 py-0.5 bg-slate-100 rounded text-slate-700 font-mono text-[11px] font-bold border border-slate-200">
+                        <code className="px-2 py-0.5 bg-slate-100 rounded text-ford-blue font-mono text-[11px] font-bold border border-slate-200">
                           {u.pin || "69hagh0d"}
                         </code>
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        <div className="flex items-center justify-center gap-1">
+                        <div className="flex items-center justify-center gap-1.5 font-sans">
                           {/* Change Password & PIN */}
                           <button
                             onClick={() => {
@@ -460,7 +460,7 @@ export const UserManagementView: React.FC = () => {
                               setNewPassword("");
                               setNewPin("");
                             }}
-                            className="p-1 rounded-lg text-amber-600 hover:bg-amber-50 transition-colors cursor-pointer"
+                            className="w-7 h-7 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                             title="Ubah Password & PIN Bypass"
                           >
                             <KeyRound className="w-3.5 h-3.5" />
@@ -469,7 +469,7 @@ export const UserManagementView: React.FC = () => {
                           {/* Edit User Info */}
                           <button
                             onClick={() => setEditingUser(u)}
-                            className="p-1 rounded-lg text-[#1a73e8] hover:bg-blue-50 transition-colors cursor-pointer"
+                            className="w-7 h-7 rounded-lg bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                             title="Edit Data Pengguna"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
@@ -478,7 +478,7 @@ export const UserManagementView: React.FC = () => {
                           {/* Delete User */}
                           <button
                             onClick={() => setDeletingUser(u)}
-                            className="p-1 rounded-lg text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                            className="w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:scale-105"
                             title="Hapus Pengguna"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -499,7 +499,7 @@ export const UserManagementView: React.FC = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between bg-[#f8fafc] p-2.5 rounded-2xl border border-[#e2e8f0]">
             <div>
-              <h3 className="text-[12px] font-bold text-[#071e49]">Riwayat Aktivitas & Sesi Login Masuk</h3>
+              <h3 className="text-[12px] font-bold text-[#2C3968]">Riwayat Aktivitas & Sesi Login Masuk</h3>
               <p className="text-[10px] text-[#64748b]">
                 Pencatatan timestamp, kredensial pengguna, wilayah tugas, dan perangkat web browser.
               </p>
@@ -514,16 +514,16 @@ export const UserManagementView: React.FC = () => {
             </button>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-[#cbd5e1] shadow-xs">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
             <table className="w-full text-left text-[12px] border-collapse bg-white">
               <thead className="sticky top-0 z-10 shadow-xs">
-                <tr className="bg-[#1a73e8] text-white font-bold divide-x divide-blue-400">
-                  <th className="py-2.5 px-3 w-10 text-center border-blue-400">No</th>
-                  <th className="py-2.5 px-4 border-blue-400 font-bold w-48">Waktu Sesi</th>
-                  <th className="py-2.5 px-4 border-blue-400 font-bold">Nama & Email Pengguna</th>
-                  <th className="py-2.5 px-4 border-blue-400 font-bold">Role & Wilayah</th>
-                  <th className="py-2.5 px-4 border-blue-400 font-bold">Perangkat / User Agent</th>
-                  <th className="py-2.5 px-3 border-blue-400 text-center w-28 font-bold">Status</th>
+                <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
+                  <th className="py-3 px-3 w-10 text-center text-white">No</th>
+                  <th className="py-3 px-4 font-bold w-48 text-white">Waktu Sesi</th>
+                  <th className="py-3 px-4 font-bold text-white">Nama & Email Pengguna</th>
+                  <th className="py-3 px-4 font-bold text-white">Role & Wilayah</th>
+                  <th className="py-3 px-4 font-bold text-white">Perangkat / User Agent</th>
+                  <th className="py-3 px-3 text-center w-28 font-bold text-white">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f1f5f9]">
@@ -539,27 +539,27 @@ export const UserManagementView: React.FC = () => {
                       <td className="py-2 px-3 text-center font-bold text-slate-500 bg-slate-50/50">
                         {idx + 1}
                       </td>
-                      <td className="py-2 px-4 whitespace-nowrap text-slate-700 text-[11px] font-medium">
+                      <td className="py-2 px-4 whitespace-nowrap text-ford-blue text-[11px] font-medium">
                         <div className="flex items-center gap-1.5">
-                          <Clock className="w-3 h-3 text-[#1a73e8]" />
+                          <Clock className="w-3 h-3 text-light-sea-green" />
                           <span>{new Date(log.loginAt).toLocaleString("id-ID")}</span>
                         </div>
                       </td>
                       <td className="py-2 px-4">
-                        <span className="font-bold text-[#071e49] block text-[12px]">{log.name}</span>
-                        <span className="font-mono text-[10px] text-[#1a73e8]">{log.email}</span>
+                        <span className="font-bold text-ford-blue block text-[12px]">{log.name}</span>
+                        <span className="font-mono text-[10.5px] text-ford-blue font-bold">{log.email}</span>
                       </td>
                       <td className="py-2 px-4">
-                        <span className="text-[11px] font-semibold text-slate-700 block">
+                        <span className="text-[11px] font-semibold text-ford-blue block">
                           {log.role === "super_admin" ? "Super Admin" : "Admin Kecamatan"}
                         </span>
-                        <span className="text-[10px] text-[#64748b]">{log.districtLabel}</span>
+                        <span className="text-[10px] text-blue-gray">{log.districtLabel}</span>
                       </td>
-                      <td className="py-2 px-4 max-w-xs truncate text-[10px] text-slate-500 font-mono">
+                      <td className="py-2 px-4 max-w-xs truncate text-[10px] text-blue-gray font-mono">
                         {log.userAgent || "Browser Web"}
                       </td>
                       <td className="py-2 px-3 text-center">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-tint text-ford-blue border border-green-02/40">
                           ● Sesi Aktif
                         </span>
                       </td>
@@ -577,8 +577,8 @@ export const UserManagementView: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-lg bg-white rounded-3xl border border-[#e2e8f0] shadow-2xl p-6 space-y-4 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-[16px] font-bold text-[#071e49] flex items-center gap-2">
-                <Plus className="w-5 h-5 text-[#1a73e8]" />
+              <h3 className="text-[16px] font-bold text-[#2C3968] flex items-center gap-2">
+                <Plus className="w-5 h-5 text-light-sea-green" />
                 Tambah Pengguna Baru
               </h3>
               <button
@@ -591,36 +591,36 @@ export const UserManagementView: React.FC = () => {
 
             <form onSubmit={handleCreateSubmit} className="space-y-3.5 text-[12px]">
               <div>
-                <label className="block font-bold text-[#071e49] mb-1">Nama Lengkap:</label>
+                <label className="block font-bold text-[#2C3968] mb-1">Nama Lengkap:</label>
                 <input
                   type="text"
                   required
                   placeholder="Contoh: Admin Kec. Kebomas"
                   value={createForm.name}
                   onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#071e49] mb-1">Alamat Email Resmi:</label>
+                <label className="block font-bold text-[#2C3968] mb-1">Alamat Email Resmi:</label>
                 <input
                   type="email"
                   required
                   placeholder="kebomas@ginofest.com"
                   value={createForm.email}
                   onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-[#071e49] mb-1">Role Akun:</label>
+                  <label className="block font-bold text-[#2C3968] mb-1">Role Akun:</label>
                   <select
                     value={createForm.role}
                     onChange={(e) => setCreateForm({ ...createForm, role: e.target.value as UserRole })}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] bg-white cursor-pointer"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3] bg-white cursor-pointer"
                   >
                     <option value="admin_kecamatan">Admin Kecamatan</option>
                     <option value="super_admin">Super Admin</option>
@@ -628,7 +628,7 @@ export const UserManagementView: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-[#071e49] mb-1">Wilayah Kecamatan:</label>
+                  <label className="block font-bold text-[#2C3968] mb-1">Wilayah Kecamatan:</label>
                   <select
                     value={createForm.districtId}
                     onChange={(e) => {
@@ -639,7 +639,7 @@ export const UserManagementView: React.FC = () => {
                         regionLabel: dist ? `Kec. ${dist.name}` : "Kabupaten Gresik",
                       });
                     }}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] bg-white cursor-pointer"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3] bg-white cursor-pointer"
                   >
                     <option value="all">Semua Kabupaten Gresik</option>
                     {GRESIK_DISTRICTS.map((d) => (
@@ -653,23 +653,23 @@ export const UserManagementView: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label className="block font-bold text-[#071e49] mb-1">Password Default:</label>
+                  <label className="block font-bold text-[#2C3968] mb-1">Password Default:</label>
                   <input
                     type="text"
                     required
                     value={createForm.password}
                     onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-[#071e49] mb-1">PIN Bypass 8 Digit:</label>
+                  <label className="block font-bold text-[#2C3968] mb-1">PIN Bypass 8 Digit:</label>
                   <input
                     type="text"
                     required
                     value={createForm.pin}
                     onChange={(e) => setCreateForm({ ...createForm, pin: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                   />
                 </div>
               </div>
@@ -685,7 +685,7 @@ export const UserManagementView: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                   <span>Simpan Pengguna</span>
@@ -701,8 +701,8 @@ export const UserManagementView: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-lg bg-white rounded-3xl border border-[#e2e8f0] shadow-2xl p-6 space-y-4 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-[16px] font-bold text-[#071e49] flex items-center gap-2">
-                <Edit2 className="w-5 h-5 text-[#1a73e8]" />
+              <h3 className="text-[16px] font-bold text-[#2C3968] flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-light-sea-green" />
                 Edit Profil Akun: {editingUser.name}
               </h3>
               <button
@@ -715,34 +715,34 @@ export const UserManagementView: React.FC = () => {
 
             <form onSubmit={handleEditSubmit} className="space-y-3.5 text-[12px]">
               <div>
-                <label className="block font-bold text-[#071e49] mb-1">Nama Lengkap:</label>
+                <label className="block font-bold text-[#2C3968] mb-1">Nama Lengkap:</label>
                 <input
                   type="text"
                   required
                   value={editingUser.name}
                   onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#071e49] mb-1">Email Resmi:</label>
+                <label className="block font-bold text-[#2C3968] mb-1">Email Resmi:</label>
                 <input
                   type="email"
                   required
                   value={editingUser.email}
                   onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-[#071e49] mb-1">Role Akun:</label>
+                  <label className="block font-bold text-[#2C3968] mb-1">Role Akun:</label>
                   <select
                     value={editingUser.role}
                     onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value as UserRole })}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] bg-white cursor-pointer"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3] bg-white cursor-pointer"
                   >
                     <option value="admin_kecamatan">Admin Kecamatan</option>
                     <option value="super_admin">Super Admin</option>
@@ -750,7 +750,7 @@ export const UserManagementView: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-[#071e49] mb-1">Wilayah Kecamatan:</label>
+                  <label className="block font-bold text-[#2C3968] mb-1">Wilayah Kecamatan:</label>
                   <select
                     value={editingUser.districtId}
                     onChange={(e) => {
@@ -761,7 +761,7 @@ export const UserManagementView: React.FC = () => {
                         regionLabel: dist ? `Kec. ${dist.name}` : "Kabupaten Gresik",
                       });
                     }}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] bg-white cursor-pointer"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3] bg-white cursor-pointer"
                   >
                     <option value="all">Semua Kabupaten Gresik</option>
                     {GRESIK_DISTRICTS.map((d) => (
@@ -784,7 +784,7 @@ export const UserManagementView: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 rounded-xl bg-[#1a73e8] hover:bg-[#155fc0] text-white font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                   <span>Perbarui Akun</span>
@@ -800,7 +800,7 @@ export const UserManagementView: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-md bg-white rounded-3xl border border-[#e2e8f0] shadow-2xl p-6 space-y-4 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-[16px] font-bold text-[#071e49] flex items-center gap-2">
+              <h3 className="text-[16px] font-bold text-[#2C3968] flex items-center gap-2">
                 <KeyRound className="w-5 h-5 text-amber-600" />
                 Ubah Password & PIN Bypass
               </h3>
@@ -818,14 +818,14 @@ export const UserManagementView: React.FC = () => {
 
             <form onSubmit={handlePasswordPinSubmit} className="space-y-3.5 text-[12px]">
               <div>
-                <label className="block font-bold text-[#071e49] mb-1">Password Baru:</label>
+                <label className="block font-bold text-[#2C3968] mb-1">Password Baru:</label>
                 <div className="relative">
                   <input
                     type={showSecret ? "text" : "password"}
                     placeholder={`Saat ini: ${passwordModalUser.password || "password123"}`}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full pl-3.5 pr-10 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                    className="w-full pl-3.5 pr-10 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                   />
                   <button
                     type="button"
@@ -838,14 +838,14 @@ export const UserManagementView: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-bold text-[#071e49] mb-1">Kode PIN 8 Digit Bypass:</label>
+                <label className="block font-bold text-[#2C3968] mb-1">Kode PIN 8 Digit Bypass:</label>
                 <input
                   type="text"
                   maxLength={8}
                   placeholder={`Saat ini: ${passwordModalUser.pin || "69hagh0d"}`}
                   value={newPin}
                   onChange={(e) => setNewPin(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#071e49] focus:outline-none focus:border-[#1a73e8]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-[#cbd5e1] font-mono text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                 />
               </div>
 
@@ -880,7 +880,7 @@ export const UserManagementView: React.FC = () => {
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-[16px] font-bold text-[#071e49]">Hapus Akun Pengguna?</h3>
+              <h3 className="text-[16px] font-bold text-[#2C3968]">Hapus Akun Pengguna?</h3>
               <p className="text-[12px] text-[#64748b]">
                 Apakah Anda yakin ingin menghapus akun <strong>{deletingUser.name}</strong> ({deletingUser.email}) dari basis data Cloud Firestore?
               </p>

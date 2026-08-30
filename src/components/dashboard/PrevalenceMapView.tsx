@@ -51,7 +51,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
     <div className="space-y-5">
       {/* 1. Page Title */}
       <div className="pb-1">
-        <h1 className="text-[26px] font-black text-[#071e49] tracking-tight">
+        <h1 className="text-[26px] font-black text-[#2C3968] tracking-tight">
           Peta Prevalensi Stunting Kabupaten Gresik
         </h1>
       </div>
@@ -69,7 +69,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
               <select
                 value={selectedProvince}
                 onChange={(e) => setSelectedProvince(e.target.value)}
-                className="appearance-none bg-white border border-[#cbd5e1] rounded-lg px-3 py-1.5 pr-8 text-[12px] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] min-w-[130px]"
+                className="appearance-none bg-white border border-[#cbd5e1] rounded-lg px-3 py-1.5 pr-8 text-[12px] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3] min-w-[130px]"
               >
                 <option value="JAWA TIMUR">JAWA TIMUR</option>
               </select>
@@ -86,7 +86,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
               <select
                 value={selectedRegency}
                 onChange={(e) => handleDistrictChange(e.target.value)}
-                className="appearance-none bg-white border border-[#cbd5e1] rounded-lg px-3 py-1.5 pr-8 text-[12px] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] min-w-[180px]"
+                className="appearance-none bg-white border border-[#cbd5e1] rounded-lg px-3 py-1.5 pr-8 text-[12px] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3] min-w-[180px]"
               >
                 <option value="all">(Semua Kecamatan)</option>
                 {GRESIK_DISTRICTS.map((d) => (
@@ -108,7 +108,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
               <select
                 value={selectedYearFilter}
                 onChange={(e) => setSelectedYearFilter(e.target.value)}
-                className="appearance-none bg-white border border-[#cbd5e1] rounded-lg px-3 py-1.5 pr-8 text-[12px] font-bold text-[#071e49] focus:outline-none focus:border-[#1a73e8] min-w-[120px]"
+                className="appearance-none bg-white border border-[#cbd5e1] rounded-lg px-3 py-1.5 pr-8 text-[12px] font-bold text-[#2C3968] focus:outline-none focus:border-[#35CBC3] min-w-[120px]"
               >
                 <option value="(All)">(All)</option>
                 <option value="2026">2026 (Terkini)</option>
@@ -123,49 +123,58 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
         </div>
 
         {/* Metric Layer Switcher */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 border border-[#e2e8f0] self-start lg:self-end">
+        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100/90 border border-slate-200 self-start lg:self-end font-sans shadow-2xs">
           <button
             onClick={() => setMetricMode("stunting")}
-            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all ${
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
               metricMode === "stunting"
-                ? "bg-white text-red-600 shadow-xs"
-                : "text-[#64748b] hover:text-[#071e49]"
+                ? "bg-red-50 text-brand-red border border-brand-red/30 shadow-xs"
+                : "text-blue-gray hover:text-ford-blue hover:bg-white/60"
             }`}
           >
-            <Activity className="w-3.5 h-3.5" />
+            <Activity className={`w-3.5 h-3.5 ${metricMode === "stunting" ? "text-brand-red" : "text-blue-gray"}`} />
             <span>Balita Stunting</span>
           </button>
 
           <button
             onClick={() => setMetricMode("sembuh")}
-            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all ${
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
               metricMode === "sembuh"
-                ? "bg-white text-[#1a73e8] shadow-xs"
-                : "text-[#64748b] hover:text-[#071e49]"
+                ? "bg-blue-50 text-ford-blue border border-ford-blue/30 shadow-xs"
+                : "text-blue-gray hover:text-ford-blue hover:bg-white/60"
             }`}
           >
-            <HeartHandshake className="w-3.5 h-3.5" />
+            <HeartHandshake className={`w-3.5 h-3.5 ${metricMode === "sembuh" ? "text-ford-blue" : "text-blue-gray"}`} />
             <span>Balita Sembuh</span>
           </button>
 
           <button
             onClick={() => setMetricMode("lulus")}
-            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all ${
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
               metricMode === "lulus"
-                ? "bg-white text-emerald-600 shadow-xs"
-                : "text-[#64748b] hover:text-[#071e49]"
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-xs"
+                : "text-blue-gray hover:text-ford-blue hover:bg-white/60"
             }`}
           >
-            <GraduationCap className="w-3.5 h-3.5" />
+            <GraduationCap className={`w-3.5 h-3.5 ${metricMode === "lulus" ? "text-emerald-700" : "text-blue-gray"}`} />
             <span>Balita Lulus</span>
           </button>
         </div>
       </div>
 
       {/* 3. Subtitle Header */}
-      <div className="text-center pt-1">
-        <h3 className="text-[15px] font-bold text-[#071e49] italic">
-          Peta Sebaran Kecamatan Prioritas Pencegahan <span className="font-black not-italic text-[#1a73e8]">Stunting</span>
+      <div className="text-center pt-1 font-sans">
+        <h3 className="text-[15px] font-bold text-ford-blue">
+          Peta Sebaran Kecamatan Prioritas{" "}
+          <span className={`font-bold ${
+            metricMode === "stunting" 
+              ? "text-brand-red" 
+              : metricMode === "sembuh" 
+              ? "text-ford-blue" 
+              : "text-emerald-600"
+          }`}>
+            {metricMode === "stunting" ? "Balita Stunting" : metricMode === "sembuh" ? "Balita Sembuh" : "Balita Lulus"}
+          </span>
         </h3>
       </div>
 
@@ -188,7 +197,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
             <div className="relative text-center space-y-0.5">
               <button
                 onClick={() => setIsCardDismissed(true)}
-                className="absolute right-0 top-0 p-1 text-[#94a3b8] hover:text-[#071e49] rounded-lg hover:bg-slate-100 transition-colors"
+                className="absolute right-0 top-0 p-1 text-[#94a3b8] hover:text-[#2C3968] rounded-lg hover:bg-slate-100 transition-colors"
                 title="Tutup Informasi"
               >
                 <X className="w-3.5 h-3.5" />
@@ -196,10 +205,10 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
               <span className="text-[11px] font-bold tracking-wider text-[#64748b] uppercase">
                 KABUPATEN GRESIK
               </span>
-              <h4 className="text-[16px] font-black text-[#071e49] tracking-tight uppercase">
+              <h4 className="text-[16px] font-black text-[#2C3968] tracking-tight uppercase">
                 KECAMATAN {activeDistrictRecord.kecamatan}
               </h4>
-              <p className="text-[12px] font-bold text-[#1a73e8]">
+              <p className="text-[12px] font-bold text-ford-blue">
                 Kecamatan Prioritas Tahun 2026
               </p>
               <p className="text-[10px] text-[#94a3b8]">
@@ -222,7 +231,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
               {prevDistrictRecord && (
                 <div className="flex items-center justify-between">
                   <span>Kasus Stunting Tahun 2025:</span>
-                  <strong className="text-[#071e49] font-semibold">
+                  <strong className="text-[#2C3968] font-semibold">
                     {prevDistrictRecord.balitaStunting} Jiwa
                   </strong>
                 </div>
@@ -232,7 +241,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
                 <span className="text-emerald-600 font-bold">
                   Sembuh: {activeDistrictRecord.balitaSembuh}
                 </span>
-                <span className="text-[#1a73e8] font-bold">
+                <span className="text-light-sea-green font-bold">
                   Lulus: {activeDistrictRecord.balitaLulus}
                 </span>
               </div>
@@ -255,7 +264,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
               <span>Prioritas Tahun 2026 (&gt;300 Kasus)</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3.5 h-3.5 rounded-xs bg-[#1a73e8]"></span>
+              <span className="w-3.5 h-3.5 rounded-xs bg-[#35CBC3]"></span>
               <span>Prioritas Tahun 2025 (150-300 Kasus)</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -272,7 +281,7 @@ export const PrevalenceMapView: React.FC<PrevalenceMapViewProps> = ({
             </div>
           </div>
 
-          <div className="text-[#071e49] font-bold shrink-0">
+          <div className="text-[#2C3968] font-bold shrink-0">
             Sumber Data: Dinas Kesehatan Kab. Gresik
           </div>
         </div>
