@@ -87,9 +87,9 @@ export const TableFilterControls: React.FC<TableFilterControlsProps> = ({
         <button 
           onClick={onExport}
           title="Export Laporan"
-          className="p-2 text-ford-blue hover:bg-green-tint rounded-xl transition-colors border border-slate-200 cursor-pointer"
+          className="p-2 text-ford-blue hover:bg-slate-100 rounded-xl transition-colors border border-slate-200 cursor-pointer shadow-2xs"
         >
-          <Download className="w-4 h-4 text-light-sea-green" />
+          <Download className="w-4 h-4 text-ford-blue" />
         </button>
 
         {/* Search Input */}

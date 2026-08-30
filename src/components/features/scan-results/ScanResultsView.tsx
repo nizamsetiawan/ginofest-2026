@@ -310,7 +310,7 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-ford-blue text-[11px] font-bold transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
             title="Unduh Grafik sebagai Gambar (PNG)"
           >
-            <Download className="w-3.5 h-3.5 text-light-sea-green" />
+            <Download className="w-3.5 h-3.5 text-ford-blue" />
             <span>Unduh PNG</span>
           </button>
         </div>
@@ -375,7 +375,7 @@ export const ScanResultsView: React.FC<ScanResultsViewProps> = ({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-ford-blue text-[11px] font-bold transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
             title="Unduh Grafik sebagai Gambar (PNG)"
           >
-            <Download className="w-3.5 h-3.5 text-light-sea-green" />
+            <Download className="w-3.5 h-3.5 text-ford-blue" />
             <span>Unduh PNG</span>
           </button>
         </div>

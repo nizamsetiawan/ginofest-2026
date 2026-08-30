@@ -1612,11 +1612,11 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
           <div className="flex items-center gap-2 self-end xl:self-auto shrink-0">
             <button
               onClick={() => handleDownloadExcelTemplate(activeDatasetTab)}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] border border-[#cbd5e1] transition-all shadow-2xs"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#2C3968] border border-[#cbd5e1] transition-all shadow-2xs cursor-pointer"
               title="Download Template Excel (.XLS)"
               aria-label="Download Template Excel (.XLS)"
             >
-              <Download className="w-4 h-4 text-light-sea-green" />
+              <Download className="w-4 h-4 text-ford-blue" />
             </button>
 
             <button
