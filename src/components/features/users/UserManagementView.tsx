@@ -1314,6 +1314,27 @@ export const UserManagementView: React.FC = () => {
                   </div>
                 );
               })()}
+
+              {/* Revocation & Client Acknowledgment Log */}
+              {viewingLog.revokedAt && (
+                <div className="p-3 rounded-xl bg-red-50/60 border border-red-200 space-y-1">
+                  <span className="text-[10.5px] font-bold text-red-700 block">Status Pemutusan & Konfirmasi Perangkat:</span>
+                  <div className="text-[11px] text-red-800 font-medium">
+                    Diputus oleh <strong>{viewingLog.revokedBy || "Super Admin"}</strong> pada {new Date(viewingLog.revokedAt).toLocaleString("id-ID")} WIB
+                  </div>
+                  {viewingLog.acknowledgedAt ? (
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 pt-0.5">
+                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Notifikasi pemutusan telah diterima & dikonfirmasi oleh HP ({new Date(viewingLog.acknowledgedAt).toLocaleTimeString("id-ID")} WIB)</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5 text-[10.5px] text-amber-700 font-medium pt-0.5">
+                      <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span>Menunggu sinkronisasi perangkat klien</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Modal Actions */}

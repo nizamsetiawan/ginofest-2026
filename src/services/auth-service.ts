@@ -551,6 +551,8 @@ export interface UserSessionLog {
   logoutAt?: string;
   revokedAt?: string;
   revokedBy?: string;
+  acknowledgedAt?: string;
+  clientNotified?: boolean;
   userAgent?: string;
   ipAddress?: string;
   status: "active" | "closed" | "revoked";
@@ -627,6 +629,18 @@ export function listenToSessionStatus(sessionId: string, onRevoked: () => void):
     return unsub;
   } catch {
     return () => {};
+  }
+}
+
+export async function acknowledgeSessionRevocation(sessionId: string): Promise<void> {
+  try {
+    const docRef = doc(db, "kcal_session_logs", sessionId);
+    await updateDoc(docRef, {
+      acknowledgedAt: new Date().toISOString(),
+      clientNotified: true,
+    });
+  } catch (err) {
+    console.warn("Failed recording revocation acknowledgement:", err);
   }
 }
 
