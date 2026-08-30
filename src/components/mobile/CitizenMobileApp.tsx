@@ -478,6 +478,33 @@ export const CitizenMobileApp: React.FC = () => {
     setTouchEndX(null);
   };
 
+  // Dynamic Time-of-Day Vitality Glow Palette (Pagi, Siang, Sore, Malam)
+  const getOnboardingGlowClasses = () => {
+    switch (timeOfDay) {
+      case "morning":
+        return {
+          primary: "from-green-02/30 via-amber-300/25 to-light-sea-green/20",
+          secondary: "from-amber-200/25 via-green-02/20 to-transparent",
+        };
+      case "afternoon":
+        return {
+          primary: "from-light-sea-green/30 via-cyan-400/25 to-green-02/20",
+          secondary: "from-sky-300/25 via-light-sea-green/20 to-transparent",
+        };
+      case "evening":
+        return {
+          primary: "from-amber-400/30 via-orange-300/25 to-light-sea-green/20",
+          secondary: "from-orange-300/25 via-amber-300/20 to-transparent",
+        };
+      case "night":
+      default:
+        return {
+          primary: "from-light-sea-green/30 via-ford-blue/20 to-green-02/25",
+          secondary: "from-green-02/25 via-teal-300/20 to-transparent",
+        };
+    }
+  };
+
   // Handle Login with Cloud Firestore
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -907,8 +934,17 @@ export const CitizenMobileApp: React.FC = () => {
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "onboarding" && (
           <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F4FDF9] to-[#FFFFFF] flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
-            {/* Ambient Vitality Soft Glow Behind Illustrations */}
-            <div className="absolute top-[32%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-gradient-to-tr from-green-02/15 via-light-sea-green/15 to-transparent blur-3xl pointer-events-none z-0" />
+            {/* Dynamic Time-of-Day Moving Ambient Vitality Glow (Pagi / Siang / Sore / Malam) */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+              {/* Primary Pulsing Ambient Glow Orb */}
+              <div 
+                className={`absolute top-[28%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-gradient-to-tr ${getOnboardingGlowClasses().primary} blur-3xl animate-pulse`} 
+              />
+              {/* Secondary Floating Kinetic Ambient Orb */}
+              <div 
+                className={`absolute top-[36%] left-[32%] -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-gradient-to-br ${getOnboardingGlowClasses().secondary} blur-2xl animate-bounce [animation-duration:8s] opacity-75`} 
+              />
+            </div>
 
             {/* Top Bar: Only Skip Button (Right-Aligned) */}
             <div className="relative z-10 flex items-center justify-end pt-1">
