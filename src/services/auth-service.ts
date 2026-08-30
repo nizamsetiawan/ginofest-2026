@@ -7,6 +7,7 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { KcalUser } from "@/types/auth";
 
@@ -560,16 +561,19 @@ export interface UserSessionLog {
   role: string;
   districtLabel: string;
   loginAt: string;
+  logoutAt?: string;
+  revokedAt?: string;
+  revokedBy?: string;
   userAgent?: string;
   ipAddress?: string;
-  status: "active" | "closed";
+  status: "active" | "closed" | "revoked";
 }
 
 export async function recordSessionLog(
   user: KcalUser
-): Promise<void> {
+): Promise<string | null> {
   try {
-    const logId = `ses_${Date.now()}`;
+    const logId = `ses_gov_${Date.now()}`;
     const logData: UserSessionLog = {
       id: logId,
       userId: user.id,
@@ -578,13 +582,64 @@ export async function recordSessionLog(
       role: user.role,
       districtLabel: user.regionLabel,
       loginAt: new Date().toISOString(),
-      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "Unknown",
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "Web Dashboard",
       status: "active",
     };
     const docRef = doc(db, "kcal_session_logs", logId);
     await setDoc(docRef, logData);
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("kcal_current_gov_session_id", logId);
+    }
+    return logId;
   } catch (e) {
     console.error("Failed to record session log:", e);
+    return null;
+  }
+}
+
+export async function closeSessionLog(sessionId: string): Promise<{ success: boolean }> {
+  try {
+    const docRef = doc(db, "kcal_session_logs", sessionId);
+    await updateDoc(docRef, {
+      status: "closed",
+      logoutAt: new Date().toISOString(),
+    });
+    return { success: true };
+  } catch (err) {
+    console.error("Failed to close session log:", err);
+    return { success: false };
+  }
+}
+
+export async function revokeSessionLog(sessionId: string): Promise<{ success: boolean }> {
+  try {
+    const docRef = doc(db, "kcal_session_logs", sessionId);
+    await updateDoc(docRef, {
+      status: "revoked",
+      revokedAt: new Date().toISOString(),
+      revokedBy: "Super Admin",
+    });
+    return { success: true };
+  } catch (err) {
+    console.error("Failed to revoke session log:", err);
+    return { success: false };
+  }
+}
+
+export function listenToSessionStatus(sessionId: string, onRevoked: () => void): () => void {
+  try {
+    const docRef = doc(db, "kcal_session_logs", sessionId);
+    const unsub = onSnapshot(docRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.status === "revoked") {
+          onRevoked();
+        }
+      }
+    });
+    return unsub;
+  } catch {
+    return () => {};
   }
 }
 
@@ -650,6 +705,11 @@ export function saveSessionUser(user: KcalUser): void {
 export function clearSessionUser(): void {
   if (typeof window === "undefined") return;
   try {
+    const govSessionId = localStorage.getItem("kcal_current_gov_session_id");
+    if (govSessionId) {
+      closeSessionLog(govSessionId);
+      localStorage.removeItem("kcal_current_gov_session_id");
+    }
     localStorage.removeItem(SESSION_STORAGE_KEY);
   } catch (e) {
     console.error("Failed to clear session user:", e);

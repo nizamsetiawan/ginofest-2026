@@ -47,6 +47,7 @@ import {
   loginCitizenFromFirestore,
   resetCitizenPasswordInFirestore,
 } from "@/services/firebase-service";
+import { closeSessionLog, listenToSessionStatus } from "@/services/auth-service";
 
 type AppScreen = "splash" | "onboarding" | "login" | "register" | "forgot_password" | "main";
 type MobileTab = "home" | "menu" | "screening" | "ai_chat" | "profile" | "complaint";
@@ -475,10 +476,36 @@ export const CitizenMobileApp: React.FC = () => {
     }
   }, [currentScreen, citizenUser]);
 
+  // ═══ REAL-TIME LISTENER: FORCE LOGOUT BY SUPER ADMIN ═══
+  useEffect(() => {
+    if (!citizenUser) return;
+    const sessionId = localStorage.getItem("kcal_citizen_session_id");
+    if (!sessionId) return;
+
+    const unsub = listenToSessionStatus(sessionId, () => {
+      // Force logout triggered by Super Admin!
+      try {
+        localStorage.removeItem("kcal_active_citizen_user");
+        localStorage.removeItem("kcal_citizen_session_id");
+        sessionStorage.removeItem("kcal_citizen_screen");
+      } catch {}
+      setCitizenUser(null);
+      alert("⚠️ Sesi login Anda telah dihentikan oleh Administrator Utama (Super Admin). Anda dialihkan kembali ke Splash Screen.");
+      setCurrentScreen("splash");
+    });
+
+    return () => unsub();
+  }, [citizenUser]);
+
   // Handle Logout (Explicitly clears persistent session and redirects to Login)
-  const handleCitizenLogout = () => {
+  const handleCitizenLogout = async () => {
     try {
+      const sessionId = localStorage.getItem("kcal_citizen_session_id");
+      if (sessionId) {
+        await closeSessionLog(sessionId);
+      }
       localStorage.removeItem("kcal_active_citizen_user");
+      localStorage.removeItem("kcal_citizen_session_id");
       sessionStorage.removeItem("kcal_citizen_screen");
     } catch {}
     setCitizenUser(null);
@@ -569,6 +596,9 @@ export const CitizenMobileApp: React.FC = () => {
       setCitizenUser(res.user);
       try {
         localStorage.setItem("kcal_active_citizen_user", JSON.stringify(res.user));
+        if (res.sessionId) {
+          localStorage.setItem("kcal_citizen_session_id", res.sessionId);
+        }
         sessionStorage.setItem("kcal_citizen_screen", "main");
       } catch {}
       setCurrentScreen("main");

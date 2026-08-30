@@ -949,7 +949,7 @@ export interface CitizenAccountRecord {
   createdAtIso: string;
 }
 
-export async function registerCitizenToFirestore(account: Omit<CitizenAccountRecord, "id">): Promise<{ success: boolean; id?: string; error?: string }> {
+export async function registerCitizenToFirestore(account: Omit<CitizenAccountRecord, "id">): Promise<{ success: boolean; id?: string; sessionId?: string; error?: string }> {
   try {
     const cleanEmail = account.email.trim().toLowerCase();
     const cleanPass = account.password || "password123";
@@ -1005,9 +1005,9 @@ export async function registerCitizenToFirestore(account: Omit<CitizenAccountRec
       }, { merge: true });
     }
 
+    let logId = `ses_warga_${Date.now()}`;
     // Record session log in Firestore for Super Admin audit trail
     try {
-      const logId = `ses_warga_${Date.now()}`;
       await setDoc(doc(db, "kcal_session_logs", logId), {
         id: logId,
         userId: docId,
@@ -1021,7 +1021,7 @@ export async function registerCitizenToFirestore(account: Omit<CitizenAccountRec
       });
     } catch {}
 
-    return { success: true, id: docId };
+    return { success: true, id: docId, sessionId: logId };
   } catch (err: any) {
     console.error("Error registering citizen:", err);
     return { success: false, error: err.message || "Gagal mendaftarkan akun." };
@@ -1032,7 +1032,7 @@ export async function loginCitizenFromFirestore(
   email: string,
   password?: string,
   district?: string
-): Promise<{ success: boolean; user?: { id: string; name: string; email: string; phone?: string; district: string }; error?: string }> {
+): Promise<{ success: boolean; user?: { id: string; name: string; email: string; phone?: string; district: string }; sessionId?: string; error?: string }> {
   try {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPass = password || "";
@@ -1088,9 +1088,9 @@ export async function loginCitizenFromFirestore(
         district: district || "Kebomas",
       };
 
+      const logId = `ses_warga_${Date.now()}`;
       // Record citizen session log
       try {
-        const logId = `ses_warga_${Date.now()}`;
         await setDoc(doc(db, "kcal_session_logs", logId), {
           id: logId,
           userId: newUser.id,
@@ -1107,6 +1107,7 @@ export async function loginCitizenFromFirestore(
       return {
         success: true,
         user: newUser,
+        sessionId: logId,
       };
     }
 
@@ -1130,9 +1131,9 @@ export async function loginCitizenFromFirestore(
       district: district || userData.district || "Kebomas",
     };
 
+    const logId = `ses_warga_${Date.now()}`;
     // Record citizen session log
     try {
-      const logId = `ses_warga_${Date.now()}`;
       await setDoc(doc(db, "kcal_session_logs", logId), {
         id: logId,
         userId: targetUser.id,
@@ -1149,6 +1150,7 @@ export async function loginCitizenFromFirestore(
     return {
       success: true,
       user: targetUser,
+      sessionId: logId,
     };
   } catch (err: any) {
     console.error("Error login citizen:", err);

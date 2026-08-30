@@ -24,7 +24,8 @@ import {
   History,
   X,
   Sparkles,
-  Smartphone
+  Smartphone,
+  LogOut
 } from "lucide-react";
 import { KcalUser, UserRole } from "@/types/auth";
 import {
@@ -34,6 +35,7 @@ import {
   deleteKcalUser,
   fetchSessionLogs,
   clearAllSessionLogs,
+  revokeSessionLog,
   UserSessionLog,
   DEFAULT_FALLBACK_USERS
 } from "@/services/auth-service";
@@ -54,6 +56,7 @@ export const UserManagementView: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [logSearchQuery, setLogSearchQuery] = useState("");
   const [logRoleFilter, setLogRoleFilter] = useState<string>("all");
+  const [logStatusFilter, setLogStatusFilter] = useState<string>("all");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   // Modals
@@ -120,10 +123,15 @@ export const UserManagementView: React.FC = () => {
     });
   }, [users, roleFilter, searchQuery]);
 
-  // Filtered Session Logs (Including Citizen / Masyarakat logs)
+  // Filtered Session Logs (Including Citizen / Masyarakat logs, Active, Closed, and Revoked)
   const filteredLogs = useMemo(() => {
     return logs.filter((l) => {
       if (logRoleFilter !== "all" && l.role !== logRoleFilter) return false;
+      if (logStatusFilter !== "all") {
+        if (logStatusFilter === "active" && l.status !== "active") return false;
+        if (logStatusFilter === "closed" && l.status !== "closed") return false;
+        if (logStatusFilter === "revoked" && l.status !== "revoked") return false;
+      }
       if (!logSearchQuery.trim()) return true;
       const q = logSearchQuery.toLowerCase();
       return (
@@ -133,7 +141,7 @@ export const UserManagementView: React.FC = () => {
         (l.userAgent && l.userAgent.toLowerCase().includes(q))
       );
     });
-  }, [logs, logRoleFilter, logSearchQuery]);
+  }, [logs, logRoleFilter, logStatusFilter, logSearchQuery]);
 
   // Statistics
   const totalUsers = users.length;
@@ -141,6 +149,8 @@ export const UserManagementView: React.FC = () => {
   const kecamatanCount = users.filter((u) => u.role === "admin_kecamatan").length;
 
   const totalLogs = logs.length;
+  const activeLogsCount = logs.filter((l) => l.status === "active").length;
+  const closedLogsCount = logs.filter((l) => l.status === "closed" || l.status === "revoked").length;
   const masyarakatLogsCount = logs.filter((l) => l.role === "masyarakat").length;
   const superAdminLogsCount = logs.filter((l) => l.role === "super_admin").length;
   const kecamatanLogsCount = logs.filter((l) => l.role === "admin_kecamatan").length;
@@ -252,6 +262,41 @@ export const UserManagementView: React.FC = () => {
     setIsSaving(false);
     setLogs([]);
     showToast("✓ Seluruh riwayat log sesi berhasil dibersihkan.");
+  };
+
+  // Handle Force Logout Session by Super Admin
+  const handleForceLogout = async (log: UserSessionLog) => {
+    const roleTitle =
+      log.role === "masyarakat"
+        ? "Warga Masyarakat"
+        : log.role === "super_admin"
+        ? "Super Admin"
+        : "Admin Kecamatan";
+
+    if (
+      !window.confirm(
+        `Apakah Anda yakin ingin MEMUTUS PAKSA sesi ${roleTitle} atas nama "${log.name}" (${log.email})?\n\nPengguna akan seketika dikeluarkan dari akun dan dialihkan kembali ke Splash Screen.`
+      )
+    ) {
+      return;
+    }
+
+    setIsSaving(true);
+    const res = await revokeSessionLog(log.id);
+    setIsSaving(false);
+
+    if (res.success) {
+      showToast(`✓ Sesi ${roleTitle} "${log.name}" berhasil diputus paksa!`);
+      setLogs((prev) =>
+        prev.map((item) =>
+          item.id === log.id
+            ? { ...item, status: "revoked", revokedAt: new Date().toISOString(), revokedBy: "Super Admin" }
+            : item
+        )
+      );
+    } else {
+      showToast("Gagal memutus sesi pengguna.");
+    }
   };
 
   if (!isSuperAdmin) {
@@ -528,24 +573,34 @@ export const UserManagementView: React.FC = () => {
       {activeTab === "logs" && (
         <div className="space-y-3">
           {/* Header Action Bar */}
-          <div className="flex items-center justify-between bg-[#f8fafc] p-2.5 rounded-2xl border border-[#e2e8f0]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#f8fafc] p-3 rounded-2xl border border-[#e2e8f0]">
             <div>
-              <h3 className="text-[12px] font-bold text-[#2C3968]">Riwayat Aktivitas & Sesi Login Masuk</h3>
-              <p className="text-[10px] text-[#64748b]">
-                Pencatatan timestamp, kredensial pengguna (Super Admin, Kecamatan, & Masyarakat), wilayah tugas, dan perangkat web/mobile.
+              <div className="flex items-center gap-2">
+                <h3 className="text-[13px] font-bold text-[#2C3968]">Audit & Kontrol Sesi Pengguna Real-Time</h3>
+                <span className="px-2 py-0.2 bg-emerald-100 text-emerald-800 text-[10.5px] font-bold rounded-full border border-emerald-200">
+                  {activeLogsCount} Sesi Aktif
+                </span>
+                {closedLogsCount > 0 && (
+                  <span className="px-2 py-0.2 bg-slate-200 text-slate-600 text-[10.5px] font-bold rounded-full">
+                    {closedLogsCount} Logout/Diputus
+                  </span>
+                )}
+              </div>
+              <p className="text-[10.5px] text-[#64748b]">
+                Pantau seluruh sesi masuk/keluar (Pemerintah & Masyarakat) serta gunakan tombol <strong>Paksa Logout</strong> untuk memutus sesi seketika.
               </p>
             </div>
             <button
               onClick={handleClearLogs}
               disabled={logs.length === 0}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[11px] font-bold transition-all cursor-pointer disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[11px] font-bold transition-all cursor-pointer disabled:opacity-40 shrink-0 self-start sm:self-auto"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Bersihkan Log</span>
             </button>
           </div>
 
-          {/* Search and Role Filter for Logs */}
+          {/* Search, Role, and Status Filter for Logs */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 bg-[#f8fafc] p-2.5 rounded-2xl border border-[#e2e8f0]">
             <div className="relative flex-1">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -569,6 +624,17 @@ export const UserManagementView: React.FC = () => {
                 <option value="super_admin">Super Admin ({superAdminLogsCount})</option>
                 <option value="admin_kecamatan">Admin Kecamatan ({kecamatanLogsCount})</option>
               </select>
+
+              <select
+                value={logStatusFilter}
+                onChange={(e) => setLogStatusFilter(e.target.value)}
+                className="pl-3 pr-7 py-1.5 rounded-xl bg-white border border-[#cbd5e1] text-[#2C3968] text-[12px] font-bold focus:outline-none focus:border-[#35CBC3] shadow-2xs cursor-pointer"
+              >
+                <option value="all">Semua Status</option>
+                <option value="active">● Hanya Sesi Aktif ({activeLogsCount})</option>
+                <option value="closed">○ Telah Logout / Selesai</option>
+                <option value="revoked">⛔ Diputus Super Admin</option>
+              </select>
             </div>
           </div>
 
@@ -577,18 +643,19 @@ export const UserManagementView: React.FC = () => {
               <thead className="sticky top-0 z-10 shadow-xs">
                 <tr className="bg-ford-blue text-white font-bold divide-x divide-white/10 select-none">
                   <th className="py-3 px-3 w-10 text-center text-white">No</th>
-                  <th className="py-3 px-4 font-bold w-48 text-white">Waktu Sesi</th>
+                  <th className="py-3 px-4 font-bold w-44 text-white">Waktu Sesi</th>
                   <th className="py-3 px-4 font-bold text-white">Nama & Email Pengguna</th>
                   <th className="py-3 px-4 font-bold text-white">Role & Wilayah</th>
-                  <th className="py-3 px-4 font-bold text-white">Perangkat / User Agent</th>
-                  <th className="py-3 px-3 text-center w-28 font-bold text-white">Status</th>
+                  <th className="py-3 px-4 font-bold text-white">Perangkat / Client</th>
+                  <th className="py-3 px-3.5 text-center w-36 font-bold text-white">Status Sesi</th>
+                  <th className="py-3 px-3 text-center w-32 font-bold text-white">Aksi Kontrol</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f1f5f9]">
                 {filteredLogs.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-[#64748b]">
-                      Belum ada riwayat sesi login yang tercatat.
+                    <td colSpan={7} className="py-8 text-center text-[#64748b]">
+                      Belum ada riwayat sesi login yang sesuai dengan filter.
                     </td>
                   </tr>
                 ) : (
@@ -602,15 +669,27 @@ export const UserManagementView: React.FC = () => {
                       userAgentLower.includes("iphone") ||
                       userAgentLower.includes("pwa");
 
+                    const isActive = log.status === "active";
+                    const isRevoked = log.status === "revoked";
+
                     return (
                       <tr key={log.id} className="hover:bg-slate-50 divide-x divide-slate-100 transition-colors">
                         <td className="py-2.5 px-3 text-center font-bold text-slate-500 bg-slate-50/50">
                           {idx + 1}
                         </td>
                         <td className="py-2.5 px-4 whitespace-nowrap text-ford-blue text-[11.5px] font-medium">
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="w-3.5 h-3.5 text-light-sea-green shrink-0" />
-                            <span>{new Date(log.loginAt).toLocaleString("id-ID")}</span>
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5 text-light-sea-green shrink-0" />
+                              <span className="font-bold">{new Date(log.loginAt).toLocaleTimeString("id-ID")} WIB</span>
+                            </div>
+                            <span className="text-[10px] text-slate-400 block pl-5">
+                              {new Date(log.loginAt).toLocaleDateString("id-ID", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </span>
                           </div>
                         </td>
                         <td className="py-2.5 px-4">
@@ -628,7 +707,7 @@ export const UserManagementView: React.FC = () => {
                             </div>
                             <div>
                               <span className="font-bold text-ford-blue block text-[12px]">{log.name}</span>
-                              <span className="font-mono text-[10.5px] text-ford-blue font-bold block">{log.email}</span>
+                              <span className="font-mono text-[10.5px] text-slate-500 font-bold block">{log.email}</span>
                             </div>
                           </div>
                         </td>
@@ -667,10 +746,51 @@ export const UserManagementView: React.FC = () => {
                             </span>
                           </div>
                         </td>
+                        <td className="py-2.5 px-3.5 text-center">
+                          {isActive ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-green-tint text-ford-blue border border-green-02/40 shadow-2xs">
+                              ● Sesi Aktif
+                            </span>
+                          ) : isRevoked ? (
+                            <div className="space-y-0.5">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-red-50 text-brand-red border border-brand-red/30">
+                                ⛔ Diputus Super Admin
+                              </span>
+                              {log.revokedAt && (
+                                <span className="text-[9px] text-slate-400 block">
+                                  {new Date(log.revokedAt).toLocaleTimeString("id-ID")}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="space-y-0.5">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                ○ Telah Logout
+                              </span>
+                              {log.logoutAt && (
+                                <span className="text-[9px] text-slate-400 block font-mono">
+                                  {new Date(log.logoutAt).toLocaleTimeString("id-ID")}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </td>
                         <td className="py-2.5 px-3 text-center">
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-tint text-ford-blue border border-green-02/40">
-                            ● Sesi Aktif
-                          </span>
+                          {isActive ? (
+                            <button
+                              type="button"
+                              onClick={() => handleForceLogout(log)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-brand-red border border-brand-red/30 font-bold text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
+                              title="Putus sesi dan paksa pengguna keluar ke Splash Screen"
+                            >
+                              <LogOut className="w-3.5 h-3.5" />
+                              <span>Paksa Logout</span>
+                            </button>
+                          ) : (
+                            <span className="text-[11px] text-slate-400 font-medium italic">
+                              Sesi Ditutup
+                            </span>
+                          )}
                         </td>
                       </tr>
                     );
