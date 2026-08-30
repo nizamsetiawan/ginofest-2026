@@ -929,8 +929,8 @@ export const CitizenMobileApp: React.FC = () => {
                 style={{ transform: `translateX(-${onboardingIndex * 100}%)` }}
               >
                 {/* Slide 1: Masyarakat */}
-                <div className="w-full shrink-0 flex flex-col items-center justify-center space-y-4 px-1">
-                  <div className="w-full max-w-[290px] sm:max-w-[310px] aspect-[914/885] flex items-center justify-center">
+                <div className="w-full shrink-0 flex flex-col items-center justify-center space-y-4 px-2">
+                  <div className="w-full max-w-[200px] sm:max-w-[220px] max-h-[190px] aspect-[914/885] flex items-center justify-center">
                     <img
                       src="/onboard1.svg"
                       alt="Onboarding 1 - Masyarakat"
@@ -945,7 +945,7 @@ export const CitizenMobileApp: React.FC = () => {
                       </span>
                     </div>
 
-                    <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
+                    <h1 className="text-[21px] font-black text-ford-blue tracking-tight leading-snug">
                       Wujudkan Keluarga & Lingkungan Sehat
                     </h1>
 
@@ -956,8 +956,8 @@ export const CitizenMobileApp: React.FC = () => {
                 </div>
 
                 {/* Slide 2: Deteksi Defisiensi Nutrisi */}
-                <div className="w-full shrink-0 flex flex-col items-center justify-center space-y-4 px-1">
-                  <div className="w-full max-w-[290px] sm:max-w-[310px] aspect-[914/885] flex items-center justify-center">
+                <div className="w-full shrink-0 flex flex-col items-center justify-center space-y-4 px-2">
+                  <div className="w-full max-w-[200px] sm:max-w-[220px] max-h-[190px] aspect-[914/885] flex items-center justify-center">
                     <img
                       src="/onboard2.svg"
                       alt="Onboarding 2 - Deteksi Defisiensi Nutrisi"
@@ -972,7 +972,7 @@ export const CitizenMobileApp: React.FC = () => {
                       </span>
                     </div>
 
-                    <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
+                    <h1 className="text-[21px] font-black text-ford-blue tracking-tight leading-snug">
                       Deteksi Cerdas Kebutuhan Gizi
                     </h1>
 
@@ -983,8 +983,8 @@ export const CitizenMobileApp: React.FC = () => {
                 </div>
 
                 {/* Slide 3: Rekomendasi Menu Bergizi */}
-                <div className="w-full shrink-0 flex flex-col items-center justify-center space-y-4 px-1">
-                  <div className="w-full max-w-[290px] sm:max-w-[310px] aspect-[914/885] flex items-center justify-center">
+                <div className="w-full shrink-0 flex flex-col items-center justify-center space-y-4 px-2">
+                  <div className="w-full max-w-[200px] sm:max-w-[220px] max-h-[190px] aspect-[914/885] flex items-center justify-center">
                     <img
                       src="/onboard3.svg"
                       alt="Onboarding 3 - Rekomendasi Menu Bergizi"
@@ -999,7 +999,7 @@ export const CitizenMobileApp: React.FC = () => {
                       </span>
                     </div>
 
-                    <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
+                    <h1 className="text-[21px] font-black text-ford-blue tracking-tight leading-snug">
                       Menu Bergizi Khusus Untuk Anda
                     </h1>
 
