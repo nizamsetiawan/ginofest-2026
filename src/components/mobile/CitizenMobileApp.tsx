@@ -906,12 +906,15 @@ export const CitizenMobileApp: React.FC = () => {
         {/* 2. SCREEN: ONBOARDING CAROUSEL (Slideable 1, 2, 3)        */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "onboarding" && (
-          <div className="flex-1 bg-white flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
+          <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F4FDF9] to-[#FFFFFF] flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
+            {/* Ambient Vitality Soft Glow Behind Illustrations */}
+            <div className="absolute top-[32%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-gradient-to-tr from-green-02/15 via-light-sea-green/15 to-transparent blur-3xl pointer-events-none z-0" />
+
             {/* Top Bar: Only Skip Button (Right-Aligned) */}
             <div className="relative z-10 flex items-center justify-end pt-1">
               <button
                 onClick={() => setCurrentScreen("login")}
-                className="px-3.5 py-1 rounded-full bg-slate-50 hover:bg-slate-100 text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+                className="px-3.5 py-1 rounded-full bg-white/90 hover:bg-white text-ford-blue font-bold text-[11px] border border-slate-200/80 shadow-2xs backdrop-blur-xs transition-all cursor-pointer hover:scale-105 active:scale-95"
               >
                 Lewati
               </button>
@@ -919,7 +922,7 @@ export const CitizenMobileApp: React.FC = () => {
 
             {/* Central Swipeable Carousel Slider */}
             <div
-              className="my-auto py-2 w-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"
+              className="my-auto py-2 w-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y relative z-10"
               onTouchStart={handleOnboardingTouchStart}
               onTouchMove={handleOnboardingTouchMove}
               onTouchEnd={handleOnboardingTouchEnd}
