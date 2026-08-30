@@ -205,48 +205,48 @@ export const ComplaintCenterView: React.FC = () => {
             const StatusIcon = cfg.icon;
 
             return (
-              <div key={c.id} className="bg-white p-4 rounded-2xl border border-[#e2e8f0] shadow-xs space-y-2.5 hover:border-slate-300 transition-colors">
+              <div key={c.id} className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3.5 hover:border-slate-300 transition-all font-sans">
                 {/* Top: Sender info & status */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <div className="w-7 h-7 rounded-lg bg-green-tint text-ford-blue border border-green-02/40 font-bold text-[10px] flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <div className="w-8 h-8 rounded-xl bg-ford-blue text-white font-bold text-[11px] flex items-center justify-center shrink-0 shadow-2xs">
                       {c.senderName.slice(0, 2).toUpperCase()}
                     </div>
-                    <span className="font-bold text-[12px] text-ford-blue">{c.senderName}</span>
+                    <span className="font-bold text-[13px] text-ford-blue">{c.senderName}</span>
                     {c.senderContact && (
-                      <span className="text-[11px] font-mono text-blue-gray flex items-center gap-1">
-                        <Mail className="w-3 h-3 text-light-sea-green" />
+                      <span className="text-[11px] font-mono text-ford-blue/80 flex items-center gap-1.5 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
+                        <Mail className="w-3.5 h-3.5 text-ford-blue" />
                         {c.senderContact}
                       </span>
                     )}
-                    <span className="px-2.5 py-0.5 rounded-lg bg-green-tint text-ford-blue text-[10px] font-bold border border-green-02/30">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-slate-100 text-ford-blue text-[10px] font-bold border border-slate-200 shadow-2xs">
                       {c.category}
                     </span>
                   </div>
 
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border self-start sm:self-auto ${cfg.color}`}>
-                    <StatusIcon className="w-3 h-3" />
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border self-start sm:self-auto shadow-2xs ${cfg.color}`}>
+                    <StatusIcon className="w-3.5 h-3.5" />
                     {cfg.label}
                   </span>
                 </div>
 
                 {/* Message */}
-                <p className="p-3 bg-[#F8FAFC] rounded-xl border border-slate-200 text-[12px] text-ford-blue leading-relaxed font-medium">
+                <p className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-200/80 text-[13px] text-ford-blue leading-relaxed font-medium shadow-2xs">
                   &ldquo;{c.message}&rdquo;
                 </p>
 
                 {/* Response Notes */}
                 {c.responseNotes && (
-                  <div className="p-2.5 bg-green-tint rounded-xl border border-green-02/40 text-[11px] text-ford-blue font-medium">
-                    <span className="font-bold text-[10px] uppercase text-ford-blue">Catatan Tindak Lanjut: </span>
+                  <div className="p-3 bg-blue-50/70 rounded-2xl border border-blue-200 text-[12px] text-ford-blue font-medium shadow-2xs">
+                    <span className="font-bold text-[10px] uppercase text-ford-blue tracking-wide block mb-0.5">Catatan Tindak Lanjut: </span>
                     {c.responseNotes}
                   </div>
                 )}
 
                 {/* Bottom: Time + Action Buttons */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-slate-100">
-                  <div className="flex items-center gap-2 text-[10px] text-[#94a3b8]">
-                    <Clock className="w-3 h-3" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                  <div className="flex items-center gap-2 text-[11px] text-blue-gray font-medium">
+                    <Clock className="w-3.5 h-3.5 text-ford-blue" />
                     <span>{c.createdAtIso ? new Date(c.createdAtIso).toLocaleString("id-ID") : "Baru saja"}</span>
                     <span>•</span>
                     <span>Tujuan: takathasan82@gmail.com</span>
@@ -264,7 +264,7 @@ export const ComplaintCenterView: React.FC = () => {
                           handleUpdateStatus(c.id!, status);
                         }
                       }}
-                      className="px-2.5 py-1 rounded-xl bg-slate-50 border border-[#cbd5e1] text-[11px] text-[#2C3968] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-[#35CBC3] w-full sm:w-56 font-medium"
+                      className="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-[12px] text-ford-blue placeholder:text-slate-400 focus:outline-none focus:border-ford-blue w-full sm:w-60 font-medium shadow-2xs"
                     />
 
                     {/* Status Dropdown Selector */}
@@ -272,14 +272,14 @@ export const ComplaintCenterView: React.FC = () => {
                       <select
                         value={status}
                         onChange={(e) => handleUpdateStatus(c.id!, e.target.value as "baru" | "proses" | "selesai")}
-                        className="appearance-none text-center pl-3.5 pr-7 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-[#cbd5e1] text-[11px] font-bold text-[#2C3968] focus:bg-white focus:outline-none focus:border-[#35CBC3] cursor-pointer shadow-2xs transition-all"
+                        className="appearance-none text-center pl-3.5 pr-8 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-[12px] font-bold text-ford-blue focus:outline-none focus:border-ford-blue cursor-pointer shadow-2xs transition-all"
                         title="Ubah Status Tiket Aduan"
                       >
                         <option value="baru">Baru</option>
                         <option value="proses">Ditindaklanjuti</option>
                         <option value="selesai">Selesai</option>
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <ChevronDown className="w-3.5 h-3.5 text-ford-blue absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
                   </div>
                 </div>
