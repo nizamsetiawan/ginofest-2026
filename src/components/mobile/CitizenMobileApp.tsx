@@ -751,16 +751,36 @@ export const CitizenMobileApp: React.FC = () => {
       )}
 
       {/* ═══ SMARTPHONE SCREEN SHELL FRAME ═══ */}
-      <div className="w-full h-[100dvh] sm:h-[810px] sm:max-w-[395px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800">
-        
-        {/* Dynamic Pull-to-Refresh Indicator */}
+      <div 
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className="w-full h-[100dvh] sm:h-[810px] sm:max-w-[395px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none"
+      >
+        {/* Dynamic Context-Aware Pull-to-Refresh Indicator */}
         {pullY > 0 && (
           <div
             style={{ height: `${pullY}px` }}
-            className="w-full flex items-center justify-center overflow-hidden bg-slate-50 border-b border-slate-200/60 transition-all text-[11px] font-bold text-ford-blue gap-2"
+            className={`w-full flex items-center justify-center overflow-hidden transition-all text-[11px] font-bold gap-2 relative z-50 ${
+              ["splash", "onboarding"].includes(currentScreen)
+                ? "bg-green-tint/95 text-ford-blue border-b border-green-02/40 backdrop-blur-md"
+                : currentScreen === "main" && activeTab === "screening"
+                ? "bg-slate-900/90 text-white border-b border-white/20 backdrop-blur-md"
+                : "bg-white/95 text-ford-blue border-b border-slate-200/80 backdrop-blur-md shadow-2xs"
+            }`}
           >
-            <RefreshCw className={`w-3.5 h-3.5 text-light-sea-green ${isPullRefreshing ? "animate-spin" : ""}`} />
-            <span>{isPullRefreshing ? "Memperbarui Data..." : pullY >= 45 ? "Lepas untuk Segarkan" : "Tarik ke Bawah"}</span>
+            <div className={`p-1 rounded-full ${
+              ["splash", "onboarding"].includes(currentScreen)
+                ? "bg-white/80 text-ford-blue"
+                : currentScreen === "main" && activeTab === "screening"
+                ? "bg-white/20 text-green-02"
+                : "bg-green-tint text-ford-blue"
+            }`}>
+              <RefreshCw className={`w-3.5 h-3.5 ${isPullRefreshing ? "animate-spin text-light-sea-green" : "text-ford-blue"} transition-transform`} />
+            </div>
+            <span className="tracking-tight">
+              {isPullRefreshing ? "Memperbarui Aplikasi..." : pullY >= 45 ? "Lepas untuk Segarkan" : "Tarik untuk Memuat Ulang"}
+            </span>
           </div>
         )}
 
