@@ -145,8 +145,9 @@ TUGAS UTAMA ANDA:
    - Total Biaya Mingguan (${students} siswa x 5 hari x HPP) vs Plafon Resmi (Rp 15.000 x ${students} x 5).
 3. OUTPUT 3: BILL OF MATERIALS (BOM) LOGISTIK PENGADAAN
    - Hitung tonase beras, protein hewani, protein nabati, sayuran, buah, susu, bumbu untuk kebutuhan dapur SPPG selama 1 minggu.
-4. VARIASI MENU LOKAL:
+4. VARIASI MENU LOKAL & DESKRIPSI VISUAL:
    - Buat minimal 12 hingga 16 opsi menu variatif berbasis bahan lokal ${input.districtName}.
+   - Untuk setiap hari di weeklyPlan, wajib membuat field 'imagePrompt' dalam Bahasa Inggris yang mendeskripsikan secara nyata piring hidangan makanan sesuai komposisi resep tersebut (contoh: 'Clean top-down commercial food photography of Indonesian steamed white rice with grilled milkfish, fried tempeh, and clear moringa soup on a ceramic plate, soft studio lighting, 4k').
 
 WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
 {
