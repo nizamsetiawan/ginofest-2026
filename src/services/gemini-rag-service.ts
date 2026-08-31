@@ -281,7 +281,7 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
         iron: 6.2,
         cost: 14200,
         localOrigin: `Sentra Petambak/Peternak ${input.districtName}`,
-        imageUrl: "/assets/food/mbg_bandeng.jpg",
+        imageUrl: getMenuFoodImage(`Nasi Olahan ${mainProteinName} Segar & Sayur Bening Kelor Organik`).imageUrl,
       },
       {
         day: "Selasa",
@@ -295,7 +295,7 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
         iron: 5.8,
         cost: 14500,
         localOrigin: `Kemitraan Peternak Lokal ${input.districtName}`,
-        imageUrl: "/assets/food/mbg_ayam.jpg",
+        imageUrl: getMenuFoodImage("Nasi Ayam Ungkep Bumbu Kuning & Sayur Lodeh Labu Siam").imageUrl,
       },
       {
         day: "Rabu",
@@ -309,7 +309,7 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
         iron: 7.1,
         cost: 14800,
         localOrigin: `Sentra Peternakan ${input.districtName}`,
-        imageUrl: "/assets/food/mbg_daging.jpg",
+        imageUrl: getMenuFoodImage("Nasi Semur Daging Sapi Lokal & Sayur Sop Bening Wortel").imageUrl,
       },
       {
         day: "Kamis",
@@ -323,7 +323,7 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
         iron: 5.9,
         cost: 13900,
         localOrigin: `Peternak Unggas ${input.districtName}`,
-        imageUrl: "/assets/food/mbg_ayam.jpg",
+        imageUrl: getMenuFoodImage(`Nasi Olahan ${secondProteinName} & Sayur Bening Bayam Jagung`).imageUrl,
       },
       {
         day: "Jumat",
@@ -337,7 +337,7 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
         iron: 6.4,
         cost: 14200,
         localOrigin: `Koperasi Nelayan & Petani ${input.districtName}`,
-        imageUrl: "/assets/food/mbg_bandeng.jpg",
+        imageUrl: getMenuFoodImage("Nasi Fillet Ikan Segar Bumbu Kuning & Tumis Sayuran Hidroponik").imageUrl,
       },
     ],
     budgetSummary: {
