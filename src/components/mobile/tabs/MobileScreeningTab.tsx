@@ -32,9 +32,53 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   // 5 Step Screens: 1: Scanning -> 2: Questionnaire -> 3: Menu for You -> 4: QR Code -> 5: Scan Success
   const [screeningStep, setScreeningStep] = useState<1 | 2 | 3 | 4 | 5>(1);
 
-  // Step 1: Scanning Simulation States
+  // Step 1: Camera Streaming & Scanning States
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const cameraStreamRef = React.useRef<MediaStream | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
   const [isScanningActive, setIsScanningActive] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
+
+  // Initialize and cleanup live camera stream on Step 1
+  useEffect(() => {
+    let stream: MediaStream | null = null;
+
+    if (screeningStep === 1) {
+      const startCamera = async () => {
+        try {
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: "user" },
+              audio: false,
+            });
+            cameraStreamRef.current = stream;
+            if (videoRef.current) {
+              videoRef.current.srcObject = stream;
+              videoRef.current.play().catch(() => {});
+              setIsCameraActive(true);
+            }
+          }
+        } catch (err) {
+          console.warn("Camera init note:", err);
+          setIsCameraActive(false);
+        }
+      };
+      startCamera();
+    } else {
+      if (cameraStreamRef.current) {
+        cameraStreamRef.current.getTracks().forEach((t) => t.stop());
+        cameraStreamRef.current = null;
+      }
+      setIsCameraActive(false);
+    }
+
+    return () => {
+      if (cameraStreamRef.current) {
+        cameraStreamRef.current.getTracks().forEach((t) => t.stop());
+        cameraStreamRef.current = null;
+      }
+    };
+  }, [screeningStep]);
 
   // Step 2: Questionnaire States
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -132,7 +176,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </button>
             </div>
             <p className="text-[11px] text-slate-600 leading-relaxed">
-              Skrining ini memadukan <strong>Computer Vision</strong> untuk deteksi fisik awal &amp; <strong>Kuesioner Interaktif</strong> untuk mempersonalisasi porsi Makan Bergizi Gratis (MBG) sesuai standar WHO.
+              Skrining ini memadukan <strong>Kamera Computer Vision</strong> untuk deteksi fisik awal &amp; <strong>Kuesioner Interaktif</strong> untuk mempersonalisasi porsi Makan Bergizi Gratis (MBG) sesuai standar WHO.
             </p>
             <button
               type="button"
@@ -146,29 +190,46 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       )}
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* SCREEN 1: SCANNING (VISUAL POSE & SCANNER OVERLAY)             */}
+      {/* SCREEN 1: FULLSCREEN CAMERA WITH framebody.svg OVERLAY GUIDE   */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 1 && (
-        <div className="flex-1 flex flex-col justify-between p-4 relative">
-          {/* Top Bar */}
-          <div className="flex items-center justify-between pt-1 z-10">
+        <div className="flex-1 flex flex-col justify-between p-4 relative min-h-[640px] overflow-hidden">
+          {/* Background: Live Camera Stream or Simulated Camera Canvas */}
+          <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-900 z-0">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="w-full h-full object-cover transform -scale-x-100"
+            />
+            {/* Fallback ambient camera gradient if permission pending */}
+            {!isCameraActive && (
+              <div className="absolute inset-0 bg-gradient-to-b from-[#8C8B85] via-[#A3A29B] to-[#73726C]" />
+            )}
+            {/* Vignette shadow overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/35" />
+          </div>
+
+          {/* Top Bar Header (Z-20) */}
+          <div className="flex items-center justify-between pt-1 z-20">
             <button
               type="button"
               onClick={onBackToHome}
-              className="w-9 h-9 rounded-full bg-[#E5F7A3] hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center shadow-xs cursor-pointer transition-transform active:scale-95"
-              title="Kembali"
+              className="w-9 h-9 rounded-full bg-[#E5F7A3]/95 hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center shadow-md cursor-pointer transition-transform active:scale-95 border border-white/40 backdrop-blur-xs"
+              title="Kembali ke Beranda"
             >
               <ArrowLeft className="w-4 h-4 text-ford-blue" />
             </button>
 
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-[#E5F7A3] text-ford-blue flex items-center justify-center shadow-xs">
+              <div className="w-9 h-9 rounded-full bg-[#E5F7A3]/95 text-ford-blue flex items-center justify-center shadow-md border border-white/40 backdrop-blur-xs">
                 <User className="w-4 h-4 text-ford-blue" />
               </div>
               <button
                 type="button"
                 onClick={() => setShowHelpModal(true)}
-                className="w-9 h-9 rounded-full bg-[#E5F7A3] hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center font-bold shadow-xs cursor-pointer"
+                className="w-9 h-9 rounded-full bg-[#E5F7A3]/95 hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center font-bold shadow-md cursor-pointer border border-white/40 backdrop-blur-xs"
                 title="Bantuan"
               >
                 <HelpCircle className="w-4 h-4 text-ford-blue" />
@@ -176,103 +237,75 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
           </div>
 
-          {/* Center: Silhouette & Hand Outline Viewfinder */}
-          <div className="my-auto flex flex-col items-center justify-center relative py-6">
+          {/* Center: Real framebody.svg Overlay from public/ */}
+          <div className="my-auto flex flex-col items-center justify-center relative py-2 z-10">
             {/* Animated Laser Scanning Beam */}
             {isScanningActive && (
-              <div className="absolute inset-x-8 top-1/4 h-1 bg-gradient-to-r from-transparent via-brand-orange to-transparent shadow-[0_0_15px_#FF8C00] animate-bounce [animation-duration:1.5s] z-20" />
+              <div className="absolute inset-x-4 top-1/3 h-1 bg-gradient-to-r from-transparent via-brand-orange to-transparent shadow-[0_0_20px_#FF8C00] animate-bounce [animation-duration:1.2s] z-30 pointer-events-none" />
             )}
 
-            {/* Silhouette Graphic Illustration */}
-            <div className="relative w-64 h-72 flex items-center justify-center">
-              <svg
-                viewBox="0 0 240 260"
-                className="w-full h-full drop-shadow-md"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Hand Outline */}
-                <path
-                  d="M45 130 C45 105, 48 95, 52 95 C56 95, 58 105, 58 120 M58 100 C58 85, 62 75, 67 75 C72 75, 74 85, 74 110 M74 90 C74 78, 78 70, 83 70 C88 70, 90 78, 90 115 M90 102 C90 92, 94 88, 98 88 C102 88, 104 95, 104 125 C104 150, 95 170, 75 175 C60 178, 45 155, 45 130 Z"
-                  stroke="white"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={isScanningActive ? "animate-pulse" : ""}
-                />
+            {/* Official framebody.svg Body & Hand Outline */}
+            <div className="relative w-full max-w-[280px] sm:max-w-[310px] aspect-[4/5] flex items-center justify-center">
+              <img
+                src="/framebody.svg"
+                alt="Frame Body Guide"
+                className={`w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_4px_14px_rgba(0,0,0,0.45)] transition-opacity duration-300 ${
+                  isScanningActive ? "animate-pulse" : ""
+                }`}
+              />
 
-                {/* Head Silhouette Outline */}
-                <circle
-                  cx="145"
-                  cy="75"
-                  r="35"
-                  stroke="white"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  className={isScanningActive ? "animate-pulse" : ""}
-                />
-
-                {/* Body & Shoulders Outline */}
-                <path
-                  d="M100 190 C100 135, 120 120, 145 120 C170 120, 190 135, 190 190"
-                  stroke="white"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  className={isScanningActive ? "animate-pulse" : ""}
-                />
-              </svg>
-
-              {/* Progress Overlay if scanning */}
+              {/* Progress Overlay when scanning */}
               {isScanningActive && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 backdrop-blur-2xs rounded-3xl">
-                  <div className="w-12 h-12 rounded-full bg-white text-ford-blue flex items-center justify-center font-black text-sm shadow-lg animate-spin">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/35 backdrop-blur-2xs rounded-3xl z-20">
+                  <div className="w-12 h-12 rounded-full bg-white text-ford-blue flex items-center justify-center font-black text-sm shadow-xl animate-spin">
                     <RefreshCw className="w-6 h-6 text-light-sea-green" />
                   </div>
-                  <p className="text-[12px] font-black text-white mt-2 drop-shadow">
+                  <p className="text-[12px] font-black text-white mt-2 drop-shadow-md">
                     Memindai AI ({scanProgress}%)
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Slider / Step Indicator Bar */}
-            <div className="w-3/4 max-w-[220px] h-1.5 bg-white/40 rounded-full relative my-2 overflow-visible">
+            {/* Step Indicator / Slider Line with Orange Dot */}
+            <div className="w-3/4 max-w-[220px] h-1.5 bg-white/40 rounded-full relative my-1 overflow-visible z-20">
               <div
                 className="h-full bg-brand-orange rounded-full transition-all duration-300"
-                style={{ width: isScanningActive ? `${scanProgress}%` : "30%" }}
+                style={{ width: isScanningActive ? `${scanProgress}%` : "35%" }}
               />
               <div
-                className="w-3.5 h-3.5 rounded-full bg-brand-orange border-2 border-white shadow-xs absolute top-1/2 -translate-y-1/2 transition-all duration-300"
-                style={{ left: isScanningActive ? `calc(${scanProgress}% - 7px)` : "calc(30% - 7px)" }}
+                className="w-3.5 h-3.5 rounded-full bg-brand-orange border-2 border-white shadow-md absolute top-1/2 -translate-y-1/2 transition-all duration-300"
+                style={{ left: isScanningActive ? `calc(${scanProgress}% - 7px)` : "calc(35% - 7px)" }}
               />
             </div>
           </div>
 
-          {/* Bottom Banner & Scanning Button */}
-          <div className="space-y-3 z-10">
-            <div className="bg-[#86B898]/75 backdrop-blur-md p-3.5 rounded-2xl border border-white/40 text-ford-blue space-y-1 shadow-sm">
+          {/* Bottom Card & Capture Trigger Button (Z-20) */}
+          <div className="space-y-3 z-20 pb-1">
+            <div className="bg-[#78A98A]/85 backdrop-blur-md p-3.5 rounded-2xl border border-white/50 text-white space-y-1 shadow-md">
               <div className="flex items-center gap-2">
-                <Scan className="w-4 h-4 text-ford-blue shrink-0" />
-                <h3 className="text-[13px] font-black text-ford-blue">Scanning</h3>
+                <Scan className="w-4 h-4 text-white shrink-0" />
+                <h3 className="text-[13px] font-black text-white">Scanning</h3>
               </div>
-              <p className="text-[11px] text-ford-blue/90 font-medium leading-relaxed">
+              <p className="text-[11px] text-white/95 font-medium leading-relaxed">
                 Posisikan Wajah, Tangan, Kuku, Rambut, dan Mata Anda sesuai petunjuk.
               </p>
             </div>
 
             {/* Circular Mascot Capture Button */}
-            <div className="flex items-center justify-center pb-2">
+            <div className="flex items-center justify-center pb-1">
               <button
                 type="button"
                 onClick={handleStartScan}
                 disabled={isScanningActive}
-                className="w-16 h-16 rounded-full bg-white shadow-xl border-4 border-[#86B898] flex items-center justify-center relative cursor-pointer active:scale-95 transition-transform group"
+                className="w-16 h-16 rounded-full bg-white shadow-2xl border-4 border-[#78A98A] flex items-center justify-center relative cursor-pointer active:scale-95 transition-transform group"
+                title="Ambil Foto & Mulai Pindaian AI"
               >
-                <div className="absolute -inset-2 rounded-full bg-green-02/30 animate-ping pointer-events-none" />
+                <div className="absolute -inset-2 rounded-full bg-green-02/40 animate-ping pointer-events-none" />
                 <img
                   src="/logo_app.svg"
                   alt="Capture"
-                  className="w-10 h-10 object-contain"
+                  className="w-10 h-10 object-contain group-hover:scale-105 transition-transform"
                 />
               </button>
             </div>
