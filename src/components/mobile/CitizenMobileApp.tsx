@@ -757,30 +757,30 @@ export const CitizenMobileApp: React.FC = () => {
         onTouchEnd={handleTouchEnd}
         className="w-full h-[100dvh] sm:h-[810px] sm:max-w-[395px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none"
       >
-        {/* Dynamic Context-Aware Pull-to-Refresh Indicator */}
+        {/* Dynamic Floating Transparent Pull-to-Refresh Pill Overlay (Never pushes layout) */}
         {pullY > 0 && (
           <div
-            style={{ height: `${pullY}px` }}
-            className={`w-full flex items-center justify-center overflow-hidden transition-all text-[11px] font-bold gap-2 relative z-50 ${
-              ["splash", "onboarding"].includes(currentScreen)
-                ? "bg-green-tint/95 text-ford-blue border-b border-green-02/40 backdrop-blur-md"
-                : currentScreen === "main" && activeTab === "screening"
-                ? "bg-slate-900/90 text-white border-b border-white/20 backdrop-blur-md"
-                : "bg-white/95 text-ford-blue border-b border-slate-200/80 backdrop-blur-md shadow-2xs"
-            }`}
+            style={{
+              transform: `translate(-50%, ${Math.min(pullY * 0.75, 42)}px)`,
+              opacity: Math.min(pullY / 25, 1),
+            }}
+            className="absolute top-1 left-1/2 z-50 pointer-events-none transition-all duration-75 ease-out"
           >
-            <div className={`p-1 rounded-full ${
-              ["splash", "onboarding"].includes(currentScreen)
-                ? "bg-white/80 text-ford-blue"
-                : currentScreen === "main" && activeTab === "screening"
-                ? "bg-white/20 text-green-02"
-                : "bg-green-tint text-ford-blue"
-            }`}>
-              <RefreshCw className={`w-3.5 h-3.5 ${isPullRefreshing ? "animate-spin text-light-sea-green" : "text-ford-blue"} transition-transform`} />
+            <div className="px-3.5 py-1.5 rounded-full bg-slate-900/75 backdrop-blur-xl border border-white/20 text-white shadow-2xl flex items-center gap-2 text-[11px] font-bold">
+              <RefreshCw
+                className={`w-3.5 h-3.5 text-green-02 ${isPullRefreshing ? "animate-spin" : ""}`}
+                style={{
+                  transform: isPullRefreshing ? undefined : `rotate(${pullY * 6}deg)`,
+                }}
+              />
+              <span className="tracking-tight text-slate-100">
+                {isPullRefreshing
+                  ? "Memperbarui..."
+                  : pullY >= 45
+                  ? "Lepas untuk Segarkan"
+                  : "Tarik untuk Segarkan"}
+              </span>
             </div>
-            <span className="tracking-tight">
-              {isPullRefreshing ? "Memperbarui Aplikasi..." : pullY >= 45 ? "Lepas untuk Segarkan" : "Tarik untuk Memuat Ulang"}
-            </span>
           </div>
         )}
 
@@ -958,7 +958,7 @@ export const CitizenMobileApp: React.FC = () => {
               </header>
             )}
 
-            {/* Main Tab Views with Pull-to-Refresh */}
+            {/* Main Tab Views with Pull-to-Refresh and Bottom Clearance */}
             <main
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
@@ -966,7 +966,7 @@ export const CitizenMobileApp: React.FC = () => {
               className={`flex-1 font-sans ${
                 activeTab === "screening"
                   ? "p-0 m-0 h-full w-full overflow-hidden"
-                  : "p-3.5 space-y-3.5 overflow-y-auto pb-6 overscroll-contain"
+                  : "p-3.5 space-y-3.5 overflow-y-auto pb-24 overscroll-contain min-h-0"
               }`}
             >
               {activeTab === "home" && (
@@ -1017,9 +1017,9 @@ export const CitizenMobileApp: React.FC = () => {
               )}
             </main>
 
-            {/* ═══ 3-TAB BOTTOM NAVIGATION BAR (Hidden on Fullscreen Screening/Camera) ═══ */}
+            {/* ═══ 3-TAB LOCKED BOTTOM NAVIGATION BAR ═══ */}
             {activeTab !== "screening" && (
-              <div className="shrink-0 bg-white border-t border-slate-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pb-safe-nav pt-1.5 px-4 relative font-sans animate-in slide-in-from-bottom-2 duration-200">
+              <div className="shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2 pb-5 sm:pb-3 px-4 relative font-sans animate-in slide-in-from-bottom-2 duration-200">
                 <nav className="flex items-center justify-around max-w-sm mx-auto">
                   {/* 1. Beranda (Left) */}
                   <button
