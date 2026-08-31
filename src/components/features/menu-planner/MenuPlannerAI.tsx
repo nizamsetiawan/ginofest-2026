@@ -143,6 +143,31 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
   const [logisticsBOM, setLogisticsBOM] = useState<any[]>([]);
   const [districtsList, setDistrictsList] = useState<DistrictData[]>(GRESIK_DISTRICTS);
 
+  // Google Images Live Search for Detail Modal (SerpApi)
+  const [modalGoogleImage, setModalGoogleImage] = useState<{ url: string; title: string; isLoading: boolean } | null>(null);
+
+  useEffect(() => {
+    if (isDetailModalOpen && selectedDayForDetail?.menuTitle) {
+      let isMounted = true;
+      setModalGoogleImage({ url: "", title: "", isLoading: true });
+      
+      fetch(`/api/search-food-image?query=${encodeURIComponent(selectedDayForDetail.menuTitle)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (isMounted && data.imageUrl) {
+            setModalGoogleImage({ url: data.imageUrl, title: data.title || selectedDayForDetail.menuTitle, isLoading: false });
+          }
+        })
+        .catch(() => {
+          if (isMounted) setModalGoogleImage(null);
+        });
+
+      return () => { isMounted = false; };
+    } else {
+      setModalGoogleImage(null);
+    }
+  }, [isDetailModalOpen, selectedDayForDetail]);
+
   // Load Cloud Districts from Firestore
   useEffect(() => {
     async function loadCloudDistricts() {
@@ -1213,6 +1238,33 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                   <X className="w-5 h-5" />
                 </button>
               </div>
+
+              {/* Foto Visual Masakan Asli (Google Images via SerpApi) */}
+              {modalGoogleImage?.isLoading ? (
+                <div className="h-40 rounded-2xl bg-green-tint/50 border border-green-02/40 flex flex-col items-center justify-center text-ford-blue animate-pulse gap-2">
+                  <Loader2 className="w-6 h-6 animate-spin text-light-sea-green" />
+                  <span className="text-[12px] font-bold">Mencari foto kuliner asli di Google Images...</span>
+                </div>
+              ) : modalGoogleImage?.url ? (
+                <div className="relative h-44 rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group bg-slate-100">
+                  <img
+                    src={modalGoogleImage.url}
+                    alt={selectedDayForDetail.menuTitle || "Sajian Menu MBG"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-transparent flex items-end justify-between p-3">
+                    <div className="min-w-0 pr-2">
+                      <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-500 text-white inline-block mb-0.5">
+                        🌐 Foto Riil Google Images
+                      </span>
+                      <p className="text-[11.5px] font-medium text-slate-100 truncate">
+                        {modalGoogleImage.title}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
 
               {/* Badge Formula MBG Standar Nasional */}
               <div className="p-4 rounded-2xl bg-green-tint border border-green-02/40 flex items-center gap-3">
