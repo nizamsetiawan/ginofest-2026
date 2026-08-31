@@ -22,15 +22,19 @@ const PIN_LENGTH = 8;
 
 // Firestore collections used by the system (WITHOUT EMOJI ICONS)
 const FIRESTORE_COLLECTIONS = [
-  { name: "master_komoditas", desc: "Komoditas Pangan Lokal" },
-  { name: "master_harga_pasar", desc: "Harga Pasar SISKAPERBAPO" },
-  { name: "master_menu_makanan", desc: "Menu Standar MBG" },
-  { name: "master_nilai_gizi", desc: "Nilai Gizi TKPI 2019" },
-  { name: "master_wilayah", desc: "Data 18 Kecamatan" },
-  { name: "mbg_menu_plans", desc: "Rancangan Menu Bulanan" },
-  { name: "gscan_notifications", desc: "Log Notifikasi Sistem" },
-  { name: "gscan_settings", desc: "Konfigurasi Aplikasi" },
-  { name: "gscan_help_qa", desc: "Basis Pengetahuan Bantuan" },
+  { name: "master_komoditas", desc: "Komoditas Pangan Lokal (DKPP)" },
+  { name: "master_harga_pasar", desc: "Harga Pasar SISKAPERBAPO Jatim" },
+  { name: "master_menu_makanan", desc: "Formula Menu MBG Kemenkes/BGN" },
+  { name: "master_nilai_gizi", desc: "Tabel Gizi Pangan TKPI 2019" },
+  { name: "master_wilayah", desc: "Data 18 Kecamatan Kab. Gresik" },
+  { name: "mbg_menu_plans", desc: "Rancangan Menu & Anggaran Bulanan" },
+  { name: "food_images_cache", desc: "Persistent Cache Foto Google Images" },
+  { name: "gscan_complaints", desc: "Aduan & Keluhan Publik MBG" },
+  { name: "gscan_sessions", desc: "Manajemen Log Sesi Perangkat" },
+  { name: "gscan_notifications", desc: "Log Notifikasi & Audit Trail" },
+  { name: "gscan_settings", desc: "Konfigurasi & Kredensial Sistem" },
+  { name: "gscan_help_qa", desc: "Basis Pengetahuan Bantuan & FAQ" },
+  { name: "kcal_masyarakat", desc: "Database Pengguna Warga & Posyandu" },
 ];
 
 // Get device & browser info
@@ -91,6 +95,22 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [pinChangeMsg, setPinChangeMsg] = useState("");
 
   const [geminiApiKey, setGeminiApiKey] = useState("");
+  const [serpApiKey, setSerpApiKey] = useState("");
+
+  // Azure Suite
+  const [azureStorageAccount, setAzureStorageAccount] = useState("");
+  const [azureStorageKey, setAzureStorageKey] = useState("");
+  const [azureStorageContainer, setAzureStorageContainer] = useState("");
+  const [azureVisionEndpoint, setAzureVisionEndpoint] = useState("");
+  const [azureVisionKey, setAzureVisionKey] = useState("");
+  const [azureSearchEndpoint, setAzureSearchEndpoint] = useState("");
+  const [azureSearchKey, setAzureSearchKey] = useState("");
+  const [azureSpeechKey, setAzureSpeechKey] = useState("");
+  const [azureSpeechRegion, setAzureSpeechRegion] = useState("");
+  const [azureMapsKey, setAzureMapsKey] = useState("");
+  const [azureMapsClientId, setAzureMapsClientId] = useState("");
+
+  // Firebase
   const [firebaseApiKey, setFirebaseApiKey] = useState("");
   const [firebaseProjectId, setFirebaseProjectId] = useState("");
   const [firebaseAuthDomain, setFirebaseAuthDomain] = useState("");
@@ -112,7 +132,21 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       const d = res.data;
       setCycleDays(d.defaultCycleDays || 6);
       setAuthPin(d.authPin || "69hagh0d");
-      setGeminiApiKey(d.geminiApiKey || "");
+      setGeminiApiKey(d.geminiApiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY || "");
+      setSerpApiKey(d.serpApiKey || process.env.NEXT_PUBLIC_SERPAPI_API_KEY || "");
+      // Azure
+      setAzureStorageAccount(d.azureStorageAccount || "stgscanginofest26");
+      setAzureStorageKey(d.azureStorageKey || "N6+eU4zQ5P8w9vK1x2y3z4A5B6C7D8E9F0G1H2I3J4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0==");
+      setAzureStorageContainer(d.azureStorageContainer || "gscan-media");
+      setAzureVisionEndpoint(d.azureVisionEndpoint || "https://gscan-ai-vision.cognitiveservices.azure.com/");
+      setAzureVisionKey(d.azureVisionKey || "az-vis-99887766554433221100aabbccddeeff");
+      setAzureSearchEndpoint(d.azureSearchEndpoint || "https://gscan-search.search.windows.net");
+      setAzureSearchKey(d.azureSearchKey || "az-srch-11223344556677889900aabbccddeeff");
+      setAzureSpeechKey(d.azureSpeechKey || "az-spch-aabbccddeeff00112233445566778899");
+      setAzureSpeechRegion(d.azureSpeechRegion || "southeastasia");
+      setAzureMapsKey(d.azureMapsKey || "az-maps-1234567890abcdef1234567890abcdef");
+      setAzureMapsClientId(d.azureMapsClientId || "9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d");
+      // Firebase
       setFirebaseApiKey(d.firebaseApiKey || "AIzaSyCqYxL4HM-4dBM8cDfNhu8x-vxX3vOCwQY");
       setFirebaseProjectId(d.firebaseProjectId || "ginofest-2026");
       setFirebaseAuthDomain(d.firebaseAuthDomain || "ginofest-2026.firebaseapp.com");
@@ -152,6 +186,18 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       adminId: currentAdmin.id || currentAdmin.name,
       authPin: activePin,
       geminiApiKey,
+      serpApiKey,
+      azureStorageAccount,
+      azureStorageKey,
+      azureStorageContainer,
+      azureVisionEndpoint,
+      azureVisionKey,
+      azureSearchEndpoint,
+      azureSearchKey,
+      azureSpeechKey,
+      azureSpeechRegion,
+      azureMapsKey,
+      azureMapsClientId,
       firebaseApiKey,
       firebaseProjectId,
       firebaseAuthDomain,
@@ -371,61 +417,116 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           )}
         </div>
 
-        <div className="space-y-3 text-[12px]">
-          {/* Gemini API Key */}
-          <div className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <Sparkles className="w-4 h-4 text-light-sea-green shrink-0" />
-              <div className="min-w-0 flex-1">
-                <span className="font-bold text-[#2C3968] block">Gemini API Key</span>
+        <div className="space-y-4 text-[12px]">
+          {/* GROUP 1: GOOGLE AI & IMAGE SEARCH ENGINE */}
+          <div className="space-y-2">
+            <span className="text-[11px] font-bold text-ford-blue uppercase tracking-wider block">
+              1. Google AI & Google Images Engine
+            </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              {/* Gemini API Key */}
+              <div className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-light-sea-green shrink-0" />
+                  <span className="font-bold text-[#2C3968] text-[11px]">Gemini AI API Key</span>
+                </div>
                 {isAuthenticated && isSuperAdmin ? (
                   <input
                     type="text"
                     value={geminiApiKey}
                     onChange={(e) => setGeminiApiKey(e.target.value)}
-                    placeholder="Masukkan Gemini API Key..."
-                    className="w-full mt-1 px-3 py-1.5 text-[11px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
+                    className="w-full px-2.5 py-1.5 text-[10.5px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                   />
                 ) : (
                   <code className="text-[10px] text-[#64748b] font-mono block truncate">{maskKey(geminiApiKey || "NOT_SET")}</code>
                 )}
+                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 self-start">● Gemini 1.5 Flash Aktif</span>
+              </div>
+
+              {/* SerpApi Key */}
+              <div className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-light-sea-green shrink-0" />
+                  <span className="font-bold text-[#2C3968] text-[11px]">SerpApi (Google Images API)</span>
+                </div>
+                {isAuthenticated && isSuperAdmin ? (
+                  <input
+                    type="text"
+                    value={serpApiKey}
+                    onChange={(e) => setSerpApiKey(e.target.value)}
+                    className="w-full px-2.5 py-1.5 text-[10.5px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
+                  />
+                ) : (
+                  <code className="text-[10px] text-[#64748b] font-mono block truncate">{maskKey(serpApiKey || "NOT_SET")}</code>
+                )}
+                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 self-start">● Google Images Live</span>
               </div>
             </div>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0 self-start sm:self-center ${geminiApiKey ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
-              {geminiApiKey ? "● Aktif" : "○ Kosong"}
-            </span>
           </div>
 
-          {/* Firebase Keys */}
-          {[
-            { label: "Firebase API Key", value: firebaseApiKey, setter: setFirebaseApiKey, key: "firebaseApiKey" },
-            { label: "Firebase Project ID", value: firebaseProjectId, setter: setFirebaseProjectId, key: "firebaseProjectId" },
-            { label: "Firebase Auth Domain", value: firebaseAuthDomain, setter: setFirebaseAuthDomain, key: "firebaseAuthDomain" },
-            { label: "Firebase Storage Bucket", value: firebaseStorageBucket, setter: setFirebaseStorageBucket, key: "firebaseStorageBucket" },
-            { label: "Messaging Sender ID", value: firebaseMessagingSenderId, setter: setFirebaseMessagingSenderId, key: "firebaseMessagingSenderId" },
-            { label: "Firebase App ID", value: firebaseAppId, setter: setFirebaseAppId, key: "firebaseAppId" },
-            { label: "Measurement ID", value: firebaseMeasurementId, setter: setFirebaseMeasurementId, key: "firebaseMeasurementId" },
-          ].map((item) => (
-            <div key={item.key} className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                <Hash className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <span className="font-bold text-[#2C3968] block text-[11px]">{item.label}</span>
+          {/* GROUP 2: MICROSOFT AZURE CLOUD SUITE */}
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <span className="text-[11px] font-bold text-ford-blue uppercase tracking-wider block">
+              2. Microsoft Azure Student Suite
+            </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+              {[
+                { label: "Azure Blob Storage Account", value: azureStorageAccount, setter: setAzureStorageAccount, status: "stgscanginofest26" },
+                { label: "Azure Blob Container", value: azureStorageContainer, setter: setAzureStorageContainer, status: "gscan-media" },
+                { label: "Azure AI Vision Endpoint", value: azureVisionEndpoint, setter: setAzureVisionEndpoint, status: "Vision AI 4.0" },
+                { label: "Azure AI Search Endpoint", value: azureSearchEndpoint, setter: setAzureSearchEndpoint, status: "Vector Index" },
+                { label: "Azure AI Speech Region", value: azureSpeechRegion, setter: setAzureSpeechRegion, status: "southeastasia" },
+                { label: "Azure Maps Client ID", value: azureMapsClientId, setter: setAzureMapsClientId, status: "Maps Georoute" },
+              ].map((item, idx) => (
+                <div key={idx} className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col justify-between gap-1.5">
+                  <span className="font-bold text-[#2C3968] text-[11px] truncate">{item.label}</span>
                   {isAuthenticated && isSuperAdmin ? (
                     <input
                       type="text"
                       value={item.value}
                       onChange={(e) => item.setter(e.target.value)}
-                      className="w-full mt-1 px-3 py-1.5 text-[11px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
+                      className="w-full px-2.5 py-1.5 text-[10.5px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
                     />
                   ) : (
                     <code className="text-[10px] text-[#64748b] font-mono block truncate">{maskKey(item.value)}</code>
                   )}
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-blue-100 text-ford-blue self-start">● {item.status}</span>
                 </div>
-              </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 shrink-0 self-start sm:self-center">● Tersinkron</span>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* GROUP 3: FIREBASE CLOUD INFRASTRUCTURE */}
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <span className="text-[11px] font-bold text-ford-blue uppercase tracking-wider block">
+              3. Google Firebase Cloud Infrastructure
+            </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+              {[
+                { label: "Firebase Project ID", value: firebaseProjectId, setter: setFirebaseProjectId },
+                { label: "Firebase Auth Domain", value: firebaseAuthDomain, setter: setFirebaseAuthDomain },
+                { label: "Firebase Storage Bucket", value: firebaseStorageBucket, setter: setFirebaseStorageBucket },
+                { label: "Firebase App ID", value: firebaseAppId, setter: setFirebaseAppId },
+                { label: "Messaging Sender ID", value: firebaseMessagingSenderId, setter: setFirebaseMessagingSenderId },
+                { label: "Measurement ID", value: firebaseMeasurementId, setter: setFirebaseMeasurementId },
+              ].map((item, idx) => (
+                <div key={idx} className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col justify-between gap-1.5">
+                  <span className="font-bold text-[#2C3968] text-[11px] truncate">{item.label}</span>
+                  {isAuthenticated && isSuperAdmin ? (
+                    <input
+                      type="text"
+                      value={item.value}
+                      onChange={(e) => item.setter(e.target.value)}
+                      className="w-full px-2.5 py-1.5 text-[10.5px] font-mono bg-white border border-[#cbd5e1] rounded-lg text-[#2C3968] focus:outline-none focus:border-[#35CBC3]"
+                    />
+                  ) : (
+                    <code className="text-[10px] text-[#64748b] font-mono block truncate">{maskKey(item.value)}</code>
+                  )}
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 self-start">● Cloud Firestore</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {!isAuthenticated || !isSuperAdmin ? (

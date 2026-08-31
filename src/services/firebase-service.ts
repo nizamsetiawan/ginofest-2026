@@ -622,8 +622,21 @@ export interface GScanSettings {
   firebaseMessagingSenderId?: string;
   firebaseAppId?: string;
   firebaseMeasurementId?: string;
-  // Gemini
+  // Gemini & SerpApi
   geminiApiKey?: string;
+  serpApiKey?: string;
+  // Microsoft Azure Suite
+  azureStorageAccount?: string;
+  azureStorageKey?: string;
+  azureStorageContainer?: string;
+  azureVisionEndpoint?: string;
+  azureVisionKey?: string;
+  azureSearchEndpoint?: string;
+  azureSearchKey?: string;
+  azureSpeechKey?: string;
+  azureSpeechRegion?: string;
+  azureMapsKey?: string;
+  azureMapsClientId?: string;
   updatedAt?: any;
   updatedAtIso?: string;
 }
@@ -680,7 +693,19 @@ export async function seedCredentialsToFirestore() {
       firebaseMessagingSenderId: existingData.firebaseMessagingSenderId || "19574959170",
       firebaseAppId: existingData.firebaseAppId || "1:19574959170:web:ca37e18784de2eeb3511db",
       firebaseMeasurementId: existingData.firebaseMeasurementId || "G-KKJMJ66N8Q",
-      geminiApiKey: existingData.geminiApiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY || "",
+      geminiApiKey: existingData.geminiApiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "",
+      serpApiKey: existingData.serpApiKey || process.env.SERPAPI_API_KEY || "",
+      azureStorageAccount: existingData.azureStorageAccount || "stgscanginofest26",
+      azureStorageKey: existingData.azureStorageKey || "N6+eU4zQ5P8w9vK1x2y3z4A5B6C7D8E9F0G1H2I3J4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0==",
+      azureStorageContainer: existingData.azureStorageContainer || "gscan-media",
+      azureVisionEndpoint: existingData.azureVisionEndpoint || "https://gscan-ai-vision.cognitiveservices.azure.com/",
+      azureVisionKey: existingData.azureVisionKey || "az-vis-99887766554433221100aabbccddeeff",
+      azureSearchEndpoint: existingData.azureSearchEndpoint || "https://gscan-search.search.windows.net",
+      azureSearchKey: existingData.azureSearchKey || "az-srch-11223344556677889900aabbccddeeff",
+      azureSpeechKey: existingData.azureSpeechKey || "az-spch-aabbccddeeff00112233445566778899",
+      azureSpeechRegion: existingData.azureSpeechRegion || "southeastasia",
+      azureMapsKey: existingData.azureMapsKey || "az-maps-1234567890abcdef1234567890abcdef",
+      azureMapsClientId: existingData.azureMapsClientId || "9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d",
       updatedAt: serverTimestamp(),
       updatedAtIso: new Date().toISOString(),
     }, { merge: true });
