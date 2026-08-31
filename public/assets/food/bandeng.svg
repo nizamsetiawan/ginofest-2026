@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8F9F8" />
+      <stop offset="100%" stop-color="#D1F2F0" />
+    </linearGradient>
+    <linearGradient id="plateGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+    <linearGradient id="fishGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#35CBC3" />
+      <stop offset="100%" stop-color="#2C3968" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#80E5A7" />
+      <stop offset="100%" stop-color="#35CBC3" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bgGrad)" rx="24" />
+  
+  <!-- Tray Rim -->
+  <rect x="30" y="25" width="340" height="250" rx="28" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="3" filter="drop-shadow(0px 8px 16px rgba(44, 57, 104, 0.08))" />
+  
+  <!-- Food Compartments -->
+  <!-- Rice Compartment -->
+  <rect x="50" y="45" width="140" height="110" rx="16" fill="url(#plateGrad)" stroke="#E2E8F0" stroke-width="2" />
+  <circle cx="120" cy="100" r="32" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2" />
+  <circle cx="120" cy="100" r="28" fill="#F8FAFC" />
+  <text x="120" y="104" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#2C3968" text-anchor="middle">Nasi Pulen</text>
+
+  <!-- Main Protein: Bandeng Compartment -->
+  <rect x="205" y="45" width="145" height="110" rx="16" fill="url(#plateGrad)" stroke="#35CBC3" stroke-width="2" />
+  <path d="M 230 100 Q 275 75 320 100 Q 275 125 230 100 Z" fill="url(#fishGrad)" />
+  <path d="M 320 100 L 335 88 L 335 112 Z" fill="#2C3968" />
+  <circle cx="250" cy="98" r="3" fill="#FFFFFF" />
+  <text x="278" y="138" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#2C3968" text-anchor="middle">Bandeng Bakar</text>
+
+  <!-- Veggie & Soup Compartment -->
+  <rect x="50" y="170" width="140" height="90" rx="16" fill="url(#plateGrad)" stroke="#80E5A7" stroke-width="2" />
+  <circle cx="90" cy="215" r="20" fill="#E8F9F8" stroke="#80E5A7" stroke-width="1.5" />
+  <path d="M 85 210 Q 90 200 95 210 Q 90 220 85 210 Z" fill="#35CBC3" />
+  <path d="M 90 215 Q 98 210 95 225 Q 85 220 90 215 Z" fill="#80E5A7" />
+  <text x="135" y="218" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#2C3968">Sayur Kelor</text>
+
+  <!-- Fruit & Milk Compartment -->
+  <rect x="205" y="170" width="145" height="90" rx="16" fill="url(#plateGrad)" stroke="#E2E8F0" stroke-width="2" />
+  <rect x="220" y="185" width="28" height="42" rx="4" fill="#35CBC3" />
+  <text x="234" y="210" font-family="system-ui, sans-serif" font-size="8" font-weight="bold" fill="#FFFFFF" text-anchor="middle">SUSU</text>
+  <circle cx="285" cy="205" r="16" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="285" y="209" font-family="system-ui, sans-serif" font-size="9" font-weight="bold" fill="#B45309" text-anchor="middle">Buah</text>
+
+  <!-- Formula 5 Bintang Pill -->
+  <rect x="135" y="15" width="130" height="20" rx="10" fill="#2C3968" />
+  <text x="200" y="29" font-family="system-ui, sans-serif" font-size="9" font-weight="bold" fill="#80E5A7" text-anchor="middle">MBG 5 Bintang • Gresik</text>
+</svg>
