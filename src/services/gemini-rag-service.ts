@@ -198,23 +198,32 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
 
   // 1. Eksekusi Live Google Gemini AI
   if (apiKey && apiKey.trim() !== "" && apiKey !== "YOUR_GEMINI_API_KEY") {
-    const flagshipModels = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"];
+    const flagshipModels = ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.7-flash"];
 
     for (const model of flagshipModels) {
       try {
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6500);
+
         const response = await fetch(geminiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
           body: JSON.stringify({
             contents: [{ parts: [{ text: masterPrompt }] }],
             generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 3500,
+              temperature: 0.6,
+              maxOutputTokens: 2500,
               responseMimeType: "application/json",
+              thinkingConfig: {
+                thinkingBudget: 0,
+              },
             },
           }),
         });
+
+        clearTimeout(timeoutId);
 
         if (response.ok) {
           const data = await response.json();
