@@ -162,12 +162,13 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
       "protein": 32.5,
       "iron": 6.2,
       "cost": 14200,
-      "localOrigin": "Sentra Petambak/Peternak ${input.districtName}"
+      "localOrigin": "Sentra Petambak/Peternak ${input.districtName}",
+      "imagePrompt": "Clean top-down photo of Indonesian MBG school lunch tray with grilled milkfish, tempeh, clear moringa soup, banana, milk carton"
     },
-    { "day": "Selasa", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string" },
-    { "day": "Rabu", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string" },
-    { "day": "Kamis", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string" },
-    { "day": "Jumat", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string" }
+    { "day": "Selasa", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string", "imagePrompt": "string" },
+    { "day": "Rabu", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string", "imagePrompt": "string" },
+    { "day": "Kamis", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string", "imagePrompt": "string" },
+    { "day": "Jumat", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string", "imagePrompt": "string" }
   ],
   "budgetSummary": {
     "plafonPerPortion": 15000,
