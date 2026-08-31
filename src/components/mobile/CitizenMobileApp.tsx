@@ -16,6 +16,7 @@ import {
   User,
   LogOut,
   ChevronRight,
+  ChevronDown,
   ShieldCheck,
   Send,
   RefreshCw,
@@ -1365,18 +1366,21 @@ export const CitizenMobileApp: React.FC = () => {
                 <label className="text-[12px] font-bold text-ford-blue block">
                   Kecamatan Domisili <span className="text-brand-red">*</span>
                 </label>
-                <select
-                  value={loginDistrict}
-                  onChange={(e) => setLoginDistrict(e.target.value)}
-                  className={`w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border text-[13px] font-medium focus:bg-white focus:outline-none transition-all cursor-pointer shadow-2xs ${
-                    !loginDistrict ? "text-slate-400 border-slate-300" : "text-ford-blue font-bold border-slate-300 focus:border-light-sea-green"
-                  }`}
-                >
-                  <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
-                  {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                    <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    value={loginDistrict}
+                    onChange={(e) => setLoginDistrict(e.target.value)}
+                    className={`w-full h-11 pl-3.5 pr-10 rounded-xl bg-[#F8FAFC] border text-[13px] font-medium focus:bg-white focus:outline-none transition-all cursor-pointer shadow-2xs appearance-none ${
+                      !loginDistrict ? "text-slate-400 border-slate-300" : "text-ford-blue font-bold border-slate-300 focus:border-light-sea-green"
+                    }`}
+                  >
+                    <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
+                    {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
+                      <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
               </div>
 
               {/* Row 1: Remember Me & Forgot Password */}
@@ -1590,25 +1594,28 @@ export const CitizenMobileApp: React.FC = () => {
                 <label className="text-[11.5px] font-bold text-ford-blue block">
                   Kecamatan Domisili <span className="text-brand-red">*</span>
                 </label>
-                <select
-                  value={regDistrict}
-                  onChange={(e) => {
-                    setRegDistrict(e.target.value);
-                    if (fieldErrors.district) setFieldErrors((p) => ({ ...p, district: "" }));
-                  }}
-                  className={`w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border text-[12.5px] font-medium transition-all cursor-pointer shadow-2xs ${
-                    fieldErrors.district
-                      ? "border-brand-red bg-red-50/40 text-brand-red focus:border-brand-red"
-                      : !regDistrict
-                      ? "border-slate-300 text-slate-400"
-                      : "border-slate-300 text-ford-blue font-bold focus:border-light-sea-green"
-                  }`}
-                >
-                  <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
-                  {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                    <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    value={regDistrict}
+                    onChange={(e) => {
+                      setRegDistrict(e.target.value);
+                      if (fieldErrors.district) setFieldErrors((p) => ({ ...p, district: "" }));
+                    }}
+                    className={`w-full h-11 pl-3.5 pr-10 rounded-xl bg-[#F8FAFC] border text-[12.5px] font-medium transition-all cursor-pointer shadow-2xs appearance-none ${
+                      fieldErrors.district
+                        ? "border-brand-red bg-red-50/40 text-brand-red focus:border-brand-red"
+                        : !regDistrict
+                        ? "border-slate-300 text-slate-400"
+                        : "border-slate-300 text-ford-blue font-bold focus:border-light-sea-green"
+                    }`}
+                  >
+                    <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
+                    {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
+                      <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
                 {fieldErrors.district && (
                   <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.district}</p>
                 )}
@@ -1863,19 +1870,22 @@ export const CitizenMobileApp: React.FC = () => {
                   <label className="text-[12px] font-bold text-ford-blue block">
                     Kecamatan Domisili <span className="text-brand-red">*</span>
                   </label>
-                  <select
-                    value={forgotDistrict}
-                    onChange={(e) => setForgotDistrict(e.target.value)}
-                    required
-                    className={`w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer shadow-2xs ${
-                      !forgotDistrict ? "text-slate-400 border-slate-300" : "text-ford-blue font-bold border-slate-300 focus:border-light-sea-green"
-                    }`}
-                  >
-                    <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
-                    {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                      <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={forgotDistrict}
+                      onChange={(e) => setForgotDistrict(e.target.value)}
+                      required
+                      className={`w-full h-11 pl-3.5 pr-10 rounded-xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer shadow-2xs appearance-none ${
+                        !forgotDistrict ? "text-slate-400 border-slate-300" : "text-ford-blue font-bold border-slate-300 focus:border-light-sea-green"
+                      }`}
+                    >
+                      <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
+                      {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
+                        <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
                 </div>
 
                 <p className="text-[11px] text-blue-gray leading-relaxed pt-0.5">
