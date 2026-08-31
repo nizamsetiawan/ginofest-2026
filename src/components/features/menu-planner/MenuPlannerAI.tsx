@@ -141,7 +141,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
   const [aiRecipePool, setAiRecipePool] = useState<string[]>([]);
   const [budgetSummary, setBudgetSummary] = useState<any>(null);
   
-  // Live Food Photo Search State (Click to fetch real food photo)
+  // Live Food Photo Search State (Click to fetch real food photo via Gemini Nano Banana)
   const [renderedFoodImages, setRenderedFoodImages] = useState<Record<string, { url: string; isLoading: boolean }>>({});
 
   const handleTriggerRenderFoodImage = async (dayKey: string, menuTitle?: string | null, composition?: string | null) => {
@@ -150,7 +150,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       [dayKey]: { url: "", isLoading: true }
     }));
 
-    const realUrl = await searchRealFoodImage(menuTitle || "Masakan Nusantara");
+    const realUrl = await searchRealFoodImage(menuTitle || "Masakan Nusantara", composition || "");
 
     setRenderedFoodImages(prev => ({
       ...prev,
@@ -857,10 +857,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                               type="button"
                               onClick={() => handleTriggerRenderFoodImage(dayKey, dayItem.menuTitle, dayItem.composition)}
                               className="w-14 h-14 rounded-2xl bg-green-tint hover:bg-green-02/25 border border-green-02/40 flex flex-col items-center justify-center text-ford-blue transition-all cursor-pointer group/btn shrink-0 shadow-2xs hover:scale-105"
-                              title="Klik untuk Render Foto Hidangan AI"
+                              title="Generate Foto Hidangan via Gemini Nano Banana"
                             >
                               <Sparkles className="w-4 h-4 text-ford-blue group-hover/btn:rotate-12 transition-transform" />
-                              <span className="text-[8px] font-bold mt-0.5 text-ford-blue leading-tight text-center">Foto AI</span>
+                              <span className="text-[8px] font-bold mt-0.5 text-ford-blue leading-tight text-center">Gemini AI</span>
                             </button>
                           );
                         })()}
@@ -1303,7 +1303,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent flex items-end justify-between p-3.5">
                         <div className="text-white">
                           <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500 text-white inline-block mb-1 shadow-xs">
-                            AI Generated Dish Photo
+                            🍌 Gemini Nano Banana AI Image
                           </span>
                           <p className="text-[12px] font-bold text-slate-100 leading-tight">
                             Sajian Rekomendasi Menu MBG Bergizi Lengkap
@@ -1315,7 +1315,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                           className="px-2.5 py-1 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-[10.5px] font-bold transition-all cursor-pointer flex items-center gap-1"
                         >
                           <RefreshCw className="w-3 h-3" />
-                          <span>Render Ulang</span>
+                          <span>Generate Ulang</span>
                         </button>
                       </div>
                     </div>

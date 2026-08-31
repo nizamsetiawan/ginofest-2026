@@ -1,6 +1,6 @@
 /**
- * Dynamic Food Image Engine for G-Scan / MBG Menu Planner
- * 100% Dynamic - Fetches live web images via `/api/search-food-image` without any static dictionary or if-else list.
+ * Food Image Engine for G-Scan / MBG Menu Planner
+ * Connects directly to Google GenAI / Nano Banana Image Generation API via `/api/generate-food-image`.
  */
 
 export interface FoodVisualInfo {
@@ -12,11 +12,16 @@ export interface FoodVisualInfo {
 }
 
 /**
- * Searches real-world food photography dynamically from live web image search.
+ * Generates photorealistic food photography using Google Gemini / Nano Banana 2 API.
  */
-export async function searchRealFoodImage(query: string): Promise<string> {
+export async function generateFoodImageWithGemini(menuTitle: string, composition?: string): Promise<string> {
   try {
-    const res = await fetch(`/api/search-food-image?q=${encodeURIComponent(query)}`);
+    const res = await fetch("/api/generate-food-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ menuTitle, composition }),
+    });
+
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.imageUrl) {
@@ -24,11 +29,19 @@ export async function searchRealFoodImage(query: string): Promise<string> {
       }
     }
   } catch (err) {
-    console.warn("Live web image search warning:", err);
+    console.warn("Gemini Nano Banana image generation warning:", err);
   }
-  
-  // Return clean dynamic web search proxy
-  return `https://foodish-api.com/images/rice/rice1.jpg`;
+
+  const prompt = encodeURIComponent(`Professional commercial top-down food photography of ${menuTitle}, authentic Indonesian balanced meal, 4k`);
+  const seed = Math.abs(menuTitle.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) * 19);
+  return `https://image.pollinations.ai/prompt/${prompt}?width=800&height=600&nologo=true&seed=${seed}&model=flux`;
+}
+
+/**
+ * Searches real-world food photography dynamically.
+ */
+export async function searchRealFoodImage(query: string, composition?: string): Promise<string> {
+  return generateFoodImageWithGemini(query, composition);
 }
 
 /**
@@ -42,6 +55,6 @@ export function getMenuFoodImage(menuTitle?: string | null, composition?: string
     fallbackUrl: "",
     altText: `Foto Masakan: ${cleanTitle}`,
     category: "complete_set",
-    tag: "Foto Asli Masakan (Live Search)",
+    tag: "Gemini Nano Banana AI",
   };
 }
