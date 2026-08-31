@@ -46,6 +46,7 @@ import {
   registerCitizenToFirestore,
   loginCitizenFromFirestore,
   resetCitizenPasswordInFirestore,
+  verifyCitizenEmailAndDistrict,
 } from "@/services/firebase-service";
 import { closeSessionLog, listenToSessionStatus, recordCitizenSessionLog, acknowledgeSessionRevocation } from "@/services/auth-service";
 
@@ -752,8 +753,8 @@ export const CitizenMobileApp: React.FC = () => {
     }
   };
 
-  // Step 1: Send OTP to Email
-  const handleSendOtp = (e: React.FormEvent) => {
+  // Step 1: Send OTP to Email (Strict Email & District Validation)
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setResetErrorMsg("");
     setResetSuccessMsg("");
@@ -773,6 +774,14 @@ export const CitizenMobileApp: React.FC = () => {
     }
 
     setIsResettingPassword(true);
+    // Verifikasi kesesuaian Email dan Kecamatan domisili dengan Firestore
+    const verifyRes = await verifyCitizenEmailAndDistrict(forgotEmail.trim(), forgotDistrict);
+    if (!verifyRes.success) {
+      setIsResettingPassword(false);
+      setResetErrorMsg(verifyRes.error || "Data akun dan kecamatan domisili tidak cocok.");
+      return;
+    }
+
     setTimeout(() => {
       setIsResettingPassword(false);
       // Generate 6-digit OTP
@@ -783,7 +792,7 @@ export const CitizenMobileApp: React.FC = () => {
       setOtpResendCountdown(30);
       setSimulatedEmailNotification(randomOtp);
       setResetSuccessMsg(`Kode OTP 6-digit berhasil dikirimkan ke email ${forgotEmail.trim()}`);
-    }, 700);
+    }, 600);
   };
 
   // Step 2: Verify 6-digit OTP
@@ -1314,14 +1323,14 @@ export const CitizenMobileApp: React.FC = () => {
 
             {/* Login Form (Spacious Inputs) */}
             <form onSubmit={handleLogin} className="space-y-3.5">
-              {/* Nama Pengguna / Email */}
+              {/* Alamat Email */}
               <div className="space-y-1">
                 <label className="text-[12px] font-bold text-ford-blue block">
-                  Nama Pengguna / Email
+                  Alamat Email <span className="text-brand-red">*</span>
                 </label>
                 <input
                   type="email"
-                  placeholder="Masukkan Nama pengguna atau Email"
+                  placeholder="Masukkan alamat email terdaftar"
                   value={loginIdentifier}
                   onChange={(e) => setLoginIdentifier(e.target.value)}
                   className="w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border border-slate-300 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20 transition-all placeholder:text-slate-400 shadow-2xs"
@@ -1331,12 +1340,12 @@ export const CitizenMobileApp: React.FC = () => {
               {/* Kata Sandi */}
               <div className="space-y-1">
                 <label className="text-[12px] font-bold text-ford-blue block">
-                  Kata Sandi
+                  Kata Sandi <span className="text-brand-red">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="Masukkan Kata Sandi"
+                    placeholder="Masukkan kata sandi akun"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     className="w-full h-11 pl-3.5 pr-10 rounded-xl bg-[#F8FAFC] border border-slate-300 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20 transition-all placeholder:text-slate-400 shadow-2xs"

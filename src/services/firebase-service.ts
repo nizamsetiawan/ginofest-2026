@@ -1062,10 +1062,44 @@ export async function loginCitizenFromFirestore(
   try {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPass = password || "";
+    const cleanDistrict = district ? district.trim() : "";
 
-    // 1. Authenticate with Firebase Authentication
+    // 1. Fetch from Cloud Firestore (kcal_masyarakat)
+    const colRef = collection(db, "kcal_masyarakat");
+    const q = query(colRef, where("email", "==", cleanEmail));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      return {
+        success: false,
+        error: "Alamat email belum terdaftar. Silakan melakukan pendaftaran akun terlebih dahulu.",
+      };
+    }
+
+    const userData = snap.docs[0].data();
+
+    // 2. Strict District Verification: Kecamatan harus sama dengan pendaftaran
+    if (cleanDistrict && userData.district) {
+      const registeredDistrict = userData.district.trim();
+      if (registeredDistrict.toLowerCase() !== cleanDistrict.toLowerCase()) {
+        return {
+          success: false,
+          error: `Kecamatan domisili tidak sesuai dengan data pendaftaran Anda (Terdaftar di Kecamatan ${registeredDistrict}). Silakan pilih Kecamatan ${registeredDistrict}.`,
+        };
+      }
+    }
+
+    // 3. Password Verification
     let firebaseUser: any = null;
     if (cleanPass) {
+      if (userData.password && userData.password !== cleanPass) {
+        return {
+          success: false,
+          error: "Kata sandi yang Anda masukkan salah. Silakan periksa kembali atau gunakan Lupa Kata Sandi.",
+        };
+      }
+
+      // Sync with Firebase Authentication if available
       try {
         const { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } = await import("firebase/auth");
         const auth = getAuth(app);
@@ -1074,13 +1108,10 @@ export async function loginCitizenFromFirestore(
           firebaseUser = cred.user;
         } catch (signInErr: any) {
           if (signInErr.code === "auth/user-not-found" || signInErr.code === "auth/invalid-credential") {
-            // Auto register in Firebase Auth if user exists in Firestore or is logging in
             try {
               const newCred = await createUserWithEmailAndPassword(auth, cleanEmail, cleanPass);
               firebaseUser = newCred.user;
             } catch {}
-          } else if (signInErr.code === "auth/wrong-password") {
-            return { success: false, error: "Kata sandi yang Anda masukkan salah. Silakan periksa kembali atau gunakan Lupa Kata Sandi." };
           }
         }
       } catch (authErr) {
@@ -1088,64 +1119,9 @@ export async function loginCitizenFromFirestore(
       }
     }
 
-    // 2. Fetch / Sync from Cloud Firestore (kcal_masyarakat)
-    const colRef = collection(db, "kcal_masyarakat");
-    const q = query(colRef, where("email", "==", cleanEmail));
-    const snap = await getDocs(q);
-
-    if (snap.empty) {
-      // Auto-provision in Firestore
-      const newDoc = await addDoc(colRef, {
-        uid: firebaseUser?.uid || "",
-        fullName: cleanEmail.split("@")[0].toUpperCase(),
-        email: cleanEmail,
-        phone: "081234567890",
-        district: district || "Kebomas",
-        password: cleanPass || "password123",
-        role: "masyarakat",
-        createdAtIso: new Date().toISOString(),
-      });
-
-      const newUser = {
-        id: newDoc.id,
-        name: cleanEmail.split("@")[0].toUpperCase(),
-        email: cleanEmail,
-        phone: "081234567890",
-        district: district || "Kebomas",
-      };
-
-      const logId = `ses_warga_${Date.now()}`;
-      // Record citizen session log
-      try {
-        await setDoc(doc(db, "kcal_session_logs", logId), {
-          id: logId,
-          userId: newUser.id,
-          email: newUser.email,
-          name: newUser.name,
-          role: "masyarakat",
-          districtLabel: `Kec. ${newUser.district}`,
-          loginAt: new Date().toISOString(),
-          userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "PWA Mobile App",
-          status: "active",
-        });
-      } catch {}
-
-      return {
-        success: true,
-        user: newUser,
-        sessionId: logId,
-      };
-    }
-
-    const userData = snap.docs[0].data();
-    if (cleanPass && userData.password && userData.password !== cleanPass && !firebaseUser) {
-      return { success: false, error: "Kata sandi yang Anda masukkan salah. Silakan coba lagi atau gunakan Lupa Kata Sandi." };
-    }
-
-    // Update district & lastLoginIso in Firestore
+    // Update lastLoginIso in Firestore
     await setDoc(doc(db, "kcal_masyarakat", snap.docs[0].id), {
       lastLoginIso: new Date().toISOString(),
-      ...(district ? { district } : {}),
       ...(firebaseUser?.uid ? { uid: firebaseUser.uid } : {}),
     }, { merge: true });
 
@@ -1154,11 +1130,10 @@ export async function loginCitizenFromFirestore(
       name: userData.fullName || cleanEmail.split("@")[0],
       email: userData.email,
       phone: userData.phone,
-      district: district || userData.district || "Kebomas",
+      district: userData.district || cleanDistrict || "Kebomas",
     };
 
     const logId = `ses_warga_${Date.now()}`;
-    // Record citizen session log
     try {
       await setDoc(doc(db, "kcal_session_logs", logId), {
         id: logId,
@@ -1181,18 +1156,45 @@ export async function loginCitizenFromFirestore(
   } catch (err: any) {
     console.error("Error login citizen:", err);
     return {
-      success: true,
-      user: {
-        id: "local_" + Date.now(),
-        name: email.split("@")[0],
-        email: email,
-        district: district || "Kebomas",
-      }
+      success: false,
+      error: err.message || "Gagal masuk ke akun masyarakat. Silakan coba beberapa saat lagi.",
     };
   }
 }
 
+export async function verifyCitizenEmailAndDistrict(
+  email: string,
+  district: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const colRef = collection(db, "kcal_masyarakat");
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanDistrict = district.trim();
 
+    const q = query(colRef, where("email", "==", cleanEmail));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      return {
+        success: false,
+        error: "Alamat email ini belum terdaftar di aplikasi Kcal. Silakan daftar terlebih dahulu.",
+      };
+    }
+
+    const userData = snap.docs[0].data();
+    if (userData.district && userData.district.trim().toLowerCase() !== cleanDistrict.toLowerCase()) {
+      return {
+        success: false,
+        error: `Kecamatan domisili tidak cocok. Akun ${cleanEmail} terdaftar di Kecamatan ${userData.district}. Silakan pilih Kecamatan ${userData.district}.`,
+      };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Error verifying citizen district:", err);
+    return { success: false, error: err.message || "Gagal memverifikasi data akun." };
+  }
+}
 
 export async function resetCitizenPasswordInFirestore(
   email: string,
@@ -1202,6 +1204,8 @@ export async function resetCitizenPasswordInFirestore(
   try {
     const colRef = collection(db, "kcal_masyarakat");
     const cleanEmail = email.trim().toLowerCase();
+    const cleanDistrict = district ? district.trim() : "";
+
     const q = query(colRef, where("email", "==", cleanEmail));
     const snap = await getDocs(q);
 
@@ -1210,10 +1214,21 @@ export async function resetCitizenPasswordInFirestore(
     }
 
     const targetDoc = snap.docs[0];
+    const userData = targetDoc.data();
+
+    // Verify district matches
+    if (cleanDistrict && userData.district) {
+      if (userData.district.trim().toLowerCase() !== cleanDistrict.toLowerCase()) {
+        return {
+          success: false,
+          error: `Kecamatan domisili tidak cocok dengan akun terdaftar (Kecamatan ${userData.district}).`,
+        };
+      }
+    }
+
     await setDoc(doc(db, "kcal_masyarakat", targetDoc.id), {
       password: newPassword,
       updatedAtIso: new Date().toISOString(),
-      ...(district ? { district } : {}),
     }, { merge: true });
 
     return { success: true };
