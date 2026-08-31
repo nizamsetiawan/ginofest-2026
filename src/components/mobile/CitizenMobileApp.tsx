@@ -706,7 +706,7 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex items-center justify-center p-0 sm:p-4 min-h-screen bg-slate-900/60 backdrop-blur-md select-none font-sans">
+    <div className="w-full h-full min-h-[100dvh] max-h-[100dvh] flex items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-md select-none font-sans overflow-hidden">
       {/* ═══ MODALS & OVERLAYS ═══ */}
       <MobilePermissionsModal
         isOpen={showPermissionDialog}
@@ -750,12 +750,12 @@ export const CitizenMobileApp: React.FC = () => {
         </div>
       )}
 
-      {/* ═══ SMARTPHONE SCREEN SHELL FRAME ═══ */}
+      {/* ═══ SMARTPHONE SCREEN SHELL FRAME (DYNAMIC RESPONSIVE 100dvh) ═══ */}
       <div 
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="w-full h-[100dvh] sm:h-[810px] sm:max-w-[395px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none"
+        className="w-full h-[100dvh] max-h-[100dvh] sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none"
       >
         {/* Dynamic Floating Transparent Pull-to-Refresh Pill Overlay (Never pushes layout) */}
         {pullY > 0 && (
