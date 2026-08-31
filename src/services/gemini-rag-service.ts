@@ -4,7 +4,6 @@ import {
   fetchRecipesFromFirestore, 
   fetchNutritionFromFirestore 
 } from "./firebase-service";
-import { getMenuFoodImage } from "@/utils/foodImageEngine";
 
 export interface MasterPromptInput {
   districtName: string;
@@ -25,7 +24,6 @@ export interface DayMenuItem {
   iron: number;
   cost: number;
   localOrigin: string;
-  imageUrl?: string;
 }
 
 export interface LogisticsItem {
@@ -61,7 +59,6 @@ export async function generateMenuWithSinglePrompt(input: MasterPromptInput): Pr
   const students = input.studentsCount || 12500;
   const apiKey = input.customApiKey || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
-  // 1. Ambil 4 Dataset Master Data Pangan secara RAG
   let districtCommodities: string[] = [];
   let availablePrices: any[] = [];
   let standardRecipes: any[] = [];
@@ -104,7 +101,6 @@ export async function generateMenuWithSinglePrompt(input: MasterPromptInput): Pr
     console.warn("RAG Master Data fetch warning:", err);
   }
 
-  // Komoditas Lokal Fallback jika Firestore belum memuat
   if (districtCommodities.length === 0) {
     districtCommodities = [
       "Beras Pulen", "Ikan Bandeng", "Daging Ayam", "Telur Ayam", "Tempe Kedelai",
@@ -112,166 +108,80 @@ export async function generateMenuWithSinglePrompt(input: MasterPromptInput): Pr
     ];
   }
 
-  // 100% Autonomous Master Prompt with 4 Grounding Datasets
   const masterPrompt = `
-Anda adalah Sistem AI Ahli Gizi & Perencana Logistik Pangan Nasional Pemerintah RI (Badan Gizi Nasional & Kemenkes RI).
+Anda adalah Sistem AI Ahli Gizi & Perencana Logistik Pangan Nasional Pemerintah RI.
 
-KNOWLEDGE BASE RAG (4 DATASET TERINTEGRASI PEMKAB GRESIK):
-1. MASTER KOMODITAS LOKAL (DKPP KAB. GRESIK):
-   - Wilayah Sasaran: Kecamatan ${input.districtName}, Kabupaten Gresik, Jawa Timur.
-   - Komoditas Pangan Lokal Tersedia di ${input.districtName}: ${districtCommodities.join(", ")}.
-2. MASTER HARGA PASAR (SISKAPERBAPO JAWA TIMUR):
-   - Sampel Harga Harian: ${availablePrices.map(p => `${p.item}: ${p.price}`).join(", ") || "Beras: Rp 14.500/kg, Daging Ayam: Rp 36.000/kg, Telur: Rp 27.500/kg, Bandeng: Rp 32.000/kg, Tempe: Rp 12.000/kg, Sayuran: Rp 12.000/kg, Buah: Rp 18.000/kg, Susu: Rp 18.000/liter"}.
-3. STANDAR MENU MAKANAN (KEMENKES RI / BGN):
-   - Formula 5 Bintang + Susu: Karbohidrat (100-150g), Protein Hewani (50-70g), Protein Nabati (40-50g), Sayuran (75-100g), Buah (50-100g), Susu (150-200ml).
-4. STANDAR ANGKA GIZI (TKPI 2019 KEMENKES RI):
-   - Energi: 600 - 700 Kkal per porsi.
-   - Protein: 25 - 35 gram per porsi (fokus pencegahan stunting).
-   - Zat Besi (Fe): >= 4.5 mg per porsi (anti-anemia).
+KNOWLEDGE BASE RAG:
+1. MASTER KOMODITAS LOKAL (${input.districtName}): ${districtCommodities.join(", ")}.
+2. MASTER HARGA PASAR: ${availablePrices.map(p => `${p.item}: ${p.price}`).join(", ") || "Beras: Rp 14.500/kg, Daging Ayam: Rp 36.000/kg, Telur: Rp 27.500/kg, Bandeng: Rp 32.000/kg"}.
+3. STANDAR GIZI: Energi 600-700 Kkal, Protein 25-35g, Zat Besi >= 4.5 mg.
 
-TARGET PENERIMA MBG:
-- Sasaran: ${students.toLocaleString("id-ID")} Siswa Sekolah di Kecamatan ${input.districtName}.
-- Siklus: 5 Hari Kerja (Senin s/d Jumat).
-- Plafon Resmi: Maksimal Rp 15.000 / porsi.
-
-TUGAS UTAMA ANDA:
+TUGAS:
 1. OUTPUT 1: REKOMENDASI 5 HARI KERJA MENU MBG
-   - Susun 5 menu harian (Senin s/d Jumat) yang memanfaatkan komoditas pangan lokal ${input.districtName}.
-   - Setiap hari WAJIB memiliki format "composition" 6 Pilar tanpa emoji:
-     "Karbohidrat: [Bahan (Gramasi)] | Protein Hewani: [Bahan (Gramasi)] | Protein Nabati: [Bahan (Gramasi)] | Sayuran: [Bahan (Gramasi)] | Buah: [Bahan (Gramasi)] | Susu: [Susu Segar/UHT (Takaran)]"
-   - Hitung nilai gizi presisi: calories (600-700 Kkal), protein (25-35g), iron Fe (4.5-9.0mg).
-   - Hitung HPP Biaya per porsi (~Rp 13.800 - Rp 14.800).
-2. OUTPUT 2: KALKULASI ANGGARAN & PENGHEMATAN APBD
-   - Total Biaya Mingguan (${students} siswa x 5 hari x HPP) vs Plafon Resmi (Rp 15.000 x ${students} x 5).
-3. OUTPUT 3: BILL OF MATERIALS (BOM) LOGISTIK PENGADAAN
-   - Hitung tonase beras, protein hewani, protein nabati, sayuran, buah, susu, bumbu untuk kebutuhan dapur SPPG selama 1 minggu.
-4. VARIASI MENU LOKAL & DESKRIPSI VISUAL:
-   - Buat minimal 12 hingga 16 opsi menu variatif berbasis bahan lokal ${input.districtName}.
-   - Untuk setiap hari di weeklyPlan, wajib membuat field 'imagePrompt' dalam Bahasa Inggris yang mendeskripsikan secara nyata piring hidangan makanan sesuai komposisi resep tersebut (contoh: 'Clean top-down commercial food photography of Indonesian steamed white rice with grilled milkfish, fried tempeh, and clear moringa soup on a ceramic plate, soft studio lighting, 4k').
+   - Format "composition": "Karbohidrat: [Bahan] | Protein Hewani: [Bahan] | Protein Nabati: [Bahan] | Sayuran: [Bahan] | Buah: [Bahan] | Susu: [Susu]"
+2. OUTPUT 2: KALKULASI ANGGARAN.
+3. OUTPUT 3: BILL OF MATERIALS (BOM) LOGISTIK.
 
-WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
+WAJIB JSON VALID:
 {
   "weeklyPlan": [
     {
-      "day": "Senin",
-      "monthYear": "November 2026",
-      "menuTitle": "Nasi Olahan Protein Segar & Sayur Bening",
-      "composition": "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Bandeng Presto (60g) | Protein Nabati: Tempe Goreng (40g) | Sayuran: Sayur Bening Bayam Kelor (80g) | Buah: Pisang Ambon (75g) | Susu: Susu Sapi UHT (200ml)",
-      "proteinSource": "Ikan Bandeng / Ayam Segar",
-      "veggieSource": "Bayam & Daun Kelor",
-      "calories": 665,
-      "protein": 32.5,
-      "iron": 6.2,
-      "cost": 14200,
-      "localOrigin": "Sentra Petambak/Peternak ${input.districtName}",
-      "imagePrompt": "Clean top-down photo of Indonesian MBG school lunch tray with grilled milkfish, tempeh, clear moringa soup, banana, milk carton"
-    },
-    { "day": "Selasa", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string", "imagePrompt": "string" },
-    { "day": "Rabu", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string", "imagePrompt": "string" },
-    { "day": "Kamis", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string", "imagePrompt": "string" },
-    { "day": "Jumat", "monthYear": "November 2026", "menuTitle": "string", "composition": "string", "proteinSource": "string", "veggieSource": "string", "calories": number, "protein": number, "iron": number, "cost": number, "localOrigin": "string", "imagePrompt": "string" }
-  ],
-  "budgetSummary": {
-    "plafonPerPortion": 15000,
-    "avgCostPerPortion": number,
-    "totalPlafonWeekly": number,
-    "totalCostWeekly": number,
-    "totalSavingsWeekly": number,
-    "foodCostSharePct": number,
-    "kitchenCostSharePct": number
-  },
-  "logisticsBOM": [
-    {
-      "item": "string",
-      "volume": "string",
-      "unitPrice": "string",
-      "totalCost": number,
-      "supplierRecom": "string"
+      "day": "Senin", "monthYear": "November 2026", "menuTitle": "...", "composition": "...", 
+      "proteinSource": "...", "veggieSource": "...", "calories": 600, "protein": 30, "iron": 5, "cost": 14000, "localOrigin": "..."
     }
   ],
-  "availableGeneratedRecipes": [
-    "Daftar minimal 12 s/d 16 variasi resep masakan bergizi berbasis komoditas lokal ${input.districtName}"
-  ],
-  "aiReasoning": "Penjelasan ilmiah pemanfaatan 4 dataset pangan dan potensi lokal ${input.districtName}."
+  "budgetSummary": { "plafonPerPortion": 15000, "avgCostPerPortion": 14000, "totalPlafonWeekly": 0, "totalCostWeekly": 0, "totalSavingsWeekly": 0, "foodCostSharePct": 76, "kitchenCostSharePct": 24 },
+  "logisticsBOM": [{ "item": "...", "volume": "...", "unitPrice": "...", "totalCost": 0, "supplierRecom": "..." }],
+  "availableGeneratedRecipes": [],
+  "aiReasoning": "..."
 }
 `;
 
-  // 1. Eksekusi Live Google Gemini AI
   if (apiKey && apiKey.trim() !== "" && apiKey !== "YOUR_GEMINI_API_KEY") {
-    const flagshipModels = ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.7-flash"];
+    const flagshipModels = ["gemini-1.5-flash", "gemini-2.0-flash"];
 
     for (const model of flagshipModels) {
       try {
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6500);
-
         const response = await fetch(geminiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          signal: controller.signal,
           body: JSON.stringify({
             contents: [{ parts: [{ text: masterPrompt }] }],
-            generationConfig: {
-              temperature: 0.6,
-              maxOutputTokens: 2500,
-              responseMimeType: "application/json",
-              thinkingConfig: {
-                thinkingBudget: 0,
-              },
-            },
+            generationConfig: { responseMimeType: "application/json" },
           }),
         });
-
-        clearTimeout(timeoutId);
 
         if (response.ok) {
           const data = await response.json();
           const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
-          const cleanJson = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-          const parsed = JSON.parse(cleanJson);
+          const parsed = JSON.parse(rawText.replace(/```json/g, "").replace(/```/g, "").trim());
 
           if (parsed.weeklyPlan && parsed.weeklyPlan.length >= 5) {
-            const enrichedWeeklyPlan = parsed.weeklyPlan.map((item: any) => ({
-              ...item,
-              imageUrl: item.imageUrl || getMenuFoodImage(item.menuTitle, item.composition).imageUrl,
-            }));
-
             return {
               success: true,
               engineUsed: "GOOGLE_GEMINI_FLAGSHIP_LIVE",
               modelName: `Google ${model.toUpperCase()} (Autonomous Live)`,
               districtName: input.districtName,
               studentsCount: students,
-              weeklyPlan: enrichedWeeklyPlan,
-              budgetSummary: parsed.budgetSummary || {
-                plafonPerPortion: 15000,
-                avgCostPerPortion: 14300,
-                totalPlafonWeekly: 15000 * students * 5,
-                totalCostWeekly: 14300 * students * 5,
-                totalSavingsWeekly: 700 * students * 5,
-                foodCostSharePct: 76,
-                kitchenCostSharePct: 24,
-              },
+              weeklyPlan: parsed.weeklyPlan,
+              budgetSummary: parsed.budgetSummary,
               logisticsBOM: parsed.logisticsBOM || [],
               availableGeneratedRecipes: parsed.availableGeneratedRecipes || [],
-              aiReasoning: parsed.aiReasoning || `Menu 100% diriset dan dihitung secara mandiri oleh Google Gemini AI berbasis RAG 4 Master Data Kabupaten Gresik.`,
+              aiReasoning: parsed.aiReasoning || "Menu diriset mandiri oleh Google Gemini AI.",
             };
           }
         }
       } catch (err) {
-        console.warn(`Model ${model} gagal, mencoba model berikutnya...`, err);
+        console.warn(err);
       }
     }
   }
 
-  // 2. RAG Dynamic Grounded Fallback (Jika API Key belum disetel atau offline)
   const defaultAvgCost = 14320;
   const totalCost = defaultAvgCost * students * 5;
   const totalPlafon = 15000 * students * 5;
-  const mainProteinName = districtCommodities.find(c => c.includes("Bandeng") || c.includes("Ikan") || c.includes("Ayam") || c.includes("Daging")) || "Ikan Bandeng / Ayam";
-  const secondProteinName = districtCommodities.find(c => c.includes("Telur") || c.includes("Udang") || c.includes("Lele")) || "Telur Ayam Ras";
-
+  
   return {
     success: true,
     engineUsed: "GEMINI_AUTONOMOUS_ENGINE",
@@ -282,73 +192,68 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
       {
         day: "Senin",
         monthYear: "November 2026",
-        menuTitle: `Nasi Olahan ${mainProteinName} Segar & Sayur Bening Kelor Organik`,
-        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: ${mainProteinName} (65g) | Protein Nabati: Tempe Goreng Rempah (40g) | Sayuran: Sayur Bening Daun Kelor & Jagung (80g) | Buah: Pisang Ambon (75g) | Susu: Susu Sapi UHT (200ml)`,
-        proteinSource: `${mainProteinName} Lokal`,
-        veggieSource: "Sayur Daun Kelor & Jagung",
+        menuTitle: "Nasi Olahan Ikan Bandeng Segar & Sayur Bening Kelor",
+        composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Bandeng (65g) | Protein Nabati: Tempe (40g) | Sayuran: Bayam Kelor (80g) | Buah: Pisang (75g) | Susu: Susu UHT (200ml)",
+        proteinSource: "Ikan Bandeng Lokal",
+        veggieSource: "Daun Kelor & Jagung",
         calories: 665,
         protein: 32.5,
         iron: 6.2,
         cost: 14200,
-        localOrigin: `Sentra Petambak/Peternak ${input.districtName}`,
-        imageUrl: getMenuFoodImage(`Nasi Olahan ${mainProteinName} Segar & Sayur Bening Kelor Organik`).imageUrl,
+        localOrigin: `Sentra Petambak ${input.districtName}`
       },
       {
         day: "Selasa",
         monthYear: "November 2026",
-        menuTitle: `Nasi Ayam Ungkep Bumbu Kuning & Sayur Lodeh Labu Siam`,
-        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Ayam Segar (65g) | Protein Nabati: Tahu Putih Kukus (40g) | Sayuran: Sayur Lodeh Labu Siam (80g) | Buah: Semangka Segar (75g) | Susu: Susu Sapi UHT (200ml)`,
+        menuTitle: "Nasi Ayam Bumbu Kuning & Sayur Lodeh Labu Siam",
+        composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Ayam (65g) | Protein Nabati: Tahu (40g) | Sayuran: Lodeh Labu Siam (80g) | Buah: Semangka (75g) | Susu: Susu UHT (200ml)",
         proteinSource: "Daging Ayam Segar",
         veggieSource: "Labu Siam & Kacang Panjang",
         calories: 680,
         protein: 34.0,
         iron: 5.8,
         cost: 14500,
-        localOrigin: `Kemitraan Peternak Lokal ${input.districtName}`,
-        imageUrl: getMenuFoodImage("Nasi Ayam Ungkep Bumbu Kuning & Sayur Lodeh Labu Siam").imageUrl,
+        localOrigin: `Peternak Lokal ${input.districtName}`
       },
       {
         day: "Rabu",
         monthYear: "November 2026",
-        menuTitle: `Nasi Semur Daging Sapi Lokal & Sayur Sop Bening Wortel`,
-        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi Lokal (60g) | Protein Nabati: Tempe Goreng (40g) | Sayuran: Sayur Sop Wortel Buncis (80g) | Buah: Jeruk Manis (75g) | Susu: Susu Sapi UHT (200ml)`,
+        menuTitle: "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis",
+        composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)",
         proteinSource: "Daging Sapi Lokal",
-        veggieSource: "Wortel & Buncis Segar",
+        veggieSource: "Wortel & Buncis",
         calories: 690,
         protein: 35.5,
         iron: 7.1,
         cost: 14800,
-        localOrigin: `Sentra Peternakan ${input.districtName}`,
-        imageUrl: getMenuFoodImage("Nasi Semur Daging Sapi Lokal & Sayur Sop Bening Wortel").imageUrl,
+        localOrigin: `Peternakan ${input.districtName}`
       },
       {
         day: "Kamis",
         monthYear: "November 2026",
-        menuTitle: `Nasi Olahan ${secondProteinName} & Sayur Bening Bayam Jagung`,
-        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: ${secondProteinName} (65g) | Protein Nabati: Tahu Bacem (40g) | Sayuran: Sayur Bening Bayam Jagung (80g) | Buah: Pisang Ambon (75g) | Susu: Susu Sapi UHT (200ml)`,
-        proteinSource: `${secondProteinName} Segar`,
-        veggieSource: "Bayam Hijau & Jagung Manis",
+        menuTitle: "Nasi Telur Ayam Bumbu Bali & Bayam Jagung",
+        composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Telur Ayam (65g) | Protein Nabati: Tahu Bacem (40g) | Sayuran: Bayam Jagung (80g) | Buah: Pisang (75g) | Susu: Susu UHT (200ml)",
+        proteinSource: "Telur Ayam",
+        veggieSource: "Bayam Hijau",
         calories: 650,
         protein: 31.0,
         iron: 5.9,
         cost: 13900,
-        localOrigin: `Peternak Unggas ${input.districtName}`,
-        imageUrl: getMenuFoodImage(`Nasi Olahan ${secondProteinName} & Sayur Bening Bayam Jagung`).imageUrl,
+        localOrigin: `Peternak Unggas ${input.districtName}`
       },
       {
         day: "Jumat",
         monthYear: "November 2026",
-        menuTitle: `Nasi Fillet Ikan Segar Bumbu Kuning & Tumis Sayuran Hidroponik`,
-        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: Fillet Ikan Segar (65g) | Protein Nabati: Tempe Mendoan (40g) | Sayuran: Tumis Sayuran Segar (80g) | Buah: Pepaya Potong (75g) | Susu: Susu Sapi UHT (200ml)`,
+        menuTitle: "Nasi Ikan Segar Bumbu Kuning & Tumis Sayuran",
+        composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Segar (65g) | Protein Nabati: Tempe Mendoan (40g) | Sayuran: Tumis Sayuran (80g) | Buah: Pepaya (75g) | Susu: Susu UHT (200ml)",
         proteinSource: "Ikan Segar Pesisir",
-        veggieSource: "Sayuran Hidroponik",
+        veggieSource: "Sayuran Lokal",
         calories: 670,
         protein: 33.0,
         iron: 6.4,
         cost: 14200,
-        localOrigin: `Koperasi Nelayan & Petani ${input.districtName}`,
-        imageUrl: getMenuFoodImage("Nasi Fillet Ikan Segar Bumbu Kuning & Tumis Sayuran Hidroponik").imageUrl,
-      },
+        localOrigin: `Nelayan ${input.districtName}`
+      }
     ],
     budgetSummary: {
       plafonPerPortion: 15000,
@@ -360,57 +265,14 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
       kitchenCostSharePct: 24,
     },
     logisticsBOM: [
-      {
-        item: "Beras Medium Pulen",
-        volume: `${((students * 0.15 * 5) / 1000).toFixed(2)} Ton`,
-        unitPrice: "Rp 14.500 / kg",
-        totalCost: students * 0.15 * 5 * 14500,
-        supplierRecom: `Gapoktan Wilayah ${input.districtName}`,
-      },
-      {
-        item: `Protein Hewani Utama (${mainProteinName})`,
-        volume: `${((students * 0.065 * 5) / 1000).toFixed(2)} Ton`,
-        unitPrice: "Rp 32.000 - Rp 36.000 / kg",
-        totalCost: students * 0.065 * 5 * 34000,
-        supplierRecom: `Petambak/Peternak Lokal ${input.districtName}`,
-      },
-      {
-        item: "Protein Nabati (Tempe & Tahu Kedelai)",
-        volume: `${((students * 0.045 * 5) / 1000).toFixed(2)} Ton`,
-        unitPrice: "Rp 12.000 / kg",
-        totalCost: students * 0.045 * 5 * 12000,
-        supplierRecom: "Pengrajin Tahu Tempe Setempat",
-      },
-      {
-        item: "Sayuran Segar Beraneka Warna",
-        volume: `${((students * 0.08 * 5) / 1000).toFixed(2)} Ton`,
-        unitPrice: "Rp 12.500 / kg",
-        totalCost: students * 0.08 * 5 * 12500,
-        supplierRecom: `Kelompok Tani Sayur ${input.districtName}`,
-      },
-      {
-        item: "Buah Segar Lokal (Pisang, Jeruk, Pepaya)",
-        volume: `${((students * 0.085 * 5) / 1000).toFixed(2)} Ton`,
-        unitPrice: "Rp 18.000 / kg",
-        totalCost: students * 0.085 * 5 * 18000,
-        supplierRecom: "Pasar Tradisional / Petani Buah Gresik",
-      },
-      {
-        item: "Susu Sapi Segar / UHT Standar MBG",
-        volume: `${((students * 0.2 * 5) / 1000).toFixed(2)} Ribu Liter`,
-        unitPrice: "Rp 18.000 / Liter",
-        totalCost: students * 0.2 * 5 * 18000,
-        supplierRecom: "Koperasi Susu / Distributor Resmi Kemenkes",
-      },
+      { item: "Beras Medium", volume: "10 Ton", unitPrice: "Rp 14.500/kg", totalCost: 145000000, supplierRecom: "Gapoktan" },
+      { item: "Protein Hewani", volume: "4 Ton", unitPrice: "Rp 34.000/kg", totalCost: 136000000, supplierRecom: "Peternak Lokal" },
+      { item: "Protein Nabati", volume: "3 Ton", unitPrice: "Rp 12.000/kg", totalCost: 36000000, supplierRecom: "Pengrajin Tahu Tempe" },
+      { item: "Sayuran", volume: "5 Ton", unitPrice: "Rp 12.500/kg", totalCost: 62500000, supplierRecom: "Kelompok Tani" },
+      { item: "Buah", volume: "5 Ton", unitPrice: "Rp 18.000/kg", totalCost: 90000000, supplierRecom: "Petani Buah" },
+      { item: "Susu", volume: "12 Ribu Liter", unitPrice: "Rp 18.000/Liter", totalCost: 216000000, supplierRecom: "Distributor Susu" }
     ],
     availableGeneratedRecipes: [
-      `Nasi Olahan ${mainProteinName} Segar & Sayur Bening Kelor`,
-      `Nasi Unggas/Ikan Bumbu Kuning Rempah & Tumis Bayam Tauge`,
-      `Nasi ${secondProteinName} Gurih & Sup Labu Siam Wortel`,
-      `Nasi Tumis Lauk Tinggi Zat Besi & Sayur Sawi Hijau`,
-      `Nasi Telur Sayur & Lodeh Tahu Tempe Kedelai`,
-      `Nasi Daging Suwir Bumbu Rempah & Sayur Sop Wortel Buncis`,
-      `Nasi Ikan Bakar Bumbu Madu & Sayur Asem Segar`,
       `Nasi Pepes Daun Kelor & Sayur Bening Gambas`,
       `Nasi Ayam Suwir Sambal Tomat & Tumis Pokcoy`,
       `Nasi Lauk Marinasi Rempah & Sup Jamur Jagung Manis`,
