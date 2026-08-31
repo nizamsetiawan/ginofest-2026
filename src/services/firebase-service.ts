@@ -9,10 +9,14 @@ import {
   setDoc,
   addDoc,
   deleteDoc,
+  updateDoc,
   query,
   where,
   orderBy,
-  serverTimestamp
+  onSnapshot,
+  serverTimestamp,
+  type QuerySnapshot,
+  type DocumentData
 } from "firebase/firestore";
 
 // Firebase App Config for ginofest-2026
@@ -1285,6 +1289,51 @@ export async function saveCachedFoodImageToFirestore(queryName: string, imageUrl
     return false;
   }
 }
+
+export function listenToActiveSessions(callback: (sessions: any[]) => void) {
+  if (!db) return () => {};
+  const q = query(collection(db, "kcal_session_logs"));
+  return onSnapshot(q, (snapshot) => {
+    const sessions = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+    callback(sessions);
+  }, (error) => {
+    console.warn("Session listener error:", error);
+  });
+}
+
+export async function closeSessionLog(sessionId: string) {
+  if (!db || !sessionId) return;
+  try {
+    const ref = doc(db, "kcal_session_logs", sessionId);
+    await updateDoc(ref, {
+      status: "revoked",
+      loggedOutAtIso: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.warn("Error closing session:", err);
+  }
+}
+
+export async function recordCitizenSessionLog(user: { id?: string; name: string; email: string; district: string }): Promise<string> {
+  const logId = `sess_cit_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  if (!db) return logId;
+  try {
+    await setDoc(doc(db, "kcal_session_logs", logId), {
+      userId: user.id || logId,
+      userName: user.name,
+      userRole: "masyarakat",
+      district: user.district,
+      userEmail: user.email,
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "mobile-browser",
+      loginTimeIso: new Date().toISOString(),
+      status: "active",
+    });
+  } catch (err) {
+    console.warn("Error recording session:", err);
+  }
+  return logId;
+}
+
 
 
 
