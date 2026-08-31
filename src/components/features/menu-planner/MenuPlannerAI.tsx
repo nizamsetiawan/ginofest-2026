@@ -30,6 +30,7 @@ import {
   fetchDistrictsFromFirestore
 } from "@/services/firebase-service";
 import { useAuth } from "@/contexts/AuthContext";
+import { getMenuFoodImage } from "@/utils/foodImageEngine";
 
 interface MenuPlannerAIProps {
   selectedDistrict: string;
@@ -776,39 +777,55 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <div className="space-y-3">
               {/* 5 Day Rows */}
               <div className="space-y-3">
-                {currentDays.map((dayItem, idx) => (
-                  <div
-                    key={dayItem.day}
-                    className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 hover:border-light-sea-green hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 font-sans"
-                  >
-                    {/* Kolom 1: Hari & Tanggal */}
-                    <div className="w-full sm:w-40 shrink-0 flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-2xl bg-green-tint border border-green-02/40 flex flex-col items-center justify-center shrink-0 shadow-2xs">
-                        <span className="text-[10px] font-bold text-ford-blue uppercase tracking-wider">
-                          {dayItem.day.slice(0, 3)}
-                        </span>
-                        <span className="text-[13px] font-bold text-ford-blue leading-tight">
-                          {dayItem.dateStr.split(" ")[0]}
-                        </span>
-                      </div>
-                      <div>
-                        <h3 className="text-[14px] font-bold text-ford-blue">
-                          {dayItem.day}
-                        </h3>
-                        <span className="text-[11px] text-blue-gray font-medium">
-                          {dayItem.dateStr}
-                        </span>
-                      </div>
-                    </div>
+                {currentDays.map((dayItem, idx) => {
+                  const foodVisual = getMenuFoodImage(dayItem.menuTitle, dayItem.composition);
 
-                    {/* Kolom 2: Nama Menu Bersih & Jelas */}
-                    <div className="flex-1">
-                      <h4 className="text-[14px] font-bold text-ford-blue leading-snug">
-                        {dayItem.menuTitle || "Belum ada menu!"}
-                      </h4>
-                    </div>
+                  return (
+                    <div
+                      key={dayItem.day}
+                      className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 hover:border-light-sea-green hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 font-sans group"
+                    >
+                      {/* Kolom 1: Hari & Tanggal */}
+                      <div className="w-full sm:w-40 shrink-0 flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-2xl bg-green-tint border border-green-02/40 flex flex-col items-center justify-center shrink-0 shadow-2xs">
+                          <span className="text-[10px] font-bold text-ford-blue uppercase tracking-wider">
+                            {dayItem.day.slice(0, 3)}
+                          </span>
+                          <span className="text-[13px] font-bold text-ford-blue leading-tight">
+                            {dayItem.dateStr.split(" ")[0]}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-[14px] font-bold text-ford-blue">
+                            {dayItem.day}
+                          </h3>
+                          <span className="text-[11px] text-blue-gray font-medium">
+                            {dayItem.dateStr}
+                          </span>
+                        </div>
+                      </div>
 
-                    {/* Kolom 3: Biaya HPP, Tombol Ikon Detail & Ikon Ganti */}
+                      {/* Kolom 2: Thumbnail Foto Hidangan & Nama Menu */}
+                      <div className="flex-1 flex items-center gap-3.5 min-w-0">
+                        <div className="relative w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-slate-200 shadow-2xs group-hover:scale-105 transition-transform bg-slate-100">
+                          <img
+                            src={foodVisual.imageUrl}
+                            alt={foodVisual.altText}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-[14px] font-bold text-ford-blue leading-snug">
+                            {dayItem.menuTitle || "Belum ada menu!"}
+                          </h4>
+                          <span className="text-[11px] text-light-sea-green font-bold block mt-0.5">
+                            {foodVisual.tag}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Kolom 3: Biaya HPP, Tombol Ikon Detail & Ikon Ganti */}
                     <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                       {/* HPP Biaya */}
                       <span className="text-[12px] font-bold text-ford-blue bg-green-tint px-3 py-1.5 rounded-xl border border-green-02/40 shadow-2xs">
@@ -837,7 +854,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                       </button>
                     </div>
                   </div>
-                ))}
+                );
+              })}
               </div>
 
               {/* RAG-Style Pagination for 4 Weeks Cycle */}
@@ -1180,48 +1198,69 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       )}
 
       {/* 3A. MODAL: DETAIL GIZI & KOMPOSISI 5 BINTANG */}
-      {isDetailModalOpen && selectedDayForDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in font-sans">
-          <div 
-            className="w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold text-ford-blue bg-green-tint px-2.5 py-0.5 rounded-lg border border-green-02/40">
-                    {selectedDayForDetail.day}, {selectedDayForDetail.dateStr}
-                  </span>
-                  <span className="text-[11px] text-blue-gray font-medium">
-                    Kec. {currentDistrictInfo.name}
-                  </span>
-                </div>
-                <h3 className="text-[15px] sm:text-[16px] font-bold text-ford-blue mt-1 leading-snug">
-                  {selectedDayForDetail.menuTitle}
-                </h3>
-              </div>
-              <button 
-                onClick={() => setIsDetailModalOpen(false)}
-                className="p-1.5 rounded-lg text-blue-gray hover:text-ford-blue hover:bg-slate-100 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Komposisi 5 Bintang + Susu */}
-            <div className="space-y-2">
-              <h4 className="text-[11px] font-bold text-blue-gray uppercase tracking-wider">
-                Formula 5 Bintang + Susu (BGN / Kemenkes RI)
-              </h4>
-              <div className="space-y-1.5 bg-[#F8FAFC] p-3.5 rounded-2xl border border-slate-200">
-                {selectedDayForDetail.composition?.split("•").map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-[12px]">
-                    <div className="w-2 h-2 rounded-full bg-green-02 shrink-0"></div>
-                    <span className="font-bold text-ford-blue">{item.trim()}</span>
+      {isDetailModalOpen && selectedDayForDetail && (() => {
+        const modalFood = getMenuFoodImage(selectedDayForDetail.menuTitle, selectedDayForDetail.composition);
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in font-sans">
+            <div 
+              className="w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-ford-blue bg-green-tint px-2.5 py-0.5 rounded-lg border border-green-02/40">
+                      {selectedDayForDetail.day}, {selectedDayForDetail.dateStr}
+                    </span>
+                    <span className="text-[11px] text-blue-gray font-medium">
+                      Kec. {currentDistrictInfo.name}
+                    </span>
                   </div>
-                ))}
+                  <h3 className="text-[15px] sm:text-[16px] font-bold text-ford-blue mt-1 leading-snug">
+                    {selectedDayForDetail.menuTitle}
+                  </h3>
+                </div>
+                <button 
+                  onClick={() => setIsDetailModalOpen(false)}
+                  className="p-1.5 rounded-lg text-blue-gray hover:text-ford-blue hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-            </div>
+
+              {/* Foto Visual Sajian Hidangan MBG */}
+              <div className="relative h-44 rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group">
+                <img
+                  src={modalFood.imageUrl}
+                  alt={modalFood.altText}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent flex items-end p-3.5">
+                  <div className="text-white">
+                    <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500 text-white inline-block mb-1 shadow-xs">
+                      {modalFood.tag}
+                    </span>
+                    <p className="text-[12px] font-bold text-slate-100 leading-tight">
+                      Sajian Rekomendasi Menu MBG Bergizi Lengkap
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Komposisi 5 Bintang + Susu */}
+              <div className="space-y-2">
+                <h4 className="text-[11px] font-bold text-blue-gray uppercase tracking-wider">
+                  Formula 5 Bintang + Susu (BGN / Kemenkes RI)
+                </h4>
+                <div className="space-y-1.5 bg-[#F8FAFC] p-3.5 rounded-2xl border border-slate-200">
+                  {selectedDayForDetail.composition?.split("•").map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-[12px]">
+                      <div className="w-2 h-2 rounded-full bg-green-02 shrink-0"></div>
+                      <span className="font-bold text-ford-blue">{item.trim()}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
             {/* Nutrisi Lab AKG (High Contrast Green Tint Theme) */}
             <div className="space-y-2">
@@ -1252,17 +1291,18 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               </strong>
             </div>
 
-            <div className="pt-1 text-right">
-              <button
-                onClick={() => setIsDetailModalOpen(false)}
-                className="px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-colors cursor-pointer shadow-xs"
-              >
-                Tutup
-              </button>
+              <div className="pt-1 text-right">
+                <button
+                  onClick={() => setIsDetailModalOpen(false)}
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-colors cursor-pointer shadow-xs"
+                >
+                  Tutup
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* 3. MODAL: PILIH RESEP ALTERNATIF (TAMPIL HANYA SAAT INGIN GANTI MENU) */}
       {isChangeRecipeModalOpen && (
