@@ -1,6 +1,6 @@
 /**
  * Dynamic AI Food Image Engine for G-Scan / MBG Menu Planner
- * 100% Dynamic AI-driven image generation with zero local static image dependencies.
+ * Translates Indonesian culinary items into pristine, universal English commercial photography prompts for AI image generation.
  */
 
 export interface FoodVisualInfo {
@@ -12,21 +12,46 @@ export interface FoodVisualInfo {
 }
 
 /**
- * Generates a dynamic AI photo URL specifically created for the unique Gemini menu output.
- * Pure dynamic real-time AI generation (600x450).
+ * Intelligently translates Indonesian culinary menu descriptions into high-precision English food photography prompts.
+ */
+export function buildPhotorealisticEnglishPrompt(menuTitle: string, composition?: string): string {
+  const lower = (menuTitle + " " + (composition || "")).toLowerCase();
+
+  let mainDish = "balanced Indonesian meal with steamed white rice, protein, and vegetables";
+  
+  if (lower.includes("bandeng")) {
+    mainDish = "Indonesian grilled marinated milkfish with steamed white rice, golden fried tempeh, and fresh lime wedge";
+  } else if (lower.includes("soto")) {
+    mainDish = "Indonesian chicken turmeric soup soto in a ceramic bowl with shredded chicken, boiled egg slices, and celery";
+  } else if (lower.includes("ayam")) {
+    mainDish = "Indonesian golden spiced fried chicken drumstick with steamed white rice, fried tempeh, and fresh cucumber slices";
+  } else if (lower.includes("daging") || lower.includes("semur") || lower.includes("rolade")) {
+    mainDish = "Indonesian tender beef stew with sliced carrots and steamed white rice on a clean plate";
+  } else if (lower.includes("sop") || lower.includes("sup")) {
+    mainDish = "clear Indonesian vegetable soup in a small bowl with carrots, corn, and greens served with steamed rice";
+  } else if (lower.includes("ikan") || lower.includes("kakap") || lower.includes("tongkol") || lower.includes("gurami") || lower.includes("lele")) {
+    mainDish = "Indonesian crispy fried fish fillet with steamed white rice, tempeh, and fresh vegetables";
+  } else if (lower.includes("telur")) {
+    mainDish = "Indonesian thick vegetable omelette with steamed white rice and crispy tempeh";
+  }
+
+  // Construct commercial photography prompt
+  return `Clean top-down centered commercial photography of ${mainDish} served on a clean round ceramic plate, appetizing healthy meal, soft natural studio lighting, ultra-realistic textures, clean background, 4k`;
+}
+
+/**
+ * Generates a dynamic AI photo URL using the translated English food prompt.
+ * Lightweight resolution (600x450) for fast, crisp rendering.
  */
 export function getMenuFoodImage(menuTitle?: string | null, composition?: string | null): FoodVisualInfo {
   const cleanTitle = (menuTitle || "Paket Makan Bergizi Gratis 5 Bintang").trim();
-  const cleanComp = (composition || "Nasi Putih, Lauk Hewani, Tempe/Tahu, Sayuran Hijau, Buah Segar, Susu UHT").trim();
+  const englishPrompt = buildPhotorealisticEnglishPrompt(cleanTitle, composition || "");
 
-  // Dynamic Prompt tailored specifically to the unique generated recipe
-  const promptDescription = `Clean top-down centered commercial photography of an Indonesian MBG school lunch tray: ${cleanTitle}, containing ${cleanComp}, stainless steel bento compartment tray on clean school table, healthy school nutrition, vibrant appetizing meal, photorealistic`;
-
-  // Deterministic seed derived from menu title to keep image stable
+  // Deterministic seed derived from menu title to keep image stable per recipe
   const seed = Math.abs(cleanTitle.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) * 19);
   
-  // Real-time AI Generated Image Endpoint (Lightweight 600x450)
-  const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptDescription)}?width=600&height=450&nologo=true&seed=${seed}&model=flux`;
+  // Real-time AI Generated Image Endpoint (Lightweight 600x450 with Flux model)
+  const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(englishPrompt)}?width=600&height=450&nologo=true&seed=${seed}&model=flux`;
 
   const lower = cleanTitle.toLowerCase();
   let tag = "Menu MBG AI (Dinamis)";
@@ -46,7 +71,7 @@ export function getMenuFoodImage(menuTitle?: string | null, composition?: string
   return {
     imageUrl: aiImageUrl,
     fallbackUrl: aiImageUrl,
-    altText: `AI Generated MBG Tray: ${cleanTitle}`,
+    altText: `AI Generated Food: ${cleanTitle}`,
     category,
     tag,
   };

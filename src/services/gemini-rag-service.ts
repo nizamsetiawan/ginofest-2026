@@ -4,7 +4,7 @@ import {
   fetchRecipesFromFirestore, 
   fetchNutritionFromFirestore 
 } from "./firebase-service";
-import { getMenuFoodImage } from "@/utils/foodImageEngine";
+import { getMenuFoodImage, buildPhotorealisticEnglishPrompt } from "@/utils/foodImageEngine";
 
 export interface MasterPromptInput {
   districtName: string;
@@ -222,10 +222,19 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
           const parsed = JSON.parse(cleanJson);
 
           if (parsed.weeklyPlan && parsed.weeklyPlan.length >= 5) {
-            const enrichedWeeklyPlan = parsed.weeklyPlan.map((item: any) => ({
-              ...item,
-              imageUrl: item.imageUrl || getMenuFoodImage(item.menuTitle, item.composition).imageUrl,
-            }));
+            const enrichedWeeklyPlan = parsed.weeklyPlan.map((item: any) => {
+              const finalPrompt = item.imagePrompt && item.imagePrompt.length > 10 
+                ? item.imagePrompt 
+                : buildPhotorealisticEnglishPrompt(item.menuTitle, item.composition);
+              
+              const seed = Math.abs((item.menuTitle || "menu").split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0) * 19);
+              const generatedUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}?width=600&height=450&nologo=true&seed=${seed}&model=flux`;
+
+              return {
+                ...item,
+                imageUrl: item.imageUrl || generatedUrl,
+              };
+            });
 
             return {
               success: true,
