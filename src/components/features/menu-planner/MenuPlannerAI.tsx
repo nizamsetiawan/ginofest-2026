@@ -813,6 +813,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                             alt={foodVisual.altText}
                             className="w-full h-full object-cover"
                             loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = foodVisual.fallbackUrl;
+                            }}
                           />
                         </div>
                         <div className="min-w-0">
@@ -1229,11 +1233,15 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               </div>
 
               {/* Foto Visual Sajian Hidangan MBG */}
-              <div className="relative h-44 rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group">
+              <div className="relative h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group">
                 <img
                   src={modalFood.imageUrl}
                   alt={modalFood.altText}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = modalFood.fallbackUrl;
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent flex items-end p-3.5">
                   <div className="text-white">
@@ -1241,7 +1249,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                       {modalFood.tag}
                     </span>
                     <p className="text-[12px] font-bold text-slate-100 leading-tight">
-                      Sajian Rekomendasi Menu MBG Bergizi Lengkap
+                      Sajian Rekomendasi Menu MBG Bergizi Lengkap (AI Generated)
                     </p>
                   </div>
                 </div>
