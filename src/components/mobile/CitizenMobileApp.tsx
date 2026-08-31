@@ -893,8 +893,8 @@ export const CitizenMobileApp: React.FC = () => {
         {/* ═══ 6. MAIN LOGGED-IN PORTAL ═══ */}
         {currentScreen === "main" && (
           <div className="flex-1 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
-            {/* Top Bar Header for Secondary Tabs */}
-            {activeTab !== "home" && (
+            {/* Top Bar Header for Secondary Tabs (except Screening which has its own themed top bar) */}
+            {activeTab !== "home" && activeTab !== "screening" && (
               <header className="shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-2xs z-30 font-sans">
                 <div className="flex items-center gap-2.5">
                   <button
@@ -907,7 +907,7 @@ export const CitizenMobileApp: React.FC = () => {
                   </button>
                   <div>
                     <h3 className="text-[13px] font-bold text-ford-blue leading-tight">
-                      {activeTab === "screening" ? "Analisis Gizi & Stunting" : activeTab === "menu" ? "Jadwal Menu MBG" : activeTab === "complaint" ? "Pusat Aduan MBG" : activeTab === "ai_chat" ? "Konsultasi K-Bot AI" : citizenUser?.name || "Warga Gresik"}
+                      {activeTab === "menu" ? "Jadwal Menu MBG" : activeTab === "complaint" ? "Pusat Aduan MBG" : activeTab === "ai_chat" ? "Konsultasi K-Bot AI" : citizenUser?.name || "Warga Gresik"}
                     </h3>
                     <p className="text-[10px] text-blue-gray flex items-center gap-1 font-medium mt-0.5">
                       <MapPin className="w-2.5 h-2.5 text-light-sea-green" />
@@ -955,19 +955,9 @@ export const CitizenMobileApp: React.FC = () => {
 
               {activeTab === "screening" && (
                 <MobileScreeningTab
-                  childName={childName}
-                  setChildName={setChildName}
-                  childGender={childGender}
-                  setChildGender={setChildGender}
-                  childAgeMonths={childAgeMonths}
-                  setChildAgeMonths={setChildAgeMonths}
-                  childWeightKg={childWeightKg}
-                  setChildWeightKg={setChildWeightKg}
-                  childHeightCm={childHeightCm}
-                  setChildHeightCm={setChildHeightCm}
-                  screeningResult={screeningResult}
-                  isCalculating={isCalculating}
-                  onCalculate={handleCalculateNutrition}
+                  citizenUser={citizenUser}
+                  onBackToHome={() => setActiveTab("home")}
+                  onNavigateToComplaint={() => setActiveTab("complaint")}
                 />
               )}
 
