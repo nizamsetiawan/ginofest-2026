@@ -88,6 +88,18 @@ export const CitizenMobileApp: React.FC = () => {
         }
       }
 
+      // 2. Restore Remembered Credentials if available
+      const remembered = localStorage.getItem("kcal_citizen_remembered_credentials");
+      if (remembered) {
+        const cred = JSON.parse(remembered);
+        if (cred) {
+          if (cred.email) setLoginIdentifier(cred.email);
+          if (cred.password) setLoginPassword(cred.password);
+          if (cred.district) setLoginDistrict(cred.district);
+          setRememberMe(cred.rememberMe ?? true);
+        }
+      }
+
       // If user has already logged in before, automatically go straight to 'main'
       if (activeUser) {
         setCurrentScreen("main");
@@ -510,7 +522,7 @@ export const CitizenMobileApp: React.FC = () => {
     return () => unsub();
   }, [citizenUser]);
 
-  // Handle Logout (Explicitly clears persistent session and redirects to Login)
+  // Handle Logout (Explicitly clears active session, preserves remembered credentials if checked)
   const handleCitizenLogout = async () => {
     try {
       const sessionId = localStorage.getItem("kcal_citizen_session_id");
@@ -520,6 +532,18 @@ export const CitizenMobileApp: React.FC = () => {
       localStorage.removeItem("kcal_active_citizen_user");
       localStorage.removeItem("kcal_citizen_session_id");
       sessionStorage.removeItem("kcal_citizen_screen");
+
+      // Check if user has Remember Me enabled
+      const remembered = localStorage.getItem("kcal_citizen_remembered_credentials");
+      if (remembered) {
+        const cred = JSON.parse(remembered);
+        if (cred) {
+          if (cred.email) setLoginIdentifier(cred.email);
+          if (cred.password) setLoginPassword(cred.password);
+          if (cred.district) setLoginDistrict(cred.district);
+          setRememberMe(true);
+        }
+      }
     } catch {}
     setCitizenUser(null);
     setCurrentScreen("login");
@@ -615,6 +639,18 @@ export const CitizenMobileApp: React.FC = () => {
         }
         localStorage.setItem("kcal_citizen_session_id", sid);
         sessionStorage.setItem("kcal_citizen_screen", "main");
+
+        // Persist or clear remembered credentials in localStorage
+        if (rememberMe) {
+          localStorage.setItem("kcal_citizen_remembered_credentials", JSON.stringify({
+            email: loginIdentifier.trim(),
+            password: loginPassword,
+            district: loginDistrict,
+            rememberMe: true,
+          }));
+        } else {
+          localStorage.removeItem("kcal_citizen_remembered_credentials");
+        }
       } catch {}
       setCurrentScreen("main");
     } else {
@@ -840,6 +876,20 @@ export const CitizenMobileApp: React.FC = () => {
       setResetSuccessMsg("Kata sandi berhasil diperbarui! Mengalihkan ke halaman masuk...");
       setLoginIdentifier(forgotEmail.trim());
       setLoginDistrict(forgotDistrict);
+      setLoginPassword(forgotNewPassword);
+
+      try {
+        const remembered = localStorage.getItem("kcal_citizen_remembered_credentials");
+        if (remembered) {
+          localStorage.setItem("kcal_citizen_remembered_credentials", JSON.stringify({
+            email: forgotEmail.trim(),
+            password: forgotNewPassword,
+            district: forgotDistrict,
+            rememberMe: true,
+          }));
+        }
+      } catch {}
+
       setTimeout(() => {
         setResetSuccessMsg("");
         setForgotStep(1);
