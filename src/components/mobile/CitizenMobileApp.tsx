@@ -1287,7 +1287,7 @@ export const CitizenMobileApp: React.FC = () => {
             </div>
 
             {/* Centered Brand Logo & Subtitle */}
-            <div className="text-center space-y-1.5 pt-2 pb-5">
+            <div className="text-center space-y-1.5 pt-2 pb-4">
               <div className="flex items-center justify-center gap-2">
                 <div className="relative">
                   <div className="absolute -inset-1 rounded-2xl bg-green-02/20 blur-sm"></div>
@@ -1297,8 +1297,8 @@ export const CitizenMobileApp: React.FC = () => {
                   Kcal<span className="text-green-02">.</span>
                 </span>
               </div>
-              <p className="text-[12.5px] text-blue-gray font-medium">
-                Pantau menu MBG & gizi anak setiap hari!
+              <p className="text-[12px] text-blue-gray font-medium leading-relaxed px-2">
+                Masuk untuk pantau menu Makan Bergizi Gratis (MBG), deteksi cerdas nutrisi, &amp; kesehatan anak Anda
               </p>
             </div>
 
@@ -1422,7 +1422,7 @@ export const CitizenMobileApp: React.FC = () => {
                     onClick={() => setIsPrivacyModalOpen(true)}
                     className="text-light-sea-green font-bold hover:underline cursor-pointer inline"
                   >
-                    Kebijakan Privasi
+                    Kebijakan Privasi &amp; Pemantauan Nutrisi MBG
                   </button>
                 </span>
               </div>
@@ -1437,10 +1437,10 @@ export const CitizenMobileApp: React.FC = () => {
                   {isSubmittingAuth ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>Memproses Masuk...</span>
+                      <span>Memverifikasi Akun...</span>
                     </>
                   ) : (
-                    <span>Login</span>
+                    <span>Masuk ke Portal Gizi</span>
                   )}
                 </button>
               </div>
@@ -1504,9 +1504,9 @@ export const CitizenMobileApp: React.FC = () => {
                   Kcal<span className="text-green-02">.</span>
                 </span>
               </div>
-              <h2 className="text-[15px] font-black text-ford-blue">Daftar Akun Baru</h2>
-              <p className="text-[11px] text-blue-gray font-medium">
-                Daftarkan akun keluarga untuk memantau menu MBG & gizi anak
+              <h2 className="text-[15px] font-black text-ford-blue">Daftar Akun Keluarga</h2>
+              <p className="text-[11.5px] text-blue-gray font-medium leading-snug px-1">
+                Wujudkan keluarga sehat &amp; pantau pemenuhan nutrisi anak di program Makan Bergizi Gratis
               </p>
             </div>
 
@@ -1522,11 +1522,11 @@ export const CitizenMobileApp: React.FC = () => {
               {/* 1. Nama Lengkap */}
               <div className="space-y-1">
                 <label className="text-[11.5px] font-bold text-ford-blue block">
-                  Nama Lengkap <span className="text-brand-red">*</span>
+                  Nama Lengkap (Orang Tua / Wali) <span className="text-brand-red">*</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="Masukkan nama lengkap"
+                  placeholder="Contoh: Ibu Siti Rahmawati"
                   value={regFullName}
                   onChange={(e) => {
                     setRegFullName(e.target.value);
@@ -1691,7 +1691,7 @@ export const CitizenMobileApp: React.FC = () => {
                     onClick={() => setIsPrivacyModalOpen(true)}
                     className="text-light-sea-green font-bold hover:underline cursor-pointer inline"
                   >
-                    Kebijakan Privasi MBG
+                    Kebijakan Privasi &amp; Pemantauan Nutrisi MBG
                   </button>
                 </span>
               </div>
@@ -1705,10 +1705,10 @@ export const CitizenMobileApp: React.FC = () => {
                 {isSubmittingAuth ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Mendaftarkan Akun...</span>
+                    <span>Mendaftarkan Akun Keluarga...</span>
                   </>
                 ) : (
-                  <span>Daftar Akun</span>
+                  <span>Daftarkan Akun Keluarga</span>
                 )}
               </button>
             </form>
@@ -1805,8 +1805,8 @@ export const CitizenMobileApp: React.FC = () => {
                 </span>
               </div>
               <h2 className="text-[15px] font-black text-ford-blue">Atur Ulang Kata Sandi</h2>
-              <p className="text-[11px] text-blue-gray font-medium">
-                Verifikasi akun via email & Cloud Firestore
+              <p className="text-[11.5px] text-blue-gray font-medium leading-snug px-1">
+                Pulihkan akses akun Anda untuk kembali memantau menu MBG &amp; skrining nutrisi keluarga
               </p>
             </div>
 
@@ -1879,7 +1879,7 @@ export const CitizenMobileApp: React.FC = () => {
                 </div>
 
                 <p className="text-[11px] text-blue-gray leading-relaxed pt-0.5">
-                  Kami akan mengirimkan 6 digit kode OTP ke email di atas untuk memvalidasi kepemilikan akun.
+                  Kami akan mengirimkan 6 digit kode OTP ke email di atas untuk memvalidasi kepemilikan akun keluarga Anda.
                 </p>
 
                 <div className="pt-2">
@@ -1891,12 +1891,12 @@ export const CitizenMobileApp: React.FC = () => {
                     {isResettingPassword ? (
                       <>
                         <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Mengirim Kode...</span>
+                        <span>Memverifikasi Wilayah &amp; Mengirim OTP...</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>Kirim Kode OTP ke Email</span>
+                        <span>Kirim Kode Verifikasi OTP</span>
                       </>
                     )}
                   </button>
@@ -2035,10 +2035,10 @@ export const CitizenMobileApp: React.FC = () => {
                     {isResettingPassword ? (
                       <>
                         <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Menyimpan...</span>
+                        <span>Menyimpan Sandi Baru...</span>
                       </>
                     ) : (
-                      <span>Simpan Sandi</span>
+                      <span>Simpan Kata Sandi Baru</span>
                     )}
                   </button>
                 </div>
