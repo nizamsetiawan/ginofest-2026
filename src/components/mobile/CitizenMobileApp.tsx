@@ -943,7 +943,11 @@ export const CitizenMobileApp: React.FC = () => {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="flex-1 p-3.5 space-y-3.5 overflow-y-auto pb-6 overscroll-contain font-sans"
+              className={`flex-1 font-sans ${
+                activeTab === "screening"
+                  ? "p-0 m-0 h-full w-full overflow-hidden"
+                  : "p-3.5 space-y-3.5 overflow-y-auto pb-6 overscroll-contain"
+              }`}
             >
               {activeTab === "home" && (
                 <MobileHomeTab
@@ -993,63 +997,61 @@ export const CitizenMobileApp: React.FC = () => {
               )}
             </main>
 
-            {/* ═══ 3-TAB BOTTOM NAVIGATION BAR (Prominent Floating Center Analisis) ═══ */}
-            <div className="shrink-0 bg-white border-t border-slate-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pb-safe-nav pt-1.5 px-4 relative font-sans">
-              <nav className="flex items-center justify-around max-w-sm mx-auto">
-                {/* 1. Beranda (Left) */}
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("home")}
-                  className={`flex-1 flex flex-col items-center gap-1 py-1 transition-all cursor-pointer ${
-                    activeTab === "home" ? "text-light-sea-green font-bold" : "text-blue-gray hover:text-ford-blue font-medium"
-                  }`}
-                >
-                  <div className={`p-1.5 rounded-2xl transition-all ${activeTab === "home" ? "bg-green-tint text-ford-blue shadow-2xs" : "text-blue-gray"}`}>
-                    <Home className={`w-5 h-5 transition-transform ${activeTab === "home" ? "scale-110" : ""}`} />
-                  </div>
-                  <span className="text-[11px] tracking-tight">Beranda</span>
-                </button>
-
-                {/* 2. Center Prominent Floating Button: Analisis (Raised & Glowing) */}
-                <div className="relative -top-5 flex flex-col items-center px-3">
+            {/* ═══ 3-TAB BOTTOM NAVIGATION BAR (Hidden on Fullscreen Screening/Camera) ═══ */}
+            {activeTab !== "screening" && (
+              <div className="shrink-0 bg-white border-t border-slate-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pb-safe-nav pt-1.5 px-4 relative font-sans animate-in slide-in-from-bottom-2 duration-200">
+                <nav className="flex items-center justify-around max-w-sm mx-auto">
+                  {/* 1. Beranda (Left) */}
                   <button
                     type="button"
-                    onClick={() => setActiveTab("screening")}
-                    className="relative group cursor-pointer"
-                    title="Analisis Gizi & Stunting AI"
+                    onClick={() => setActiveTab("home")}
+                    className={`flex-1 flex flex-col items-center gap-1 py-1 transition-all cursor-pointer ${
+                      activeTab === "home" ? "text-light-sea-green font-bold" : "text-blue-gray hover:text-ford-blue font-medium"
+                    }`}
                   >
-                    {/* Glowing Pulse Aura */}
-                    <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-green-02/50 via-light-sea-green/50 to-teal-400/50 blur-md animate-pulse"></div>
-                    
-                    {/* Raised Action Button */}
-                    <div className={`w-14 h-14 rounded-full bg-gradient-to-tr from-green-02 via-light-sea-green to-teal-400 text-ford-blue flex items-center justify-center shadow-xl border-4 border-white active:scale-95 group-hover:scale-105 transition-all relative z-10 ${
-                      activeTab === "screening" ? "ring-2 ring-light-sea-green/50 scale-105" : ""
-                    }`}>
-                      <Activity className="w-6 h-6 stroke-[2.5] text-ford-blue" />
+                    <div className={`p-1.5 rounded-2xl transition-all ${activeTab === "home" ? "bg-green-tint text-ford-blue shadow-2xs" : "text-blue-gray"}`}>
+                      <Home className={`w-5 h-5 transition-transform ${activeTab === "home" ? "scale-110" : ""}`} />
                     </div>
+                    <span className="text-[11px] tracking-tight">Beranda</span>
                   </button>
-                  <span className={`text-[11px] font-black tracking-tight mt-1 transition-colors ${
-                    activeTab === "screening" ? "text-light-sea-green" : "text-ford-blue"
-                  }`}>
-                    Analisis
-                  </span>
-                </div>
 
-                {/* 3. Profil (Right) */}
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("profile")}
-                  className={`flex-1 flex flex-col items-center gap-1 py-1 transition-all cursor-pointer ${
-                    activeTab === "profile" ? "text-light-sea-green font-bold" : "text-blue-gray hover:text-ford-blue font-medium"
-                  }`}
-                >
-                  <div className={`p-1.5 rounded-2xl transition-all ${activeTab === "profile" ? "bg-green-tint text-ford-blue shadow-2xs" : "text-blue-gray"}`}>
-                    <User className={`w-5 h-5 transition-transform ${activeTab === "profile" ? "scale-110" : ""}`} />
+                  {/* 2. Center Prominent Floating Button: Analisis (Raised & Glowing) */}
+                  <div className="relative -top-5 flex flex-col items-center px-3">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("screening")}
+                      className="relative group cursor-pointer"
+                      title="Analisis Gizi & Stunting AI"
+                    >
+                      {/* Glowing Pulse Aura */}
+                      <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-green-02/50 via-light-sea-green/50 to-teal-400/50 blur-md animate-pulse"></div>
+                      
+                      {/* Raised Action Button */}
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-green-02 via-light-sea-green to-teal-400 text-ford-blue flex items-center justify-center shadow-xl border-4 border-white active:scale-95 group-hover:scale-105 transition-all relative z-10">
+                        <Activity className="w-6 h-6 stroke-[2.5] text-ford-blue" />
+                      </div>
+                    </button>
+                    <span className="text-[11px] font-black tracking-tight mt-1 transition-colors text-ford-blue">
+                      Analisis
+                    </span>
                   </div>
-                  <span className="text-[11px] tracking-tight">Profil</span>
-                </button>
-              </nav>
-            </div>
+
+                  {/* 3. Profil (Right) */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("profile")}
+                    className={`flex-1 flex flex-col items-center gap-1 py-1 transition-all cursor-pointer ${
+                      activeTab === "profile" ? "text-light-sea-green font-bold" : "text-blue-gray hover:text-ford-blue font-medium"
+                    }`}
+                  >
+                    <div className={`p-1.5 rounded-2xl transition-all ${activeTab === "profile" ? "bg-green-tint text-ford-blue shadow-2xs" : "text-blue-gray"}`}>
+                      <User className={`w-5 h-5 transition-transform ${activeTab === "profile" ? "scale-110" : ""}`} />
+                    </div>
+                    <span className="text-[11px] tracking-tight">Profil</span>
+                  </button>
+                </nav>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -14,7 +14,10 @@ import {
   Activity,
   CheckCircle2,
   Scan,
-  User
+  User,
+  FlipHorizontal,
+  Zap,
+  ZapOff
 } from "lucide-react";
 import { CitizenUser } from "../types";
 
@@ -36,6 +39,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const cameraStreamRef = React.useRef<MediaStream | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
+  const [isFlashOn, setIsFlashOn] = useState(false);
   const [isScanningActive, setIsScanningActive] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
 
@@ -48,7 +53,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         try {
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             stream = await navigator.mediaDevices.getUserMedia({
-              video: { facingMode: "user" },
+              video: { facingMode: facingMode },
               audio: false,
             });
             cameraStreamRef.current = stream;
@@ -78,7 +83,31 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         cameraStreamRef.current = null;
       }
     };
-  }, [screeningStep]);
+  }, [screeningStep, facingMode]);
+
+  // Flip Camera (Front / Rear)
+  const handleFlipCamera = async () => {
+    const nextMode = facingMode === "user" ? "environment" : "user";
+    setFacingMode(nextMode);
+  };
+
+  // Toggle Flash / Torch
+  const handleToggleFlash = async () => {
+    const nextFlash = !isFlashOn;
+    setIsFlashOn(nextFlash);
+    if (cameraStreamRef.current) {
+      const track = cameraStreamRef.current.getVideoTracks()[0];
+      if (track) {
+        try {
+          await (track as any).applyConstraints({
+            advanced: [{ torch: nextFlash }],
+          });
+        } catch (e) {
+          console.warn("Torch constraint not supported on this device/browser");
+        }
+      }
+    }
+  };
 
   // Step 2: Questionnaire States
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -133,7 +162,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         }
         return prev + 20;
       });
-    }, 300);
+    }, 250);
   };
 
   const handleSelectAnswer = (ans: string) => {
@@ -157,7 +186,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   };
 
   return (
-    <div className="-m-3.5 flex flex-col min-h-full bg-gradient-to-b from-[#D4EC9E] via-[#E2F5B8] to-[#BFE491] text-ford-blue select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
+    <div className="flex flex-col h-full w-full bg-gradient-to-b from-[#D4EC9E] via-[#E2F5B8] to-[#BFE491] text-ford-blue select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
       {/* ═══ HELP DIALOG MODAL ═══ */}
       {showHelpModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
@@ -170,7 +199,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <button
                 type="button"
                 onClick={() => setShowHelpModal(false)}
-                className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold"
+                className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -181,7 +210,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             <button
               type="button"
               onClick={() => setShowHelpModal(false)}
-              className="w-full py-2 bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold rounded-xl text-[11.5px]"
+              className="w-full py-2 bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold rounded-xl text-[11.5px] cursor-pointer"
             >
               Saya Mengerti
             </button>
@@ -193,7 +222,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {/* SCREEN 1: FULLSCREEN CAMERA WITH framebody.svg OVERLAY GUIDE   */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 1 && (
-        <div className="flex-1 flex flex-col justify-between p-4 relative min-h-[640px] overflow-hidden">
+        <div className="flex-1 flex flex-col justify-between p-4 relative h-full w-full overflow-hidden">
           {/* Background: Live Camera Stream or Simulated Camera Canvas */}
           <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-900 z-0">
             <video
@@ -201,111 +230,124 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               autoPlay
               playsInline
               muted
-              className="w-full h-full object-cover transform -scale-x-100"
+              className={`w-full h-full object-cover ${facingMode === "user" ? "transform -scale-x-100" : ""}`}
             />
             {/* Fallback ambient camera gradient if permission pending */}
             {!isCameraActive && (
               <div className="absolute inset-0 bg-gradient-to-b from-[#8C8B85] via-[#A3A29B] to-[#73726C]" />
             )}
             {/* Vignette shadow overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/35" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/45" />
           </div>
 
           {/* Top Bar Header (Z-20) */}
-          <div className="flex items-center justify-between pt-1 z-20">
+          <div className="flex items-center justify-between pt-1 px-0.5 z-20">
+            {/* Left: Back Button */}
             <button
               type="button"
               onClick={onBackToHome}
-              className="w-9 h-9 rounded-full bg-[#E5F7A3]/95 hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center shadow-md cursor-pointer transition-transform active:scale-95 border border-white/40 backdrop-blur-xs"
+              className="w-10 h-10 rounded-full bg-[#E5F7A3] hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center shadow-lg cursor-pointer transition-transform active:scale-90 border border-white/60 backdrop-blur-sm"
               title="Kembali ke Beranda"
             >
-              <ArrowLeft className="w-4 h-4 text-ford-blue" />
+              <ArrowLeft className="w-5 h-5 text-ford-blue stroke-[2.5]" />
             </button>
 
+            {/* Right Actions: Flash, Flip/Rotate Camera, Help */}
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-[#E5F7A3]/95 text-ford-blue flex items-center justify-center shadow-md border border-white/40 backdrop-blur-xs">
-                <User className="w-4 h-4 text-ford-blue" />
-              </div>
+              {/* Flash Toggle Button */}
+              <button
+                type="button"
+                onClick={handleToggleFlash}
+                className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all active:scale-90 border border-white/60 backdrop-blur-sm ${
+                  isFlashOn ? "bg-amber-300 text-ford-blue ring-2 ring-amber-400" : "bg-[#E5F7A3] hover:bg-[#D5EB8E] text-ford-blue"
+                }`}
+                title={isFlashOn ? "Matikan Flash" : "Nyalakan Flash"}
+              >
+                {isFlashOn ? <Zap className="w-4 h-4 fill-current text-ford-blue" /> : <ZapOff className="w-4 h-4 text-ford-blue" />}
+              </button>
+
+              {/* Camera Flip / Rotate Button */}
+              <button
+                type="button"
+                onClick={handleFlipCamera}
+                className="w-10 h-10 rounded-full bg-[#E5F7A3] hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center shadow-lg cursor-pointer transition-all active:scale-90 border border-white/60 backdrop-blur-sm"
+                title="Putar / Balik Kamera"
+              >
+                <FlipHorizontal className="w-4 h-4 text-ford-blue stroke-[2.5]" />
+              </button>
+
+              {/* Help Button */}
               <button
                 type="button"
                 onClick={() => setShowHelpModal(true)}
-                className="w-9 h-9 rounded-full bg-[#E5F7A3]/95 hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center font-bold shadow-md cursor-pointer border border-white/40 backdrop-blur-xs"
+                className="w-10 h-10 rounded-full bg-[#E5F7A3] hover:bg-[#D5EB8E] text-ford-blue flex items-center justify-center shadow-lg cursor-pointer transition-all active:scale-90 border border-white/60 backdrop-blur-sm"
                 title="Bantuan"
               >
-                <HelpCircle className="w-4 h-4 text-ford-blue" />
+                <HelpCircle className="w-5 h-5 text-ford-blue stroke-[2.5]" />
               </button>
             </div>
           </div>
 
-          {/* Center: Real framebody.svg Overlay from public/ */}
-          <div className="my-auto flex flex-col items-center justify-center relative py-2 z-10">
-            {/* Animated Laser Scanning Beam */}
+          {/* Center: Large Official framebody.svg Overlay from public/ */}
+          <div className="my-auto flex-1 flex flex-col items-center justify-center relative py-1 z-10 w-full overflow-hidden">
+            {/* Fullscreen Laser Scanning Animation */}
             {isScanningActive && (
-              <div className="absolute inset-x-4 top-1/3 h-1 bg-gradient-to-r from-transparent via-brand-orange to-transparent shadow-[0_0_20px_#FF8C00] animate-bounce [animation-duration:1.2s] z-30 pointer-events-none" />
+              <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden">
+                {/* Shutter White Flash */}
+                <div className="absolute inset-0 bg-white/70 animate-in fade-in duration-150 pointer-events-none" />
+                {/* Full-width laser beam sweeping */}
+                <div className="w-full h-1.5 bg-gradient-to-r from-transparent via-green-02 to-transparent shadow-[0_0_30px_#22B5AC] animate-bounce [animation-duration:1s]" />
+                {/* Biometric Telemetry overlay */}
+                <div className="absolute top-6 left-1/2 -translate-x-1/2 px-3.5 py-1.5 rounded-full bg-black/70 border border-green-02 text-green-02 font-mono font-bold text-[11px] backdrop-blur-md shadow-lg flex items-center gap-2">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>MEMINDAI BIOMETRIK: {scanProgress}%</span>
+                </div>
+              </div>
             )}
 
-            {/* Official framebody.svg Body & Hand Outline */}
-            <div className="relative w-full max-w-[280px] sm:max-w-[310px] aspect-[4/5] flex items-center justify-center">
+            {/* Prominent Large framebody.svg */}
+            <div className="relative w-full max-w-[340px] sm:max-w-[380px] h-[52vh] max-h-[460px] flex items-center justify-center px-1">
               <img
                 src="/framebody.svg"
-                alt="Frame Body Guide"
-                className={`w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_4px_14px_rgba(0,0,0,0.45)] transition-opacity duration-300 ${
-                  isScanningActive ? "animate-pulse" : ""
+                alt="Garis Panduan Tubuh"
+                className={`w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.55)] transition-all duration-300 ${
+                  isScanningActive ? "scale-105 filter drop-shadow-[0_0_20px_rgba(34,181,172,0.8)]" : ""
                 }`}
-              />
-
-              {/* Progress Overlay when scanning */}
-              {isScanningActive && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/35 backdrop-blur-2xs rounded-3xl z-20">
-                  <div className="w-12 h-12 rounded-full bg-white text-ford-blue flex items-center justify-center font-black text-sm shadow-xl animate-spin">
-                    <RefreshCw className="w-6 h-6 text-light-sea-green" />
-                  </div>
-                  <p className="text-[12px] font-black text-white mt-2 drop-shadow-md">
-                    Memindai AI ({scanProgress}%)
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Step Indicator / Slider Line with Orange Dot */}
-            <div className="w-3/4 max-w-[220px] h-1.5 bg-white/40 rounded-full relative my-1 overflow-visible z-20">
-              <div
-                className="h-full bg-brand-orange rounded-full transition-all duration-300"
-                style={{ width: isScanningActive ? `${scanProgress}%` : "35%" }}
-              />
-              <div
-                className="w-3.5 h-3.5 rounded-full bg-brand-orange border-2 border-white shadow-md absolute top-1/2 -translate-y-1/2 transition-all duration-300"
-                style={{ left: isScanningActive ? `calc(${scanProgress}% - 7px)` : "calc(35% - 7px)" }}
               />
             </div>
           </div>
 
           {/* Bottom Card & Capture Trigger Button (Z-20) */}
-          <div className="space-y-3 z-20 pb-1">
-            <div className="bg-[#78A98A]/85 backdrop-blur-md p-3.5 rounded-2xl border border-white/50 text-white space-y-1 shadow-md">
+          <div className="space-y-3 z-20 pb-3 px-0.5">
+            {/* Clean Glassmorphism Scanning Card */}
+            <div className="bg-slate-900/70 backdrop-blur-xl p-3.5 rounded-2xl border border-white/20 text-white space-y-1 shadow-2xl">
               <div className="flex items-center gap-2">
-                <Scan className="w-4 h-4 text-white shrink-0" />
-                <h3 className="text-[13px] font-black text-white">Scanning</h3>
+                <div className="w-6 h-6 rounded-lg bg-green-02/25 border border-green-02/40 flex items-center justify-center">
+                  <Scan className="w-3.5 h-3.5 text-green-02" />
+                </div>
+                <h3 className="text-[13px] font-black tracking-wide text-white">Scanning</h3>
               </div>
-              <p className="text-[11px] text-white/95 font-medium leading-relaxed">
-                Posisikan Wajah, Tangan, Kuku, Rambut, dan Mata Anda sesuai petunjuk.
+              <p className="text-[11px] text-slate-200 font-medium leading-relaxed">
+                Posisikan Wajah, Tangan, Kuku, Rambut, dan Mata Anda sesuai petunjuk garis putih di atas.
               </p>
             </div>
 
-            {/* Circular Mascot Capture Button */}
+            {/* Circular Mascot Capture Button with Blinking Rings */}
             <div className="flex items-center justify-center pb-1">
               <button
                 type="button"
                 onClick={handleStartScan}
                 disabled={isScanningActive}
-                className="w-16 h-16 rounded-full bg-white shadow-2xl border-4 border-[#78A98A] flex items-center justify-center relative cursor-pointer active:scale-95 transition-transform group"
+                className="w-18 h-18 rounded-full bg-white shadow-[0_0_35px_rgba(34,181,172,0.65)] border-4 border-[#78A98A] flex items-center justify-center relative cursor-pointer active:scale-90 hover:scale-105 transition-all group"
                 title="Ambil Foto & Mulai Pindaian AI"
               >
-                <div className="absolute -inset-2 rounded-full bg-green-02/40 animate-ping pointer-events-none" />
+                {/* Blinking Aura Pulse Rings */}
+                <div className="absolute -inset-2.5 rounded-full bg-green-02/40 animate-ping [animation-duration:2s] pointer-events-none" />
+                <div className="absolute -inset-1.5 rounded-full bg-light-sea-green/30 animate-pulse pointer-events-none" />
                 <img
                   src="/logo_app.svg"
                   alt="Capture"
-                  className="w-10 h-10 object-contain group-hover:scale-105 transition-transform"
+                  className="w-11 h-11 object-contain group-hover:scale-110 transition-transform relative z-10"
                 />
               </button>
             </div>
