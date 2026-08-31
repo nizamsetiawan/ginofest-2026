@@ -963,7 +963,7 @@ export const CitizenMobileApp: React.FC = () => {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className={`flex-1 font-sans ${
+              className={`flex-1 font-sans no-scrollbar ${
                 activeTab === "screening"
                   ? "p-0 m-0 h-full w-full overflow-hidden"
                   : "p-3.5 space-y-3.5 overflow-y-auto pb-24 overscroll-contain min-h-0"
