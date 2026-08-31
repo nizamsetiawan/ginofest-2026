@@ -30,7 +30,7 @@ import {
   fetchDistrictsFromFirestore
 } from "@/services/firebase-service";
 import { useAuth } from "@/contexts/AuthContext";
-import { getMenuFoodImage } from "@/utils/foodImageEngine";
+import { getMenuFoodImage, searchRealFoodImage } from "@/utils/foodImageEngine";
 
 interface MenuPlannerAIProps {
   selectedDistrict: string;
@@ -141,23 +141,21 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
   const [aiRecipePool, setAiRecipePool] = useState<string[]>([]);
   const [budgetSummary, setBudgetSummary] = useState<any>(null);
   
-  // On-Demand AI Food Image Rendering State (Click to trigger per meal)
+  // Live Food Photo Search State (Click to fetch real food photo)
   const [renderedFoodImages, setRenderedFoodImages] = useState<Record<string, { url: string; isLoading: boolean }>>({});
 
-  const handleTriggerRenderFoodImage = (dayKey: string, menuTitle?: string | null, composition?: string | null) => {
+  const handleTriggerRenderFoodImage = async (dayKey: string, menuTitle?: string | null, composition?: string | null) => {
     setRenderedFoodImages(prev => ({
       ...prev,
       [dayKey]: { url: "", isLoading: true }
     }));
 
-    const visual = getMenuFoodImage(menuTitle || "Menu Bergizi MBG", composition || "");
+    const realUrl = await searchRealFoodImage(menuTitle || "Masakan Nusantara");
 
-    setTimeout(() => {
-      setRenderedFoodImages(prev => ({
-        ...prev,
-        [dayKey]: { url: visual.imageUrl, isLoading: false }
-      }));
-    }, 350);
+    setRenderedFoodImages(prev => ({
+      ...prev,
+      [dayKey]: { url: realUrl, isLoading: false }
+    }));
   };
   const [logisticsBOM, setLogisticsBOM] = useState<any[]>([]);
   const [districtsList, setDistrictsList] = useState<DistrictData[]>(GRESIK_DISTRICTS);
