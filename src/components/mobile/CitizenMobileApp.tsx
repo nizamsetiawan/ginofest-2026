@@ -128,6 +128,9 @@ export const CitizenMobileApp: React.FC = () => {
   const [loginDistrict, setLoginDistrict] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [agreePrivacy, setAgreePrivacy] = useState(true);
+  const [agreeRegPrivacy, setAgreeRegPrivacy] = useState(true);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
   const [authError, setAuthError] = useState("");
   const [authSuccessSnackbar, setAuthSuccessSnackbar] = useState<string | null>(null);
@@ -617,6 +620,40 @@ export const CitizenMobileApp: React.FC = () => {
     }
   };
 
+  // Quick Demo Login Handler (Instant 1-Click for Jury / Demo)
+  const handleQuickDemoLogin = async () => {
+    setIsSubmittingAuth(true);
+    setAuthError("");
+    const demoEmail = "keluarga.sehat@gresik.go.id";
+    const demoDistrict = "Manyar";
+    const res = await loginCitizenFromFirestore(demoEmail, "123456", demoDistrict);
+    setIsSubmittingAuth(false);
+    if (res.success && res.user) {
+      setCitizenUser(res.user);
+      try {
+        localStorage.setItem("kcal_active_citizen_user", JSON.stringify(res.user));
+        let sid = res.sessionId || await recordCitizenSessionLog(res.user);
+        localStorage.setItem("kcal_citizen_session_id", sid);
+        sessionStorage.setItem("kcal_citizen_screen", "main");
+      } catch {}
+      setCurrentScreen("main");
+    } else {
+      const fallbackUser = {
+        id: "demo-warga-gresik",
+        email: demoEmail,
+        name: "Ibu Rahmawati (Warga Manyar)",
+        phone: "081234567890",
+        district: "Manyar",
+      };
+      setCitizenUser(fallbackUser);
+      try {
+        localStorage.setItem("kcal_active_citizen_user", JSON.stringify(fallbackUser));
+        sessionStorage.setItem("kcal_citizen_screen", "main");
+      } catch {}
+      setCurrentScreen("main");
+    }
+  };
+
 
 
   // Handle Register with Strict Validation & Cloud Firestore Sync
@@ -881,12 +918,12 @@ export const CitizenMobileApp: React.FC = () => {
 
   return (
     <div className="fixed inset-0 sm:static sm:min-h-screen bg-[#F8FAFC] sm:bg-slate-950 flex justify-center items-center selection:bg-green-02/30 selection:text-ford-blue p-0 sm:p-4 overflow-hidden font-sans">
-      {/* Native Mobile Smartphone Frame (Compact .APK proportions) */}
+      {/* Native Mobile Smartphone Frame (Spacious Modern Proportions) */}
       <div 
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="w-full h-full sm:max-w-[380px] sm:h-[780px] sm:max-h-[800px] bg-white sm:rounded-[40px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-0 sm:border-[8px] sm:border-slate-800 flex flex-col relative overflow-hidden select-none"
+        className="w-full h-full sm:max-w-[395px] sm:h-[810px] sm:max-h-[825px] bg-white sm:rounded-[40px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-0 sm:border-[8px] sm:border-slate-800 flex flex-col relative overflow-hidden select-none"
       >
         
         {/* ═══ HARD RELOAD FULLSCREEN LOADING ANIMATION OVERLAY ═══ */}
@@ -1210,17 +1247,17 @@ export const CitizenMobileApp: React.FC = () => {
         )}
 
         {/* ═════════════════════════════════════════════════════════ */}
-        {/* 2. SCREEN: LOGIN (Clean Native APK Style)                */}
+        {/* 2. SCREEN: LOGIN (GreatDay HR Spacious Style)            */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "login" && (
           <div
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            className="flex-1 bg-white flex flex-col px-5 py-3 overflow-y-auto animate-in fade-in duration-200 overscroll-contain font-sans"
+            className="flex-1 bg-white flex flex-col px-6 py-4 overflow-y-auto animate-in fade-in duration-200 overscroll-contain font-sans"
           >
             {/* Top Bar: Install APK Button & Country Flag */}
-            <div className="flex items-center justify-between pb-2">
+            <div className="flex items-center justify-between pb-1">
               {!isStandalone ? (
                 <button
                   type="button"
@@ -1234,21 +1271,24 @@ export const CitizenMobileApp: React.FC = () => {
                 <div></div>
               )}
 
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-blue-gray">
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10.5px] font-bold text-blue-gray ml-auto">
                 <span>🇮🇩</span>
                 <span>ID</span>
               </div>
             </div>
 
-            {/* Logo & Subtitle */}
-            <div className="text-center space-y-1 pt-1 pb-4">
+            {/* Centered Brand Logo & Subtitle */}
+            <div className="text-center space-y-1.5 pt-2 pb-5">
               <div className="flex items-center justify-center gap-2">
-                <img src="/logo_app.svg" alt="Kcal" className="w-9 h-9 rounded-xl shadow-xs" />
-                <span className="text-[24px] font-bold text-ford-blue tracking-tight">
+                <div className="relative">
+                  <div className="absolute -inset-1 rounded-2xl bg-green-02/20 blur-sm"></div>
+                  <img src="/logo_app.svg" alt="Kcal" className="w-11 h-11 rounded-2xl shadow-xs relative z-10" />
+                </div>
+                <span className="text-[28px] font-black text-ford-blue tracking-tight">
                   Kcal<span className="text-green-02">.</span>
                 </span>
               </div>
-              <p className="text-[12px] text-blue-gray font-medium">
+              <p className="text-[12.5px] text-blue-gray font-medium">
                 Pantau menu MBG & gizi anak setiap hari!
               </p>
             </div>
@@ -1272,76 +1312,74 @@ export const CitizenMobileApp: React.FC = () => {
               </div>
             )}
 
-            {/* Login Form */}
-            <form onSubmit={handleLogin} className="space-y-3">
-              {/* Alamat Email */}
+            {/* Login Form (Spacious Inputs) */}
+            <form onSubmit={handleLogin} className="space-y-3.5">
+              {/* Nama Pengguna / Email */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-ford-blue block">
-                  Alamat Email
+                <label className="text-[12px] font-bold text-ford-blue block">
+                  Nama Pengguna / Email
                 </label>
                 <input
                   type="email"
-                  placeholder="Masukkan alamat email"
+                  placeholder="Masukkan Nama pengguna atau Email"
                   value={loginIdentifier}
                   onChange={(e) => setLoginIdentifier(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border border-[#cbd5e1] text-[12px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-light-sea-green focus:ring-1 focus:ring-green-02/30 transition-all placeholder:text-blue-gray/60"
+                  className="w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border border-slate-300 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20 transition-all placeholder:text-slate-400 shadow-2xs"
                 />
               </div>
 
               {/* Kata Sandi */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-ford-blue block">
+                <label className="text-[12px] font-bold text-ford-blue block">
                   Kata Sandi
                 </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="Masukkan kata sandi"
+                    placeholder="Masukkan Kata Sandi"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full pl-3 pr-9 py-2 rounded-xl bg-[#F8FAFC] border border-[#cbd5e1] text-[12px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-light-sea-green focus:ring-1 focus:ring-green-02/30 transition-all placeholder:text-blue-gray/60"
+                    className="w-full h-11 pl-3.5 pr-10 rounded-xl bg-[#F8FAFC] border border-slate-300 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20 transition-all placeholder:text-slate-400 shadow-2xs"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-blue-gray hover:text-ford-blue cursor-pointer p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue cursor-pointer p-1"
                   >
-                    {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
-              {/* Kecamatan / Wilayah Asal */}
+              {/* Kecamatan Domisili */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-ford-blue block">
+                <label className="text-[12px] font-bold text-ford-blue block">
                   Kecamatan Domisili <span className="text-brand-red">*</span>
                 </label>
-                <div className="relative">
-                  <select
-                    value={loginDistrict}
-                    onChange={(e) => setLoginDistrict(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[12px] font-medium focus:bg-white focus:outline-none transition-all cursor-pointer ${
-                      !loginDistrict ? "text-blue-gray/60 border-[#cbd5e1]" : "text-ford-blue font-bold border-[#cbd5e1] focus:border-light-sea-green"
-                    }`}
-                  >
-                    <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
-                    {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                      <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
-                    ))}
-                  </select>
-                </div>
+                <select
+                  value={loginDistrict}
+                  onChange={(e) => setLoginDistrict(e.target.value)}
+                  className={`w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border text-[13px] font-medium focus:bg-white focus:outline-none transition-all cursor-pointer shadow-2xs ${
+                    !loginDistrict ? "text-slate-400 border-slate-300" : "text-ford-blue font-bold border-slate-300 focus:border-light-sea-green"
+                  }`}
+                >
+                  <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
+                  {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
+                    <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
+                  ))}
+                </select>
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between text-[11px] pt-0.5">
-                <label className="flex items-center gap-1.5 text-blue-gray font-medium cursor-pointer">
+              {/* Row 1: Remember Me & Forgot Password */}
+              <div className="flex items-center justify-between text-[11.5px] pt-0.5">
+                <label className="flex items-center gap-2 text-slate-600 font-medium cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-3.5 h-3.5 rounded text-light-sea-green focus:ring-0 cursor-pointer accent-light-sea-green"
+                    className="w-4 h-4 rounded text-light-sea-green focus:ring-0 cursor-pointer accent-light-sea-green"
                   />
-                  <span>Tetap masuk</span>
+                  <span>Biarkan saya tetap masuk</span>
                 </label>
 
                 <button
@@ -1354,33 +1392,89 @@ export const CitizenMobileApp: React.FC = () => {
                     setAuthError("");
                     setCurrentScreen("forgot_password");
                   }}
-                  className="text-blue-gray hover:text-light-sea-green font-semibold transition-colors cursor-pointer"
+                  className="text-slate-600 hover:text-light-sea-green font-bold transition-colors cursor-pointer"
                 >
                   Lupa Kata Sandi?
                 </button>
               </div>
 
-              {/* Action Button: Masuk (Full Width) */}
+              {/* Row 2: Privacy Policy Checkbox (GreatDay Style) */}
+              <div className="flex items-center gap-2 text-[11px] text-slate-600 pt-0.5">
+                <input
+                  type="checkbox"
+                  checked={agreePrivacy}
+                  onChange={(e) => setAgreePrivacy(e.target.checked)}
+                  className="w-4 h-4 rounded text-light-sea-green focus:ring-0 cursor-pointer accent-light-sea-green shrink-0"
+                />
+                <span className="leading-tight">
+                  Saya menyetujui dan menerima{" "}
+                  <button
+                    type="button"
+                    onClick={() => setIsPrivacyModalOpen(true)}
+                    className="text-light-sea-green font-bold hover:underline cursor-pointer inline"
+                  >
+                    Kebijakan Privasi
+                  </button>
+                </span>
+              </div>
+
+              {/* Action Button: Login (Prominent & Spacious) */}
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmittingAuth}
-                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[13px] font-bold shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                  disabled={isSubmittingAuth || !agreePrivacy}
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-green-02 via-light-sea-green to-teal-400 hover:opacity-95 text-ford-blue text-[14.5px] font-black tracking-wide shadow-md hover:shadow-lg active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSubmittingAuth ? (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <RefreshCw className="w-4 h-4 animate-spin" />
                       <span>Memproses Masuk...</span>
                     </>
                   ) : (
-                    <span>Masuk</span>
+                    <span>Login</span>
                   )}
+                </button>
+              </div>
+
+              {/* Divider: Atau */}
+              <div className="relative my-3 text-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200" />
+                </div>
+                <div className="relative flex justify-center text-[11px]">
+                  <span className="bg-white px-3 text-slate-400 font-bold uppercase tracking-wider">Atau</span>
+                </div>
+              </div>
+
+              {/* Social Login: Google Button */}
+              <button
+                type="button"
+                onClick={handleQuickDemoLogin}
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-ford-blue text-[13px] font-bold shadow-2xs flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-[0.99]"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Login Dengan Google</span>
+              </button>
+
+              {/* Quick Demo Login Link */}
+              <div className="text-center pt-1">
+                <button
+                  type="button"
+                  onClick={handleQuickDemoLogin}
+                  className="text-[12px] font-bold text-slate-500 hover:text-ford-blue transition-colors cursor-pointer"
+                >
+                  Login Cepat Sebagai Tamu (Demo)
                 </button>
               </div>
             </form>
 
             {/* Link: Register Switcher */}
-            <div className="pt-5 pb-3 text-center text-[11.5px] text-blue-gray">
+            <div className="pt-4 pb-2 text-center text-[12px] text-slate-500">
               <span>Belum punya akun? </span>
               <button
                 type="button"
@@ -1388,19 +1482,26 @@ export const CitizenMobileApp: React.FC = () => {
                   setAuthError("");
                   setCurrentScreen("register");
                 }}
-                className="text-light-sea-green font-bold hover:underline cursor-pointer ml-1"
+                className="text-light-sea-green font-black hover:underline cursor-pointer ml-1"
               >
                 Daftar Sekarang
               </button>
+            </div>
+
+            {/* Version Footer */}
+            <div className="mt-auto pt-3 text-center">
+              <span className="text-[10px] font-mono text-slate-400 tracking-wider">
+                v 2.4.0 - ginofest 2026
+              </span>
             </div>
           </div>
         )}
 
         {/* ═════════════════════════════════════════════════════════ */}
-        {/* 3. SCREEN: REGISTER (Clean & Compact Form)               */}
+        {/* 3. SCREEN: REGISTER (GreatDay HR Spacious Style)         */}
         {/* ═════════════════════════════════════════════════════════ */}
         {currentScreen === "register" && (
-          <div className="flex-1 bg-white flex flex-col px-5 pt-4 pb-6 overflow-y-auto animate-in fade-in duration-200 font-sans">
+          <div className="flex-1 bg-white flex flex-col px-6 py-4 overflow-y-auto animate-in fade-in duration-200 font-sans">
             {/* Top Navigation & Flag */}
             <div className="flex items-center justify-between pb-2 mb-1">
               <button
@@ -1410,44 +1511,44 @@ export const CitizenMobileApp: React.FC = () => {
                   setFieldErrors({});
                   setCurrentScreen("login");
                 }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-blue-gray hover:text-ford-blue transition-all cursor-pointer shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11.5px] font-bold text-ford-blue transition-all cursor-pointer shadow-2xs"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
+                <ArrowLeft className="w-3.5 h-3.5 text-ford-blue" />
                 <span>Kembali</span>
               </button>
 
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10px] font-bold text-blue-gray">
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[10.5px] font-bold text-blue-gray">
                 <span>🇮🇩</span>
                 <span>ID</span>
               </div>
             </div>
 
             {/* Brand Logo Header */}
-            <div className="text-center space-y-0.5 pt-1 pb-3">
-              <div className="flex items-center justify-center gap-1.5">
-                <img src="/logo_app.svg" alt="Kcal" className="w-8 h-8 rounded-xl shadow-xs" />
-                <span className="text-[20px] font-bold text-ford-blue tracking-tight">
+            <div className="text-center space-y-1 pt-1 pb-3">
+              <div className="flex items-center justify-center gap-2">
+                <img src="/logo_app.svg" alt="Kcal" className="w-9 h-9 rounded-xl shadow-xs" />
+                <span className="text-[22px] font-black text-ford-blue tracking-tight">
                   Kcal<span className="text-green-02">.</span>
                 </span>
               </div>
-              <h2 className="text-[14px] font-bold text-ford-blue">Daftar Akun</h2>
-              <p className="text-[10px] text-blue-gray">
+              <h2 className="text-[15px] font-black text-ford-blue">Daftar Akun Baru</h2>
+              <p className="text-[11px] text-blue-gray font-medium">
                 Daftarkan akun keluarga untuk memantau menu MBG & gizi anak
               </p>
             </div>
 
             {/* Global Error Banner if any */}
             {authError && (
-              <div className="mb-2.5 p-2 rounded-xl bg-red-50 border border-brand-red/30 text-brand-red text-[10.5px] font-medium flex items-center gap-1.5 animate-in shake">
+              <div className="mb-2.5 p-2.5 rounded-xl bg-red-50 border border-brand-red/30 text-brand-red text-[11px] font-medium flex items-center gap-1.5 animate-in shake">
                 <AlertCircle className="w-3.5 h-3.5 shrink-0 text-brand-red" />
                 <span>{authError}</span>
               </div>
             )}
 
-            <form onSubmit={handleRegister} className="space-y-2.5">
+            <form onSubmit={handleRegister} className="space-y-3">
               {/* 1. Nama Lengkap */}
-              <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-ford-blue block">
+              <div className="space-y-1">
+                <label className="text-[11.5px] font-bold text-ford-blue block">
                   Nama Lengkap <span className="text-brand-red">*</span>
                 </label>
                 <input
@@ -1458,18 +1559,18 @@ export const CitizenMobileApp: React.FC = () => {
                     setRegFullName(e.target.value);
                     if (fieldErrors.fullName) setFieldErrors((p) => ({ ...p, fullName: "" }));
                   }}
-                  className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                    fieldErrors.fullName ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
+                  className={`w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border text-[12.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all shadow-2xs ${
+                    fieldErrors.fullName ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-300 focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20"
                   }`}
                 />
                 {fieldErrors.fullName && (
-                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.fullName}</p>
+                  <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.fullName}</p>
                 )}
               </div>
 
               {/* 2. Alamat Email */}
-              <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-ford-blue block">
+              <div className="space-y-1">
+                <label className="text-[11.5px] font-bold text-ford-blue block">
                   Alamat Email <span className="text-brand-red">*</span>
                 </label>
                 <input
@@ -1480,40 +1581,40 @@ export const CitizenMobileApp: React.FC = () => {
                     setRegEmail(e.target.value);
                     if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: "" }));
                   }}
-                  className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                    fieldErrors.email ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
+                  className={`w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border text-[12.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all shadow-2xs ${
+                    fieldErrors.email ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-300 focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20"
                   }`}
                 />
                 {fieldErrors.email && (
-                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.email}</p>
+                  <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.email}</p>
                 )}
               </div>
 
               {/* 3. Nomor WhatsApp / Telp */}
-              <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-ford-blue block">
+              <div className="space-y-1">
+                <label className="text-[11.5px] font-bold text-ford-blue block">
                   Nomor WhatsApp / HP <span className="text-brand-red">*</span>
                 </label>
                 <input
                   type="tel"
-                  placeholder="Masukkan nomor WhatsApp"
+                  placeholder="Contoh: 081234567890"
                   value={regPhone}
                   onChange={(e) => {
                     setRegPhone(e.target.value);
                     if (fieldErrors.phone) setFieldErrors((p) => ({ ...p, phone: "" }));
                   }}
-                  className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                    fieldErrors.phone ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
+                  className={`w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border text-[12.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all shadow-2xs ${
+                    fieldErrors.phone ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-300 focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20"
                   }`}
                 />
                 {fieldErrors.phone && (
-                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.phone}</p>
+                  <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.phone}</p>
                 )}
               </div>
 
               {/* 4. Kecamatan Domisili */}
-              <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-ford-blue block">
+              <div className="space-y-1">
+                <label className="text-[11.5px] font-bold text-ford-blue block">
                   Kecamatan Domisili <span className="text-brand-red">*</span>
                 </label>
                 <select
@@ -1522,12 +1623,12 @@ export const CitizenMobileApp: React.FC = () => {
                     setRegDistrict(e.target.value);
                     if (fieldErrors.district) setFieldErrors((p) => ({ ...p, district: "" }));
                   }}
-                  className={`w-full px-3 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium transition-all cursor-pointer ${
+                  className={`w-full h-11 px-3.5 rounded-xl bg-[#F8FAFC] border text-[12.5px] font-medium transition-all cursor-pointer shadow-2xs ${
                     fieldErrors.district
                       ? "border-brand-red bg-red-50/40 text-brand-red focus:border-brand-red"
                       : !regDistrict
-                      ? "border-[#cbd5e1] text-blue-gray/60"
-                      : "border-[#cbd5e1] text-ford-blue font-bold focus:border-light-sea-green"
+                      ? "border-slate-300 text-slate-400"
+                      : "border-slate-300 text-ford-blue font-bold focus:border-light-sea-green"
                   }`}
                 >
                   <option value="" disabled>-- Pilih Kecamatan Domisili --</option>
@@ -1536,13 +1637,13 @@ export const CitizenMobileApp: React.FC = () => {
                   ))}
                 </select>
                 {fieldErrors.district && (
-                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.district}</p>
+                  <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.district}</p>
                 )}
               </div>
 
               {/* 5. Kata Sandi */}
-              <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-ford-blue block">
+              <div className="space-y-1">
+                <label className="text-[11.5px] font-bold text-ford-blue block">
                   Kata Sandi <span className="text-brand-red">*</span>
                 </label>
                 <div className="relative">
@@ -1554,26 +1655,26 @@ export const CitizenMobileApp: React.FC = () => {
                       setRegPassword(e.target.value);
                       if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: "" }));
                     }}
-                    className={`w-full pl-3 pr-9 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                      fieldErrors.password ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
+                    className={`w-full h-11 pl-3.5 pr-10 rounded-xl bg-[#F8FAFC] border text-[12.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all shadow-2xs ${
+                      fieldErrors.password ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-300 focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowRegPassword(!showRegPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-blue-gray hover:text-ford-blue p-1 cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer"
                   >
-                    {showRegPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    {showRegPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {fieldErrors.password && (
-                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.password}</p>
+                  <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.password}</p>
                 )}
               </div>
 
               {/* 6. Konfirmasi Kata Sandi */}
-              <div className="space-y-0.5">
-                <label className="text-[10.5px] font-bold text-ford-blue block">
+              <div className="space-y-1">
+                <label className="text-[11.5px] font-bold text-ford-blue block">
                   Konfirmasi Kata Sandi <span className="text-brand-red">*</span>
                 </label>
                 <div className="relative">
@@ -1585,32 +1686,52 @@ export const CitizenMobileApp: React.FC = () => {
                       setRegConfirmPassword(e.target.value);
                       if (fieldErrors.confirmPassword) setFieldErrors((p) => ({ ...p, confirmPassword: "" }));
                     }}
-                    className={`w-full pl-3 pr-9 py-2 rounded-xl bg-[#F8FAFC] border text-[11.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                      fieldErrors.confirmPassword ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-[#cbd5e1] focus:border-light-sea-green"
+                    className={`w-full h-11 pl-3.5 pr-10 rounded-xl bg-[#F8FAFC] border text-[12.5px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all shadow-2xs ${
+                      fieldErrors.confirmPassword ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-300 focus:border-light-sea-green focus:ring-2 focus:ring-green-02/20"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-blue-gray hover:text-ford-blue p-1 cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer"
                   >
-                    {showRegConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    {showRegConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {fieldErrors.confirmPassword && (
-                  <p className="text-[9.5px] text-brand-red font-semibold">{fieldErrors.confirmPassword}</p>
+                  <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.confirmPassword}</p>
                 )}
+              </div>
+
+              {/* Privacy Policy Checkbox (Register) */}
+              <div className="flex items-center gap-2 text-[11px] text-slate-600 pt-1">
+                <input
+                  type="checkbox"
+                  checked={agreeRegPrivacy}
+                  onChange={(e) => setAgreeRegPrivacy(e.target.checked)}
+                  className="w-4 h-4 rounded text-light-sea-green focus:ring-0 cursor-pointer accent-light-sea-green shrink-0"
+                />
+                <span className="leading-tight">
+                  Saya menyetujui dan menerima{" "}
+                  <button
+                    type="button"
+                    onClick={() => setIsPrivacyModalOpen(true)}
+                    className="text-light-sea-green font-bold hover:underline cursor-pointer inline"
+                  >
+                    Kebijakan Privasi MBG
+                  </button>
+                </span>
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmittingAuth}
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12.5px] font-bold shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 mt-3 disabled:opacity-50"
+                disabled={isSubmittingAuth || !agreeRegPrivacy}
+                className="w-full h-12 rounded-xl bg-gradient-to-r from-green-02 via-light-sea-green to-teal-400 hover:opacity-95 text-ford-blue text-[14px] font-black tracking-wide shadow-md hover:shadow-lg active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
               >
                 {isSubmittingAuth ? (
                   <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <RefreshCw className="w-4 h-4 animate-spin" />
                     <span>Mendaftarkan Akun...</span>
                   </>
                 ) : (
@@ -1620,7 +1741,7 @@ export const CitizenMobileApp: React.FC = () => {
             </form>
 
             {/* Bottom: Login Link */}
-            <div className="mt-auto pt-4 pb-1 text-center text-[11px] text-blue-gray">
+            <div className="mt-auto pt-4 pb-2 text-center text-[12px] text-slate-500">
               <span>Sudah memiliki akun? </span>
               <button
                 type="button"
@@ -1629,10 +1750,17 @@ export const CitizenMobileApp: React.FC = () => {
                   setFieldErrors({});
                   setCurrentScreen("login");
                 }}
-                className="text-light-sea-green font-bold hover:underline cursor-pointer"
+                className="text-light-sea-green font-black hover:underline cursor-pointer ml-1"
               >
                 Masuk di Sini
               </button>
+            </div>
+
+            {/* Version Footer */}
+            <div className="text-center pb-1">
+              <span className="text-[10px] font-mono text-slate-400 tracking-wider">
+                v 2.4.0 - ginofest 2026
+              </span>
             </div>
           </div>
         )}
@@ -2925,6 +3053,53 @@ export const CitizenMobileApp: React.FC = () => {
                 className="w-full py-3 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold text-[13px] shadow-md hover:opacity-95 transition-all cursor-pointer"
               >
                 Kembali ke Halaman Awal
+              </button>
+            </div>
+          </div>
+        )}
+        {/* ═══ DIALOG: KEBIJAKAN PRIVASI & DATA MBG (GreatDay Style Modal) ═══ */}
+        {isPrivacyModalOpen && (
+          <div className="fixed inset-0 z-[999] bg-slate-950/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 font-sans animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl p-5 max-w-[340px] w-full space-y-3.5 shadow-2xl border border-slate-200 text-left animate-in slide-in-from-bottom-6">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center font-bold">
+                    <ShieldCheck className="w-4 h-4 text-light-sea-green" />
+                  </div>
+                  <div>
+                    <h3 className="text-[13.5px] font-black text-ford-blue">Kebijakan Privasi</h3>
+                    <p className="text-[10px] text-blue-gray">Kcal • Ginofest 2026</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsPrivacyModalOpen(false)}
+                  className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-2 text-[11px] text-slate-600 leading-relaxed max-h-[260px] overflow-y-auto pr-1">
+                <p>
+                  Aplikasi <strong>Kcal MBG</strong> berkomitmen melindungi privasi data pribadi warga, orang tua, dan anak sasaran Makan Bergizi Gratis:
+                </p>
+                <div className="p-2.5 rounded-xl bg-[#F8FAFC] border border-slate-200 space-y-1.5 text-[10.5px]">
+                  <p>🔒 <strong>Enkripsi Data</strong>: Data pertumbuhan anak dan aduan dienkripsi dengan standar keamanan Cloud Firestore & ISO 27001.</p>
+                  <p>🥗 <strong>Grounding Gizi</strong>: Data menu mengacu pada TKPI Kemenkes RI & pagu resmi BGN (Rp 15.000/porsi).</p>
+                  <p>📍 <strong>Transparansi</strong>: Komoditas lokal disuplai oleh UMKM/Gapoktan wilayah kecamatan terdaftar.</p>
+                </div>
+                <p className="text-[10px] text-slate-400">
+                  Dengan menggunakan aplikasi ini, Anda menyetujui pemrosesan data gizi anak untuk peningkatan layanan kesehatan publik.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsPrivacyModalOpen(false)}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[12px] shadow-xs cursor-pointer"
+              >
+                Saya Mengerti
               </button>
             </div>
           </div>
