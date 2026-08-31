@@ -198,7 +198,7 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
 
   // 1. Eksekusi Live Google Gemini AI
   if (apiKey && apiKey.trim() !== "" && apiKey !== "YOUR_GEMINI_API_KEY") {
-    const flagshipModels = ["gemini-1.5-pro", "gemini-2.0-flash", "gemini-1.5-flash"];
+    const flagshipModels = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"];
 
     for (const model of flagshipModels) {
       try {
