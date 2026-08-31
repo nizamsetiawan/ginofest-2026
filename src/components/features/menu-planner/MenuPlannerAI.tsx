@@ -20,7 +20,9 @@ import {
   Clock,
   Trash2,
   Loader2,
-  Lock
+  Lock,
+  LayoutGrid,
+  List
 } from "lucide-react";
 import { GRESIK_DISTRICTS, DistrictData } from "@/data/gresik-districts";
 import { 
@@ -143,30 +145,12 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
   const [logisticsBOM, setLogisticsBOM] = useState<any[]>([]);
   const [districtsList, setDistrictsList] = useState<DistrictData[]>(GRESIK_DISTRICTS);
 
-  // Google Images Live Search for Detail Modal (SerpApi)
-  const [modalGoogleImage, setModalGoogleImage] = useState<{ url: string; title: string; isLoading: boolean } | null>(null);
+  // Layout View Mode (List vs Grid)
+  const [layoutStyle, setLayoutStyle] = useState<"list" | "grid">("list");
 
-  useEffect(() => {
-    if (isDetailModalOpen && selectedDayForDetail?.menuTitle) {
-      let isMounted = true;
-      setModalGoogleImage({ url: "", title: "", isLoading: true });
-      
-      fetch(`/api/search-food-image?query=${encodeURIComponent(selectedDayForDetail.menuTitle)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (isMounted && data.imageUrl) {
-            setModalGoogleImage({ url: data.imageUrl, title: data.title || selectedDayForDetail.menuTitle, isLoading: false });
-          }
-        })
-        .catch(() => {
-          if (isMounted) setModalGoogleImage(null);
-        });
-
-      return () => { isMounted = false; };
-    } else {
-      setModalGoogleImage(null);
-    }
-  }, [isDetailModalOpen, selectedDayForDetail]);
+  // Auto Batch Image Cache & Live Search (SerpApi Google Images)
+  const [cachedFoodImages, setCachedFoodImages] = useState<Record<string, string>>({});
+  const [modalGoogleImage, setModalGoogleImage] = useState<{ url: string; isLoading: boolean } | null>(null);
 
   // Load Cloud Districts from Firestore
   useEffect(() => {
@@ -197,6 +181,72 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       4: initialDates[4].map((d) => ({ day: d.day, dateStr: d.dateStr, menuTitle: null, calories: 665, cost: 14350 })),
     };
   });
+
+  // Detail Modal Image sync
+  useEffect(() => {
+    if (isDetailModalOpen && selectedDayForDetail?.menuTitle) {
+      const existing = cachedFoodImages[selectedDayForDetail.menuTitle];
+      if (existing) {
+        setModalGoogleImage({ url: existing, isLoading: false });
+      } else {
+        let isMounted = true;
+        setModalGoogleImage({ url: "", isLoading: true });
+        fetch(`/api/search-food-image?query=${encodeURIComponent(selectedDayForDetail.menuTitle)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (isMounted && data.imageUrl) {
+              setModalGoogleImage({ url: data.imageUrl, isLoading: false });
+              setCachedFoodImages(prev => ({ ...prev, [selectedDayForDetail.menuTitle!]: data.imageUrl }));
+            }
+          })
+          .catch(() => {
+            if (isMounted) setModalGoogleImage(null);
+          });
+        return () => { isMounted = false; };
+      }
+    } else {
+      setModalGoogleImage(null);
+    }
+  }, [isDetailModalOpen, selectedDayForDetail, cachedFoodImages]);
+
+  // Parallel Batch Auto-Fetch Images for all menus in the cycle
+  useEffect(() => {
+    const allTitles: string[] = [];
+    Object.values(monthlyWeeks).forEach((days) => {
+      days.forEach((d) => {
+        if (d.menuTitle && !cachedFoodImages[d.menuTitle]) {
+          allTitles.push(d.menuTitle);
+        }
+      });
+    });
+
+    const uniqueTitles = Array.from(new Set(allTitles));
+    if (uniqueTitles.length === 0) return;
+
+    let isMounted = true;
+    Promise.all(
+      uniqueTitles.map(async (title) => {
+        try {
+          const res = await fetch(`/api/search-food-image?query=${encodeURIComponent(title)}`);
+          const data = await res.json();
+          return { title, url: data.imageUrl || "" };
+        } catch {
+          return { title, url: "" };
+        }
+      })
+    ).then((results) => {
+      if (!isMounted) return;
+      setCachedFoodImages((prev) => {
+        const next = { ...prev };
+        results.forEach((r) => {
+          if (r.url) next[r.title] = r.url;
+        });
+        return next;
+      });
+    });
+
+    return () => { isMounted = false; };
+  }, [monthlyWeeks]);
 
   const currentDays = monthlyWeeks[selectedWeek] || monthlyWeeks[1];
 
@@ -709,9 +759,9 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
           </div>
         </div>
 
-        {/* Sub-Bar: 3 View Modes (Mingguan vs Bulanan vs Tahunan) */}
-        <div className="flex items-center justify-between pt-3 border-t border-[#f1f5f9]">
-          <div className="flex items-center bg-[#f1f5f9] p-1 rounded-2xl border border-slate-200">
+        {/* Sub-Bar: 3 View Modes (Mingguan vs Bulanan vs Tahunan) + List/Grid Toggle */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 pt-3 border-t border-[#f1f5f9]">
+          <div className="flex items-center bg-[#f1f5f9] p-1 rounded-2xl border border-slate-200 w-fit">
             <button
               onClick={() => setViewMode("list")}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
@@ -748,6 +798,37 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               <span>Tahunan</span>
             </button>
           </div>
+
+          {/* Toggle List vs Grid (Hanya untuk Mingguan & Bulanan) */}
+          {viewMode !== "yearly" && (
+            <div className="flex items-center bg-[#f1f5f9] p-1 rounded-2xl border border-slate-200 w-fit self-end sm:self-auto gap-1">
+              <button
+                onClick={() => setLayoutStyle("list")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer ${
+                  layoutStyle === "list"
+                    ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                    : "text-slate-600 hover:text-ford-blue"
+                }`}
+                title="Tampilan Mode List"
+              >
+                <List className="w-3.5 h-3.5" />
+                <span>List</span>
+              </button>
+
+              <button
+                onClick={() => setLayoutStyle("grid")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer ${
+                  layoutStyle === "grid"
+                    ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
+                    : "text-slate-600 hover:text-ford-blue"
+                }`}
+                title="Tampilan Mode Grid Kartu"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Grid</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -799,79 +880,176 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
         </div>
       ) : (
         <>
-          {/* 2A. VIEW MODE: CLEAN HORIZONTAL TIMELINE LIST */}
+          {/* 2A. VIEW MODE: MINGGUAN (LIST & GRID MODES) */}
           {viewMode === "list" && (
             <div className="space-y-3">
-              {/* 5 Day Rows */}
-              <div className="space-y-3">
-                {currentDays.map((dayItem, idx) => (
-                  <div
-                    key={dayItem.day}
-                    className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 hover:border-light-sea-green hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 font-sans group"
-                  >
-                    {/* Kolom 1: Hari & Tanggal */}
-                    <div className="w-full sm:w-40 shrink-0 flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-2xl bg-green-tint border border-green-02/40 flex flex-col items-center justify-center shrink-0 shadow-2xs">
-                        <span className="text-[10px] font-bold text-ford-blue uppercase tracking-wider">
-                          {dayItem.day.slice(0, 3)}
-                        </span>
-                        <span className="text-[13px] font-bold text-ford-blue leading-tight">
-                          {dayItem.dateStr.split(" ")[0]}
-                        </span>
-                      </div>
-                      <div>
-                        <h3 className="text-[14px] font-bold text-ford-blue">
-                          {dayItem.day}
-                        </h3>
-                        <span className="text-[11px] text-blue-gray font-medium">
-                          {dayItem.dateStr}
-                        </span>
-                      </div>
-                    </div>
+              {layoutStyle === "list" ? (
+                /* Mode List Mingguan */
+                <div className="space-y-3">
+                  {currentDays.map((dayItem, idx) => {
+                    const foodImg = dayItem.menuTitle ? cachedFoodImages[dayItem.menuTitle] : null;
 
-                    {/* Kolom 2: Nama Menu & Komposisi Formula 5 Bintang */}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-[14px] font-bold text-ford-blue leading-snug">
-                        {dayItem.menuTitle || "Belum ada menu!"}
-                      </h4>
-                      <p className="text-[11.5px] text-blue-gray mt-0.5 line-clamp-1 font-medium">
-                        {dayItem.composition || "Karbohidrat, Protein Hewani, Nabati, Sayuran, Buah, Susu"}
-                      </p>
-                    </div>
-
-                    {/* Kolom 3: Biaya HPP, Tombol Ikon Detail & Ikon Ganti */}
-                    <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                      {/* HPP Biaya */}
-                      <span className="text-[12px] font-bold text-ford-blue bg-green-tint px-3 py-1.5 rounded-xl border border-green-02/40 shadow-2xs">
-                        Rp {dayItem.cost.toLocaleString("id-ID")}
-                      </span>
-
-                      {/* Tombol Ikon Detail Gizi & Bahan */}
-                      <button
-                        onClick={() => {
-                          setSelectedDayForDetail(dayItem);
-                          setIsDetailModalOpen(true);
-                        }}
-                        className="w-8 h-8 rounded-xl bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 flex items-center justify-center transition-all shadow-2xs hover:scale-105 cursor-pointer"
-                        title="Detail Gizi & Komposisi 5 Bintang"
+                    return (
+                      <div
+                        key={dayItem.day}
+                        className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 hover:border-light-sea-green hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 font-sans group"
                       >
-                        <Info className="w-4 h-4 text-ford-blue" />
-                      </button>
+                        {/* Kolom 1: Hari & Tanggal */}
+                        <div className="w-full sm:w-40 shrink-0 flex items-center gap-3">
+                          <div className="w-11 h-11 rounded-2xl bg-green-tint border border-green-02/40 flex flex-col items-center justify-center shrink-0 shadow-2xs">
+                            <span className="text-[10px] font-bold text-ford-blue uppercase tracking-wider">
+                              {dayItem.day.slice(0, 3)}
+                            </span>
+                            <span className="text-[13px] font-bold text-ford-blue leading-tight">
+                              {dayItem.dateStr.split(" ")[0]}
+                            </span>
+                          </div>
+                          <div>
+                            <h3 className="text-[14px] font-bold text-ford-blue">
+                              {dayItem.day}
+                            </h3>
+                            <span className="text-[11px] text-blue-gray font-medium">
+                              {dayItem.dateStr}
+                            </span>
+                          </div>
+                        </div>
 
-                      {/* Tombol Ikon Generate/Ganti Menu */}
-                      <button
-                        onClick={() => handleOpenChangeRecipeModal(idx)}
-                        className="w-8 h-8 rounded-xl bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 flex items-center justify-center transition-all shadow-2xs hover:scale-105 cursor-pointer"
-                        title="Ganti / Generate Resep Lain"
+                        {/* Kolom 2: Thumbnail Foto Masakan & Nama Menu */}
+                        <div className="flex-1 flex items-center gap-3.5 min-w-0">
+                          <div className="relative w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-slate-200 shadow-2xs bg-slate-100 flex items-center justify-center">
+                            {foodImg ? (
+                              <img
+                                src={foodImg}
+                                alt={dayItem.menuTitle || "Sajian MBG"}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <Utensils className="w-5 h-5 text-light-sea-green animate-pulse" />
+                            )}
+                          </div>
+
+                          <div className="min-w-0">
+                            <h4 className="text-[14px] font-bold text-ford-blue leading-snug">
+                              {dayItem.menuTitle || "Belum ada menu!"}
+                            </h4>
+                            <p className="text-[11.5px] text-blue-gray mt-0.5 line-clamp-1 font-medium">
+                              {dayItem.composition || "Karbohidrat, Protein Hewani, Nabati, Sayuran, Buah, Susu"}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Kolom 3: Biaya HPP, Tombol Ikon Detail & Ikon Ganti */}
+                        <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                          <span className="text-[12px] font-bold text-ford-blue bg-green-tint px-3 py-1.5 rounded-xl border border-green-02/40 shadow-2xs">
+                            Rp {dayItem.cost.toLocaleString("id-ID")}
+                          </span>
+
+                          <button
+                            onClick={() => {
+                              setSelectedDayForDetail(dayItem);
+                              setIsDetailModalOpen(true);
+                            }}
+                            className="w-8 h-8 rounded-xl bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 flex items-center justify-center transition-all shadow-2xs hover:scale-105 cursor-pointer"
+                            title="Detail Gizi & Komposisi"
+                          >
+                            <Info className="w-4 h-4 text-ford-blue" />
+                          </button>
+
+                          <button
+                            onClick={() => handleOpenChangeRecipeModal(idx)}
+                            className="w-8 h-8 rounded-xl bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 flex items-center justify-center transition-all shadow-2xs hover:scale-105 cursor-pointer"
+                            title="Ganti / Generate Resep Lain"
+                          >
+                            <RefreshCw className="w-4 h-4 text-ford-blue" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                /* Mode Grid Kartu Mingguan */
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
+                  {currentDays.map((dayItem, idx) => {
+                    const foodImg = dayItem.menuTitle ? cachedFoodImages[dayItem.menuTitle] : null;
+
+                    return (
+                      <div
+                        key={dayItem.day}
+                        className="bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-light-sea-green hover:shadow-xs transition-all flex flex-col justify-between font-sans group"
                       >
-                        <RefreshCw className="w-4 h-4 text-ford-blue" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                        {/* Header Image & Badges */}
+                        <div className="relative h-36 w-full bg-slate-100 overflow-hidden">
+                          {foodImg ? (
+                            <img
+                              src={foodImg}
+                              alt={dayItem.menuTitle || "Sajian MBG"}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-blue-gray gap-1.5 bg-green-tint/40">
+                              <Utensils className="w-6 h-6 text-light-sea-green animate-pulse" />
+                              <span className="text-[10px] font-bold text-ford-blue">Memuat foto...</span>
+                            </div>
+                          )}
 
-              {/* RAG-Style Pagination for 4 Weeks Cycle */}
+                          <div className="absolute top-2.5 left-2.5 bg-ford-blue/85 backdrop-blur-xs text-white px-2.5 py-0.5 rounded-lg text-[10px] font-bold shadow-2xs">
+                            {dayItem.day}, {dayItem.dateStr.split(" ")[0]}
+                          </div>
+
+                          <div className="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-xs text-ford-blue px-2.5 py-0.5 rounded-lg text-[10px] font-bold shadow-2xs">
+                            {dayItem.calories} Kkal
+                          </div>
+                        </div>
+
+                        {/* Content Body */}
+                        <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                          <div>
+                            <h4 className="text-[13px] font-bold text-ford-blue line-clamp-2 leading-snug">
+                              {dayItem.menuTitle || "Belum ada menu!"}
+                            </h4>
+                            <p className="text-[11px] text-blue-gray mt-1 line-clamp-2 font-medium">
+                              {dayItem.composition || "Karbohidrat, Hewani, Nabati, Sayuran, Buah, Susu"}
+                            </p>
+                          </div>
+
+                          {/* Footer Info & Actions */}
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span className="text-[11.5px] font-bold text-ford-blue bg-green-tint px-2.5 py-1 rounded-lg border border-green-02/40">
+                              Rp {dayItem.cost.toLocaleString("id-ID")}
+                            </span>
+
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => {
+                                  setSelectedDayForDetail(dayItem);
+                                  setIsDetailModalOpen(true);
+                                }}
+                                className="w-7 h-7 rounded-lg bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 flex items-center justify-center transition-all shadow-2xs hover:scale-105 cursor-pointer"
+                                title="Detail Gizi"
+                              >
+                                <Info className="w-3.5 h-3.5" />
+                              </button>
+
+                              <button
+                                onClick={() => handleOpenChangeRecipeModal(idx)}
+                                className="w-7 h-7 rounded-lg bg-green-tint hover:bg-green-02/30 text-ford-blue border border-green-02/40 flex items-center justify-center transition-all shadow-2xs hover:scale-105 cursor-pointer"
+                                title="Ganti Menu"
+                              >
+                                <RefreshCw className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Pagination for 4 Weeks Cycle */}
               <div className="bg-white rounded-3xl p-4 border border-[#e2e8f0] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[12px]">
                 <div className="text-slate-500">
                   Menampilkan <span className="font-bold text-[#2C3968]">Minggu {selectedWeek}</span> dari 4 Siklus Bulanan ({includeSaturday ? "6" : "5"} Hari Kerja MBG)
@@ -912,52 +1090,140 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             </div>
           )}
 
-          {/* 2B. VIEW MODE: KALENDER 1 BULAN */}
+          {/* 2B. VIEW MODE: BULANAN (LIST & GRID MODES) */}
           {viewMode === "calendar" && (
             <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#e2e8f0] shadow-xs space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <h3 className="text-[14px] font-bold text-[#2C3968] flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-light-sea-green" />
-                  <span>Kalender MBG 1 Bulan Penuh ({currentPeriodInfo.label} • 20 Hari Kerja)</span>
+                  <span>Jadwal Menu MBG 1 Bulan Penuh ({currentPeriodInfo.label} • 4 Siklus Mingguan)</span>
                 </h3>
                 <span className="text-[11px] text-[#64748b]">
-                  Klik hari mana saja untuk melihat detail atau mengganti menu
+                  {layoutStyle === "grid" ? "Klik kartu untuk detail & opsi ganti" : "Klik baris untuk detail gizi"}
                 </span>
               </div>
 
-              <div className="space-y-3">
-                {[1, 2, 3, 4].map((weekNum) => (
-                  <div key={weekNum} className="space-y-1.5">
-                    <span className="text-[11px] font-bold text-slate-400">
-                      Minggu ke-{weekNum}
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5">
-                      {monthlyWeeks[weekNum]?.map((d, dIdx) => (
-                        <div
-                          key={d.day}
-                          onClick={() => {
-                            setSelectedDayForDetail(d);
-                            setIsDetailModalOpen(true);
-                          }}
-                          className="p-3 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] hover:border-light-sea-green hover:shadow-2xs transition-all cursor-pointer"
-                        >
-                          <div className="flex items-center justify-between text-[11px] font-bold pb-1 border-b border-slate-200">
-                            <span className="text-[#2C3968]">{d.day}</span>
-                            <span className="text-slate-400">{d.dateStr.split(" ")[0]} {d.dateStr.split(" ")[1]}</span>
-                          </div>
-                          <p className="text-[11px] font-bold text-[#2C3968] pt-1.5 line-clamp-2 leading-tight">
-                            {d.menuTitle}
-                          </p>
-                          <div className="flex items-center justify-between pt-2 text-[10px]">
-                            <span className="text-ford-blue font-bold">{d.calories} Kkal</span>
-                            <span className="text-slate-700 font-bold">Rp {d.cost.toLocaleString("id-ID")}</span>
-                          </div>
-                        </div>
-                      ))}
+              {layoutStyle === "grid" ? (
+                /* Mode Grid Bulanan (Kalender Foto) */
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((weekNum) => (
+                    <div key={weekNum} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[12px] font-bold text-ford-blue bg-green-tint px-2.5 py-0.5 rounded-lg border border-green-02/40">
+                          Siklus Minggu ke-{weekNum}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                        {monthlyWeeks[weekNum]?.map((d) => {
+                          const foodImg = d.menuTitle ? cachedFoodImages[d.menuTitle] : null;
+
+                          return (
+                            <div
+                              key={d.day}
+                              onClick={() => {
+                                setSelectedDayForDetail(d);
+                                setIsDetailModalOpen(true);
+                              }}
+                              className="rounded-2xl overflow-hidden bg-[#f8fafc] border border-[#e2e8f0] hover:border-light-sea-green hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between group"
+                            >
+                              <div className="relative h-24 w-full bg-slate-100 overflow-hidden">
+                                {foodImg ? (
+                                  <img
+                                    src={foodImg}
+                                    alt={d.menuTitle || "Sajian MBG"}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center bg-green-tint/40">
+                                    <Utensils className="w-5 h-5 text-light-sea-green animate-pulse" />
+                                  </div>
+                                )}
+                                <div className="absolute top-1.5 left-1.5 bg-ford-blue/80 backdrop-blur-xs text-white px-2 py-0.5 rounded-md text-[9px] font-bold">
+                                  {d.day}
+                                </div>
+                                <div className="absolute bottom-1.5 right-1.5 bg-white/90 backdrop-blur-xs text-ford-blue px-1.5 py-0.5 rounded-md text-[9px] font-bold">
+                                  {d.dateStr.split(" ")[0]} {d.dateStr.split(" ")[1]}
+                                </div>
+                              </div>
+
+                              <div className="p-2.5 space-y-1.5 flex-1 flex flex-col justify-between">
+                                <p className="text-[11px] font-bold text-[#2C3968] line-clamp-2 leading-snug">
+                                  {d.menuTitle || "Belum ada menu"}
+                                </p>
+                                <div className="flex items-center justify-between pt-1 text-[10px] font-bold border-t border-slate-200">
+                                  <span className="text-ford-blue">{d.calories} Kkal</span>
+                                  <span className="text-slate-700">Rp {d.cost.toLocaleString("id-ID")}</span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                /* Mode List Bulanan */
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((weekNum) => (
+                    <div key={weekNum} className="space-y-2">
+                      <span className="text-[12px] font-bold text-ford-blue bg-green-tint px-2.5 py-0.5 rounded-lg border border-green-02/40 inline-block">
+                        Minggu ke-{weekNum}
+                      </span>
+                      <div className="space-y-2">
+                        {monthlyWeeks[weekNum]?.map((d) => {
+                          const foodImg = d.menuTitle ? cachedFoodImages[d.menuTitle] : null;
+
+                          return (
+                            <div
+                              key={d.day}
+                              onClick={() => {
+                                setSelectedDayForDetail(d);
+                                setIsDetailModalOpen(true);
+                              }}
+                              className="p-3 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] hover:border-light-sea-green hover:shadow-2xs transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200 bg-slate-100 flex items-center justify-center">
+                                  {foodImg ? (
+                                    <img
+                                      src={foodImg}
+                                      alt={d.menuTitle || "Sajian MBG"}
+                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                      loading="lazy"
+                                    />
+                                  ) : (
+                                    <Utensils className="w-4 h-4 text-light-sea-green animate-pulse" />
+                                  )}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-[11px] font-bold text-ford-blue">{d.day}</span>
+                                    <span className="text-[10px] text-blue-gray">({d.dateStr})</span>
+                                  </div>
+                                  <h4 className="text-[12.5px] font-bold text-ford-blue line-clamp-1">
+                                    {d.menuTitle}
+                                  </h4>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 shrink-0">
+                                <span className="text-[11px] font-bold text-ford-blue bg-green-tint px-2.5 py-1 rounded-lg border border-green-02/40">
+                                  Rp {d.cost.toLocaleString("id-ID")}
+                                </span>
+                                <span className="text-[11px] font-bold text-slate-500">
+                                  {d.calories} Kkal
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -1239,47 +1505,22 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 </button>
               </div>
 
-              {/* Foto Visual Masakan Asli (Google Images via SerpApi) */}
+              {/* Foto Visual Masakan Asli (Google Images via SerpApi) - Bersih Tanpa Teks Overlay */}
               {modalGoogleImage?.isLoading ? (
-                <div className="h-40 rounded-2xl bg-green-tint/50 border border-green-02/40 flex flex-col items-center justify-center text-ford-blue animate-pulse gap-2">
+                <div className="h-44 rounded-2xl bg-green-tint/50 border border-green-02/40 flex flex-col items-center justify-center text-ford-blue animate-pulse gap-2">
                   <Loader2 className="w-6 h-6 animate-spin text-light-sea-green" />
-                  <span className="text-[12px] font-bold">Mencari foto kuliner asli di Google Images...</span>
+                  <span className="text-[12px] font-bold">Memuat foto hidangan...</span>
                 </div>
               ) : modalGoogleImage?.url ? (
-                <div className="relative h-44 rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group bg-slate-100">
+                <div className="relative h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group bg-slate-100">
                   <img
                     src={modalGoogleImage.url}
                     alt={selectedDayForDetail.menuTitle || "Sajian Menu MBG"}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-transparent flex items-end justify-between p-3">
-                    <div className="min-w-0 pr-2">
-                      <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-500 text-white inline-block mb-0.5">
-                        🌐 Foto Riil Google Images
-                      </span>
-                      <p className="text-[11.5px] font-medium text-slate-100 truncate">
-                        {modalGoogleImage.title}
-                      </p>
-                    </div>
-                  </div>
                 </div>
               ) : null}
-
-              {/* Badge Formula MBG Standar Nasional */}
-              <div className="p-4 rounded-2xl bg-green-tint border border-green-02/40 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white text-ford-blue flex items-center justify-center shrink-0 shadow-2xs">
-                  <Sparkles className="w-5 h-5 text-light-sea-green" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500 text-white inline-block mb-1 shadow-xs">
-                    Formula 5 Bintang + Susu Sapi
-                  </span>
-                  <p className="text-[12px] font-bold text-ford-blue leading-tight">
-                    Standar Pemenuhan Gizi Harian Kemenkes RI & Badan Gizi Nasional
-                  </p>
-                </div>
-              </div>
 
               {/* Komposisi 5 Bintang + Susu */}
               <div className="space-y-2">
