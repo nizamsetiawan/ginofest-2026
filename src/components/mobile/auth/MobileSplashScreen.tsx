@@ -8,6 +8,14 @@ interface MobileSplashScreenProps {
 }
 
 export const MobileSplashScreen: React.FC<MobileSplashScreenProps> = ({ onContinue }) => {
+  // Auto-transition to next screen after 1.2s
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      onContinue();
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [onContinue]);
+
   return (
     <div 
       onClick={onContinue}
