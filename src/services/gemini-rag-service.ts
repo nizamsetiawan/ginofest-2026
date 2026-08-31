@@ -4,6 +4,7 @@ import {
   fetchRecipesFromFirestore, 
   fetchNutritionFromFirestore 
 } from "./firebase-service";
+import { getMenuFoodImage } from "@/utils/foodImageEngine";
 
 export interface MasterPromptInput {
   districtName: string;
@@ -24,6 +25,7 @@ export interface DayMenuItem {
   iron: number;
   cost: number;
   localOrigin: string;
+  imageUrl?: string;
 }
 
 export interface LogisticsItem {
@@ -219,13 +221,18 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
           const parsed = JSON.parse(cleanJson);
 
           if (parsed.weeklyPlan && parsed.weeklyPlan.length >= 5) {
+            const enrichedWeeklyPlan = parsed.weeklyPlan.map((item: any) => ({
+              ...item,
+              imageUrl: item.imageUrl || getMenuFoodImage(item.menuTitle, item.composition).imageUrl,
+            }));
+
             return {
               success: true,
               engineUsed: "GOOGLE_GEMINI_FLAGSHIP_LIVE",
               modelName: `Google ${model.toUpperCase()} (Autonomous Live)`,
               districtName: input.districtName,
               studentsCount: students,
-              weeklyPlan: parsed.weeklyPlan,
+              weeklyPlan: enrichedWeeklyPlan,
               budgetSummary: parsed.budgetSummary || {
                 plafonPerPortion: 15000,
                 avgCostPerPortion: 14300,
@@ -268,63 +275,68 @@ WAJIB MEMBERIKAN OUTPUT JSON MURNI VALID SESUAI SKEMA BERIKUT:
         composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: ${mainProteinName} (65g) | Protein Nabati: Tempe Goreng Rempah (40g) | Sayuran: Sayur Bening Daun Kelor & Jagung (80g) | Buah: Pisang Ambon (75g) | Susu: Susu Sapi UHT (200ml)`,
         proteinSource: `${mainProteinName} Lokal`,
         veggieSource: "Sayur Daun Kelor & Jagung",
-        calories: 668,
-        protein: 34.2,
-        iron: 6.5,
+        calories: 665,
+        protein: 32.5,
+        iron: 6.2,
         cost: 14200,
         localOrigin: `Sentra Petambak/Peternak ${input.districtName}`,
+        imageUrl: "/assets/food/mbg_bandeng.jpg",
       },
       {
         day: "Selasa",
         monthYear: "November 2026",
-        menuTitle: `Nasi Unggas/Ikan Bumbu Kuning Rempah & Tumis Bayam Tauge`,
-        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Ayam Fillet Kuning (60g) | Protein Nabati: Tahu Bumbu Bali (40g) | Sayuran: Tumis Bayam & Tauge Segar (80g) | Buah: Jeruk Manis (80g) | Susu: Susu Pasteurisasi (200ml)`,
-        proteinSource: "Daging Ayam / Unggas",
-        veggieSource: "Bayam Hijau & Tauge",
-        calories: 625,
-        protein: 31.8,
-        iron: 5.4,
-        cost: 14600,
-        localOrigin: `Peternak Unggas Wilayah Gresik`,
+        menuTitle: `Nasi Ayam Ungkep Bumbu Kuning & Sayur Lodeh Labu Siam`,
+        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Ayam Segar (65g) | Protein Nabati: Tahu Putih Kukus (40g) | Sayuran: Sayur Lodeh Labu Siam (80g) | Buah: Semangka Segar (75g) | Susu: Susu Sapi UHT (200ml)`,
+        proteinSource: "Daging Ayam Segar",
+        veggieSource: "Labu Siam & Kacang Panjang",
+        calories: 680,
+        protein: 34.0,
+        iron: 5.8,
+        cost: 14500,
+        localOrigin: `Kemitraan Peternak Lokal ${input.districtName}`,
+        imageUrl: "/assets/food/mbg_ayam.jpg",
       },
       {
         day: "Rabu",
         monthYear: "November 2026",
-        menuTitle: `Nasi ${secondProteinName} Gurih & Sup Labu Siam Wortel`,
-        composition: `Karbohidrat: Nasi Beras Medium (150g) | Protein Hewani: ${secondProteinName} Dadar Sayur (60g) | Protein Nabati: Tempe Bacem Gurih (40g) | Sayuran: Sup Labu Siam & Wortel Manis (80g) | Buah: Semangka Segar (90g) | Susu: Susu UHT Rendah Gula (200ml)`,
-        proteinSource: secondProteinName,
-        veggieSource: "Labu Siam & Wortel",
-        calories: 638,
-        protein: 29.5,
-        iron: 5.8,
-        cost: 14100,
-        localOrigin: `Sentra Petelur/Pemasok ${input.districtName}`,
+        menuTitle: `Nasi Semur Daging Sapi Lokal & Sayur Sop Bening Wortel`,
+        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi Lokal (60g) | Protein Nabati: Tempe Goreng (40g) | Sayuran: Sayur Sop Wortel Buncis (80g) | Buah: Jeruk Manis (75g) | Susu: Susu Sapi UHT (200ml)`,
+        proteinSource: "Daging Sapi Lokal",
+        veggieSource: "Wortel & Buncis Segar",
+        calories: 690,
+        protein: 35.5,
+        iron: 7.1,
+        cost: 14800,
+        localOrigin: `Sentra Peternakan ${input.districtName}`,
+        imageUrl: "/assets/food/mbg_daging.jpg",
       },
       {
         day: "Kamis",
         monthYear: "November 2026",
-        menuTitle: `Nasi Lauk Tinggi Zat Besi & Sayur Sawi Hijau Bumbu Bawang`,
-        composition: `Karbohidrat: Nasi Pulen (150g) | Protein Hewani: Daging Sapi / Ikan Laut Marinasi (60g) | Protein Nabati: Tahu Kukus Isi Sayur (40g) | Sayuran: Sayur Sawi Hijau & Buncis (80g) | Buah: Pepaya Manis (85g) | Susu: Susu Sapi Murni (200ml)`,
-        proteinSource: "Daging / Ikan Tinggi Fe",
-        veggieSource: "Sawi Hijau & Buncis",
-        calories: 642,
-        protein: 33.6,
-        iron: 8.7,
-        cost: 14750,
-        localOrigin: `Pesisir & Peternak Kab. Gresik`,
+        menuTitle: `Nasi Olahan ${secondProteinName} & Sayur Bening Bayam Jagung`,
+        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: ${secondProteinName} (65g) | Protein Nabati: Tahu Bacem (40g) | Sayuran: Sayur Bening Bayam Jagung (80g) | Buah: Pisang Ambon (75g) | Susu: Susu Sapi UHT (200ml)`,
+        proteinSource: `${secondProteinName} Segar`,
+        veggieSource: "Bayam Hijau & Jagung Manis",
+        calories: 650,
+        protein: 31.0,
+        iron: 5.9,
+        cost: 13900,
+        localOrigin: `Peternak Unggas ${input.districtName}`,
+        imageUrl: "/assets/food/mbg_ayam.jpg",
       },
       {
         day: "Jumat",
         monthYear: "November 2026",
-        menuTitle: `Nasi Telur Bumbu Bali & Sayur Lodeh Tahu Tempe`,
-        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: Telur Rebus Bumbu Bali (55g) | Protein Nabati: Tempe Orek Manis Gurih (45g) | Sayuran: Lodeh Labu Siam Kacang Panjang (80g) | Buah: Melon Segar (85g) | Susu: Susu UHT Kemenkes (200ml)`,
-        proteinSource: "Telur Ayam & Tempe Kedelai",
-        veggieSource: "Kacang Panjang & Labu Siam",
-        calories: 645,
-        protein: 28.9,
-        iron: 5.6,
-        cost: 13950,
-        localOrigin: `Pengrajin Tempe & Peternak ${input.districtName}`,
+        menuTitle: `Nasi Fillet Ikan Segar Bumbu Kuning & Tumis Sayuran Hidroponik`,
+        composition: `Karbohidrat: Nasi Putih (150g) | Protein Hewani: Fillet Ikan Segar (65g) | Protein Nabati: Tempe Mendoan (40g) | Sayuran: Tumis Sayuran Segar (80g) | Buah: Pepaya Potong (75g) | Susu: Susu Sapi UHT (200ml)`,
+        proteinSource: "Ikan Segar Pesisir",
+        veggieSource: "Sayuran Hidroponik",
+        calories: 670,
+        protein: 33.0,
+        iron: 6.4,
+        cost: 14200,
+        localOrigin: `Koperasi Nelayan & Petani ${input.districtName}`,
+        imageUrl: "/assets/food/mbg_bandeng.jpg",
       },
     ],
     budgetSummary: {
