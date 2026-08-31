@@ -4,6 +4,7 @@ import {
   initializeFirestore,
   collection,
   getDocs,
+  getDoc,
   doc,
   setDoc,
   addDoc,
@@ -1196,5 +1197,54 @@ export async function resetCitizenPasswordInFirestore(
     return { success: false, error: err.message || "Gagal mengatur ulang kata sandi." };
   }
 }
+
+// -------------------------------------------------------------
+// 12. FOOD IMAGES PERSISTENT CLOUD CACHE (Collection: food_images_cache)
+// -------------------------------------------------------------
+export function normalizeMenuKey(menuName: string): string {
+  return menuName
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "_")
+    .replace(/_+/g, "_")
+    .slice(0, 80);
+}
+
+export async function getCachedFoodImageFromFirestore(queryName: string): Promise<{ imageUrl: string; title?: string } | null> {
+  try {
+    const key = normalizeMenuKey(queryName);
+    if (!key) return null;
+    const docRef = doc(db, "food_images_cache", key);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      if (data?.imageUrl) {
+        return { imageUrl: data.imageUrl, title: data.title };
+      }
+    }
+    return null;
+  } catch (err) {
+    console.warn("[Firestore] Error reading food_images_cache:", err);
+    return null;
+  }
+}
+
+export async function saveCachedFoodImageToFirestore(queryName: string, imageUrl: string, title?: string): Promise<boolean> {
+  try {
+    const key = normalizeMenuKey(queryName);
+    if (!key || !imageUrl) return false;
+    const docRef = doc(db, "food_images_cache", key);
+    await setDoc(docRef, {
+      query: queryName,
+      imageUrl,
+      title: title || queryName,
+      createdAtIso: new Date().toISOString(),
+    }, { merge: true });
+    return true;
+  } catch (err) {
+    console.warn("[Firestore] Error saving to food_images_cache:", err);
+    return false;
+  }
+}
+
 
 

@@ -148,8 +148,18 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
   // Layout View Mode (List vs Grid)
   const [layoutStyle, setLayoutStyle] = useState<"list" | "grid">("list");
 
-  // Auto Batch Image Cache & Live Search (SerpApi Google Images)
-  const [cachedFoodImages, setCachedFoodImages] = useState<Record<string, string>>({});
+  // Auto Batch Image Cache & Live Search (SerpApi Google Images with LocalStorage Persistence)
+  const [cachedFoodImages, setCachedFoodImages] = useState<Record<string, string>>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("gscan_food_images_cache");
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.warn("Error parsing local food image cache:", e);
+      }
+    }
+    return {};
+  });
   const [modalGoogleImage, setModalGoogleImage] = useState<{ url: string; isLoading: boolean } | null>(null);
 
   // Load Cloud Districts from Firestore
@@ -196,7 +206,13 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
           .then(data => {
             if (isMounted && data.imageUrl) {
               setModalGoogleImage({ url: data.imageUrl, isLoading: false });
-              setCachedFoodImages(prev => ({ ...prev, [selectedDayForDetail.menuTitle!]: data.imageUrl }));
+              setCachedFoodImages(prev => {
+                const next = { ...prev, [selectedDayForDetail.menuTitle!]: data.imageUrl };
+                if (typeof window !== "undefined") {
+                  try { localStorage.setItem("gscan_food_images_cache", JSON.stringify(next)); } catch (e) {}
+                }
+                return next;
+              });
             }
           })
           .catch(() => {
@@ -241,6 +257,11 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
         results.forEach((r) => {
           if (r.url) next[r.title] = r.url;
         });
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem("gscan_food_images_cache", JSON.stringify(next));
+          } catch (e) {}
+        }
         return next;
       });
     });
