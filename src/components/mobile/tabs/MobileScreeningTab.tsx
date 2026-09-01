@@ -586,121 +586,144 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {/* SCREEN 2: KUESIONER INTERAKTIF AI (FIT VIEWPORT)               */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 2 && (
-        <div className="flex-1 flex flex-col justify-between p-3.5 relative h-full w-full overflow-hidden">
-          {/* Top Bar */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between pt-0.5">
-              <button
+        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#0A1628] via-[#0D1B2A] to-[#050D18]">
+
+          {/* ─── TOP BAR ─── */}
+          <div className="px-4 pt-4 pb-3 space-y-3">
+            <div className="flex items-center justify-between">
+              {/* Back */}
+              <motion.button
+                whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={() => setScreeningStep(1)}
-                className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer border border-white/60 backdrop-blur-md"
+                className="w-9 h-9 rounded-2xl bg-white/8 border border-white/15 flex items-center justify-center backdrop-blur-md cursor-pointer"
               >
-                <ArrowLeft className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-              </button>
+                <ArrowLeft className="w-4 h-4 text-white stroke-[2.5]" />
+              </motion.button>
 
+              {/* Title */}
               <div className="text-center">
-                <h3 className="text-[14px] font-black text-ford-blue leading-tight">Kuesioner</h3>
-                <p className="text-[9.5px] text-ford-blue/80 font-medium">
-                  Pertanyaan {currentQuestionIdx + 1} dari {questions.length}
+                <p className="text-[11px] font-bold text-[#79D7D2] tracking-widest uppercase">Kuesioner</p>
+                <p className="text-[10px] text-white/40 font-medium mt-0.5">
+                  Pertanyaan {currentQuestionIdx + 1} / {questions.length}
                 </p>
               </div>
 
-              <button
+              {/* Help */}
+              <motion.button
+                whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={() => setShowHelpModal(true)}
-                className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer border border-white/60 backdrop-blur-md"
+                className="w-9 h-9 rounded-2xl bg-white/8 border border-white/15 flex items-center justify-center backdrop-blur-md cursor-pointer"
               >
-                <HelpCircle className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-              </button>
+                <HelpCircle className="w-4 h-4 text-white/60 stroke-[2]" />
+              </motion.button>
             </div>
 
-            {/* Slider / Step Indicator Bar */}
-            <div className="w-full h-1.5 bg-white/50 rounded-full relative my-1 overflow-visible">
-              <div
-                className="h-full bg-brand-orange rounded-full transition-all duration-300"
-                style={{ width: `${((currentQuestionIdx + 1) / questions.length) * 100}%` }}
-              />
-              <div
-                className="w-3.5 h-3.5 rounded-full bg-brand-orange border-2 border-white shadow-md absolute top-1/2 -translate-y-1/2 transition-all duration-300"
-                style={{ left: `calc(${((currentQuestionIdx + 1) / questions.length) * 100}% - 7px)` }}
+            {/* Progress Bar */}
+            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full rounded-full bg-gradient-to-r from-[#0FA89B] to-[#79D7D2]"
+                initial={{ width: 0 }}
+                animate={{ width: `${((currentQuestionIdx + 1) / questions.length) * 100}%` }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
               />
             </div>
           </div>
 
-          {/* Center Mascot & Question */}
-          <div className="my-auto space-y-3 text-center px-1">
-            {/* Mascot Avatar in Circle */}
-            <div className="w-16 h-16 mx-auto rounded-full bg-white/90 p-2 shadow-md border-2 border-white flex items-center justify-center">
-              <img
-                src="/logo_app.svg"
-                alt="Kcal Mascot"
-                className="w-11 h-11 object-contain animate-bounce [animation-duration:3s]"
-              />
-            </div>
+          {/* ─── SCROLLABLE CONTENT ─── */}
+          <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-4">
 
-            {/* Current Question */}
-            <div className="space-y-1">
-              <h2 className="text-[14.5px] font-black text-ford-blue leading-snug">
-                {questions[currentQuestionIdx].title}
-              </h2>
-              <p className="text-[10.5px] text-ford-blue/80 font-medium leading-tight">
-                {questions[currentQuestionIdx].subtitle}
-              </p>
-            </div>
-
-            {/* Multiple Choice Answers */}
-            <div className="space-y-1.5 pt-1">
-              {questions[currentQuestionIdx].options.map((opt, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => handleSelectAnswer(opt)}
-                  className={`w-full py-2.5 px-3.5 rounded-xl border text-[12px] font-bold transition-all shadow-xs cursor-pointer flex items-center justify-center ${
-                    selectedAnswer === opt
-                      ? "bg-ford-blue text-white border-ford-blue scale-[0.98]"
-                      : "bg-white/90 hover:bg-white text-ford-blue border-white/60 hover:scale-[1.01]"
-                  }`}
-                >
-                  <span>{opt}</span>
-                </button>
-              ))}
-
-              {/* Custom Text Write-in Button */}
-              {!showCustomInput ? (
-                <button
-                  type="button"
-                  onClick={() => setShowCustomInput(true)}
-                  className="inline-flex items-center gap-1 text-[10.5px] font-bold text-ford-blue/80 hover:text-ford-blue pt-0.5 cursor-pointer"
-                >
-                  <MessageSquare className="w-3 h-3" />
-                  <span>Ketik penjelasan lebih lanjut</span>
-                </button>
-              ) : (
-                <div className="space-y-1.5 pt-1">
-                  <textarea
-                    rows={2}
-                    placeholder="Tuliskan keluhan atau kondisi anak..."
-                    value={customAnswer}
-                    onChange={(e) => setCustomAnswer(e.target.value)}
-                    className="w-full p-2 bg-white rounded-xl border border-white text-[11px] font-medium text-ford-blue focus:outline-none shadow-xs"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleSelectAnswer(customAnswer || "Penjelasan khusus tersimpan")}
-                    className="w-full py-1.5 bg-ford-blue text-white font-bold rounded-xl text-[11px] cursor-pointer"
-                  >
-                    Simpan &amp; Lanjut
-                  </button>
+            {/* Logo + Question Card */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-5 backdrop-blur-md space-y-4">
+              {/* App Logo */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-lg flex-shrink-0">
+                  <img src="/logo_app.svg" alt="Kcal" className="w-6 h-6 object-contain" />
                 </div>
-              )}
-            </div>
-          </div>
+                <div>
+                  <p className="text-[11px] font-black text-[#79D7D2] tracking-wide">Analisis Gizi AI</p>
+                  <p className="text-[9.5px] text-white/40 font-medium">Kemenkes RI & BGN 2026</p>
+                </div>
+              </div>
 
-          <div className="pt-1 text-center text-[9.5px] text-ford-blue/70 font-semibold">
-            Didukung Analisis Klinis Kemenkes RI &amp; BGN 2026
+              {/* Divider */}
+              <div className="h-px bg-white/8" />
+
+              {/* Question */}
+              <div className="space-y-1.5">
+                <h2 className="text-[15px] font-black text-white leading-snug">
+                  {questions[currentQuestionIdx].title}
+                </h2>
+                <p className="text-[11px] text-white/50 font-medium leading-relaxed">
+                  {questions[currentQuestionIdx].subtitle}
+                </p>
+              </div>
+            </div>
+
+            {/* Answer Options */}
+            <div className="space-y-2">
+              {questions[currentQuestionIdx].options.map((opt, i) => {
+                const isSelected = selectedAnswer === opt;
+                return (
+                  <motion.button
+                    key={i}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={() => handleSelectAnswer(opt)}
+                    className={`w-full py-3.5 px-4 rounded-2xl border text-left text-[12.5px] font-bold transition-all cursor-pointer flex items-center gap-3 ${
+                      isSelected
+                        ? "bg-gradient-to-r from-[#0FA89B]/30 to-[#79D7D2]/20 border-[#79D7D2]/60 text-white shadow-[0_0_20px_rgba(35,181,168,0.15)]"
+                        : "bg-white/5 border-white/10 text-white/75 hover:bg-white/8 hover:border-white/20"
+                    }`}
+                  >
+                    {/* Option Circle Indicator */}
+                    <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                      isSelected
+                        ? "border-[#79D7D2] bg-[#23B5A8]"
+                        : "border-white/25"
+                    }`}>
+                      {isSelected && <span className="w-2 h-2 rounded-full bg-white" />}
+                    </span>
+                    <span className="flex-1 leading-snug">{opt}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Custom Write-in */}
+            {!showCustomInput ? (
+              <button
+                type="button"
+                onClick={() => setShowCustomInput(true)}
+                className="flex items-center gap-1.5 text-[10.5px] font-bold text-white/40 hover:text-[#79D7D2] transition-colors cursor-pointer pt-0.5"
+              >
+                <MessageSquare className="w-3 h-3" />
+                <span>Tambahkan penjelasan lain...</span>
+              </button>
+            ) : (
+              <div className="space-y-2">
+                <textarea
+                  rows={2}
+                  placeholder="Tuliskan keluhan atau kondisi anak..."
+                  value={customAnswer}
+                  onChange={(e) => setCustomAnswer(e.target.value)}
+                  className="w-full p-3 bg-white/5 border border-white/15 rounded-2xl text-[11.5px] font-medium text-white placeholder-white/25 focus:outline-none focus:border-[#79D7D2]/50 resize-none transition-colors"
+                />
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  type="button"
+                  onClick={() => handleSelectAnswer(customAnswer || "Penjelasan khusus tersimpan")}
+                  className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] text-[12px] font-black cursor-pointer"
+                >
+                  Simpan &amp; Lanjut
+                </motion.button>
+              </div>
+            )}
           </div>
         </div>
       )}
+
 
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* SCREEN 3: MENU UNTUK ANDA (FIT VIEWPORT)                       */}
