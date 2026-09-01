@@ -18,27 +18,16 @@ interface MobileRegisterScreenProps {
   setRegFullName: (val: string) => void;
   regEmail: string;
   setRegEmail: (val: string) => void;
-  regPhone: string;
-  setRegPhone: (val: string) => void;
-  regDistrict: string;
-  setRegDistrict: (val: string) => void;
   regPassword: string;
   setRegPassword: (val: string) => void;
-  regConfirmPassword: string;
-  setRegConfirmPassword: (val: string) => void;
   showRegPassword: boolean;
   setShowRegPassword: (val: boolean) => void;
-  showRegConfirmPassword: boolean;
-  setShowRegConfirmPassword: (val: boolean) => void;
-  agreeRegPrivacy?: boolean;
-  setAgreeRegPrivacy?: (val: boolean) => void;
   fieldErrors: Record<string, string>;
   setFieldErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   authError: string;
   setAuthError: (val: string) => void;
   isSubmittingAuth: boolean;
   onRegister: (e: React.FormEvent) => void;
-  onOpenPrivacyModal?: () => void;
   onNavigateToLogin: () => void;
 }
 
@@ -47,18 +36,10 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
   setRegFullName,
   regEmail,
   setRegEmail,
-  regPhone,
-  setRegPhone,
-  regDistrict,
-  setRegDistrict,
   regPassword,
   setRegPassword,
-  regConfirmPassword,
-  setRegConfirmPassword,
   showRegPassword,
   setShowRegPassword,
-  showRegConfirmPassword,
-  setShowRegConfirmPassword,
   fieldErrors,
   setFieldErrors,
   authError,
@@ -98,14 +79,14 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
         </div>
       </div>
 
-      {/* Main Elevated Card */}
+      {/* Main Elevated Card Container */}
       <motion.div 
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="my-auto bg-white rounded-3xl p-5 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-3.5"
+        className="my-auto bg-white rounded-3xl p-5 sm:p-6 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-3.5"
       >
-        {/* Brand Logo Header */}
+        {/* Brand Logo & Header */}
         <div className="text-center space-y-1 pt-1 pb-1">
           <div className="flex items-center justify-center gap-2">
             <div className="relative">
@@ -116,20 +97,20 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
               Kcal<span className="text-[#23B5A8]">.</span>
             </span>
           </div>
-          <h2 className="text-[15px] font-black text-ford-blue">Daftar Akun Keluarga</h2>
+          <h2 className="text-[15px] font-black text-ford-blue">Daftar Akun Baru</h2>
           <p className="text-[11.5px] text-slate-500 font-medium leading-snug px-1">
-            Pantau pemenuhan nutrisi anak &amp; analisis biometrik stunting
+            Lengkapi data untuk memulai pemantauan gizi keluarga
           </p>
         </div>
 
-        {/* Global Error Banner if any */}
+        {/* Global Error Banner */}
         <AnimatePresence>
           {authError && (
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11px] font-medium flex items-center gap-1.5"
+              className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11.5px] font-medium flex items-center gap-2"
             >
               <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
               <span>{authError}</span>
@@ -182,61 +163,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             )}
           </div>
 
-          {/* 3. Nomor WhatsApp / Telp */}
-          <div className="space-y-1">
-            <label className="text-[11.5px] font-bold text-ford-blue block">
-              Nomor WhatsApp / HP <span className="text-brand-red">*</span>
-            </label>
-            <input
-              type="tel"
-              placeholder="081234567890"
-              value={regPhone}
-              onChange={(e) => {
-                setRegPhone(e.target.value);
-                if (fieldErrors.phone) setFieldErrors((p) => ({ ...p, phone: "" }));
-              }}
-              className={`w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                fieldErrors.phone ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
-              }`}
-            />
-            {fieldErrors.phone && (
-              <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.phone}</p>
-            )}
-          </div>
-
-          {/* 4. Kecamatan Domisili */}
-          <div className="space-y-1">
-            <label className="text-[11.5px] font-bold text-ford-blue block">
-              Kecamatan Domisili <span className="text-brand-red">*</span>
-            </label>
-            <div className="relative">
-              <select
-                value={regDistrict}
-                onChange={(e) => {
-                  setRegDistrict(e.target.value);
-                  if (fieldErrors.district) setFieldErrors((p) => ({ ...p, district: "" }));
-                }}
-                className={`w-full h-12 px-4 pr-9 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
-                  fieldErrors.district
-                    ? "border-brand-red bg-red-50/40 text-brand-red focus:border-brand-red"
-                    : !regDistrict
-                    ? "border-slate-200 text-slate-400"
-                    : "border-slate-200 text-ford-blue font-bold focus:border-[#23B5A8]"
-                }`}
-              >
-                <option value="" disabled>-- Pilih Kecamatan di Gresik --</option>
-                {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                  <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
-                ))}
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none stroke-[1.75]" />
-            </div>
-            {fieldErrors.district && (
-              <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.district}</p>
-            )}
-          </div>
-
-          {/* 5. Kata Sandi */}
+          {/* 3. Kata Sandi */}
           <div className="space-y-1">
             <label className="text-[11.5px] font-bold text-ford-blue block">
               Kata Sandi <span className="text-brand-red">*</span>
@@ -265,38 +192,6 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             </div>
             {fieldErrors.password && (
               <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.password}</p>
-            )}
-          </div>
-
-          {/* 6. Konfirmasi Kata Sandi */}
-          <div className="space-y-1">
-            <label className="text-[11.5px] font-bold text-ford-blue block">
-              Konfirmasi Kata Sandi <span className="text-brand-red">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type={showRegConfirmPassword ? "text" : "password"}
-                placeholder="Ulangi kata sandi"
-                value={regConfirmPassword}
-                onChange={(e) => {
-                  setRegConfirmPassword(e.target.value);
-                  if (fieldErrors.confirmPassword) setFieldErrors((p) => ({ ...p, confirmPassword: "" }));
-                }}
-                className={`w-full h-12 pl-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                  fieldErrors.confirmPassword ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => { triggerHaptic(); setShowRegConfirmPassword(!showRegConfirmPassword); }}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
-                aria-label={showRegConfirmPassword ? "Sembunyikan konfirmasi kata sandi" : "Tampilkan konfirmasi kata sandi"}
-              >
-                {showRegConfirmPassword ? <EyeOff className="w-3.5 h-3.5 stroke-[1.75]" /> : <Eye className="w-3.5 h-3.5 stroke-[1.75]" />}
-              </button>
-            </div>
-            {fieldErrors.confirmPassword && (
-              <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.confirmPassword}</p>
             )}
           </div>
 

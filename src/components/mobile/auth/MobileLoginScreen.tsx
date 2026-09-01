@@ -4,7 +4,6 @@ import React from "react";
 import {
   Eye,
   EyeOff,
-  ChevronDown,
   Download,
   AlertCircle,
   CheckCircle2,
@@ -13,15 +12,12 @@ import {
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 interface MobileLoginScreenProps {
   loginIdentifier: string;
   setLoginIdentifier: (val: string) => void;
   loginPassword: string;
   setLoginPassword: (val: string) => void;
-  loginDistrict: string;
-  setLoginDistrict: (val: string) => void;
   showPassword: boolean;
   setShowPassword: (val: boolean) => void;
   rememberMe: boolean;
@@ -44,8 +40,6 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
   setLoginIdentifier,
   loginPassword,
   setLoginPassword,
-  loginDistrict,
-  setLoginDistrict,
   showPassword,
   setShowPassword,
   rememberMe,
@@ -188,28 +182,6 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
               >
                 {showPassword ? <EyeOff className="w-3.5 h-3.5 stroke-[1.75]" /> : <Eye className="w-3.5 h-3.5 stroke-[1.75]" />}
               </button>
-            </div>
-          </div>
-
-          {/* Kecamatan Domisili */}
-          <div className="space-y-1.5">
-            <label className="text-[11.5px] font-bold text-ford-blue block">
-              Kecamatan Domisili <span className="text-slate-400 font-normal">(Opsional)</span>
-            </label>
-            <div className="relative">
-              <select
-                value={loginDistrict}
-                onChange={(e) => setLoginDistrict(e.target.value)}
-                className={`w-full h-12 px-4 pr-9 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
-                  !loginDistrict ? "text-slate-400 border-slate-200" : "text-ford-blue font-bold border-slate-200 focus:border-[#23B5A8]"
-                }`}
-              >
-                <option value="">-- Semua Kecamatan di Gresik --</option>
-                {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                  <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
-                ))}
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none stroke-[1.75]" />
             </div>
           </div>
 

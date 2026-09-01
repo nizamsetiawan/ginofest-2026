@@ -971,8 +971,8 @@ export interface CitizenAccountRecord {
   id?: string;
   fullName: string;
   email: string;
-  phone: string;
-  district: string;
+  phone?: string;
+  district?: string;
   password?: string;
   role: "masyarakat";
   avatarBg?: string;

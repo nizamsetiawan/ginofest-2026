@@ -406,10 +406,6 @@ export const CitizenMobileApp: React.FC = () => {
       setAuthError("Silakan masukkan kata sandi akun.");
       return;
     }
-    if (!loginDistrict) {
-      setAuthError("Silakan pilih kecamatan domisili Anda.");
-      return;
-    }
     if (!agreePrivacy) {
       setAuthError("Anda harus menyetujui Kebijakan Privasi Kcal.");
       return;
@@ -418,8 +414,7 @@ export const CitizenMobileApp: React.FC = () => {
     setIsSubmittingAuth(true);
     const res = await loginCitizenFromFirestore(
       loginIdentifier.trim(),
-      loginPassword,
-      loginDistrict || "Kebomas"
+      loginPassword
     );
     setIsSubmittingAuth(false);
 
@@ -438,7 +433,6 @@ export const CitizenMobileApp: React.FC = () => {
           localStorage.setItem("kcal_citizen_remembered_credentials", JSON.stringify({
             email: loginIdentifier.trim(),
             password: loginPassword,
-            district: loginDistrict,
             rememberMe: true,
           }));
         } else {
@@ -463,10 +457,7 @@ export const CitizenMobileApp: React.FC = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmail.trim())) {
       errors.email = "Format email tidak valid";
     }
-    if (!regPhone.trim()) errors.phone = "Nomor WhatsApp wajib diisi";
-    if (!regDistrict) errors.district = "Kecamatan domisili wajib dipilih";
     if (!regPassword || regPassword.length < 6) errors.password = "Kata sandi minimal 6 karakter";
-    if (regPassword !== regConfirmPassword) errors.confirmPassword = "Konfirmasi kata sandi tidak cocok";
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -477,8 +468,6 @@ export const CitizenMobileApp: React.FC = () => {
     const res = await registerCitizenToFirestore({
       fullName: regFullName.trim(),
       email: regEmail.trim(),
-      phone: regPhone.trim(),
-      district: regDistrict,
       password: regPassword,
       role: "masyarakat",
       createdAtIso: new Date().toISOString(),
@@ -487,14 +476,11 @@ export const CitizenMobileApp: React.FC = () => {
 
     if (res.success) {
       setLoginIdentifier(regEmail.trim());
-      setLoginDistrict(regDistrict);
       setLoginPassword(regPassword);
       setAuthSuccessSnackbar(`Akun keluarga atas nama ${regFullName.trim()} berhasil dibuat! Silakan masuk.`);
       setRegFullName("");
       setRegEmail("");
-      setRegPhone("");
       setRegPassword("");
-      setRegConfirmPassword("");
       setCurrentScreen("login");
     } else {
       setAuthError(res.error || "Pendaftaran gagal. Silakan coba lagi.");
@@ -804,8 +790,6 @@ export const CitizenMobileApp: React.FC = () => {
                 setLoginIdentifier={setLoginIdentifier}
                 loginPassword={loginPassword}
                 setLoginPassword={setLoginPassword}
-                loginDistrict={loginDistrict}
-                setLoginDistrict={setLoginDistrict}
                 showPassword={showPassword}
                 setShowPassword={setShowPassword}
                 rememberMe={rememberMe}
@@ -849,27 +833,16 @@ export const CitizenMobileApp: React.FC = () => {
                 setRegFullName={setRegFullName}
                 regEmail={regEmail}
                 setRegEmail={setRegEmail}
-                regPhone={regPhone}
-                setRegPhone={setRegPhone}
-                regDistrict={regDistrict}
-                setRegDistrict={setRegDistrict}
                 regPassword={regPassword}
                 setRegPassword={setRegPassword}
-                regConfirmPassword={regConfirmPassword}
-                setRegConfirmPassword={setRegConfirmPassword}
                 showRegPassword={showRegPassword}
                 setShowRegPassword={setShowRegPassword}
-                showRegConfirmPassword={showRegConfirmPassword}
-                setShowRegConfirmPassword={setShowRegConfirmPassword}
-                agreeRegPrivacy={agreeRegPrivacy}
-                setAgreeRegPrivacy={setAgreeRegPrivacy}
                 fieldErrors={fieldErrors}
                 setFieldErrors={setFieldErrors}
                 authError={authError}
                 setAuthError={setAuthError}
                 isSubmittingAuth={isSubmittingAuth}
                 onRegister={handleRegister}
-                onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
                 onNavigateToLogin={() => {
                   setAuthError("");
                   setFieldErrors({});
