@@ -2,9 +2,6 @@
 
 import React from "react";
 import {
-  Mail,
-  Lock,
-  MapPin,
   Eye,
   EyeOff,
   ChevronDown,
@@ -161,16 +158,13 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
             <label className="text-[11.5px] font-bold text-ford-blue block">
               Alamat Email <span className="text-brand-red">*</span>
             </label>
-            <div className="relative">
-              <Mail className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="email"
-                placeholder="nama@email.com"
-                value={loginIdentifier}
-                onChange={(e) => setLoginIdentifier(e.target.value)}
-                className="w-full h-12 pl-11 pr-3.5 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25 transition-all placeholder:text-slate-400"
-              />
-            </div>
+            <input
+              type="email"
+              placeholder="nama@email.com"
+              value={loginIdentifier}
+              onChange={(e) => setLoginIdentifier(e.target.value)}
+              className="w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25 transition-all placeholder:text-slate-400"
+            />
           </div>
 
           {/* Kata Sandi */}
@@ -179,20 +173,19 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
               Kata Sandi <span className="text-brand-red">*</span>
             </label>
             <div className="relative">
-              <Lock className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Masukkan kata sandi"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
-                className="w-full h-12 pl-11 pr-11 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25 transition-all placeholder:text-slate-400"
+                className="w-full h-12 pl-4 pr-11 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25 transition-all placeholder:text-slate-400"
               />
               <button
                 type="button"
                 onClick={() => { triggerHaptic(); setShowPassword(!showPassword); }}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1.5 cursor-pointer transition-colors"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
             </div>
           </div>
@@ -203,11 +196,10 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
               Kecamatan Domisili <span className="text-slate-400 font-normal">(Opsional)</span>
             </label>
             <div className="relative">
-              <MapPin className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <select
                 value={loginDistrict}
                 onChange={(e) => setLoginDistrict(e.target.value)}
-                className={`w-full h-12 pl-11 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
+                className={`w-full h-12 px-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
                   !loginDistrict ? "text-slate-400 border-slate-200" : "text-ford-blue font-bold border-slate-200 focus:border-[#23B5A8]"
                 }`}
               >
@@ -284,25 +276,16 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
           </div>
         </form>
 
-        {/* Divider */}
-        <div className="relative flex items-center justify-center pt-1 pb-0.5">
-          <div className="border-t border-slate-100 w-full" />
-          <span className="bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider absolute">
-            atau
-          </span>
-        </div>
-
-        {/* Register Account Navigation Button */}
-        <div className="pt-0.5">
-          <motion.button
-            whileTap={{ scale: 0.98 }}
+        {/* Register Account Text Link (Clean, No Card/Button) */}
+        <div className="pt-2 text-center text-[12.5px] text-slate-500">
+          <span>Belum punya akun? </span>
+          <button
             type="button"
             onClick={() => { triggerHaptic(); onNavigateToRegister(); }}
-            className="w-full h-12 rounded-2xl bg-[#F8FAFC] hover:bg-slate-100 border border-slate-200 text-ford-blue font-bold text-[13px] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+            className="text-[#23B5A8] font-black hover:underline cursor-pointer ml-1"
           >
-            <span>Belum punya akun?</span>
-            <strong className="text-[#23B5A8]">Daftar di Sini</strong>
-          </motion.button>
+            Daftar di Sini
+          </button>
         </div>
       </motion.div>
 

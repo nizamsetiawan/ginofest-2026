@@ -3,9 +3,6 @@
 import React from "react";
 import {
   ArrowLeft,
-  Mail,
-  MapPin,
-  Lock,
   Eye,
   EyeOff,
   ChevronDown,
@@ -226,17 +223,14 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
               <label className="text-[11.5px] font-bold text-ford-blue block">
                 Alamat Email Terdaftar <span className="text-brand-red">*</span>
               </label>
-              <div className="relative">
-                <Mail className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="email"
-                  placeholder="nama@email.com"
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                  required
-                  className="w-full h-12 pl-11 pr-3.5 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
-                />
-              </div>
+              <input
+                type="email"
+                placeholder="nama@email.com"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                required
+                className="w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+              />
             </div>
 
             <div className="space-y-1">
@@ -244,12 +238,11 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 Kecamatan Domisili <span className="text-brand-red">*</span>
               </label>
               <div className="relative">
-                <MapPin className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <select
                   value={forgotDistrict}
                   onChange={(e) => setForgotDistrict(e.target.value)}
                   required
-                  className={`w-full h-12 pl-11 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
+                  className={`w-full h-12 px-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
                     !forgotDistrict ? "text-slate-400 border-slate-200" : "text-ford-blue font-bold border-slate-200 focus:border-[#23B5A8]"
                   }`}
                 >
@@ -360,14 +353,13 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 Kata Sandi Baru <span className="text-brand-red">*</span>
               </label>
               <div className="relative">
-                <Lock className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type={showForgotPass ? "text" : "password"}
                   placeholder="Minimal 6 karakter"
                   value={forgotNewPassword}
                   onChange={(e) => setForgotNewPassword(e.target.value)}
                   required
-                  className="w-full h-12 pl-11 pr-11 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+                  className="w-full h-12 pl-4 pr-11 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
                 />
                 <button
                   type="button"
@@ -384,14 +376,13 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 Konfirmasi Kata Sandi Baru <span className="text-brand-red">*</span>
               </label>
               <div className="relative">
-                <Lock className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type={showForgotConfirmPass ? "text" : "password"}
                   placeholder="Ulangi kata sandi baru"
                   value={forgotConfirmPassword}
                   onChange={(e) => setForgotConfirmPassword(e.target.value)}
                   required
-                  className="w-full h-12 pl-11 pr-11 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+                  className="w-full h-12 pl-4 pr-11 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
                 />
                 <button
                   type="button"

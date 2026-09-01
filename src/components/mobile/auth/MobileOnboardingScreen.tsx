@@ -70,7 +70,7 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
   ];
 
   return (
-    <Page className="bg-[#F8FAFC] flex flex-col justify-between px-5 py-5 min-h-full relative overflow-hidden font-sans select-none overscroll-contain">
+    <Page className="bg-[#F8FAFC] flex flex-col justify-between px-5 pt-4 pb-28 min-h-full relative overflow-x-hidden font-sans select-none overscroll-contain">
       {/* Animated Glowing Teal & Green Background Halos */}
       <motion.div
         animate={{
@@ -122,10 +122,10 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -25 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="w-full flex flex-col items-center justify-center space-y-4 px-2"
+            className="w-full flex flex-col items-center justify-center space-y-3.5 px-2"
           >
             {/* Illustration with Soft Glow */}
-            <div className="w-full max-w-[210px] sm:max-w-[230px] max-h-[200px] aspect-[914/885] flex items-center justify-center relative">
+            <div className="w-full max-w-[200px] sm:max-w-[220px] max-h-[190px] aspect-[914/885] flex items-center justify-center relative">
               <div className="absolute inset-2 rounded-full bg-white/60 blur-md pointer-events-none" />
               <img
                 src={slides[onboardingIndex].img}
@@ -135,18 +135,18 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
             </div>
 
             {/* Texts */}
-            <div className="space-y-2.5 max-w-[320px] mx-auto px-1 text-center">
+            <div className="space-y-2 max-w-[320px] mx-auto px-1 text-center">
               <div>
                 <span className={`inline-block px-3.5 py-0.5 rounded-full text-[11px] font-bold border tracking-wide shadow-2xs ${slides[onboardingIndex].badgeBg}`}>
                   {slides[onboardingIndex].badge}
                 </span>
               </div>
 
-              <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
+              <h1 className="text-[20px] sm:text-[22px] font-black text-ford-blue tracking-tight leading-snug">
                 {slides[onboardingIndex].title}
               </h1>
 
-              <p className="text-[12.5px] font-medium text-slate-500 leading-relaxed">
+              <p className="text-[12px] sm:text-[12.5px] font-medium text-slate-500 leading-relaxed">
                 {slides[onboardingIndex].desc}
               </p>
             </div>
@@ -154,8 +154,8 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
         </AnimatePresence>
       </div>
 
-      {/* Bottom Controls: Centered Stepper Dots & Navigation Buttons */}
-      <div className="pt-3 pb-2 border-t border-slate-200/60 relative z-10 space-y-3">
+      {/* Fixed Bottom Navigation Controls: Fixed at bottom just like Bottom Navigation Bar */}
+      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40 bg-[#F8FAFC]/95 backdrop-blur-md px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] border-t border-slate-200/60 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] space-y-3">
         {/* Stepper Dots Indicator */}
         <div className="flex items-center justify-center gap-2">
           {[0, 1, 2].map((idx) => (
@@ -192,7 +192,7 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
               title="Kembali ke halaman sebelumnya"
               aria-label="Kembali"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 text-ford-blue" />
             </motion.button>
           ) : (
             <div className="w-11 h-11" />
@@ -207,10 +207,10 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
                 triggerHaptic();
                 setOnboardingIndex((prev) => Math.min(prev + 1, 2));
               }}
-              className="inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13px] shadow-[0_4px_15px_rgba(35,181,168,0.25)] transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-5.5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13.5px] shadow-[0_4px_15px_rgba(35,181,168,0.25)] transition-all cursor-pointer"
             >
-              <span>Lanjut</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Lanjutkan</span>
+              <ArrowRight className="w-3.5 h-3.5 text-ford-blue" />
             </motion.button>
           ) : (
             <motion.button
@@ -220,10 +220,10 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
                 triggerHaptic();
                 onFinish();
               }}
-              className="inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13.5px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-5.5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13.5px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer"
             >
               <span>Mulai Sekarang</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-ford-blue" />
             </motion.button>
           )}
         </div>

@@ -3,11 +3,6 @@
 import React from "react";
 import {
   ArrowLeft,
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Lock,
   Eye,
   EyeOff,
   ChevronDown,
@@ -148,21 +143,18 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             <label className="text-[11.5px] font-bold text-ford-blue block">
               Nama Lengkap <span className="text-brand-red">*</span>
             </label>
-            <div className="relative">
-              <User className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Contoh: Siti Rahmawati"
-                value={regFullName}
-                onChange={(e) => {
-                  setRegFullName(e.target.value);
-                  if (fieldErrors.fullName) setFieldErrors((p) => ({ ...p, fullName: "" }));
-                }}
-                className={`w-full h-12 pl-11 pr-3.5 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                  fieldErrors.fullName ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
-                }`}
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Contoh: Siti Rahmawati"
+              value={regFullName}
+              onChange={(e) => {
+                setRegFullName(e.target.value);
+                if (fieldErrors.fullName) setFieldErrors((p) => ({ ...p, fullName: "" }));
+              }}
+              className={`w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                fieldErrors.fullName ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+              }`}
+            />
             {fieldErrors.fullName && (
               <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.fullName}</p>
             )}
@@ -173,21 +165,18 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             <label className="text-[11.5px] font-bold text-ford-blue block">
               Alamat Email <span className="text-brand-red">*</span>
             </label>
-            <div className="relative">
-              <Mail className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="email"
-                placeholder="nama@email.com"
-                value={regEmail}
-                onChange={(e) => {
-                  setRegEmail(e.target.value);
-                  if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: "" }));
-                }}
-                className={`w-full h-12 pl-11 pr-3.5 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                  fieldErrors.email ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
-                }`}
-              />
-            </div>
+            <input
+              type="email"
+              placeholder="nama@email.com"
+              value={regEmail}
+              onChange={(e) => {
+                setRegEmail(e.target.value);
+                if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: "" }));
+              }}
+              className={`w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                fieldErrors.email ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+              }`}
+            />
             {fieldErrors.email && (
               <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.email}</p>
             )}
@@ -198,21 +187,18 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             <label className="text-[11.5px] font-bold text-ford-blue block">
               Nomor WhatsApp / HP <span className="text-brand-red">*</span>
             </label>
-            <div className="relative">
-              <Phone className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="tel"
-                placeholder="081234567890"
-                value={regPhone}
-                onChange={(e) => {
-                  setRegPhone(e.target.value);
-                  if (fieldErrors.phone) setFieldErrors((p) => ({ ...p, phone: "" }));
-                }}
-                className={`w-full h-12 pl-11 pr-3.5 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
-                  fieldErrors.phone ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
-                }`}
-              />
-            </div>
+            <input
+              type="tel"
+              placeholder="081234567890"
+              value={regPhone}
+              onChange={(e) => {
+                setRegPhone(e.target.value);
+                if (fieldErrors.phone) setFieldErrors((p) => ({ ...p, phone: "" }));
+              }}
+              className={`w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                fieldErrors.phone ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+              }`}
+            />
             {fieldErrors.phone && (
               <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.phone}</p>
             )}
@@ -224,14 +210,13 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
               Kecamatan Domisili <span className="text-brand-red">*</span>
             </label>
             <div className="relative">
-              <MapPin className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <select
                 value={regDistrict}
                 onChange={(e) => {
                   setRegDistrict(e.target.value);
                   if (fieldErrors.district) setFieldErrors((p) => ({ ...p, district: "" }));
                 }}
-                className={`w-full h-12 pl-11 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
+                className={`w-full h-12 px-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
                   fieldErrors.district
                     ? "border-brand-red bg-red-50/40 text-brand-red focus:border-brand-red"
                     : !regDistrict
@@ -257,7 +242,6 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
               Kata Sandi <span className="text-brand-red">*</span>
             </label>
             <div className="relative">
-              <Lock className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type={showRegPassword ? "text" : "password"}
                 placeholder="Minimal 6 karakter"
@@ -266,14 +250,14 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
                   setRegPassword(e.target.value);
                   if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: "" }));
                 }}
-                className={`w-full h-12 pl-11 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                className={`w-full h-12 pl-4 pr-11 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
                   fieldErrors.password ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
                 }`}
               />
               <button
                 type="button"
                 onClick={() => { triggerHaptic(); setShowRegPassword(!showRegPassword); }}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1.5 cursor-pointer transition-colors"
               >
                 {showRegPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
@@ -289,7 +273,6 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
               Konfirmasi Kata Sandi <span className="text-brand-red">*</span>
             </label>
             <div className="relative">
-              <Lock className="w-4.5 h-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type={showRegConfirmPassword ? "text" : "password"}
                 placeholder="Ulangi kata sandi"
@@ -298,14 +281,14 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
                   setRegConfirmPassword(e.target.value);
                   if (fieldErrors.confirmPassword) setFieldErrors((p) => ({ ...p, confirmPassword: "" }));
                 }}
-                className={`w-full h-12 pl-11 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                className={`w-full h-12 pl-4 pr-11 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
                   fieldErrors.confirmPassword ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
                 }`}
               />
               <button
                 type="button"
                 onClick={() => { triggerHaptic(); setShowRegConfirmPassword(!showRegConfirmPassword); }}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1.5 cursor-pointer transition-colors"
               >
                 {showRegConfirmPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
