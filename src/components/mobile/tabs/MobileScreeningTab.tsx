@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowLeft,
   HelpCircle,
@@ -165,6 +166,46 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
   // Step 4: QR Code Scanner Timer / Verification Simulation
   const [isQrVerifying, setIsQrVerifying] = useState(false);
+
+  // ─── CLAIM PAYLOAD (encode real claim data into QR) ───
+  // Generated once when user reaches step 3/4; stable per session
+  const claimId = useMemo(() => {
+    const ts = Date.now();
+    const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `MBG-${ts}-${rand}`;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const claimPayload = useMemo(() => {
+    const menuName = menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu";
+    const issuedAt = new Date().toISOString();
+    const payload = {
+      claimId,
+      type: "MBG_FOOD_CLAIM",
+      version: "1.0",
+      issuedAt,
+      expiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6 jam
+      beneficiary: {
+        name: citizenUser?.name || "Pengguna",
+        email: citizenUser?.email || "-",
+        phone: citizenUser?.phone || "-",
+        district: citizenUser?.district || "Kebomas",
+      },
+      menu: {
+        id: menuType,
+        name: menuName,
+        kalori: 680,
+        porsi: "1x Makan Siang",
+        program: "Makan Bergizi Gratis",
+      },
+      program: {
+        name: "Ginofest 2026",
+        issuer: "SPPG Kemenkes RI",
+        year: 2026,
+      },
+      status: "VALID",
+    };
+    return JSON.stringify(payload);
+  }, [claimId, menuType, citizenUser]);
 
   // Help Modal State
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -870,41 +911,43 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </p>
             </div>
 
-            {/* QR Box */}
+            {/* QR Box — Real QR Code via qrcode.react */}
             <div className="relative p-4 bg-white rounded-3xl shadow-2xl shadow-[#23B5A8]/20 border border-white/20">
               <div className="w-44 h-44 relative flex items-center justify-center">
-                <svg viewBox="0 0 100 100" className="w-full h-full">
-                  {/* Corner Squares */}
-                  <rect x="0" y="0" width="30" height="30" fill="#0D1B2A" rx="4" />
-                  <rect x="5" y="5" width="20" height="20" fill="white" rx="2" />
-                  <rect x="9" y="9" width="12" height="12" fill="#0D1B2A" />
-                  <rect x="70" y="0" width="30" height="30" fill="#0D1B2A" rx="4" />
-                  <rect x="75" y="5" width="20" height="20" fill="white" rx="2" />
-                  <rect x="79" y="9" width="12" height="12" fill="#0D1B2A" />
-                  <rect x="0" y="70" width="30" height="30" fill="#0D1B2A" rx="4" />
-                  <rect x="5" y="75" width="20" height="20" fill="white" rx="2" />
-                  <rect x="9" y="79" width="12" height="12" fill="#0D1B2A" />
-                  {/* Data dots */}
-                  <rect x="36" y="8" width="8" height="8" fill="#0D1B2A" />
-                  <rect x="48" y="14" width="10" height="6" fill="#0D1B2A" />
-                  <rect x="36" y="24" width="6" height="10" fill="#0D1B2A" />
-                  <rect x="46" y="36" width="16" height="16" fill="#23B5A8" rx="3" />
-                  <rect x="10" y="42" width="18" height="6" fill="#0D1B2A" />
-                  <rect x="72" y="40" width="8" height="18" fill="#0D1B2A" />
-                  <rect x="36" y="60" width="12" height="8" fill="#0D1B2A" />
-                  <rect x="54" y="62" width="8" height="16" fill="#0D1B2A" />
-                  <rect x="72" y="70" width="16" height="8" fill="#0D1B2A" />
-                  <rect x="80" y="84" width="12" height="10" fill="#0D1B2A" />
-                </svg>
+                <QRCodeSVG
+                  value={claimPayload}
+                  size={176}
+                  bgColor="#FFFFFF"
+                  fgColor="#0D1B2A"
+                  level="H"
+                  includeMargin={false}
+                  imageSettings={{
+                    src: "/logo_app.svg",
+                    x: undefined,
+                    y: undefined,
+                    height: 28,
+                    width: 28,
+                    excavate: true,
+                  }}
+                />
                 {isQrVerifying && (
-                  <div className="absolute inset-0 bg-white/90 rounded-2xl flex flex-col items-center justify-center gap-1.5">
+                  <div className="absolute inset-0 bg-white/95 rounded-2xl flex flex-col items-center justify-center gap-1.5">
                     <RefreshCw className="w-7 h-7 text-[#23B5A8] animate-spin" />
                     <span className="text-[10.5px] font-black text-[#0D1B2A]">Memverifikasi...</span>
                   </div>
                 )}
               </div>
-              {/* Teal scan line accent */}
-              <div className="absolute left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[#23B5A8] to-transparent top-1/2 opacity-50 animate-pulse" />
+              {/* Teal scan line */}
+              <div className="absolute left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[#23B5A8] to-transparent top-1/2 opacity-40 animate-pulse" />
+            </div>
+
+            {/* Claim ID Badge */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2.5 w-full backdrop-blur-md">
+              <p className="text-[9px] text-white/35 font-semibold tracking-widest uppercase mb-1">ID Klaim</p>
+              <p className="text-[11px] font-black text-[#79D7D2] font-mono tracking-wider">{claimId}</p>
+              <p className="text-[9.5px] text-white/40 font-medium mt-0.5">
+                {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"} · 680 kkal · 1x Makan Siang
+              </p>
             </div>
 
             {/* Note */}
