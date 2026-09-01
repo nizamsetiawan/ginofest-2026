@@ -949,29 +949,34 @@ export const CitizenMobileApp: React.FC = () => {
             {/* ═══ CLEAN 3-TAB NAVIGATION BAR (MATCHING examplebottom.svg - UNCLIPPED FLOATING HUB) ═══ */}
             {activeTab !== "screening" && (
               <div className="left-0 bottom-0 fixed z-40 w-full select-none">
-                {/* Center Floating Button Layer (Zero Clipping / 100% Visible) */}
-                <div className="absolute left-1/2 -top-5.5 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto">
+                {/* Center Floating Button Layer (Super Prominent 64px AI Hub) */}
+                <div className="absolute left-1/2 -top-8 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto">
                   <button
                     type="button"
                     onClick={() => {
-                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
+                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(25);
                       setActiveTab("screening");
                     }}
-                    className="relative group cursor-pointer active:scale-95 transition-transform duration-200"
+                    className="relative group cursor-pointer active:scale-90 transition-transform duration-200"
                     title="Mulai Analisis Biometrik AI"
                   >
-                    {/* Glowing Halo */}
-                    <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#79D7D2] to-[#23B5A8] opacity-35 blur-xs group-hover:opacity-75 transition-opacity" />
+                    {/* Breathing Outer Radiant Glow */}
+                    <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-[#24E0D1] via-[#79D7D2] to-[#0FA89B] opacity-50 blur-md group-hover:opacity-85 transition-opacity animate-pulse" />
 
-                    {/* Circular Floating Hub */}
-                    <div className="relative w-13.5 h-13.5 rounded-full bg-gradient-to-tr from-[#23B5A8] via-[#79D7D2] to-[#A3EDE7] text-ford-blue flex items-center justify-center shadow-[0_8px_25px_rgba(35,181,168,0.45)] border-[3.5px] border-white">
-                      <Activity className="w-7 h-7 stroke-[2.8] text-ford-blue" />
+                    {/* Circular Floating 64px Mega Hub */}
+                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-tr from-[#0FA89B] via-[#24E0D1] to-[#A3EDE7] text-ford-blue flex items-center justify-center shadow-[0_10px_30px_rgba(15,168,155,0.5)] border-[4px] border-white">
+                      <Activity className="w-8 h-8 stroke-[2.8] text-ford-blue drop-shadow-xs" />
+
+                      {/* Floating Mini AI Badge */}
+                      <span className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-brand-orange text-white text-[8px] font-black tracking-wider shadow-sm border border-white uppercase">
+                        AI
+                      </span>
                     </div>
                   </button>
                 </div>
 
                 {/* Main White Elevated Bar */}
-                <div className="bg-white/98 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.05)] pt-2 pb-safe-nav flex items-center justify-around relative px-4 min-h-[58px]">
+                <div className="bg-white/98 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.05)] pt-2 pb-safe-nav flex items-center justify-around relative px-4 min-h-[62px]">
                   {/* 1. Beranda */}
                   <button
                     type="button"
@@ -999,17 +1004,17 @@ export const CitizenMobileApp: React.FC = () => {
                     </span>
                   </button>
 
-                  {/* 2. Analisis Center Spacer & Label */}
+                  {/* 2. Analisis Center Spacer & Bold Label */}
                   <button
                     type="button"
                     onClick={() => {
-                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
+                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(25);
                       setActiveTab("screening");
                     }}
-                    className="flex flex-col items-center justify-center w-20 pt-7 transition-all cursor-pointer"
+                    className="flex flex-col items-center justify-center w-20 pt-8 transition-all cursor-pointer"
                   >
-                    <span className="text-[11px] font-black text-[#23B5A8] tracking-tight">
-                      Analisis
+                    <span className="text-[11.5px] font-black text-[#0FA89B] tracking-tight drop-shadow-2xs">
+                      Analisis AI
                     </span>
                   </button>
 
