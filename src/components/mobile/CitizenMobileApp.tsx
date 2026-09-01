@@ -472,10 +472,6 @@ export const CitizenMobileApp: React.FC = () => {
       setFieldErrors(errors);
       return;
     }
-    if (!agreeRegPrivacy) {
-      setAuthError("Anda harus menyetujui Kebijakan Privasi MBG.");
-      return;
-    }
 
     setIsSubmittingAuth(true);
     const res = await registerCitizenToFirestore({
