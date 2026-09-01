@@ -40,6 +40,7 @@ import { MobilePrivacyModal } from "./auth/MobilePrivacyModal";
 import { MobilePermissionsModal } from "./modals/MobilePermissionsModal";
 import { MobileIOSInstallModal } from "./modals/MobileIOSInstallModal";
 import { MobileSessionRevokedModal } from "./modals/MobileSessionRevokedModal";
+import { MobileCameraPermissionModal } from "./screening/MobileCameraPermissionModal";
 
 // Tab Views (Only 3 Tabs: Home, Screening, Profile)
 import { MobileHomeTab } from "./tabs/MobileHomeTab";
@@ -129,6 +130,10 @@ export const CitizenMobileApp: React.FC = () => {
     notification: "prompt"
   });
   const [sessionRevokedModal, setSessionRevokedModal] = useState(false);
+  const [isCameraPermissionModalOpen, setIsCameraPermissionModalOpen] = useState(false);
+  const [isRequestingCamera, setIsRequestingCamera] = useState(false);
+  const [cameraPermissionError, setCameraPermissionError] = useState<string | null>(null);
+  const [isCameraPermissionGranted, setIsCameraPermissionGranted] = useState(false);
 
   // ═══ PULL-TO-REFRESH & HARD RELOAD STATE ═══
   const [pullY, setPullY] = useState(0);
@@ -671,6 +676,57 @@ export const CitizenMobileApp: React.FC = () => {
     }
   };
 
+  // ═══ CAMERA PERMISSION CHECK FOR AI SCREENING ═══
+  const handleOpenScreeningWithPermission = async () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(25);
+    setCameraPermissionError(null);
+
+    // If permission was already explicitly granted during this session, proceed directly
+    if (isCameraPermissionGranted) {
+      setActiveTab("screening");
+      return;
+    }
+
+    // Try checking browser permissions API if supported
+    try {
+      if (navigator.permissions && navigator.permissions.query) {
+        const status = await navigator.permissions.query({ name: "camera" as any });
+        if (status.state === "granted") {
+          setIsCameraPermissionGranted(true);
+          setActiveTab("screening");
+          return;
+        }
+      }
+    } catch (e) {
+      // Permissions API not supported or query error
+    }
+
+    // Otherwise show the dedicated Camera Permission Modal (like MobilePrivacyModal)
+    setIsCameraPermissionModalOpen(true);
+  };
+
+  const handleRequestCameraPermission = async () => {
+    setIsRequestingCamera(true);
+    setCameraPermissionError(null);
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // Stop the test stream immediately
+        stream.getTracks().forEach((track) => track.stop());
+        setIsCameraPermissionGranted(true);
+        setIsCameraPermissionModalOpen(false);
+        setActiveTab("screening");
+      } else {
+        setCameraPermissionError("Perangkat tidak mendukung akses kamera web.");
+      }
+    } catch (err: any) {
+      console.warn("Camera permission denied or error:", err);
+      setCameraPermissionError("Izin kamera ditolak. Harap izinkan akses kamera pada peramban Anda untuk melanjutkan ke Analisis AI.");
+    } finally {
+      setIsRequestingCamera(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 sm:static sm:min-h-screen w-full h-full sm:h-auto flex items-center justify-center p-0 sm:p-4 bg-[#F8FAFC] sm:bg-slate-900/60 backdrop-blur-md select-none font-sans overflow-hidden touch-pan-y">
       {/* ═══ MODALS & OVERLAYS ═══ */}
@@ -701,6 +757,14 @@ export const CitizenMobileApp: React.FC = () => {
       <MobilePrivacyModal
         isOpen={isPrivacyModalOpen}
         onClose={() => setIsPrivacyModalOpen(false)}
+      />
+
+      <MobileCameraPermissionModal
+        isOpen={isCameraPermissionModalOpen}
+        onClose={() => setIsCameraPermissionModalOpen(false)}
+        onRequestPermission={handleRequestCameraPermission}
+        isRequesting={isRequestingCamera}
+        errorMessage={cameraPermissionError}
       />
 
       {/* Hard Reload Fullscreen Screen */}
@@ -983,10 +1047,7 @@ export const CitizenMobileApp: React.FC = () => {
                 <div className="absolute left-1/2 -top-8 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto">
                   <button
                     type="button"
-                    onClick={() => {
-                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(25);
-                      setActiveTab("screening");
-                    }}
+                    onClick={handleOpenScreeningWithPermission}
                     className="relative group cursor-pointer active:scale-90 transition-transform duration-200"
                     title="Mulai Analisis Biometrik AI"
                   >
@@ -1037,10 +1098,7 @@ export const CitizenMobileApp: React.FC = () => {
                   {/* 2. Analisis Center Spacer & Bold Label */}
                   <button
                     type="button"
-                    onClick={() => {
-                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(25);
-                      setActiveTab("screening");
-                    }}
+                    onClick={handleOpenScreeningWithPermission}
                     className="flex flex-col items-center justify-center w-20 pt-8 transition-all cursor-pointer"
                   >
                     <span className="text-[11.5px] font-black text-[#0FA89B] tracking-tight drop-shadow-2xs">
