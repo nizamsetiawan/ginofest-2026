@@ -1027,34 +1027,55 @@ export const CitizenMobileApp: React.FC = () => {
               )}
             </main>
 
-            {/* ═══ KONSTA UI NATIVE TABBAR (IOS CUPERTINO & MATERIAL 3 COMPATIBLE) ═══ */}
+            {/* ═══ CLEAN 5-TAB FLAT NAVIGATION BAR (MATCHING REFERENCE APP) ═══ */}
             {activeTab !== "screening" && (
               <Tabbar
                 labels={true}
                 icons={true}
-                className="left-0 bottom-0 fixed z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)]"
+                className="left-0 bottom-0 fixed z-40 bg-white/98 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-2px_15px_rgba(0,0,0,0.04)]"
               >
+                {/* 1. Beranda */}
                 <TabbarLink
                   active={activeTab === "home"}
                   onClick={() => setActiveTab("home")}
-                  icon={<Home className={`w-6 h-6 stroke-[2.2] transition-colors ${activeTab === "home" ? "text-light-sea-green" : "text-blue-gray"}`} />}
-                  label={<span className={`text-[11px] font-bold ${activeTab === "home" ? "text-light-sea-green" : "text-blue-gray"}`}>Beranda</span>}
+                  icon={<Home className={`w-5.5 h-5.5 transition-colors ${activeTab === "home" ? "text-brand-orange" : "text-slate-400"}`} />}
+                  label={<span className={`text-[10.5px] font-bold ${activeTab === "home" ? "text-brand-orange" : "text-slate-500"}`}>Beranda</span>}
                 />
+
+                {/* 2. Menu MBG */}
+                <TabbarLink
+                  active={activeTab === "menu"}
+                  onClick={() => setActiveTab("menu")}
+                  icon={<Utensils className={`w-5.5 h-5.5 transition-colors ${activeTab === "menu" ? "text-brand-orange" : "text-slate-400"}`} />}
+                  label={<span className={`text-[10.5px] font-bold ${activeTab === "menu" ? "text-brand-orange" : "text-slate-500"}`}>Menu MBG</span>}
+                />
+
+                {/* 3. Analisis Biometrik */}
                 <TabbarLink
                   active={false}
                   onClick={() => setActiveTab("screening")}
-                  icon={
-                    <div className="w-12 h-12 -mt-3 rounded-full bg-gradient-to-tr from-green-02 via-light-sea-green to-teal-400 text-ford-blue flex items-center justify-center shadow-lg border-2 border-white">
-                      <Activity className="w-6 h-6 stroke-[2.5] text-ford-blue" />
-                    </div>
-                  }
-                  label={<span className="text-[11px] font-black text-ford-blue mt-0.5">Analisis</span>}
+                  icon={<Activity className="w-5.5 h-5.5 text-slate-400 hover:text-brand-orange transition-colors" />}
+                  label={<span className="text-[10.5px] font-bold text-slate-500">Analisis</span>}
                 />
+
+                {/* 4. Aduan MBG */}
+                <TabbarLink
+                  active={activeTab === "complaint"}
+                  onClick={() => setActiveTab("complaint")}
+                  icon={<MessageSquare className={`w-5.5 h-5.5 transition-colors ${activeTab === "complaint" ? "text-brand-orange" : "text-slate-400"}`} />}
+                  label={<span className={`text-[10.5px] font-bold ${activeTab === "complaint" ? "text-brand-orange" : "text-slate-500"}`}>Aduan</span>}
+                />
+
+                {/* 5. Profil */}
                 <TabbarLink
                   active={activeTab === "profile"}
                   onClick={() => setActiveTab("profile")}
-                  icon={<User className={`w-6 h-6 stroke-[2.2] transition-colors ${activeTab === "profile" ? "text-light-sea-green" : "text-blue-gray"}`} />}
-                  label={<span className={`text-[11px] font-bold ${activeTab === "profile" ? "text-light-sea-green" : "text-blue-gray"}`}>Profil</span>}
+                  icon={
+                    <div className={`w-5.5 h-5.5 rounded-full flex items-center justify-center text-[10px] font-black border transition-colors ${activeTab === "profile" ? "bg-brand-orange text-white border-brand-orange" : "bg-slate-100 text-slate-500 border-slate-300"}`}>
+                      {citizenUser?.name ? citizenUser.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                  }
+                  label={<span className={`text-[10.5px] font-bold ${activeTab === "profile" ? "text-brand-orange" : "text-slate-500"}`}>Profil</span>}
                 />
               </Tabbar>
             )}
