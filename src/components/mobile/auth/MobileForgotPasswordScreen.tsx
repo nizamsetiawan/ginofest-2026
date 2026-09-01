@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AuthSpectrumBackground } from "./AuthSpectrumBackground";
 
 interface MobileForgotPasswordScreenProps {
   forgotStep: 1 | 2 | 3;
@@ -77,6 +78,9 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
 
   return (
     <Page className="bg-[#F8FAFC] flex flex-col px-5 py-4 overflow-y-auto relative font-sans overscroll-contain min-h-full">
+      {/* Dynamic Animated Spectrum & Glow Background */}
+      <AuthSpectrumBackground />
+
       {/* Simulated Email Pop-up Notification */}
       <AnimatePresence>
         {simulatedEmailNotification && (

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AuthSpectrumBackground } from "./AuthSpectrumBackground";
 
 interface MobileLoginScreenProps {
   loginIdentifier: string;
@@ -62,7 +63,10 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
   };
 
   return (
-    <Page className="bg-[#F8FAFC] flex flex-col px-5 py-4 overflow-y-auto overscroll-contain font-sans min-h-full">
+    <Page className="bg-[#F8FAFC] flex flex-col px-5 py-4 overflow-y-auto overscroll-contain font-sans min-h-full relative">
+      {/* Dynamic Animated Spectrum & Glow Background */}
+      <AuthSpectrumBackground />
+
       {/* Top Bar: Install APK Button & Country Flag */}
       <div className="flex items-center justify-between pb-2">
         {!isStandalone ? (

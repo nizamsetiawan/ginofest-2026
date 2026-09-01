@@ -5,13 +5,12 @@ import {
   ArrowLeft,
   Eye,
   EyeOff,
-  ChevronDown,
   AlertCircle,
   RefreshCw
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
+import { AuthSpectrumBackground } from "./AuthSpectrumBackground";
 
 interface MobileRegisterScreenProps {
   regFullName: string;
@@ -55,7 +54,10 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
   };
 
   return (
-    <Page className="bg-[#F8FAFC] flex flex-col px-5 py-4 overflow-y-auto overscroll-contain font-sans min-h-full">
+    <Page className="bg-[#F8FAFC] flex flex-col px-5 py-4 overflow-y-auto overscroll-contain font-sans min-h-full relative">
+      {/* Dynamic Animated Spectrum & Glow Background */}
+      <AuthSpectrumBackground />
+
       {/* Top Navigation & Flag */}
       <div className="flex items-center justify-between pb-2 mb-1">
         <motion.button
