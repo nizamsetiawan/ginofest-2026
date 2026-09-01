@@ -397,15 +397,25 @@ export const CitizenMobileApp: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError("");
+    setFieldErrors({});
 
+    const errors: Record<string, string> = {};
     if (!loginIdentifier.trim()) {
-      setAuthError("Silakan masukkan email terdaftar Anda.");
-      return;
+      errors.email = "Email wajib diisi";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginIdentifier.trim())) {
+      errors.email = "Format email tidak valid";
     }
     if (!loginPassword) {
-      setAuthError("Silakan masukkan kata sandi akun.");
+      errors.password = "Kata sandi wajib diisi";
+    } else if (loginPassword.length < 6) {
+      errors.password = "Kata sandi minimal 6 karakter";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
+
     if (!agreePrivacy) {
       setAuthError("Anda harus menyetujui Kebijakan Privasi Kcal.");
       return;
@@ -441,7 +451,14 @@ export const CitizenMobileApp: React.FC = () => {
       } catch {}
       setCurrentScreen("main");
     } else {
-      setAuthError(res.error || "Gagal masuk. Silakan periksa kembali email dan kata sandi Anda.");
+      const errMsg = res.error || "Gagal masuk. Silakan periksa kembali email dan kata sandi Anda.";
+      if (errMsg.toLowerCase().includes("email")) {
+        setFieldErrors({ email: errMsg });
+      } else if (errMsg.toLowerCase().includes("sandi") || errMsg.toLowerCase().includes("password")) {
+        setFieldErrors({ password: errMsg });
+      } else {
+        setAuthError(errMsg);
+      }
     }
   };
 
@@ -790,6 +807,8 @@ export const CitizenMobileApp: React.FC = () => {
                 setRememberMe={setRememberMe}
                 agreePrivacy={agreePrivacy}
                 setAgreePrivacy={setAgreePrivacy}
+                fieldErrors={fieldErrors}
+                setFieldErrors={setFieldErrors}
                 isSubmittingAuth={isSubmittingAuth}
                 authError={authError}
                 authSuccessSnackbar={authSuccessSnackbar}
@@ -799,10 +818,12 @@ export const CitizenMobileApp: React.FC = () => {
                 onLogin={handleLogin}
                 onNavigateToRegister={() => {
                   setAuthError("");
+                  setFieldErrors({});
                   setCurrentScreen("register");
                 }}
                 onNavigateToForgotPassword={() => {
                   setAuthError("");
+                  setFieldErrors({});
                   setResetErrorMsg("");
                   setResetSuccessMsg("");
                   setForgotStep(1);

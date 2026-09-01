@@ -24,6 +24,8 @@ interface MobileLoginScreenProps {
   setRememberMe: (val: boolean) => void;
   agreePrivacy: boolean;
   setAgreePrivacy: (val: boolean) => void;
+  fieldErrors?: Record<string, string>;
+  setFieldErrors?: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   isSubmittingAuth: boolean;
   authError: string;
   authSuccessSnackbar: string | null;
@@ -46,6 +48,8 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
   setRememberMe,
   agreePrivacy,
   setAgreePrivacy,
+  fieldErrors = {},
+  setFieldErrors,
   isSubmittingAuth,
   authError,
   authSuccessSnackbar,
@@ -134,9 +138,9 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
         </AnimatePresence>
 
         {/* Login Form */}
-        <form onSubmit={(e) => { triggerHaptic(); onLogin(e); }} className="space-y-3.5">
+        <form onSubmit={(e) => { triggerHaptic(); onLogin(e); }} className="space-y-3">
           {/* Alamat Email */}
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <label className="text-[11.5px] font-bold text-ford-blue block">
               Alamat Email <span className="text-brand-red">*</span>
             </label>
@@ -144,13 +148,25 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
               type="email"
               placeholder="nama@email.com"
               value={loginIdentifier}
-              onChange={(e) => setLoginIdentifier(e.target.value)}
-              className="w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25 transition-all placeholder:text-slate-400"
+              onChange={(e) => {
+                setLoginIdentifier(e.target.value);
+                if (fieldErrors.email && setFieldErrors) {
+                  setFieldErrors((p) => ({ ...p, email: "" }));
+                }
+              }}
+              className={`w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                fieldErrors.email
+                  ? "border-brand-red bg-red-50/40 focus:border-brand-red"
+                  : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+              }`}
             />
+            {fieldErrors.email && (
+              <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.email}</p>
+            )}
           </div>
 
           {/* Kata Sandi */}
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <label className="text-[11.5px] font-bold text-ford-blue block">
               Kata Sandi <span className="text-brand-red">*</span>
             </label>
@@ -159,8 +175,17 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
                 type={showPassword ? "text" : "password"}
                 placeholder="Masukkan kata sandi"
                 value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                className="w-full h-12 pl-4 pr-10 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25 transition-all placeholder:text-slate-400"
+                onChange={(e) => {
+                  setLoginPassword(e.target.value);
+                  if (fieldErrors.password && setFieldErrors) {
+                    setFieldErrors((p) => ({ ...p, password: "" }));
+                  }
+                }}
+                className={`w-full h-12 pl-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                  fieldErrors.password
+                    ? "border-brand-red bg-red-50/40 focus:border-brand-red"
+                    : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+                }`}
               />
               <button
                 type="button"
@@ -171,6 +196,9 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
                 {showPassword ? <EyeOff className="w-3.5 h-3.5 stroke-[1.75]" /> : <Eye className="w-3.5 h-3.5 stroke-[1.75]" />}
               </button>
             </div>
+            {fieldErrors.password && (
+              <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.password}</p>
+            )}
           </div>
 
           {/* Inline Error Message */}
