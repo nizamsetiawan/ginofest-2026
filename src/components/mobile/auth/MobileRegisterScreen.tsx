@@ -15,6 +15,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { Page } from "konsta/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 interface MobileRegisterScreenProps {
@@ -71,13 +72,21 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
   onRegister,
   onNavigateToLogin,
 }) => {
+  const triggerHaptic = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(10);
+    }
+  };
+
   return (
     <Page className="bg-[#F8FAFC] flex flex-col px-5 py-4 overflow-y-auto overscroll-contain font-sans min-h-full">
       {/* Top Navigation & Flag */}
       <div className="flex items-center justify-between pb-2 mb-1">
-        <button
+        <motion.button
+          whileTap={{ scale: 0.95 }}
           type="button"
           onClick={() => {
+            triggerHaptic();
             setAuthError("");
             setFieldErrors({});
             onNavigateToLogin();
@@ -86,7 +95,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
         >
           <ArrowLeft className="w-3.5 h-3.5 text-ford-blue" />
           <span>Kembali</span>
-        </button>
+        </motion.button>
 
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-[11px] font-bold text-slate-600 shadow-2xs">
           <span>🇮🇩</span>
@@ -95,7 +104,12 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
       </div>
 
       {/* Main Elevated Card */}
-      <div className="bg-white rounded-3xl p-5 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-3.5">
+      <motion.div 
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className="bg-white rounded-3xl p-5 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-3.5"
+      >
         {/* Brand Logo Header */}
         <div className="text-center space-y-1 pt-1 pb-1">
           <div className="flex items-center justify-center gap-2">
@@ -114,14 +128,21 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
         </div>
 
         {/* Global Error Banner if any */}
-        {authError && (
-          <div className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11px] font-medium flex items-center gap-1.5">
-            <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
-            <span>{authError}</span>
-          </div>
-        )}
+        <AnimatePresence>
+          {authError && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11px] font-medium flex items-center gap-1.5"
+            >
+              <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
+              <span>{authError}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <form onSubmit={onRegister} className="space-y-3">
+        <form onSubmit={(e) => { triggerHaptic(); onRegister(e); }} className="space-y-3">
           {/* 1. Nama Lengkap */}
           <div className="space-y-1">
             <label className="text-[11.5px] font-bold text-ford-blue block">
@@ -251,8 +272,8 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
               />
               <button
                 type="button"
-                onClick={() => setShowRegPassword(!showRegPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer"
+                onClick={() => { triggerHaptic(); setShowRegPassword(!showRegPassword); }}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
               >
                 {showRegPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -283,8 +304,8 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
               />
               <button
                 type="button"
-                onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer"
+                onClick={() => { triggerHaptic(); setShowRegConfirmPassword(!showRegConfirmPassword); }}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
               >
                 {showRegConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -296,10 +317,11 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
 
           {/* Submit Button */}
           <div className="pt-2">
-            <button
+            <motion.button
+              whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isSubmittingAuth}
-              className="w-full h-12 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue text-[14px] font-black tracking-wide shadow-[0_4px_15px_rgba(35,181,168,0.3)] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full h-12 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue text-[14px] font-black tracking-wide shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isSubmittingAuth ? (
                 <>
@@ -309,7 +331,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
               ) : (
                 <span>Daftarkan Akun Keluarga</span>
               )}
-            </button>
+            </motion.button>
           </div>
         </form>
 
@@ -319,6 +341,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
           <button
             type="button"
             onClick={() => {
+              triggerHaptic();
               setAuthError("");
               setFieldErrors({});
               onNavigateToLogin();
@@ -328,7 +351,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             Masuk di Sini
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Version Footer (Compact) */}
       <div className="pt-2.5 pb-1 text-center">

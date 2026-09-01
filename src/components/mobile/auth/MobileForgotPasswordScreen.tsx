@@ -15,6 +15,7 @@ import {
   Send
 } from "lucide-react";
 import { Page } from "konsta/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 interface MobileForgotPasswordScreenProps {
@@ -78,38 +79,55 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
   onSaveNewPassword,
   onNavigateToLogin,
 }) => {
+  const triggerHaptic = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(10);
+    }
+  };
+
   return (
     <Page className="bg-[#F8FAFC] flex flex-col px-5 py-4 overflow-y-auto relative font-sans overscroll-contain min-h-full">
       {/* Simulated Email Pop-up Notification */}
-      {simulatedEmailNotification && (
-        <div className="mb-3 p-3 rounded-2xl bg-[#79D7D2]/15 border border-[#79D7D2]/40 shadow-md text-ford-blue text-[11.5px] flex items-center justify-between gap-2 animate-in slide-in-from-top-4 duration-300">
-          <div className="flex items-center gap-2">
-            <span className="text-base">📩</span>
-            <div>
-              <p className="font-bold text-ford-blue text-[11px]">Email Masuk (Simulasi):</p>
-              <p className="text-[11px] text-slate-500">Kode OTP Anda: <span className="font-mono font-bold text-[#23B5A8] tracking-widest text-[13px]">{simulatedEmailNotification}</span></p>
+      <AnimatePresence>
+        {simulatedEmailNotification && (
+          <motion.div 
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            className="mb-3 p-3 rounded-2xl bg-[#79D7D2]/15 border border-[#79D7D2]/40 shadow-md text-ford-blue text-[11.5px] flex items-center justify-between gap-2"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-base">📩</span>
+              <div>
+                <p className="font-bold text-ford-blue text-[11px]">Email Masuk (Simulasi):</p>
+                <p className="text-[11px] text-slate-500">Kode OTP Anda: <span className="font-mono font-bold text-[#23B5A8] tracking-widest text-[13px]">{simulatedEmailNotification}</span></p>
+              </div>
             </div>
-          </div>
-          {forgotStep === 2 && (
-            <button
-              type="button"
-              onClick={() => {
-                setInputOtp(simulatedEmailNotification);
-                setSimulatedEmailNotification(null);
-              }}
-              className="px-3 py-1.5 rounded-xl bg-[#23B5A8] hover:bg-[#79D7D2] text-ford-blue font-black text-[10.5px] cursor-pointer shadow-2xs"
-            >
-              Gunakan
-            </button>
-          )}
-        </div>
-      )}
+            {forgotStep === 2 && (
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                type="button"
+                onClick={() => {
+                  triggerHaptic();
+                  setInputOtp(simulatedEmailNotification);
+                  setSimulatedEmailNotification(null);
+                }}
+                className="px-3 py-1.5 rounded-xl bg-[#23B5A8] hover:bg-[#79D7D2] text-ford-blue font-black text-[10.5px] cursor-pointer shadow-2xs"
+              >
+                Gunakan
+              </motion.button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Top Navigation & Flag */}
       <div className="flex items-center justify-between pb-2 mb-1">
-        <button
+        <motion.button
+          whileTap={{ scale: 0.95 }}
           type="button"
           onClick={() => {
+            triggerHaptic();
             if (forgotStep === 1) {
               setResetErrorMsg("");
               setResetSuccessMsg("");
@@ -125,7 +143,7 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
         >
           <ArrowLeft className="w-3.5 h-3.5 text-ford-blue" />
           <span>{forgotStep === 1 ? "Kembali ke Login" : "Sebelumnya"}</span>
-        </button>
+        </motion.button>
 
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-[11px] font-bold text-slate-600 shadow-2xs">
           <span>🇮🇩</span>
@@ -134,7 +152,12 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
       </div>
 
       {/* Main Elevated Card */}
-      <div className="bg-white rounded-3xl p-5 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-3.5">
+      <motion.div 
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className="bg-white rounded-3xl p-5 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-3.5"
+      >
         {/* Brand Logo Header */}
         <div className="text-center space-y-1 pt-1 pb-1">
           <div className="flex items-center justify-center gap-2">
@@ -171,22 +194,34 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
         </div>
 
         {/* Error & Success Feedback Alerts */}
-        {resetErrorMsg && (
-          <div className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11px] font-medium flex items-center gap-1.5">
-            <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
-            <span>{resetErrorMsg}</span>
-          </div>
-        )}
-        {resetSuccessMsg && (
-          <div className="p-3 rounded-2xl bg-[#79D7D2]/15 border border-[#79D7D2]/40 text-ford-blue text-[11px] font-medium flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-[#23B5A8]" />
-            <span>{resetSuccessMsg}</span>
-          </div>
-        )}
+        <AnimatePresence>
+          {resetErrorMsg && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11px] font-medium flex items-center gap-1.5"
+            >
+              <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
+              <span>{resetErrorMsg}</span>
+            </motion.div>
+          )}
+          {resetSuccessMsg && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="p-3 rounded-2xl bg-[#79D7D2]/15 border border-[#79D7D2]/40 text-ford-blue text-[11px] font-medium flex items-center gap-1.5"
+            >
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#23B5A8]" />
+              <span>{resetSuccessMsg}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ═══ TAHAP 1: INPUT EMAIL & KECAMATAN ═══ */}
         {forgotStep === 1 && (
-          <form onSubmit={onSendOtp} className="space-y-3.5 animate-in fade-in duration-200">
+          <form onSubmit={(e) => { triggerHaptic(); onSendOtp(e); }} className="space-y-3.5">
             <div className="space-y-1">
               <label className="text-[11.5px] font-bold text-ford-blue block">
                 Alamat Email Terdaftar <span className="text-brand-red">*</span>
@@ -232,10 +267,11 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
             </p>
 
             <div className="pt-2">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isResettingPassword}
-                className="w-full h-12 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[14px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full h-12 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[14px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isResettingPassword ? (
                   <>
@@ -248,14 +284,14 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                     <span>Kirim Kode OTP</span>
                   </>
                 )}
-              </button>
+              </motion.button>
             </div>
           </form>
         )}
 
         {/* ═══ TAHAP 2: INPUT KODE VERIFIKASI (OTP) ═══ */}
         {forgotStep === 2 && (
-          <form onSubmit={onVerifyOtp} className="space-y-4 animate-in fade-in duration-200">
+          <form onSubmit={(e) => { triggerHaptic(); onVerifyOtp(e); }} className="space-y-4">
             <div className="p-3 rounded-2xl bg-[#79D7D2]/15 border border-[#79D7D2]/30 text-[11px] text-ford-blue leading-relaxed">
               Kode verifikasi 6 digit telah dikirimkan ke <span className="font-bold">{forgotEmail}</span>.
             </div>
@@ -283,7 +319,7 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
               ) : (
                 <button
                   type="button"
-                  onClick={(e) => onSendOtp(e)}
+                  onClick={(e) => { triggerHaptic(); onSendOtp(e); }}
                   className="text-[#23B5A8] font-black hover:underline cursor-pointer"
                 >
                   Kirim Ulang Kode OTP
@@ -292,27 +328,29 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
             </div>
 
             <div className="pt-1 flex items-center gap-2.5">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 type="button"
-                onClick={() => setForgotStep(1)}
+                onClick={() => { triggerHaptic(); setForgotStep(1); }}
                 className="flex-1 h-11.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-ford-blue font-bold text-[12.5px] transition-colors cursor-pointer text-center"
               >
                 Ubah Email
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={inputOtp.length < 6}
                 className="flex-1 h-11.5 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
               >
                 <span>Verifikasi</span>
-              </button>
+              </motion.button>
             </div>
           </form>
         )}
 
         {/* ═══ TAHAP 3: BUAT KATA SANDI BARU ═══ */}
         {forgotStep === 3 && (
-          <form onSubmit={onSaveNewPassword} className="space-y-3.5 animate-in fade-in duration-200">
+          <form onSubmit={(e) => { triggerHaptic(); onSaveNewPassword(e); }} className="space-y-3.5">
             <div className="p-3 rounded-2xl bg-[#79D7D2]/15 border border-[#79D7D2]/40 text-[11px] text-ford-blue leading-relaxed">
               ✅ Email terverifikasi. Masukkan kata sandi baru untuk akun Anda.
             </div>
@@ -333,8 +371,8 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 />
                 <button
                   type="button"
-                  onClick={() => setShowForgotPass(!showForgotPass)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer"
+                  onClick={() => { triggerHaptic(); setShowForgotPass(!showForgotPass); }}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
                 >
                   {showForgotPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -357,8 +395,8 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 />
                 <button
                   type="button"
-                  onClick={() => setShowForgotConfirmPass(!showForgotConfirmPass)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer"
+                  onClick={() => { triggerHaptic(); setShowForgotConfirmPass(!showForgotConfirmPass); }}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
                 >
                   {showForgotConfirmPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -366,9 +404,11 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
             </div>
 
             <div className="pt-2 flex items-center gap-2.5">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 type="button"
                 onClick={() => {
+                  triggerHaptic();
                   setResetErrorMsg("");
                   setResetSuccessMsg("");
                   setForgotStep(1);
@@ -377,8 +417,9 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 className="flex-1 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-ford-blue font-bold text-[12.5px] transition-colors cursor-pointer text-center"
               >
                 Batal
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isResettingPassword}
                 className="flex-1 h-12 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13.5px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
@@ -391,11 +432,11 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 ) : (
                   <span>Simpan Kata Sandi</span>
                 )}
-              </button>
+              </motion.button>
             </div>
           </form>
         )}
-      </div>
+      </motion.div>
 
       {/* Version Footer */}
       <div className="pt-4 pb-2 text-center">
