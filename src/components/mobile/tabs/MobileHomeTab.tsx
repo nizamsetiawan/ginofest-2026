@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { ChevronRight, Search, Bell } from "lucide-react";
+import { Search, Bell, Sparkles } from "lucide-react";
 import { Page } from "konsta/react";
+import { motion } from "framer-motion";
 import { CitizenUser, AtmosphereState, MobileTab } from "../types";
 
 interface MobileHomeTabProps {
@@ -15,56 +16,79 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   citizenUser,
 }) => {
   const userName = citizenUser?.name || "Muhammad Nizam Setiawan";
-  const userDistrict = citizenUser?.district || "Menganti";
+  const userEmail = citizenUser?.email || "nizamsetiawan@email.com";
+  const userInitial = userName.charAt(0).toUpperCase();
+
+  const triggerHaptic = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(10);
+    }
+  };
 
   return (
     <Page className="p-4 space-y-4 font-sans select-none bg-[#F8FAFC] min-h-full">
-      {/* ═══ 1. TOP HEADER: ENTITY BARIS 1 ═══ */}
-      <div className="flex items-center justify-between pt-1 px-0.5">
-        <button
-          type="button"
-          onClick={() => alert("Wilayah Kerja: Dinas Kesehatan & Satgas MBG Kabupaten Gresik")}
-          className="flex items-center gap-1.5 text-[13.5px] font-bold text-ford-blue hover:text-light-sea-green transition-colors cursor-pointer min-w-0"
-        >
-          <span className="truncate">Kabupaten Gresik • MBG Gizi</span>
-          <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
-        </button>
-        <button
-          type="button"
-          onClick={() => alert("Fitur Pencarian: Cari data gizi dan layanan...")}
-          className="p-1.5 rounded-full hover:bg-slate-200/60 text-ford-blue transition-colors cursor-pointer"
-          title="Pencarian"
-        >
-          <Search className="w-4.5 h-4.5 text-ford-blue" />
-        </button>
-      </div>
-
-      {/* ═══ 2. USER PROFILE BARIS 2 ═══ */}
-      <div className="flex items-center justify-between px-0.5 pt-0.5">
+      {/* ═══ MODERN DIRECT USER APPBAR ═══ */}
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="flex items-center justify-between pt-1 pb-1 px-1"
+      >
+        {/* User Avatar + Greeting & Name */}
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-green-02 to-light-sea-green text-ford-blue flex items-center justify-center font-black text-sm shadow-xs shrink-0 border border-white">
-            {userName.charAt(0).toUpperCase()}
+          <div className="relative shrink-0">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] text-ford-blue flex items-center justify-center font-black text-base shadow-[0_4px_12px_rgba(35,181,168,0.25)] border-2 border-white">
+              {userInitial}
+            </div>
+            {/* Live active dot */}
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white shadow-xs" />
           </div>
+
           <div className="min-w-0 space-y-0.5">
-            <h2 className="text-[14px] font-black text-ford-blue truncate leading-tight">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11.5px] font-bold text-slate-500">Halo,</span>
+              <span className="text-[11px] px-1.5 py-0.2 rounded-md bg-[#79D7D2]/20 text-[#0F766E] font-bold">Warga</span>
+            </div>
+            <h1 className="text-[15px] font-black text-ford-blue truncate leading-tight tracking-tight">
               {userName}
-            </h2>
-            <p className="text-[11.5px] text-blue-gray truncate font-medium">
-              Orang Tua Siswa • Kec. {userDistrict}
+            </h1>
+            <p className="text-[11px] text-slate-400 truncate font-medium">
+              {userEmail}
             </p>
           </div>
         </div>
 
-        {/* Clean Bell Notification */}
-        <button
-          type="button"
-          onClick={() => alert("Pemberitahuan aktif.")}
-          className="w-8.5 h-8.5 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-ford-blue hover:bg-slate-50 transition-all cursor-pointer relative shrink-0"
-        >
-          <Bell className="w-4 h-4 text-ford-blue" />
-          <span className="w-2 h-2 rounded-full bg-brand-orange absolute top-1.5 right-1.5 border border-white" />
-        </button>
-      </div>
+        {/* Action Buttons: Search & Bell */}
+        <div className="flex items-center gap-2 shrink-0">
+          <motion.button
+            whileTap={{ scale: 0.92 }}
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              alert("Fitur Pencarian: Cari menu bergizi dan data gizi...");
+            }}
+            className="w-9 h-9 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center text-ford-blue hover:bg-slate-50 transition-all cursor-pointer"
+            title="Pencarian"
+          >
+            <Search className="w-4 h-4 text-slate-600 stroke-[1.75]" />
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.92 }}
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              alert("Pemberitahuan: Anda memiliki update menu MBG terbaru.");
+            }}
+            className="w-9 h-9 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center text-ford-blue hover:bg-slate-50 transition-all cursor-pointer relative"
+            title="Notifikasi"
+          >
+            <Bell className="w-4 h-4 text-slate-600 stroke-[1.75]" />
+            <span className="w-2 h-2 rounded-full bg-brand-orange absolute top-2 right-2 border border-white" />
+          </motion.button>
+        </div>
+      </motion.div>
     </Page>
   );
 };
+
