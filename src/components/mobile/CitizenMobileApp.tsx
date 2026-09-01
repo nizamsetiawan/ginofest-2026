@@ -984,22 +984,26 @@ export const CitizenMobileApp: React.FC = () => {
                   }
                 />
 
-                {/* 2. Analisis Biometrik */}
+                {/* 2. Analisis Biometrik (Core Feature: Raised Glowing Action Hub) */}
                 <TabbarLink
                   active={false}
                   onClick={() => {
-                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
+                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
                     setActiveTab("screening");
                   }}
                   icon={
-                    <div className="relative flex items-center justify-center">
-                      <Activity
-                        className="w-6 h-6 text-[#B1B5C7] hover:text-[#79D7D2] transition-all duration-200"
-                      />
+                    <div className="relative -mt-5 group flex flex-col items-center">
+                      {/* Outer Glow Halo */}
+                      <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#79D7D2] to-[#23B5A8] opacity-35 blur-xs group-hover:opacity-70 transition-opacity" />
+                      
+                      {/* Main Elevated Floating Center Button */}
+                      <div className="relative w-12.5 h-12.5 rounded-full bg-gradient-to-tr from-[#23B5A8] via-[#79D7D2] to-[#A3EDE7] text-ford-blue flex items-center justify-center shadow-[0_8px_20px_rgba(35,181,168,0.4)] border-[3px] border-white active:scale-90 transition-transform duration-200">
+                        <Activity className="w-6.5 h-6.5 stroke-[2.8] text-ford-blue drop-shadow-2xs" />
+                      </div>
                     </div>
                   }
                   label={
-                    <span className="text-[11px] font-medium text-[#B1B5C7] tracking-tight">
+                    <span className="text-[11px] font-black text-[#23B5A8] tracking-tight mt-0.5">
                       Analisis
                     </span>
                   }
