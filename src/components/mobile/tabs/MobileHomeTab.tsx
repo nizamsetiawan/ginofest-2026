@@ -115,11 +115,11 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
           </span>
         </div>
 
-        <Card className="!m-0 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-3.5">
+        <Card className="!m-0 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-3">
           <img
             src="/assets/mbg_tray_bandeng.jpg"
             alt="Bandeng MBG"
-            className="w-18 h-18 rounded-2xl object-cover shadow-2xs shrink-0"
+            className="w-20 h-20 min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px] rounded-2xl object-cover shadow-2xs shrink-0"
           />
           <div className="space-y-1 min-w-0 flex-1">
             <h5 className="text-[12.5px] font-black text-ford-blue truncate leading-tight">

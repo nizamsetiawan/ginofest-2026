@@ -925,8 +925,8 @@ export const CitizenMobileApp: React.FC = () => {
         {/* ═══ 6. MAIN LOGGED-IN PORTAL ═══ */}
         {currentScreen === "main" && (
           <div className="flex-1 min-h-0 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
-            {/* Top Bar Header for Secondary Tabs (except Screening which has its own themed top bar) */}
-            {activeTab !== "home" && activeTab !== "screening" && (
+            {/* Top Bar Header for Secondary Tabs (Menu, Aduan, AI Chat) */}
+            {activeTab !== "home" && activeTab !== "profile" && activeTab !== "screening" && (
               <header className="shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-2xs z-30 font-sans">
                 <div className="flex items-center gap-2.5">
                   <button
@@ -949,15 +949,13 @@ export const CitizenMobileApp: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  {activeTab !== "profile" && (
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab("home")}
-                      className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-ford-blue text-[11px] font-bold transition-colors cursor-pointer"
-                    >
-                      Beranda
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("home")}
+                    className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-ford-blue text-[11px] font-bold transition-colors cursor-pointer"
+                  >
+                    Beranda
+                  </button>
                   <button
                     type="button"
                     onClick={handleCitizenLogout}
