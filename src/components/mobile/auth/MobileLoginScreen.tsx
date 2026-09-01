@@ -178,14 +178,15 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
                 placeholder="Masukkan kata sandi"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
-                className="w-full h-12 pl-4 pr-11 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25 transition-all placeholder:text-slate-400"
+                className="w-full h-12 pl-4 pr-10 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[13px] text-ford-blue font-medium focus:bg-white focus:outline-none focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25 transition-all placeholder:text-slate-400"
               />
               <button
                 type="button"
                 onClick={() => { triggerHaptic(); setShowPassword(!showPassword); }}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1.5 cursor-pointer transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
+                aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
               >
-                {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                {showPassword ? <EyeOff className="w-3.5 h-3.5 stroke-[1.75]" /> : <Eye className="w-3.5 h-3.5 stroke-[1.75]" />}
               </button>
             </div>
           </div>
@@ -199,7 +200,7 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
               <select
                 value={loginDistrict}
                 onChange={(e) => setLoginDistrict(e.target.value)}
-                className={`w-full h-12 px-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
+                className={`w-full h-12 px-4 pr-9 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
                   !loginDistrict ? "text-slate-400 border-slate-200" : "text-ford-blue font-bold border-slate-200 focus:border-[#23B5A8]"
                 }`}
               >
@@ -208,7 +209,7 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
                   <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
                 ))}
               </select>
-              <ChevronDown className="w-4.5 h-4.5 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none stroke-[1.75]" />
             </div>
           </div>
 

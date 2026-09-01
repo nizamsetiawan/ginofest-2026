@@ -216,7 +216,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
                   setRegDistrict(e.target.value);
                   if (fieldErrors.district) setFieldErrors((p) => ({ ...p, district: "" }));
                 }}
-                className={`w-full h-12 px-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
+                className={`w-full h-12 px-4 pr-9 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
                   fieldErrors.district
                     ? "border-brand-red bg-red-50/40 text-brand-red focus:border-brand-red"
                     : !regDistrict
@@ -229,7 +229,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
                   <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
                 ))}
               </select>
-              <ChevronDown className="w-4.5 h-4.5 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none stroke-[1.75]" />
             </div>
             {fieldErrors.district && (
               <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.district}</p>
@@ -250,16 +250,17 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
                   setRegPassword(e.target.value);
                   if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: "" }));
                 }}
-                className={`w-full h-12 pl-4 pr-11 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                className={`w-full h-12 pl-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
                   fieldErrors.password ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
                 }`}
               />
               <button
                 type="button"
                 onClick={() => { triggerHaptic(); setShowRegPassword(!showRegPassword); }}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1.5 cursor-pointer transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
+                aria-label={showRegPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
               >
-                {showRegPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                {showRegPassword ? <EyeOff className="w-3.5 h-3.5 stroke-[1.75]" /> : <Eye className="w-3.5 h-3.5 stroke-[1.75]" />}
               </button>
             </div>
             {fieldErrors.password && (
@@ -281,16 +282,17 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
                   setRegConfirmPassword(e.target.value);
                   if (fieldErrors.confirmPassword) setFieldErrors((p) => ({ ...p, confirmPassword: "" }));
                 }}
-                className={`w-full h-12 pl-4 pr-11 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
+                className={`w-full h-12 pl-4 pr-10 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all ${
                   fieldErrors.confirmPassword ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
                 }`}
               />
               <button
                 type="button"
                 onClick={() => { triggerHaptic(); setShowRegConfirmPassword(!showRegConfirmPassword); }}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1.5 cursor-pointer transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ford-blue p-1 cursor-pointer transition-colors"
+                aria-label={showRegConfirmPassword ? "Sembunyikan konfirmasi kata sandi" : "Tampilkan konfirmasi kata sandi"}
               >
-                {showRegConfirmPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                {showRegConfirmPassword ? <EyeOff className="w-3.5 h-3.5 stroke-[1.75]" /> : <Eye className="w-3.5 h-3.5 stroke-[1.75]" />}
               </button>
             </div>
             {fieldErrors.confirmPassword && (
