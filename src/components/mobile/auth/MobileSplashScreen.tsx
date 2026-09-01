@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AppScreen } from "../types";
+import { Page, Preloader } from "konsta/react";
 
 interface MobileSplashScreenProps {
   onContinue: () => void;
@@ -17,50 +17,45 @@ export const MobileSplashScreen: React.FC<MobileSplashScreenProps> = ({ onContin
   }, [onContinue]);
 
   return (
-    <div 
+    <Page 
       onClick={onContinue}
-      className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-green-tint/40 to-[#F8FAFC] flex flex-col items-center justify-center p-5 text-center animate-in fade-in duration-300 cursor-pointer select-none font-sans"
+      className="bg-gradient-to-b from-[#FFFFFF] via-green-tint/40 to-[#F8FAFC] flex flex-col items-center justify-center p-5 text-center cursor-pointer select-none font-sans relative overflow-hidden"
     >
-      <div className="space-y-4 flex flex-col items-center">
-        {/* App Logo with Pulse Ring */}
+      <div className="space-y-4 flex flex-col items-center my-auto relative z-10 animate-in fade-in zoom-in-95 duration-500">
+        {/* App Logo with Vitality Pulse Ring */}
         <div className="relative">
-          <div className="absolute -inset-3 rounded-3xl bg-green-02/25 blur-lg animate-pulse"></div>
+          <div className="absolute -inset-3 rounded-3xl bg-green-02/30 blur-lg animate-pulse" />
           <img
             src="/logo_app.svg"
             alt="Kcal Logo"
-            className="w-16 h-16 rounded-2xl shadow-lg relative z-10 animate-in zoom-in-75 duration-500"
+            className="w-18 h-18 rounded-3xl shadow-xl relative z-10 animate-in zoom-in-75 duration-500 border-2 border-white"
           />
         </div>
 
         {/* Title & Tagline */}
-        <div className="space-y-1.5 relative z-10 max-w-[260px]">
-          <h1 className="text-[24px] font-bold text-ford-blue tracking-tight">
+        <div className="space-y-1.5 relative z-10 max-w-[270px]">
+          <h1 className="text-[26px] font-black text-ford-blue tracking-tight">
             Kcal
           </h1>
-          <p className="text-[11.5px] font-medium text-blue-gray leading-relaxed">
+          <p className="text-[12px] font-medium text-blue-gray leading-relaxed">
             &ldquo;Smart screening awal indikasi malnutrisi anak melalui analisis visual pertumbuhan &amp; kuesioner interaktif AI&rdquo;
           </p>
-          <div className="pt-0.5">
-            <span className="inline-block px-3 py-0.5 rounded-full bg-green-tint text-ford-blue text-[9.5px] font-bold border border-green-02/40 tracking-wide">
+          <div className="pt-1">
+            <span className="inline-block px-3.5 py-0.5 rounded-full bg-green-tint text-ford-blue text-[10px] font-bold border border-green-02/40 tracking-wide shadow-2xs">
               Ginofest 2026
             </span>
           </div>
         </div>
 
-        {/* Subtle Loading Dots */}
-        <div className="flex items-center gap-1.5 pt-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-green-02 animate-bounce [animation-delay:-0.3s]"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-light-sea-green animate-bounce [animation-delay:-0.15s]"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-ford-blue animate-bounce"></div>
-        </div>
-
-        {/* Version Text below Loading Dots */}
-        <div className="pt-1.5">
+        {/* Konsta UI Native Adaptive Preloader */}
+        <div className="pt-4 flex flex-col items-center gap-2">
+          <Preloader className="w-6 h-6 text-light-sea-green" />
           <span className="text-[10px] font-bold text-blue-gray/60 tracking-wider">
             v 2.4.0
           </span>
         </div>
       </div>
-    </div>
+    </Page>
   );
 };
+

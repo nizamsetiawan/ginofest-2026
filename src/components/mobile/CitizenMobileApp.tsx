@@ -19,6 +19,7 @@ import {
   ScreeningResult,
   AtmosphereState
 } from "./types";
+import { App as KonstaApp, Page as KonstaPage } from "konsta/react";
 import {
   saveComplaintToFirestore,
   listenToActiveSessions,
@@ -56,6 +57,17 @@ export const CitizenMobileApp: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>("splash");
   const [activeTab, setActiveTab] = useState<MobileTab>("home");
   const [citizenUser, setCitizenUser] = useState<CitizenUser | null>(null);
+
+  // ═══ KONSTA UI ADAPTIVE THEME (AUTO-DETECT iOS VS ANDROID) ═══
+  const [konstaTheme, setKonstaTheme] = useState<"ios" | "material">("ios");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isIOSDevice =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      setKonstaTheme(isIOSDevice ? "ios" : "material");
+    }
+  }, []);
 
   // ═══ LOGIN FORM STATE ═══
   const [loginIdentifier, setLoginIdentifier] = useState("");
@@ -757,6 +769,7 @@ export const CitizenMobileApp: React.FC = () => {
         onTouchEnd={handleTouchEnd}
         className="w-full h-full sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col justify-between overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none"
       >
+        <KonstaApp theme={konstaTheme} safeAreas={true} className="w-full h-full flex flex-col justify-between overflow-hidden relative">
         {/* Dynamic Floating Transparent Pull-to-Refresh Pill Overlay (Never pushes layout) */}
         {pullY > 0 && (
           <div
@@ -1073,6 +1086,7 @@ export const CitizenMobileApp: React.FC = () => {
             )}
           </div>
         )}
+        </KonstaApp>
       </div>
     </div>
   );

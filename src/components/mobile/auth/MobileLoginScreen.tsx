@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   RefreshCw
 } from "lucide-react";
+import { Page } from "konsta/react";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 interface MobileLoginScreenProps {
@@ -60,7 +61,7 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
   onNavigateToForgotPassword,
 }) => {
   return (
-    <div className="flex-1 bg-white flex flex-col px-6 py-4 overflow-y-auto animate-in fade-in duration-200 overscroll-contain font-sans">
+    <Page className="bg-white flex flex-col px-6 py-4 overflow-y-auto overscroll-contain font-sans">
       {/* Top Bar: Install APK Button & Country Flag */}
       <div className="flex items-center justify-between pb-1">
         {!isStandalone ? (
@@ -256,6 +257,6 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
           v 2.4.0 - ginofest 2026
         </span>
       </div>
-    </div>
+    </Page>
   );
 };

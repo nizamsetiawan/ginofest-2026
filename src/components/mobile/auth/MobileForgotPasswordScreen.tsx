@@ -11,6 +11,7 @@ import {
   RefreshCw,
   Send
 } from "lucide-react";
+import { Page } from "konsta/react";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 interface MobileForgotPasswordScreenProps {
@@ -75,7 +76,7 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
   onNavigateToLogin,
 }) => {
   return (
-    <div className="flex-1 bg-white flex flex-col px-6 py-4 overflow-y-auto animate-in fade-in duration-200 relative font-sans">
+    <Page className="bg-white flex flex-col px-6 py-4 overflow-y-auto relative font-sans overscroll-contain">
       {/* Simulated Email Pop-up Notification */}
       {simulatedEmailNotification && (
         <div className="mb-3 p-3 rounded-2xl bg-green-tint border border-green-02/40 shadow-md text-ford-blue text-[11.5px] flex items-center justify-between gap-2 animate-in slide-in-from-top-4 duration-300">
@@ -387,6 +388,6 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
           v 2.4.0 - ginofest 2026
         </span>
       </div>
-    </div>
+    </Page>
   );
 };

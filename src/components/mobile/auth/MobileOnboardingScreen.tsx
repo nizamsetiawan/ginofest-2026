@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Page } from "konsta/react";
 
 interface MobileOnboardingScreenProps {
   onSkip: () => void;
@@ -47,7 +48,7 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({ 
   };
 
   return (
-    <div className="flex-1 bg-gradient-to-b from-[#FFFFFF] via-[#F4FDF9] to-[#FFFFFF] flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden animate-in fade-in duration-300">
+    <Page className="bg-gradient-to-b from-[#FFFFFF] via-[#F4FDF9] to-[#FFFFFF] flex flex-col justify-between p-6 text-center select-none font-sans relative overflow-hidden">
       {/* Dynamic Time-of-Day Ambient Vitality Glow & Micro-Animations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div 
@@ -230,6 +231,6 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({ 
           )}
         </div>
       </div>
-    </div>
+    </Page>
   );
 };

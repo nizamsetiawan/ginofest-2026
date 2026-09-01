@@ -9,6 +9,7 @@ import {
   AlertCircle,
   RefreshCw
 } from "lucide-react";
+import { Page } from "konsta/react";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 interface MobileRegisterScreenProps {
@@ -69,7 +70,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
   onNavigateToLogin,
 }) => {
   return (
-    <div className="flex-1 bg-white flex flex-col px-6 py-4 overflow-y-auto animate-in fade-in duration-200 font-sans">
+    <Page className="bg-white flex flex-col px-6 py-4 overflow-y-auto overscroll-contain font-sans">
       {/* Top Navigation & Flag */}
       <div className="flex items-center justify-between pb-2 mb-1">
         <button
@@ -333,6 +334,6 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
           v 2.4.0 - ginofest 2026
         </span>
       </div>
-    </div>
+    </Page>
   );
 };

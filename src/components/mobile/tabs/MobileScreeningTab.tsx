@@ -17,6 +17,7 @@ import {
   Zap,
   ZapOff
 } from "lucide-react";
+import { Page } from "konsta/react";
 import { CitizenUser } from "../types";
 
 interface MobileScreeningTabProps {
@@ -184,7 +185,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full w-full max-h-full overflow-hidden bg-gradient-to-b from-[#D4EC9E] via-[#E2F5B8] to-[#BFE491] text-ford-blue select-none font-sans relative">
+    <Page className="flex flex-col h-full w-full max-h-full overflow-hidden bg-gradient-to-b from-[#D4EC9E] via-[#E2F5B8] to-[#BFE491] text-ford-blue select-none font-sans relative">
       {/* ═══ HELP DIALOG MODAL ═══ */}
       {showHelpModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
@@ -810,6 +811,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </Page>
   );
 };
