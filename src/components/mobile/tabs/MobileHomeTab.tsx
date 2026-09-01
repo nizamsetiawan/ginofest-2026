@@ -63,7 +63,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </div>
 
       {/* ═══ 2. HERO CARD: STATUS GIZI & SKRINING ANAK ═══ */}
-      <div className="p-4 rounded-3xl bg-gradient-to-br from-[#EAF6D8] via-[#F4FDF9] to-white border border-green-02/40 shadow-xs space-y-3.5 relative overflow-hidden">
+      <div className="glass-card p-4 rounded-3xl bg-gradient-to-br from-[#EAF6D8]/90 via-[#F4FDF9]/80 to-white/90 border border-green-02/40 shadow-xs space-y-3.5 relative overflow-hidden">
         <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-white shadow-2xs border border-green-02/30 flex items-center justify-center text-base font-bold">
@@ -80,7 +80,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         </div>
 
         {/* Simple Progress AKG & Vital Stats with Konsta Progressbar */}
-        <div className="p-3 rounded-2xl bg-white/90 border border-slate-100 space-y-2 relative z-10 shadow-2xs">
+        <div className="p-3 rounded-2xl bg-white/85 border border-slate-100/90 space-y-2 relative z-10 shadow-2xs">
           <div className="flex items-center justify-between text-[11px]">
             <span className="font-bold text-ford-blue">Kecukupan AKG Harian</span>
             <span className="font-black text-light-sea-green">95% Terpenuhi</span>
@@ -115,7 +115,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
           </span>
         </div>
 
-        <div className="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-3.5">
+        <div className="glass-card p-3 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3.5">
           <img
             src="/assets/mbg_tray_bandeng.jpg"
             alt="Bandeng MBG"
@@ -129,7 +129,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               Sayur Bayam Jagung • Nasi Putih • Buah Jeruk Manis
             </p>
             <div className="flex items-center gap-2 pt-0.5 text-[10px]">
-              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-ford-blue font-bold">
+              <span className="px-2 py-0.5 rounded-md bg-slate-100/90 text-ford-blue font-bold">
                 450 kkal
               </span>
               <span className="text-light-sea-green font-bold">
@@ -146,7 +146,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab("menu")}
-          className="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-green-02/50 transition-all cursor-pointer flex flex-col items-center gap-1.5 text-center group"
+          className="glass-card p-3 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-green-02/50 transition-all cursor-pointer flex flex-col items-center gap-1.5 text-center group active:scale-95"
         >
           <div className="w-9 h-9 rounded-xl bg-green-tint text-ford-blue group-hover:bg-green-02/20 flex items-center justify-center transition-colors">
             <Utensils className="w-4 h-4 text-light-sea-green" />
@@ -158,7 +158,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab("complaint")}
-          className="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-brand-orange/50 transition-all cursor-pointer flex flex-col items-center gap-1.5 text-center group"
+          className="glass-card p-3 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-brand-orange/50 transition-all cursor-pointer flex flex-col items-center gap-1.5 text-center group active:scale-95"
         >
           <div className="w-9 h-9 rounded-xl bg-amber-50 text-brand-orange group-hover:bg-amber-100 flex items-center justify-center transition-colors">
             <MessageSquare className="w-4 h-4 text-brand-orange" />
@@ -170,7 +170,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab("ai_chat")}
-          className="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-brand-blue/50 transition-all cursor-pointer flex flex-col items-center gap-1.5 text-center group"
+          className="glass-card p-3 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-brand-blue/50 transition-all cursor-pointer flex flex-col items-center gap-1.5 text-center group active:scale-95"
         >
           <div className="w-9 h-9 rounded-xl bg-blue-50 text-brand-blue group-hover:bg-blue-100 flex items-center justify-center transition-colors">
             <Sparkles className="w-4 h-4 text-brand-blue" />
@@ -180,7 +180,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </div>
 
       {/* ═══ 5. SIMPLE DINKES GIZI TIP ═══ */}
-      <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+      <div className="glass-card p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-sm">🐟</span>

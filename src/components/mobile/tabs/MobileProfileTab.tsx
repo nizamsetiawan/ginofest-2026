@@ -28,7 +28,7 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
   return (
     <div className="space-y-4 font-sans pb-6 animate-in fade-in duration-200 select-none">
       {/* ═══ 1. CLEAN PROFILE HEADER CARD ═══ */}
-      <div className="p-4 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-3">
+      <div className="glass-card p-4 rounded-3xl border border-slate-200/80 shadow-2xs space-y-3">
         <div className="flex items-center gap-3.5">
           <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-green-02 to-light-sea-green text-ford-blue flex items-center justify-center text-lg font-black shadow-xs shrink-0">
             {citizenUser?.name ? citizenUser.name.charAt(0).toUpperCase() : "W"}
@@ -54,7 +54,7 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
       </div>
 
       {/* ═══ 2. KARTU ANAK MBG ═══ */}
-      <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2.5">
+      <div className="glass-card p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-2.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-base">👧</span>

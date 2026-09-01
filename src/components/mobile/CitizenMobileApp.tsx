@@ -62,10 +62,17 @@ export const CitizenMobileApp: React.FC = () => {
   const [konstaTheme, setKonstaTheme] = useState<"ios" | "material">("ios");
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const isIOSDevice =
-        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-      setKonstaTheme(isIOSDevice ? "ios" : "material");
+      const isAndroidDevice = /android/i.test(navigator.userAgent);
+      const theme = isAndroidDevice ? "material" : "ios";
+      setKonstaTheme(theme);
+      
+      if (theme === "ios") {
+        document.documentElement.classList.add("is-ios", "k-ios");
+        document.documentElement.classList.remove("is-android", "k-material");
+      } else {
+        document.documentElement.classList.add("is-android", "k-material");
+        document.documentElement.classList.remove("is-ios", "k-ios");
+      }
     }
   }, []);
 
@@ -1034,7 +1041,7 @@ export const CitizenMobileApp: React.FC = () => {
               <Tabbar
                 labels={true}
                 icons={true}
-                className="left-0 bottom-0 fixed z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)]"
+                className="left-0 bottom-0 fixed z-40 glass-nav shadow-[0_-4px_25px_rgba(0,0,0,0.08)]"
               >
                 <TabbarLink
                   active={activeTab === "home"}

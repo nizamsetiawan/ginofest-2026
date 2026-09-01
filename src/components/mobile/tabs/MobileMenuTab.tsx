@@ -21,7 +21,7 @@ export const MobileMenuTab: React.FC<MobileMenuTabProps> = ({ citizenUser }) => 
   return (
     <div className="space-y-3 font-sans pb-6 animate-in fade-in duration-200 select-none">
       {/* Header Info Card */}
-      <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
+      <div className="glass-card p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-1">
         <div className="flex items-center gap-2">
           <CalendarDays className="w-4 h-4 text-light-sea-green" />
           <h3 className="text-[13.5px] font-black text-ford-blue">Jadwal Menu MBG Mingguan</h3>
@@ -32,7 +32,7 @@ export const MobileMenuTab: React.FC<MobileMenuTabProps> = ({ citizenUser }) => 
       {/* Daily Bento Menu Cards */}
       <div className="space-y-2.5">
         {weeklyMenus.map((m, idx) => (
-          <div key={idx} className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-3">
+          <div key={idx} className="glass-card p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-green-tint border border-green-02/40 flex flex-col items-center justify-center shrink-0 shadow-2xs">
               <Utensils className="w-4 h-4 text-ford-blue" />
             </div>

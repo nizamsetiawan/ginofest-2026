@@ -39,7 +39,7 @@ export const MobileAIChatTab: React.FC = () => {
   return (
     <div className="space-y-3 font-sans pb-6 animate-in fade-in duration-200 select-none">
       {/* Header Info */}
-      <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
+      <div className="glass-card p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center">
