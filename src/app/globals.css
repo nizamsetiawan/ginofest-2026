@@ -120,7 +120,7 @@ body {
   padding-top: max(env(safe-area-inset-top, 0px), 12px);
 }
 .pb-safe-nav {
-  padding-bottom: max(env(safe-area-inset-bottom, 32px), 32px);
+  padding-bottom: max(env(safe-area-inset-bottom, 24px), 24px);
 }
 
 /* Prevent iOS elastic bounce, horizontal swipe, and body scroll */
@@ -130,12 +130,13 @@ html, body {
   overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
   position: fixed;
-  width: 100vw;
-  max-width: 100vw;
-  height: 100dvh;
-  max-height: 100dvh;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  overflow-x: hidden;
   touch-action: pan-y;
 }
 

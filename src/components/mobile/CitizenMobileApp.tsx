@@ -718,7 +718,7 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 sm:static sm:min-h-screen w-full max-w-[100vw] h-[100dvh] sm:h-auto flex items-center justify-center p-0 sm:p-4 bg-[#F8FAFC] sm:bg-slate-900/60 backdrop-blur-md select-none font-sans overflow-hidden overflow-x-hidden touch-pan-y">
+    <div className="fixed inset-0 sm:static sm:min-h-screen w-full h-full sm:h-auto flex items-center justify-center p-0 sm:p-4 bg-[#F8FAFC] sm:bg-slate-900/60 backdrop-blur-md select-none font-sans overflow-hidden touch-pan-y">
       {/* ═══ MODALS & OVERLAYS ═══ */}
       <MobilePermissionsModal
         isOpen={showPermissionDialog}
@@ -767,9 +767,9 @@ export const CitizenMobileApp: React.FC = () => {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="w-full max-w-[100vw] h-full sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col justify-between overflow-hidden overflow-x-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none touch-pan-y"
+        className="w-full h-full sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col justify-between overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none touch-pan-y"
       >
-        <KonstaApp theme={konstaTheme} safeAreas={true} className="w-full max-w-full h-full flex flex-col justify-between overflow-hidden overflow-x-hidden relative">
+        <KonstaApp theme={konstaTheme} safeAreas={false} className="w-full max-w-full h-full flex flex-col justify-between overflow-hidden relative">
         {/* Dynamic Floating Transparent Pull-to-Refresh Pill Overlay (Never pushes layout) */}
         {pullY > 0 && (
           <div
@@ -1031,24 +1031,24 @@ export const CitizenMobileApp: React.FC = () => {
 
             {/* ═══ 3-TAB PROMINENT & COMFORTABLE BOTTOM NAVIGATION BAR ═══ */}
             {activeTab !== "screening" && (
-              <div className="shrink-0 sticky bottom-0 z-40 bg-white border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2.5 pb-safe-nav sm:pb-3.5 px-6 relative font-sans animate-in slide-in-from-bottom-2 duration-200">
+              <div className="shrink-0 z-40 bg-white border-t border-slate-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2 pb-6 sm:pb-3 px-6 relative font-sans">
                 <nav className="flex items-center justify-around max-w-sm mx-auto">
                   {/* 1. Beranda (Left) */}
                   <button
                     type="button"
                     onClick={() => setActiveTab("home")}
-                    className={`flex-1 flex flex-col items-center gap-1.5 py-1 transition-all cursor-pointer ${
+                    className={`flex-1 flex flex-col items-center gap-1 py-0.5 transition-all cursor-pointer ${
                       activeTab === "home" ? "text-light-sea-green font-black" : "text-blue-gray hover:text-ford-blue font-semibold"
                     }`}
                   >
                     <div className={`p-1.5 rounded-2xl transition-all ${activeTab === "home" ? "bg-green-tint text-ford-blue shadow-2xs scale-105" : "text-blue-gray"}`}>
                       <Home className={`w-6 h-6 stroke-[2.2] transition-transform ${activeTab === "home" ? "scale-105" : ""}`} />
                     </div>
-                    <span className="text-[11.5px] tracking-tight pb-1">Beranda</span>
+                    <span className="text-[11.5px] tracking-tight">Beranda</span>
                   </button>
 
                   {/* 2. Center Prominent Floating Button: Analisis (Raised & Glowing) */}
-                  <div className="relative -top-4 flex flex-col items-center px-4">
+                  <div className="relative -top-3.5 flex flex-col items-center px-4">
                     <button
                       type="button"
                       onClick={() => setActiveTab("screening")}
@@ -1059,11 +1059,11 @@ export const CitizenMobileApp: React.FC = () => {
                       <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-green-02/60 via-light-sea-green/60 to-teal-400/60 blur-md animate-pulse"></div>
                       
                       {/* Raised Action Button */}
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-green-02 via-light-sea-green to-teal-400 text-ford-blue flex items-center justify-center shadow-xl border-4 border-white active:scale-95 group-hover:scale-105 transition-all relative z-10">
-                        <Activity className="w-6.5 h-6.5 stroke-[2.5] text-ford-blue" />
+                      <div className="w-13 h-13 rounded-full bg-gradient-to-tr from-green-02 via-light-sea-green to-teal-400 text-ford-blue flex items-center justify-center shadow-xl border-4 border-white active:scale-95 group-hover:scale-105 transition-all relative z-10">
+                        <Activity className="w-6 h-6 stroke-[2.5] text-ford-blue" />
                       </div>
                     </button>
-                    <span className="text-[11.5px] font-black tracking-tight mt-1 transition-colors text-ford-blue pb-1">
+                    <span className="text-[11.5px] font-black tracking-tight mt-0.5 transition-colors text-ford-blue">
                       Analisis
                     </span>
                   </div>
@@ -1072,14 +1072,14 @@ export const CitizenMobileApp: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setActiveTab("profile")}
-                    className={`flex-1 flex flex-col items-center gap-1.5 py-1 transition-all cursor-pointer ${
+                    className={`flex-1 flex flex-col items-center gap-1 py-0.5 transition-all cursor-pointer ${
                       activeTab === "profile" ? "text-light-sea-green font-black" : "text-blue-gray hover:text-ford-blue font-semibold"
                     }`}
                   >
                     <div className={`p-1.5 rounded-2xl transition-all ${activeTab === "profile" ? "bg-green-tint text-ford-blue shadow-2xs scale-105" : "text-blue-gray"}`}>
                       <User className={`w-6 h-6 stroke-[2.2] transition-transform ${activeTab === "profile" ? "scale-105" : ""}`} />
                     </div>
-                    <span className="text-[11.5px] tracking-tight pb-1">Profil</span>
+                    <span className="text-[11.5px] tracking-tight">Profil</span>
                   </button>
                 </nav>
               </div>
