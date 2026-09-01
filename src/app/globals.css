@@ -120,7 +120,7 @@ body {
   padding-top: max(env(safe-area-inset-top, 0px), 12px);
 }
 .pb-safe-nav {
-  padding-bottom: max(env(safe-area-inset-bottom, 20px), 20px);
+  padding-bottom: max(env(safe-area-inset-bottom, 32px), 32px);
 }
 
 /* Prevent iOS elastic bounce, horizontal swipe, and body scroll */

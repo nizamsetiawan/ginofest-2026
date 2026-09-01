@@ -1031,20 +1031,20 @@ export const CitizenMobileApp: React.FC = () => {
 
             {/* ═══ 3-TAB PROMINENT & COMFORTABLE BOTTOM NAVIGATION BAR ═══ */}
             {activeTab !== "screening" && (
-              <div className="shrink-0 sticky bottom-0 z-40 bg-white border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2 pb-safe-nav px-6 relative font-sans animate-in slide-in-from-bottom-2 duration-200">
+              <div className="shrink-0 sticky bottom-0 z-40 bg-white border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2.5 pb-safe-nav sm:pb-3.5 px-6 relative font-sans animate-in slide-in-from-bottom-2 duration-200">
                 <nav className="flex items-center justify-around max-w-sm mx-auto">
                   {/* 1. Beranda (Left) */}
                   <button
                     type="button"
                     onClick={() => setActiveTab("home")}
-                    className={`flex-1 flex flex-col items-center gap-1 py-1 transition-all cursor-pointer ${
+                    className={`flex-1 flex flex-col items-center gap-1.5 py-1 transition-all cursor-pointer ${
                       activeTab === "home" ? "text-light-sea-green font-black" : "text-blue-gray hover:text-ford-blue font-semibold"
                     }`}
                   >
                     <div className={`p-1.5 rounded-2xl transition-all ${activeTab === "home" ? "bg-green-tint text-ford-blue shadow-2xs scale-105" : "text-blue-gray"}`}>
                       <Home className={`w-6 h-6 stroke-[2.2] transition-transform ${activeTab === "home" ? "scale-105" : ""}`} />
                     </div>
-                    <span className="text-[11.5px] tracking-tight">Beranda</span>
+                    <span className="text-[11.5px] tracking-tight pb-1">Beranda</span>
                   </button>
 
                   {/* 2. Center Prominent Floating Button: Analisis (Raised & Glowing) */}
@@ -1063,7 +1063,7 @@ export const CitizenMobileApp: React.FC = () => {
                         <Activity className="w-6.5 h-6.5 stroke-[2.5] text-ford-blue" />
                       </div>
                     </button>
-                    <span className="text-[11.5px] font-black tracking-tight mt-1 transition-colors text-ford-blue">
+                    <span className="text-[11.5px] font-black tracking-tight mt-1 transition-colors text-ford-blue pb-1">
                       Analisis
                     </span>
                   </div>
@@ -1072,14 +1072,14 @@ export const CitizenMobileApp: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setActiveTab("profile")}
-                    className={`flex-1 flex flex-col items-center gap-1 py-1 transition-all cursor-pointer ${
+                    className={`flex-1 flex flex-col items-center gap-1.5 py-1 transition-all cursor-pointer ${
                       activeTab === "profile" ? "text-light-sea-green font-black" : "text-blue-gray hover:text-ford-blue font-semibold"
                     }`}
                   >
                     <div className={`p-1.5 rounded-2xl transition-all ${activeTab === "profile" ? "bg-green-tint text-ford-blue shadow-2xs scale-105" : "text-blue-gray"}`}>
                       <User className={`w-6 h-6 stroke-[2.2] transition-transform ${activeTab === "profile" ? "scale-105" : ""}`} />
                     </div>
-                    <span className="text-[11.5px] tracking-tight">Profil</span>
+                    <span className="text-[11.5px] tracking-tight pb-1">Profil</span>
                   </button>
                 </nav>
               </div>
