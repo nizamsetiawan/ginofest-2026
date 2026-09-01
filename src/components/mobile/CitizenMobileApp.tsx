@@ -4,13 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Home,
   Activity,
-  Utensils,
-  MessageSquare,
   User,
   LogOut,
   MapPin,
-  RefreshCw,
-  Sparkles
+  RefreshCw
 } from "lucide-react";
 import {
   AppScreen,
@@ -21,7 +18,6 @@ import {
 } from "./types";
 import { App as KonstaApp, Page as KonstaPage, Tabbar, TabbarLink } from "konsta/react";
 import {
-  saveComplaintToFirestore,
   listenToActiveSessions,
   closeSessionLog,
   loginCitizenFromFirestore,
@@ -44,12 +40,9 @@ import { MobilePermissionsModal } from "./modals/MobilePermissionsModal";
 import { MobileIOSInstallModal } from "./modals/MobileIOSInstallModal";
 import { MobileSessionRevokedModal } from "./modals/MobileSessionRevokedModal";
 
-// Tab Views
+// Tab Views (Only 3 Tabs: Home, Screening, Profile)
 import { MobileHomeTab } from "./tabs/MobileHomeTab";
-import { MobileMenuTab } from "./tabs/MobileMenuTab";
 import { MobileScreeningTab } from "./tabs/MobileScreeningTab";
-import { MobileComplaintTab } from "./tabs/MobileComplaintTab";
-import { MobileAIChatTab } from "./tabs/MobileAIChatTab";
 import { MobileProfileTab } from "./tabs/MobileProfileTab";
 
 export const CitizenMobileApp: React.FC = () => {
@@ -117,12 +110,6 @@ export const CitizenMobileApp: React.FC = () => {
   const [childHeightCm, setChildHeightCm] = useState<number>(85.0);
   const [screeningResult, setScreeningResult] = useState<ScreeningResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
-
-  // ═══ COMPLAINT FORM STATE ═══
-  const [complaintCategory, setComplaintCategory] = useState("Kualitas Menu MBG");
-  const [complaintMessage, setComplaintMessage] = useState("");
-  const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false);
-  const [submittedTicket, setSubmittedTicket] = useState<string | null>(null);
 
   // ═══ PWA & PERMISSIONS STATE ═══
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -630,33 +617,6 @@ export const CitizenMobileApp: React.FC = () => {
     }, 1200);
   };
 
-  const handleSubmitComplaint = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!complaintMessage.trim()) return;
-
-    setIsSubmittingComplaint(true);
-    const complaintData = {
-      senderName: citizenUser?.name || "Warga Anonim",
-      senderEmail: citizenUser?.email || "warga@gresik.id",
-      senderPhone: citizenUser?.phone || "-",
-      district: citizenUser?.district || "Kebomas",
-      category: complaintCategory,
-      message: complaintMessage,
-      status: "baru" as const,
-      createdAtIso: new Date().toISOString(),
-    };
-
-    const res = await saveComplaintToFirestore(complaintData);
-    setIsSubmittingComplaint(false);
-
-    if (res.success && res.docId) {
-      setSubmittedTicket(res.docId);
-      setComplaintMessage("");
-    } else {
-      alert("Gagal mengirim laporan: " + (res.error || "Terjadi kesalahan."));
-    }
-  };
-
   // Pull-to-Refresh Handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     const target = e.target as HTMLElement;
@@ -925,59 +885,12 @@ export const CitizenMobileApp: React.FC = () => {
         {/* ═══ 6. MAIN LOGGED-IN PORTAL ═══ */}
         {currentScreen === "main" && (
           <div className="flex-1 min-h-0 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
-            {/* Top Bar Header for Secondary Tabs (Menu, Aduan, AI Chat) */}
-            {activeTab !== "home" && activeTab !== "profile" && activeTab !== "screening" && (
-              <header className="shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-2xs z-30 font-sans">
-                <div className="flex items-center gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("home")}
-                    className="p-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-ford-blue transition-colors cursor-pointer"
-                    title="Kembali ke Beranda"
-                  >
-                    <img src="/logo_app.svg" alt="Kcal" className="w-7 h-7 rounded-lg shadow-xs" />
-                  </button>
-                  <div>
-                    <h3 className="text-[13px] font-bold text-ford-blue leading-tight">
-                      {activeTab === "menu" ? "Jadwal Menu MBG" : activeTab === "complaint" ? "Pusat Aduan MBG" : activeTab === "ai_chat" ? "Konsultasi K-Bot AI" : citizenUser?.name || "Warga Gresik"}
-                    </h3>
-                    <p className="text-[10px] text-blue-gray flex items-center gap-1 font-medium mt-0.5">
-                      <MapPin className="w-2.5 h-2.5 text-light-sea-green" />
-                      <span>Kec. {citizenUser?.district || "Kebomas"}, Gresik</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("home")}
-                    className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-ford-blue text-[11px] font-bold transition-colors cursor-pointer"
-                  >
-                    Beranda
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCitizenLogout}
-                    className="p-1.5 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 transition-colors cursor-pointer"
-                    title="Keluar Sesi"
-                  >
-                    <LogOut className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </header>
-            )}
-
             {/* Main Tab Views with Konsta Page handling scroll & padding */}
             <main
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className={`flex-1 font-sans no-scrollbar w-full max-w-full overflow-hidden touch-pan-y min-h-0 ${
-                activeTab === "screening"
-                  ? "p-0 m-0 h-full w-full"
-                  : "p-0 m-0 h-full w-full"
-              }`}
+              className="flex-1 font-sans no-scrollbar w-full max-w-full overflow-hidden touch-pan-y min-h-0 p-0 m-0 h-full"
             >
               {activeTab === "home" && (
                 <MobileHomeTab
@@ -991,31 +904,7 @@ export const CitizenMobileApp: React.FC = () => {
                 <MobileScreeningTab
                   citizenUser={citizenUser}
                   onBackToHome={() => setActiveTab("home")}
-                  onNavigateToComplaint={() => setActiveTab("complaint")}
                 />
-              )}
-
-              {activeTab === "menu" && (
-                <MobileMenuTab
-                  citizenUser={citizenUser}
-                />
-              )}
-
-              {activeTab === "complaint" && (
-                <MobileComplaintTab
-                  complaintCategory={complaintCategory}
-                  setComplaintCategory={setComplaintCategory}
-                  complaintMessage={complaintMessage}
-                  setComplaintMessage={setComplaintMessage}
-                  isSubmittingComplaint={isSubmittingComplaint}
-                  submittedTicket={submittedTicket}
-                  setSubmittedTicket={setSubmittedTicket}
-                  onSubmitComplaint={handleSubmitComplaint}
-                />
-              )}
-
-              {activeTab === "ai_chat" && (
-                <MobileAIChatTab />
               )}
 
               {activeTab === "profile" && (

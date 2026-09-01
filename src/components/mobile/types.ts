@@ -1,5 +1,5 @@
 export type AppScreen = "splash" | "onboarding" | "login" | "register" | "forgot_password" | "main";
-export type MobileTab = "home" | "menu" | "screening" | "ai_chat" | "profile" | "complaint";
+export type MobileTab = "home" | "screening" | "profile";
 
 export interface CitizenUser {
   id?: string;
