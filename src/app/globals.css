@@ -120,7 +120,17 @@ body {
   padding-top: max(env(safe-area-inset-top, 0px), 8px);
 }
 .pb-safe-nav {
-  padding-bottom: max(env(safe-area-inset-bottom, 0px), 14px);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
+}
+
+/* Prevent iOS elastic bounce and body scroll */
+html, body {
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Prevent double-tap zoom on buttons and interactive elements */

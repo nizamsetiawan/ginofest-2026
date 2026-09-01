@@ -706,7 +706,7 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full min-h-[100dvh] max-h-[100dvh] flex items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-md select-none font-sans overflow-hidden">
+    <div className="fixed inset-0 sm:static sm:min-h-screen w-full h-[100dvh] sm:h-auto flex items-center justify-center p-0 sm:p-4 bg-[#F8FAFC] sm:bg-slate-900/60 backdrop-blur-md select-none font-sans overflow-hidden">
       {/* ═══ MODALS & OVERLAYS ═══ */}
       <MobilePermissionsModal
         isOpen={showPermissionDialog}
@@ -750,12 +750,12 @@ export const CitizenMobileApp: React.FC = () => {
         </div>
       )}
 
-      {/* ═══ SMARTPHONE SCREEN SHELL FRAME (DYNAMIC RESPONSIVE 100dvh) ═══ */}
+      {/* ═══ SMARTPHONE SCREEN SHELL FRAME (LOCKED FULL VIEWPORT ON MOBILE) ═══ */}
       <div 
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="w-full h-[100dvh] max-h-[100dvh] sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none"
+        className="w-full h-full sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col justify-between overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none"
       >
         {/* Dynamic Floating Transparent Pull-to-Refresh Pill Overlay (Never pushes layout) */}
         {pullY > 0 && (
@@ -904,7 +904,6 @@ export const CitizenMobileApp: React.FC = () => {
             onNavigateToLogin={() => {
               setResetErrorMsg("");
               setResetSuccessMsg("");
-              setForgotStep(1);
               setCurrentScreen("login");
             }}
           />
@@ -912,7 +911,7 @@ export const CitizenMobileApp: React.FC = () => {
 
         {/* ═══ 6. MAIN LOGGED-IN PORTAL ═══ */}
         {currentScreen === "main" && (
-          <div className="flex-1 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
+          <div className="flex-1 min-h-0 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
             {/* Top Bar Header for Secondary Tabs (except Screening which has its own themed top bar) */}
             {activeTab !== "home" && activeTab !== "screening" && (
               <header className="shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-2xs z-30 font-sans">
@@ -966,7 +965,7 @@ export const CitizenMobileApp: React.FC = () => {
               className={`flex-1 font-sans no-scrollbar ${
                 activeTab === "screening"
                   ? "p-0 m-0 h-full w-full overflow-hidden"
-                  : "p-3.5 space-y-3.5 overflow-y-auto pb-24 overscroll-contain min-h-0"
+                  : "p-3.5 space-y-3.5 overflow-y-auto pb-28 overscroll-y-contain min-h-0"
               }`}
             >
               {activeTab === "home" && (
@@ -1017,9 +1016,9 @@ export const CitizenMobileApp: React.FC = () => {
               )}
             </main>
 
-            {/* ═══ 3-TAB LOCKED BOTTOM NAVIGATION BAR ═══ */}
+            {/* ═══ 3-TAB LOCKED BOTTOM NAVIGATION BAR (FIXED & PINNED) ═══ */}
             {activeTab !== "screening" && (
-              <div className="shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2 pb-5 sm:pb-3 px-4 relative font-sans animate-in slide-in-from-bottom-2 duration-200">
+              <div className="shrink-0 sticky bottom-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2 pb-safe-nav pb-6 sm:pb-3 px-4 relative font-sans animate-in slide-in-from-bottom-2 duration-200">
                 <nav className="flex items-center justify-around max-w-sm mx-auto">
                   {/* 1. Beranda (Left) */}
                   <button
