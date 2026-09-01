@@ -946,22 +946,42 @@ export const CitizenMobileApp: React.FC = () => {
               </AnimatePresence>
             </main>
 
-            {/* ═══ CLEAN 3-TAB FLAT NAVIGATION BAR (BERANDA, ANALISIS, PROFIL) ═══ */}
+            {/* ═══ CLEAN 3-TAB NAVIGATION BAR (MATCHING examplebottom.svg) ═══ */}
             {activeTab !== "screening" && (
               <Tabbar
                 labels={true}
                 icons={true}
-                className="left-0 bottom-0 fixed z-40 bg-white/98 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-2px_15px_rgba(0,0,0,0.04)]"
+                className="left-0 bottom-0 fixed z-40 bg-white/98 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.05)] pt-1.5 pb-safe-nav"
               >
-                {/* 1. Beranda */}
+                {/* 1. Beranda (Home) */}
                 <TabbarLink
                   active={activeTab === "home"}
                   onClick={() => {
                     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
                     setActiveTab("home");
                   }}
-                  icon={<Home className={`w-5.5 h-5.5 transition-colors ${activeTab === "home" ? "text-brand-orange" : "text-slate-400"}`} />}
-                  label={<span className={`text-[10.5px] font-bold ${activeTab === "home" ? "text-brand-orange" : "text-slate-500"}`}>Beranda</span>}
+                  icon={
+                    <div className="relative flex items-center justify-center">
+                      <Home
+                        className={`w-6 h-6 transition-all duration-200 ${
+                          activeTab === "home"
+                            ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
+                            : "text-[#B1B5C7]"
+                        }`}
+                      />
+                    </div>
+                  }
+                  label={
+                    <span
+                      className={`text-[11px] tracking-tight transition-colors duration-200 ${
+                        activeTab === "home"
+                          ? "font-bold text-[#79D7D2]"
+                          : "font-medium text-[#B1B5C7]"
+                      }`}
+                    >
+                      Beranda
+                    </span>
+                  }
                 />
 
                 {/* 2. Analisis Biometrik */}
@@ -971,8 +991,18 @@ export const CitizenMobileApp: React.FC = () => {
                     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
                     setActiveTab("screening");
                   }}
-                  icon={<Activity className="w-5.5 h-5.5 text-slate-400 hover:text-brand-orange transition-colors" />}
-                  label={<span className="text-[10.5px] font-bold text-slate-500">Analisis</span>}
+                  icon={
+                    <div className="relative flex items-center justify-center">
+                      <Activity
+                        className="w-6 h-6 text-[#B1B5C7] hover:text-[#79D7D2] transition-all duration-200"
+                      />
+                    </div>
+                  }
+                  label={
+                    <span className="text-[11px] font-medium text-[#B1B5C7] tracking-tight">
+                      Analisis
+                    </span>
+                  }
                 />
 
                 {/* 3. Profil */}
@@ -983,11 +1013,27 @@ export const CitizenMobileApp: React.FC = () => {
                     setActiveTab("profile");
                   }}
                   icon={
-                    <div className={`w-5.5 h-5.5 rounded-full flex items-center justify-center text-[10px] font-black border transition-colors ${activeTab === "profile" ? "bg-brand-orange text-white border-brand-orange" : "bg-slate-100 text-slate-500 border-slate-300"}`}>
-                      {citizenUser?.name ? citizenUser.name.charAt(0).toUpperCase() : "U"}
+                    <div className="relative flex items-center justify-center">
+                      <User
+                        className={`w-6 h-6 transition-all duration-200 ${
+                          activeTab === "profile"
+                            ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
+                            : "text-[#B1B5C7]"
+                        }`}
+                      />
                     </div>
                   }
-                  label={<span className={`text-[10.5px] font-bold ${activeTab === "profile" ? "text-brand-orange" : "text-slate-500"}`}>Profil</span>}
+                  label={
+                    <span
+                      className={`text-[11px] tracking-tight transition-colors duration-200 ${
+                        activeTab === "profile"
+                          ? "font-bold text-[#79D7D2]"
+                          : "font-medium text-[#B1B5C7]"
+                      }`}
+                    >
+                      Profil
+                    </span>
+                  }
                 />
               </Tabbar>
             )}
