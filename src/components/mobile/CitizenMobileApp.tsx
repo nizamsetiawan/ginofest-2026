@@ -17,6 +17,7 @@ import {
   AtmosphereState
 } from "./types";
 import { App as KonstaApp, Page as KonstaPage, Tabbar, TabbarLink } from "konsta/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   listenToActiveSessions,
   closeSessionLog,
@@ -885,35 +886,64 @@ export const CitizenMobileApp: React.FC = () => {
         {/* ═══ 6. MAIN LOGGED-IN PORTAL ═══ */}
         {currentScreen === "main" && (
           <div className="flex-1 min-h-0 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
-            {/* Main Tab Views with Konsta Page handling scroll & padding */}
+            {/* Main Tab Views with Konsta Page handling scroll & padding with Motion transition */}
             <main
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="flex-1 font-sans no-scrollbar w-full max-w-full overflow-hidden touch-pan-y min-h-0 p-0 m-0 h-full"
+              className="flex-1 font-sans no-scrollbar w-full max-w-full overflow-hidden touch-pan-y min-h-0 p-0 m-0 h-full relative"
             >
-              {activeTab === "home" && (
-                <MobileHomeTab
-                  citizenUser={citizenUser}
-                  atmosphere={atmosphere}
-                  setActiveTab={setActiveTab}
-                />
-              )}
+              <AnimatePresence mode="wait" initial={false}>
+                {activeTab === "home" && (
+                  <motion.div
+                    key="home"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.18, ease: "easeInOut" }}
+                    className="h-full w-full"
+                  >
+                    <MobileHomeTab
+                      citizenUser={citizenUser}
+                      atmosphere={atmosphere}
+                      setActiveTab={setActiveTab}
+                    />
+                  </motion.div>
+                )}
 
-              {activeTab === "screening" && (
-                <MobileScreeningTab
-                  citizenUser={citizenUser}
-                  onBackToHome={() => setActiveTab("home")}
-                />
-              )}
+                {activeTab === "screening" && (
+                  <motion.div
+                    key="screening"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 15 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="h-full w-full"
+                  >
+                    <MobileScreeningTab
+                      citizenUser={citizenUser}
+                      onBackToHome={() => setActiveTab("home")}
+                    />
+                  </motion.div>
+                )}
 
-              {activeTab === "profile" && (
-                <MobileProfileTab
-                  citizenUser={citizenUser}
-                  setActiveTab={setActiveTab}
-                  onLogout={handleCitizenLogout}
-                />
-              )}
+                {activeTab === "profile" && (
+                  <motion.div
+                    key="profile"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.18, ease: "easeInOut" }}
+                    className="h-full w-full"
+                  >
+                    <MobileProfileTab
+                      citizenUser={citizenUser}
+                      setActiveTab={setActiveTab}
+                      onLogout={handleCitizenLogout}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </main>
 
             {/* ═══ CLEAN 3-TAB FLAT NAVIGATION BAR (BERANDA, ANALISIS, PROFIL) ═══ */}
@@ -926,7 +956,10 @@ export const CitizenMobileApp: React.FC = () => {
                 {/* 1. Beranda */}
                 <TabbarLink
                   active={activeTab === "home"}
-                  onClick={() => setActiveTab("home")}
+                  onClick={() => {
+                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                    setActiveTab("home");
+                  }}
                   icon={<Home className={`w-5.5 h-5.5 transition-colors ${activeTab === "home" ? "text-brand-orange" : "text-slate-400"}`} />}
                   label={<span className={`text-[10.5px] font-bold ${activeTab === "home" ? "text-brand-orange" : "text-slate-500"}`}>Beranda</span>}
                 />
@@ -934,7 +967,10 @@ export const CitizenMobileApp: React.FC = () => {
                 {/* 2. Analisis Biometrik */}
                 <TabbarLink
                   active={false}
-                  onClick={() => setActiveTab("screening")}
+                  onClick={() => {
+                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
+                    setActiveTab("screening");
+                  }}
                   icon={<Activity className="w-5.5 h-5.5 text-slate-400 hover:text-brand-orange transition-colors" />}
                   label={<span className="text-[10.5px] font-bold text-slate-500">Analisis</span>}
                 />
@@ -942,7 +978,10 @@ export const CitizenMobileApp: React.FC = () => {
                 {/* 3. Profil */}
                 <TabbarLink
                   active={activeTab === "profile"}
-                  onClick={() => setActiveTab("profile")}
+                  onClick={() => {
+                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                    setActiveTab("profile");
+                  }}
                   icon={
                     <div className={`w-5.5 h-5.5 rounded-full flex items-center justify-center text-[10px] font-black border transition-colors ${activeTab === "profile" ? "bg-brand-orange text-white border-brand-orange" : "bg-slate-100 text-slate-500 border-slate-300"}`}>
                       {citizenUser?.name ? citizenUser.name.charAt(0).toUpperCase() : "U"}
