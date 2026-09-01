@@ -62,17 +62,10 @@ export const CitizenMobileApp: React.FC = () => {
   const [konstaTheme, setKonstaTheme] = useState<"ios" | "material">("ios");
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const isAndroidDevice = /android/i.test(navigator.userAgent);
-      const theme = isAndroidDevice ? "material" : "ios";
-      setKonstaTheme(theme);
-      
-      if (theme === "ios") {
-        document.documentElement.classList.add("is-ios", "k-ios");
-        document.documentElement.classList.remove("is-android", "k-material");
-      } else {
-        document.documentElement.classList.add("is-android", "k-material");
-        document.documentElement.classList.remove("is-ios", "k-ios");
-      }
+      const isIOSDevice =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      setKonstaTheme(isIOSDevice ? "ios" : "material");
     }
   }, []);
 
@@ -977,15 +970,15 @@ export const CitizenMobileApp: React.FC = () => {
               </header>
             )}
 
-            {/* Main Tab Views with Pull-to-Refresh and Bottom Clearance */}
+            {/* Main Tab Views with Konsta Page handling scroll & padding */}
             <main
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className={`flex-1 font-sans no-scrollbar w-full max-w-full overflow-x-hidden touch-pan-y ${
+              className={`flex-1 font-sans no-scrollbar w-full max-w-full overflow-hidden touch-pan-y min-h-0 ${
                 activeTab === "screening"
-                  ? "p-0 m-0 h-full w-full overflow-hidden"
-                  : "p-3.5 space-y-3.5 overflow-y-auto pb-32 overscroll-y-contain min-h-0"
+                  ? "p-0 m-0 h-full w-full"
+                  : "p-0 m-0 h-full w-full"
               }`}
             >
               {activeTab === "home" && (
@@ -1041,7 +1034,7 @@ export const CitizenMobileApp: React.FC = () => {
               <Tabbar
                 labels={true}
                 icons={true}
-                className="left-0 bottom-0 fixed z-40 glass-nav shadow-[0_-4px_25px_rgba(0,0,0,0.08)]"
+                className="left-0 bottom-0 fixed z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)]"
               >
                 <TabbarLink
                   active={activeTab === "home"}
