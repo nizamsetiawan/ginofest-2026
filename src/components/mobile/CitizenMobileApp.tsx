@@ -1027,7 +1027,7 @@ export const CitizenMobileApp: React.FC = () => {
               )}
             </main>
 
-            {/* ═══ CLEAN 5-TAB FLAT NAVIGATION BAR (MATCHING REFERENCE APP) ═══ */}
+            {/* ═══ CLEAN 3-TAB FLAT NAVIGATION BAR (BERANDA, ANALISIS, PROFIL) ═══ */}
             {activeTab !== "screening" && (
               <Tabbar
                 labels={true}
@@ -1042,15 +1042,7 @@ export const CitizenMobileApp: React.FC = () => {
                   label={<span className={`text-[10.5px] font-bold ${activeTab === "home" ? "text-brand-orange" : "text-slate-500"}`}>Beranda</span>}
                 />
 
-                {/* 2. Menu MBG */}
-                <TabbarLink
-                  active={activeTab === "menu"}
-                  onClick={() => setActiveTab("menu")}
-                  icon={<Utensils className={`w-5.5 h-5.5 transition-colors ${activeTab === "menu" ? "text-brand-orange" : "text-slate-400"}`} />}
-                  label={<span className={`text-[10.5px] font-bold ${activeTab === "menu" ? "text-brand-orange" : "text-slate-500"}`}>Menu MBG</span>}
-                />
-
-                {/* 3. Analisis Biometrik */}
+                {/* 2. Analisis Biometrik */}
                 <TabbarLink
                   active={false}
                   onClick={() => setActiveTab("screening")}
@@ -1058,15 +1050,7 @@ export const CitizenMobileApp: React.FC = () => {
                   label={<span className="text-[10.5px] font-bold text-slate-500">Analisis</span>}
                 />
 
-                {/* 4. Aduan MBG */}
-                <TabbarLink
-                  active={activeTab === "complaint"}
-                  onClick={() => setActiveTab("complaint")}
-                  icon={<MessageSquare className={`w-5.5 h-5.5 transition-colors ${activeTab === "complaint" ? "text-brand-orange" : "text-slate-400"}`} />}
-                  label={<span className={`text-[10.5px] font-bold ${activeTab === "complaint" ? "text-brand-orange" : "text-slate-500"}`}>Aduan</span>}
-                />
-
-                {/* 5. Profil */}
+                {/* 3. Profil */}
                 <TabbarLink
                   active={activeTab === "profile"}
                   onClick={() => setActiveTab("profile")}
