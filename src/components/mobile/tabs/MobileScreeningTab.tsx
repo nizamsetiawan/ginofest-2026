@@ -729,334 +729,300 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {/* SCREEN 3: MENU UNTUK ANDA (FIT VIEWPORT)                       */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 3 && (
-        <div className="flex-1 flex flex-col justify-between p-3.5 relative h-full w-full overflow-hidden">
-          {/* Top Bar */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between pt-0.5">
-              <button
-                type="button"
-                onClick={() => setScreeningStep(2)}
-                className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer border border-white/60 backdrop-blur-md"
-              >
-                <ArrowLeft className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-              </button>
+        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#0A1628] via-[#0D1B2A] to-[#050D18]">
 
-              <h3 className="text-[14px] font-black text-ford-blue">Menu untuk Anda</h3>
+          {/* ─── TOP BAR ─── */}
+          <div className="px-4 pt-4 pb-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <motion.button whileTap={{ scale: 0.9 }} type="button" onClick={() => setScreeningStep(2)}
+                className="w-9 h-9 rounded-2xl bg-white/8 border border-white/15 flex items-center justify-center backdrop-blur-md cursor-pointer">
+                <ArrowLeft className="w-4 h-4 text-white stroke-[2.5]" />
+              </motion.button>
 
-              <button
-                type="button"
-                onClick={() => setShowHelpModal(true)}
-                className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer border border-white/60 backdrop-blur-md"
-              >
-                <HelpCircle className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-              </button>
+              <div className="text-center">
+                <p className="text-[11px] font-bold text-[#79D7D2] tracking-widest uppercase">Menu untuk Anda</p>
+                <p className="text-[9.5px] text-white/40 font-medium mt-0.5">Rekomendasi Nutrisi Harian</p>
+              </div>
+
+              <div className="w-9 h-9" />
             </div>
 
-            {/* Slider / Step Indicator Bar */}
-            <div className="w-full h-1.5 bg-white/50 rounded-full relative my-0.5 overflow-visible">
-              <div className="h-full bg-brand-orange rounded-full w-[80%]" />
-              <div className="w-3.5 h-3.5 rounded-full bg-brand-orange border-2 border-white shadow-md absolute top-1/2 -translate-y-1/2 left-[calc(80%-7px)]" />
+            {/* Progress */}
+            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] w-[80%] transition-all duration-500" />
             </div>
           </div>
 
-          {/* Main Card: Bento Image + Portion Details */}
-          <div className="space-y-2 my-auto">
-            {/* Bento Image Box */}
-            <div className="rounded-2xl overflow-hidden shadow-md border-2 border-white bg-white">
-              <img
-                src={menuType === "ayam" ? "/assets/mbg_tray_ayam.jpg" : "/assets/mbg_tray_bandeng.jpg"}
-                alt="Menu MBG"
-                className="w-full h-28 sm:h-32 object-cover"
-              />
-              <div className="p-2.5 bg-white space-y-0.5">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-[13px] font-black text-ford-blue">
-                    {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"}
-                  </h4>
-                  <span className="px-2 py-0.5 rounded-full bg-green-tint text-ford-blue text-[9.5px] font-bold border border-green-02/40">
+          {/* ─── SCROLLABLE CONTENT ─── */}
+          <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
+
+            {/* Menu Image Card */}
+            <div className="rounded-3xl overflow-hidden border border-white/10 shadow-xl">
+              <div className="relative">
+                <img
+                  src={menuType === "ayam" ? "/assets/mbg_tray_ayam.jpg" : "/assets/mbg_tray_bandeng.jpg"}
+                  alt="Menu MBG"
+                  className="w-full h-36 object-cover"
+                />
+                {/* Gradient overlay on image */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A]/90 via-transparent to-transparent" />
+                <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
+                  <div>
+                    <h4 className="text-[13.5px] font-black text-white leading-tight drop-shadow">
+                      {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"}
+                    </h4>
+                    <p className="text-[10px] text-white/60 font-medium">Nasi 200g · Protein 150g · Sayur 50g</p>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-xl bg-[#23B5A8]/90 text-white text-[10px] font-black backdrop-blur-sm shadow-md flex-shrink-0">
                     680 kkal
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-500 font-medium leading-snug">
-                  Nasi: 200 gr, Ayam: 150 gr, Brokoli: 50 gr, Kentang: 100 gr
-                </p>
               </div>
             </div>
 
-            {/* Nutrition Breakdown Table */}
-            <div className="bg-white rounded-2xl p-2.5 shadow-sm border border-white space-y-1 text-[10.5px]">
-              <div className="flex items-center justify-between font-black text-ford-blue border-b border-slate-100 pb-0.5">
-                <span>Nutrisi</span>
-                <span>% AKG</span>
+            {/* Nutrition Breakdown */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-4 backdrop-blur-md space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-[11.5px] font-black text-white">Profil Nutrisi</p>
+                <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-[#79D7D2]/15 text-[#79D7D2] font-bold border border-[#79D7D2]/25">% AKG</span>
               </div>
-              <div className="space-y-0.5 text-slate-600 font-medium">
-                <div className="flex items-center justify-between">
-                  <span>Lemak Total (10 g)</span>
-                  <span className="font-bold text-ford-blue">22%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Karbohidrat Total (50 g)</span>
-                  <span className="font-bold text-ford-blue">17%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Serat (7 g)</span>
-                  <span className="font-bold text-ford-blue">18%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Protein (31 g)</span>
-                  <span className="font-bold text-green-02">50%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Vitamin D (0.4 mg)</span>
-                  <span className="font-bold text-ford-blue">15%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Zat Besi / Fe (6 mg)</span>
-                  <span className="font-bold text-brand-orange">45%</span>
-                </div>
+
+              <div className="space-y-2.5">
+                {[
+                  { label: "Lemak Total", val: "10 g", pct: 22, color: "#F59E0B" },
+                  { label: "Karbohidrat", val: "50 g", pct: 17, color: "#79D7D2" },
+                  { label: "Serat", val: "7 g", pct: 18, color: "#34D399" },
+                  { label: "Protein", val: "31 g", pct: 50, color: "#23B5A8" },
+                  { label: "Vitamin D", val: "0.4 mg", pct: 15, color: "#A78BFA" },
+                  { label: "Zat Besi / Fe", val: "6 mg", pct: 45, color: "#F87171" },
+                ].map((n) => (
+                  <div key={n.label}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10.5px] text-white/65 font-medium">{n.label} <span className="text-white/35">({n.val})</span></span>
+                      <span className="text-[10.5px] font-black" style={{ color: n.color }}>{n.pct}%</span>
+                    </div>
+                    <div className="w-full h-1 bg-white/8 rounded-full overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${n.pct}%`, backgroundColor: n.color }} />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
+
+            {/* QR Code CTA */}
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              type="button"
+              onClick={() => setScreeningStep(4)}
+              className="w-full bg-gradient-to-r from-[#0FA89B]/20 to-[#79D7D2]/10 border border-[#79D7D2]/30 rounded-2xl p-3.5 flex items-center justify-between backdrop-blur-md cursor-pointer hover:border-[#79D7D2]/50 transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-md flex-shrink-0">
+                  <QrCode className="w-4.5 h-4.5 text-[#050D18]" />
+                </div>
+                <div className="text-left">
+                  <h5 className="text-[12px] font-black text-white leading-tight">QR Code Klaim</h5>
+                  <p className="text-[9.5px] text-white/45 font-medium">Tampilkan untuk verifikasi menu</p>
+                </div>
+              </div>
+              <ChevronUp className="w-4 h-4 text-[#79D7D2]" />
+            </motion.button>
           </div>
-
-          {/* Bottom Drawer Button: QR Code Trigger */}
-          <button
-            type="button"
-            onClick={() => setScreeningStep(4)}
-            className="w-full bg-white rounded-2xl p-2.5 shadow-md border-2 border-white flex items-center justify-between text-ford-blue hover:bg-slate-50 cursor-pointer active:scale-[0.99] transition-all"
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-xl bg-green-tint text-ford-blue flex items-center justify-center">
-                <QrCode className="w-3.5 h-3.5 text-light-sea-green" />
-              </div>
-              <div className="text-left">
-                <h5 className="text-[11.5px] font-black leading-tight">QR Code Klaim</h5>
-                <p className="text-[9px] text-slate-500">Klik untuk menampilkan verifikasi klaim makanan</p>
-              </div>
-            </div>
-            <ChevronUp className="w-4 h-4 text-ford-blue" />
-          </button>
         </div>
       )}
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* SCREEN 4: QR CODE VERIFIKASI KLAIM MBG (FIT VIEWPORT)          */}
+      {/* SCREEN 4: QR CODE VERIFIKASI KLAIM MBG                        */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 4 && (
-        <div className="flex-1 flex flex-col justify-between p-3.5 relative h-full w-full overflow-hidden">
-          {/* Top Bar */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between pt-0.5">
-              <button
-                type="button"
-                onClick={() => setScreeningStep(3)}
-                className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer border border-white/60 backdrop-blur-md"
-              >
-                <ArrowLeft className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-              </button>
+        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#0A1628] via-[#0D1B2A] to-[#050D18]">
 
-              <h3 className="text-[14px] font-black text-ford-blue">Menu untuk Anda</h3>
+          {/* ─── TOP BAR ─── */}
+          <div className="px-4 pt-4 pb-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <motion.button whileTap={{ scale: 0.9 }} type="button" onClick={() => setScreeningStep(3)}
+                className="w-9 h-9 rounded-2xl bg-white/8 border border-white/15 flex items-center justify-center backdrop-blur-md cursor-pointer">
+                <ArrowLeft className="w-4 h-4 text-white stroke-[2.5]" />
+              </motion.button>
 
-              <button
-                type="button"
-                onClick={() => setShowHelpModal(true)}
-                className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer border border-white/60 backdrop-blur-md"
-              >
-                <HelpCircle className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-              </button>
+              <div className="text-center">
+                <p className="text-[11px] font-bold text-[#79D7D2] tracking-widest uppercase">Verifikasi Klaim</p>
+                <p className="text-[9.5px] text-white/40 font-medium mt-0.5">QR Code Menu MBG</p>
+              </div>
+
+              <div className="w-9 h-9" />
             </div>
 
-            {/* QR Card Drawer Header */}
-            <div className="bg-white rounded-2xl p-2 flex items-center justify-between border border-slate-100 shadow-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-green-tint text-ford-blue flex items-center justify-center">
-                  <QrCode className="w-3 h-3 text-light-sea-green" />
-                </div>
-                <div>
-                  <h4 className="text-[11px] font-bold text-ford-blue">QR Code Verifikasi</h4>
-                  <p className="text-[8.5px] text-slate-500">Klik panah untuk kembali</p>
-                </div>
-              </div>
-              <ChevronDown className="w-4 h-4 text-slate-400 cursor-pointer" onClick={() => setScreeningStep(3)} />
+            {/* Progress */}
+            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] w-[95%] transition-all duration-500" />
             </div>
           </div>
 
-          {/* Large High-Contrast QR Code Card */}
-          <div className="my-auto bg-white rounded-3xl p-4 text-center shadow-lg border-2 border-white space-y-2.5">
-            <div className="space-y-0.5">
-              <h4 className="text-[13px] font-black text-ford-blue">Tunjukkan QR ini pada staf!</h4>
-              <p className="text-[10px] text-slate-500 font-medium">
-                Petugas SPPG MBG akan memindai QR untuk validasi porsi menu anak Anda.
+          {/* ─── QR CARD ─── */}
+          <div className="flex-1 flex flex-col items-center justify-center px-5 pb-6 gap-5">
+
+            {/* Instruction */}
+            <div className="text-center space-y-1">
+              <h4 className="text-[15px] font-black text-white">Tunjukkan QR ini pada staf!</h4>
+              <p className="text-[11px] text-white/45 font-medium max-w-xs leading-snug">
+                Petugas SPPG MBG akan memindai kode ini untuk validasi porsi menu anak Anda.
               </p>
             </div>
 
-            {/* Generated Interactive QR Code SVG Box */}
-            <div className="w-40 h-40 mx-auto p-2.5 bg-white rounded-2xl border-2 border-slate-900 shadow-inner flex items-center justify-center relative">
-              <svg viewBox="0 0 100 100" className="w-full h-full">
-                {/* SVG QR Code Pattern */}
-                <rect x="0" y="0" width="30" height="30" fill="#131C38" rx="4" />
-                <rect x="5" y="5" width="20" height="20" fill="white" rx="2" />
-                <rect x="9" y="9" width="12" height="12" fill="#131C38" />
-
-                <rect x="70" y="0" width="30" height="30" fill="#131C38" rx="4" />
-                <rect x="75" y="5" width="20" height="20" fill="white" rx="2" />
-                <rect x="79" y="9" width="12" height="12" fill="#131C38" />
-
-                <rect x="0" y="70" width="30" height="30" fill="#131C38" rx="4" />
-                <rect x="5" y="75" width="20" height="20" fill="white" rx="2" />
-                <rect x="9" y="79" width="12" height="12" fill="#131C38" />
-
-                {/* Random Pattern Dots */}
-                <rect x="36" y="8" width="8" height="8" fill="#131C38" />
-                <rect x="48" y="14" width="10" height="6" fill="#131C38" />
-                <rect x="36" y="24" width="6" height="10" fill="#131C38" />
-                <rect x="46" y="36" width="16" height="16" fill="#131C38" rx="3" />
-                <rect x="10" y="42" width="18" height="6" fill="#131C38" />
-                <rect x="72" y="40" width="8" height="18" fill="#131C38" />
-                <rect x="36" y="60" width="12" height="8" fill="#131C38" />
-                <rect x="54" y="62" width="8" height="16" fill="#131C38" />
-                <rect x="72" y="70" width="16" height="8" fill="#131C38" />
-                <rect x="80" y="84" width="12" height="10" fill="#131C38" />
-              </svg>
-
-              {isQrVerifying && (
-                <div className="absolute inset-0 bg-white/90 backdrop-blur-2xs rounded-2xl flex flex-col items-center justify-center">
-                  <RefreshCw className="w-7 h-7 text-light-sea-green animate-spin" />
-                  <span className="text-[10.5px] font-black text-ford-blue mt-1">Memverifikasi Klaim...</span>
-                </div>
-              )}
+            {/* QR Box */}
+            <div className="relative p-4 bg-white rounded-3xl shadow-2xl shadow-[#23B5A8]/20 border border-white/20">
+              <div className="w-44 h-44 relative flex items-center justify-center">
+                <svg viewBox="0 0 100 100" className="w-full h-full">
+                  {/* Corner Squares */}
+                  <rect x="0" y="0" width="30" height="30" fill="#0D1B2A" rx="4" />
+                  <rect x="5" y="5" width="20" height="20" fill="white" rx="2" />
+                  <rect x="9" y="9" width="12" height="12" fill="#0D1B2A" />
+                  <rect x="70" y="0" width="30" height="30" fill="#0D1B2A" rx="4" />
+                  <rect x="75" y="5" width="20" height="20" fill="white" rx="2" />
+                  <rect x="79" y="9" width="12" height="12" fill="#0D1B2A" />
+                  <rect x="0" y="70" width="30" height="30" fill="#0D1B2A" rx="4" />
+                  <rect x="5" y="75" width="20" height="20" fill="white" rx="2" />
+                  <rect x="9" y="79" width="12" height="12" fill="#0D1B2A" />
+                  {/* Data dots */}
+                  <rect x="36" y="8" width="8" height="8" fill="#0D1B2A" />
+                  <rect x="48" y="14" width="10" height="6" fill="#0D1B2A" />
+                  <rect x="36" y="24" width="6" height="10" fill="#0D1B2A" />
+                  <rect x="46" y="36" width="16" height="16" fill="#23B5A8" rx="3" />
+                  <rect x="10" y="42" width="18" height="6" fill="#0D1B2A" />
+                  <rect x="72" y="40" width="8" height="18" fill="#0D1B2A" />
+                  <rect x="36" y="60" width="12" height="8" fill="#0D1B2A" />
+                  <rect x="54" y="62" width="8" height="16" fill="#0D1B2A" />
+                  <rect x="72" y="70" width="16" height="8" fill="#0D1B2A" />
+                  <rect x="80" y="84" width="12" height="10" fill="#0D1B2A" />
+                </svg>
+                {isQrVerifying && (
+                  <div className="absolute inset-0 bg-white/90 rounded-2xl flex flex-col items-center justify-center gap-1.5">
+                    <RefreshCw className="w-7 h-7 text-[#23B5A8] animate-spin" />
+                    <span className="text-[10.5px] font-black text-[#0D1B2A]">Memverifikasi...</span>
+                  </div>
+                )}
+              </div>
+              {/* Teal scan line accent */}
+              <div className="absolute left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[#23B5A8] to-transparent top-1/2 opacity-50 animate-pulse" />
             </div>
 
-            {/* Note alert */}
-            <p className="text-[9.5px] text-brand-red font-bold leading-tight">
-              Note: Pastikan menu yang Anda terima sesuai dengan yang diberikan oleh aplikasi.
+            {/* Note */}
+            <p className="text-[10px] text-[#F87171] font-bold text-center max-w-xs leading-snug px-2">
+              Pastikan menu yang Anda terima sesuai dengan rekomendasi aplikasi.
             </p>
 
-            {/* Action Simulator Button */}
-            <button
+            {/* Simulate Button */}
+            <motion.button
+              whileTap={{ scale: 0.97 }}
               type="button"
               onClick={handleVerifyQR}
               disabled={isQrVerifying}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-black text-[11.5px] shadow-sm hover:opacity-95 cursor-pointer"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] font-black text-[12.5px] shadow-lg cursor-pointer disabled:opacity-60"
             >
               {isQrVerifying ? "Memproses Verifikasi..." : "Simulasikan Staf Memindai QR"}
-            </button>
-          </div>
+            </motion.button>
 
-          <div className="text-center text-[9.5px] text-ford-blue/70 font-semibold">
-            Kecamatan {citizenUser?.district || "Kebomas"} • Ginofest 2026
+            <p className="text-[9px] text-white/25 font-semibold">
+              Kecamatan {citizenUser?.district || "Kebomas"} • Ginofest 2026
+            </p>
           </div>
         </div>
       )}
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* SCREEN 5: SCAN SUKSES! & PROFIL NUTRISI TUBUH (FIT VIEWPORT)   */}
+      {/* SCREEN 5: SCAN SUKSES!                                         */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 5 && (
-        <div className="flex-1 flex flex-col justify-between p-3.5 relative h-full w-full overflow-hidden">
-          {/* Top Banner: Scan Sukses */}
-          <div className="space-y-0.5 pt-0.5 text-center">
-            <div className="flex items-center justify-center gap-1.5">
-              <div className="w-6 h-6 rounded-full bg-white text-green-02 flex items-center justify-center shadow-xs">
-                <Check className="w-3.5 h-3.5 stroke-[3] text-green-02" />
-              </div>
-              <h2 className="text-[16px] font-black text-ford-blue">Scan Sukses!</h2>
-            </div>
-            <p className="text-[10px] text-ford-blue/80 font-medium max-w-xs mx-auto leading-tight">
-              Data porsi makan &amp; pemenuhan nutrisi telah diverifikasi. Selamat menikmati makanan Anda!
+        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#0A1628] via-[#0D1B2A] to-[#050D18]">
+
+          {/* ─── SUCCESS BANNER ─── */}
+          <div className="px-4 pt-5 pb-3 text-center">
+            <motion.div
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4, ease: "backOut" }}
+              className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-[0_0_40px_rgba(35,181,168,0.5)] mb-3"
+            >
+              <Check className="w-8 h-8 text-white stroke-[3]" />
+            </motion.div>
+            <h2 className="text-[20px] font-black text-white tracking-tight">Scan Sukses!</h2>
+            <p className="text-[11px] text-white/50 font-medium mt-1 max-w-xs mx-auto leading-snug">
+              Data porsi makan & pemenuhan nutrisi telah diverifikasi. Selamat menikmati!
             </p>
           </div>
 
-          {/* Center Graphic: Full Body Silhouette with Animated Fill Height */}
-          <div className="my-auto flex flex-col items-center justify-center relative py-1">
-            <div className="relative w-48 h-60 flex items-center justify-center">
-              <svg viewBox="0 0 200 300" className="w-full h-full">
+          {/* ─── BODY FILL GRAPHIC ─── */}
+          <div className="flex-1 flex flex-col items-center justify-center relative px-5">
+
+            {/* Body silhouette with teal fill */}
+            <div className="relative w-40 h-52 flex items-center justify-center">
+              <svg viewBox="0 0 200 300" className="w-full h-full drop-shadow-[0_0_20px_rgba(35,181,168,0.3)]">
                 <defs>
-                  {/* Linear gradient fill for human body */}
-                  <linearGradient id="bodyFill" x1="0%" y1="100%" x2="0%" y2="0%">
-                    <stop offset="0%" stopColor="#FF7A00" />
-                    <stop offset="45%" stopColor="#FF8C00" />
-                    <stop offset="45.1%" stopColor="#FFFFFF" stopOpacity="0.4" />
-                    <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.4" />
+                  <linearGradient id="bodyFillDark" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" stopColor="#23B5A8" />
+                    <stop offset="45%" stopColor="#0FA89B" />
+                    <stop offset="45.1%" stopColor="#ffffff" stopOpacity="0.07" />
+                    <stop offset="100%" stopColor="#ffffff" stopOpacity="0.07" />
                   </linearGradient>
                 </defs>
-
-                {/* Human Silhouette Path (Walking / Waving child pose) */}
-                <circle cx="105" cy="40" r="22" stroke="#FF7A00" strokeWidth="2.5" fill="none" />
-                <path
-                  d="M85 68 C70 65, 55 50, 48 45 C44 42, 40 45, 42 50 C45 60, 60 75, 78 85"
-                  stroke="#FF7A00"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M125 68 C140 75, 145 95, 148 115"
-                  stroke="#FF7A00"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M80 65 C90 60, 120 60, 130 65 C135 90, 135 125, 130 145 C130 160, 145 200, 155 240 C156 245, 150 248, 145 245 C135 240, 120 185, 115 160 C110 160, 95 185, 80 245 C75 250, 70 245, 72 238 C80 195, 90 155, 90 145 C80 125, 75 90, 80 65 Z"
-                  stroke="#FF7A00"
-                  strokeWidth="2.5"
-                  fill="url(#bodyFill)"
-                />
+                <circle cx="105" cy="40" r="22" stroke="#79D7D2" strokeWidth="2.5" fill="none" />
+                <path d="M85 68 C70 65, 55 50, 48 45 C44 42, 40 45, 42 50 C45 60, 60 75, 78 85"
+                  stroke="#79D7D2" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                <path d="M125 68 C140 75, 145 95, 148 115"
+                  stroke="#79D7D2" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                <path d="M80 65 C90 60, 120 60, 130 65 C135 90, 135 125, 130 145 C130 160, 145 200, 155 240 C156 245, 150 248, 145 245 C135 240, 120 185, 115 160 C110 160, 95 185, 80 245 C75 250, 70 245, 72 238 C80 195, 90 155, 90 145 C80 125, 75 90, 80 65 Z"
+                  stroke="#79D7D2" strokeWidth="2.5" fill="url(#bodyFillDark)" />
               </svg>
 
-              {/* 45% Badge overlay at torso level */}
-              <div className="absolute top-[48%] left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-white/95 shadow-sm border border-brand-orange text-[11px] font-black text-brand-orange">
+              {/* 45% badge */}
+              <div className="absolute top-[46%] left-1/2 -translate-x-1/2 px-3 py-1 rounded-xl bg-[#0D1B2A]/90 border border-[#79D7D2]/50 text-[12px] font-black text-[#79D7D2] shadow-lg backdrop-blur-md">
                 45%
+              </div>
+            </div>
+
+            {/* Summary Card */}
+            <div className="w-full bg-white/5 border border-white/10 rounded-3xl p-4 backdrop-blur-md space-y-2 mt-4">
+              <div className="flex items-baseline gap-2">
+                <span className="text-[24px] font-black text-[#79D7D2] leading-none">45%</span>
+                <span className="text-[12px] font-bold text-white/70 leading-snug">kebutuhan gizi harian terpenuhi</span>
+              </div>
+              <div className="h-px bg-white/8" />
+              <div className="flex items-center justify-between text-[10.5px]">
+                <span className="font-black text-white">{citizenUser?.name || "Oscar Ryanda Putra"}</span>
+                <span className="text-white/40 font-medium">9 Tahun · Kec. {citizenUser?.district || "Kebomas"}</span>
               </div>
             </div>
           </div>
 
-          {/* Bottom Card Summary & Action Buttons */}
-          <div className="space-y-2">
-            {/* Info Summary Card */}
-            <div className="bg-white rounded-2xl p-2.5 shadow-md border-2 border-white space-y-0.5">
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-[16px] font-black text-brand-orange">45%</span>
-                <span className="text-[11px] font-bold text-ford-blue">
-                  kebutuhan gizi harian Anda terpenuhi
-                </span>
-              </div>
-              <div className="border-t border-slate-100 pt-1 flex items-center justify-between text-[10px]">
-                <span className="font-bold text-ford-blue">
-                  {citizenUser?.name || "Oscar Ryanda Putra"}
-                </span>
-                <span className="text-slate-500 font-medium">
-                  9 Tahun • Kec. {citizenUser?.district || "Kebomas"}
-                </span>
-              </div>
-            </div>
+          {/* ─── ACTION BUTTONS ─── */}
+          <div className="px-4 pb-6 pt-3 grid grid-cols-3 gap-2">
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              onClick={() => setScreeningStep(1)}
+              className="py-3 rounded-2xl bg-white/8 border border-white/15 text-white font-bold text-[11px] cursor-pointer text-center backdrop-blur-md"
+            >
+              ← Kembali
+            </motion.button>
 
-            {/* 3 Action Buttons in a Row: Kembali | Bantuan | Feedback */}
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => setScreeningStep(1)}
-                className="py-2 rounded-xl bg-white/90 hover:bg-white text-ford-blue font-bold text-[11px] shadow-sm border border-white/60 cursor-pointer text-center transition-all active:scale-95"
-              >
-                ← Kembali
-              </button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              onClick={() => setShowHelpModal(true)}
+              className="py-3 rounded-2xl bg-white/8 border border-white/15 text-white/70 font-bold text-[11px] cursor-pointer text-center backdrop-blur-md"
+            >
+              ? Bantuan
+            </motion.button>
 
-              <button
-                type="button"
-                onClick={() => setShowHelpModal(true)}
-                className="py-2 rounded-xl bg-white/90 hover:bg-white text-ford-blue font-bold text-[11px] shadow-sm border border-white/60 cursor-pointer text-center transition-all active:scale-95"
-              >
-                ? Bantuan
-              </button>
-
-              <button
-                type="button"
-                onClick={onNavigateToComplaint}
-                className="py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold text-[11px] shadow-sm cursor-pointer text-center transition-all active:scale-95"
-              >
-                📝 Feedback
-              </button>
-            </div>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              onClick={onNavigateToComplaint}
+              className="py-3 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] font-black text-[11px] cursor-pointer text-center shadow-lg"
+            >
+              Feedback
+            </motion.button>
           </div>
         </div>
       )}
