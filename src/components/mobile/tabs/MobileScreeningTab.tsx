@@ -427,97 +427,89 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
             {/* Dynamic Upper-Aligned HUD Frame SVG */}
             <div className="relative w-full max-w-[310px] sm:max-w-[340px] aspect-[4/5] max-h-[44vh] flex items-center justify-center">
-              {/* FLOW 1: WAJAH (Upper Eye-Level Face Oval Contour) */}
+              {/* FLOW 1: WAJAH — Clean face oval, no text */}
               {captureStepIdx === 0 && (
-                <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
-                  {/* Outer Corner Frame Brackets */}
-                  <path d="M 30,50 L 30,20 L 60,20" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 270,50 L 270,20 L 240,20" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 30,310 L 30,340 L 60,340" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 270,310 L 270,340 L 240,340" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-
-                  {/* Face Oval Guideline */}
-                  <ellipse cx="150" cy="175" rx="85" ry="115" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" strokeDasharray="6 6" />
-                  <ellipse cx="150" cy="175" rx="90" ry="120" fill="none" stroke="#23B5A8" strokeWidth="1.5" opacity="0.6" />
-
-                  {/* Eye Level Line */}
-                  <line x1="75" y1="155" x2="225" y2="155" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.8" />
-                  <circle cx="110" cy="155" r="14" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
-                  <circle cx="190" cy="155" r="14" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
-                  <circle cx="110" cy="155" r="3" fill="#23B5A8" />
-                  <circle cx="190" cy="155" r="3" fill="#23B5A8" />
-
-                  {/* Chin Anchor Point */}
-                  <path d="M 130,290 Q 150,300 170,290" fill="none" stroke="#79D7D2" strokeWidth="2" strokeLinecap="round" />
+                <svg viewBox="0 0 300 340" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
+                  {/* Corner Brackets */}
+                  <path d="M 30,40 L 30,12 L 58,12" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 270,40 L 270,12 L 242,12" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 30,295 L 30,323 L 58,323" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 270,295 L 270,323 L 242,323" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  {/* Face Oval */}
+                  <ellipse cx="150" cy="162" rx="87" ry="117" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" strokeDasharray="6 6" />
+                  <ellipse cx="150" cy="162" rx="92" ry="122" fill="none" stroke="#23B5A8" strokeWidth="1.5" opacity="0.55" />
+                  {/* Eye Level Crosshairs */}
+                  <line x1="72" y1="142" x2="228" y2="142" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.75" />
+                  <circle cx="110" cy="142" r="13" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
+                  <circle cx="190" cy="142" r="13" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
+                  <circle cx="110" cy="142" r="3" fill="#23B5A8" />
+                  <circle cx="190" cy="142" r="3" fill="#23B5A8" />
+                  {/* Chin Anchor */}
+                  <path d="M 130,279 Q 150,290 170,279" fill="none" stroke="#79D7D2" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               )}
 
-              {/* FLOW 2: MATA (Upper Eye-Level Dual Ocular Frame - Clean Without Text) */}
+              {/* FLOW 2: MATA — Clean dual eye reticles, no text at all */}
               {captureStepIdx === 1 && (
-                <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
-                  {/* Left Eye Reticle Frame */}
-                  <g transform="translate(35, 110)">
-                    <rect x="0" y="0" width="105" height="95" rx="18" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
-                    <circle cx="52.5" cy="47.5" r="26" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
-                    <circle cx="52.5" cy="47.5" r="8" fill="#23B5A8" opacity="0.8" />
-                    {/* Lower Conjunctiva Arc */}
-                    <path d="M 25,68 Q 52.5,82 80,68" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
+                <svg viewBox="0 0 300 340" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
+                  {/* Left Eye Reticle */}
+                  <g transform="translate(28, 100)">
+                    <rect x="0" y="0" width="108" height="98" rx="18" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
+                    <circle cx="54" cy="49" r="27" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+                    <circle cx="54" cy="49" r="8" fill="#23B5A8" opacity="0.8" />
+                    {/* Conjunctiva arc — visual only, no text */}
+                    <path d="M 22,72 Q 54,88 86,72" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
                   </g>
-
-                  {/* Right Eye Reticle Frame */}
-                  <g transform="translate(160, 110)">
-                    <rect x="0" y="0" width="105" height="95" rx="18" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
-                    <circle cx="52.5" cy="47.5" r="26" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
-                    <circle cx="52.5" cy="47.5" r="8" fill="#23B5A8" opacity="0.8" />
-                    {/* Lower Conjunctiva Arc */}
-                    <path d="M 25,68 Q 52.5,82 80,68" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
+                  {/* Right Eye Reticle */}
+                  <g transform="translate(164, 100)">
+                    <rect x="0" y="0" width="108" height="98" rx="18" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
+                    <circle cx="54" cy="49" r="27" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+                    <circle cx="54" cy="49" r="8" fill="#23B5A8" opacity="0.8" />
+                    <path d="M 22,72 Q 54,88 86,72" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
                   </g>
-
-                  {/* Center Alignment Bridge */}
-                  <line x1="140" y1="157.5" x2="160" y2="157.5" stroke="#79D7D2" strokeWidth="2" strokeDasharray="3 3" />
+                  {/* Bridge */}
+                  <line x1="136" y1="149" x2="164" y2="149" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.7" />
                 </svg>
               )}
 
-              {/* FLOW 3: TANGAN (Upper Eye-Level Hand Palm Contour) */}
+              {/* FLOW 3: TANGAN — Clean hand outline, no text */}
               {captureStepIdx === 2 && (
-                <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
-                  {/* Outer Frame Brackets */}
-                  <path d="M 40,50 L 40,20 L 70,20" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 260,50 L 260,20 L 230,20" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 40,310 L 40,340 L 70,340" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 260,310 L 260,340 L 230,340" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-
-                  {/* Stylized Hand Silhouette Outline */}
+                <svg viewBox="0 0 300 340" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
+                  {/* Corner Brackets */}
+                  <path d="M 40,40 L 40,12 L 68,12" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 260,40 L 260,12 L 232,12" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 40,295 L 40,323 L 68,323" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 260,295 L 260,323 L 232,323" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  {/* Hand Silhouette */}
                   <path
-                    d="M 110,310 L 110,235 C 100,215 80,175 80,135 C 80,120 95,120 95,135 L 95,195 L 115,95 C 115,80 130,80 130,95 L 130,185 L 145,75 C 145,60 160,60 160,75 L 160,185 L 175,90 C 175,75 190,75 190,90 L 190,195 L 205,125 C 205,110 220,110 220,125 C 220,165 200,235 190,245 L 190,310 Z"
+                    d="M 110,300 L 110,225 C 100,205 80,165 80,125 C 80,110 95,110 95,125 L 95,185 L 115,85 C 115,70 130,70 130,85 L 130,175 L 145,65 C 145,50 160,50 160,65 L 160,175 L 175,80 C 175,65 190,65 190,80 L 190,185 L 205,115 C 205,100 220,100 220,115 C 220,155 200,225 190,235 L 190,300 Z"
                     fill="rgba(35,181,168,0.06)"
                     stroke="rgba(255,255,255,0.8)"
                     strokeWidth="2"
                     strokeDasharray="6 4"
                   />
-
-                  {/* Central Elasticity / Turgor Sensor Ring */}
-                  <circle cx="150" cy="220" r="28" fill="none" stroke="#79D7D2" strokeWidth="2" />
-                  <circle cx="150" cy="220" r="4" fill="#23B5A8" />
+                  {/* Turgor Sensor Ring — no text */}
+                  <circle cx="150" cy="210" r="26" fill="none" stroke="#79D7D2" strokeWidth="2" />
+                  <circle cx="150" cy="210" r="4" fill="#23B5A8" />
                 </svg>
               )}
 
-              {/* FLOW 4: KUKU (Upper Eye-Level 4 Nail Bed Grid) */}
+              {/* FLOW 4: KUKU — 4 nail beds, finger labels only (small, minimal), no legend box */}
               {captureStepIdx === 3 && (
-                <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
-                  {/* 4 Finger Nail Target Boxes */}
+                <svg viewBox="0 0 300 340" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
                   {[
-                    { x: 45, label: "Telunjuk" },
-                    { x: 100, label: "Tengah" },
-                    { x: 155, label: "Manis" },
-                    { x: 210, label: "Kelingking" },
+                    { x: 38, label: "Telunjuk" },
+                    { x: 97, label: "Tengah" },
+                    { x: 156, label: "Manis" },
+                    { x: 215, label: "Kelingking" },
                   ].map((nail, i) => (
-                    <g key={i} transform={`translate(${nail.x}, 105)`}>
-                      <rect x="0" y="0" width="45" height="85" rx="14" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="4 3" />
+                    <g key={i} transform={`translate(${nail.x}, 90)`}>
+                      <rect x="0" y="0" width="48" height="90" rx="14" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="4 3" />
                       {/* Nail Arc */}
-                      <path d="M 8,24 Q 22.5,8 37,24 L 37,50 Q 22.5,54 8,50 Z" fill="rgba(255,255,255,0.2)" stroke="#FFFFFF" strokeWidth="1.5" />
-                      <circle cx="22.5" cy="34" r="3" fill="#23B5A8" />
-                      <text x="22.5" y="104" fill="#79D7D2" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{nail.label}</text>
+                      <path d="M 8,24 Q 24,8 40,24 L 40,50 Q 24,54 8,50 Z" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" strokeWidth="1.5" />
+                      <circle cx="24" cy="34" r="3" fill="#23B5A8" />
+                      {/* Minimal finger label under each box */}
+                      <text x="24" y="108" fill="rgba(121,215,210,0.75)" fontSize="7.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{nail.label}</text>
                     </g>
                   ))}
                 </svg>
