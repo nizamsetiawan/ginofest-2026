@@ -5,23 +5,18 @@ import {
   ArrowLeft,
   Eye,
   EyeOff,
-  ChevronDown,
   AlertCircle,
   CheckCircle2,
-  RefreshCw,
-  Send
+  RefreshCw
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 interface MobileForgotPasswordScreenProps {
   forgotStep: 1 | 2 | 3;
   setForgotStep: (step: 1 | 2 | 3) => void;
   forgotEmail: string;
   setForgotEmail: (val: string) => void;
-  forgotDistrict: string;
-  setForgotDistrict: (val: string) => void;
   inputOtp: string;
   setInputOtp: (val: string) => void;
   otpResendCountdown: number;
@@ -51,8 +46,6 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
   setForgotStep,
   forgotEmail,
   setForgotEmail,
-  forgotDistrict,
-  setForgotDistrict,
   inputOtp,
   setInputOtp,
   otpResendCountdown,
@@ -148,14 +141,14 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
         </div>
       </div>
 
-      {/* Main Elevated Card */}
+      {/* Main Elevated Card Container */}
       <motion.div 
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="my-auto bg-white rounded-3xl p-5 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-3.5"
+        className="my-auto bg-white rounded-3xl p-5 sm:p-6 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-4"
       >
-        {/* Brand Logo Header */}
+        {/* Brand Logo & Header */}
         <div className="text-center space-y-1 pt-1 pb-1">
           <div className="flex items-center justify-center gap-2">
             <div className="relative">
@@ -168,12 +161,14 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
           </div>
           <h2 className="text-[15px] font-black text-ford-blue">Atur Ulang Kata Sandi</h2>
           <p className="text-[11.5px] text-slate-500 font-medium leading-snug px-1">
-            Pulihkan akses akun Anda untuk kembali ke portal gizi
+            {forgotStep === 1 && "Verifikasi akun melalui email terdaftar"}
+            {forgotStep === 2 && "Masukkan kode OTP verifikasi"}
+            {forgotStep === 3 && "Buat kata sandi baru untuk akun Anda"}
           </p>
         </div>
 
-        {/* 3-Step Progress Indicator */}
-        <div className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-[11px] font-bold">
+        {/* Step Indicator */}
+        <div className="flex items-center justify-center gap-2 py-1 text-[11px] font-bold">
           <div className={`flex items-center gap-1.5 ${forgotStep >= 1 ? "text-[#23B5A8]" : "text-slate-400"}`}>
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${forgotStep >= 1 ? "bg-[#23B5A8] text-white" : "bg-slate-200 text-slate-500"}`}>1</span>
             <span>Email</span>
@@ -190,33 +185,7 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
           </div>
         </div>
 
-        {/* Error & Success Feedback Alerts */}
-        <AnimatePresence>
-          {resetErrorMsg && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11px] font-medium flex items-center gap-1.5"
-            >
-              <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
-              <span>{resetErrorMsg}</span>
-            </motion.div>
-          )}
-          {resetSuccessMsg && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="p-3 rounded-2xl bg-[#79D7D2]/15 border border-[#79D7D2]/40 text-ford-blue text-[11px] font-medium flex items-center gap-1.5"
-            >
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#23B5A8]" />
-              <span>{resetSuccessMsg}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ═══ TAHAP 1: INPUT EMAIL & KECAMATAN ═══ */}
+        {/* ═══ TAHAP 1: INPUT EMAIL ═══ */}
         {forgotStep === 1 && (
           <form onSubmit={(e) => { triggerHaptic(); onSendOtp(e); }} className="space-y-3.5">
             <div className="space-y-1">
@@ -233,27 +202,31 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
               />
             </div>
 
-            <div className="space-y-1">
-              <label className="text-[11.5px] font-bold text-ford-blue block">
-                Kecamatan Domisili <span className="text-brand-red">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={forgotDistrict}
-                  onChange={(e) => setForgotDistrict(e.target.value)}
-                  required
-                  className={`w-full h-12 px-4 pr-9 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium transition-all cursor-pointer appearance-none ${
-                    !forgotDistrict ? "text-slate-400 border-slate-200" : "text-ford-blue font-bold border-slate-200 focus:border-[#23B5A8]"
-                  }`}
+            {/* Inline Error/Success Label */}
+            <AnimatePresence>
+              {resetErrorMsg && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="text-[11px] text-brand-red font-semibold flex items-center gap-1.5 pt-0.5"
                 >
-                  <option value="" disabled>-- Pilih Kecamatan di Gresik --</option>
-                  {GRESIK_DISTRICTS.slice(0, 18).map((d) => (
-                    <option key={d.id} value={d.name} className="text-ford-blue font-medium">Kecamatan {d.name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none stroke-[1.75]" />
-              </div>
-            </div>
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{resetErrorMsg}</span>
+                </motion.p>
+              )}
+              {resetSuccessMsg && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="text-[11px] text-[#23B5A8] font-semibold flex items-center gap-1.5 pt-0.5"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>{resetSuccessMsg}</span>
+                </motion.p>
+              )}
+            </AnimatePresence>
 
             <p className="text-[11px] text-slate-500 leading-relaxed pt-0.5">
               Kami akan mengirimkan 6 digit kode OTP ke email di atas untuk memvalidasi kepemilikan akun keluarga Anda.
@@ -269,13 +242,10 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 {isResettingPassword ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Memverifikasi Wilayah &amp; Mengirim OTP...</span>
+                    <span>Mengirim OTP...</span>
                   </>
                 ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    <span>Kirim Kode OTP</span>
-                  </>
+                  <span>Kirim Kode OTP</span>
                 )}
               </motion.button>
             </div>
@@ -304,6 +274,21 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 className="w-full h-13 px-4 rounded-2xl bg-[#F8FAFC] border-2 border-[#79D7D2]/40 focus:border-[#23B5A8] text-center font-mono text-[22px] tracking-[0.5em] font-black text-ford-blue focus:bg-white focus:outline-none transition-all placeholder:tracking-normal placeholder:text-slate-300"
               />
             </div>
+
+            {/* Inline Error/Success Label */}
+            <AnimatePresence>
+              {resetErrorMsg && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="text-[11px] text-brand-red font-semibold flex items-center justify-center gap-1.5 pt-0.5 text-center"
+                >
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{resetErrorMsg}</span>
+                </motion.p>
+              )}
+            </AnimatePresence>
 
             {/* Resend OTP button & timer */}
             <div className="text-center text-[11px] text-slate-500">
@@ -395,6 +380,32 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
                 </button>
               </div>
             </div>
+
+            {/* Inline Error/Success Label */}
+            <AnimatePresence>
+              {resetErrorMsg && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="text-[11px] text-brand-red font-semibold flex items-center gap-1.5 pt-0.5"
+                >
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{resetErrorMsg}</span>
+                </motion.p>
+              )}
+              {resetSuccessMsg && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="text-[11px] text-[#23B5A8] font-semibold flex items-center gap-1.5 pt-0.5"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>{resetSuccessMsg}</span>
+                </motion.p>
+              )}
+            </AnimatePresence>
 
             <div className="pt-2 flex items-center gap-2.5">
               <motion.button

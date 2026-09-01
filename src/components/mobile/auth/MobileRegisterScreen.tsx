@@ -103,21 +103,6 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
           </p>
         </div>
 
-        {/* Global Error Banner */}
-        <AnimatePresence>
-          {authError && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11.5px] font-medium flex items-center gap-2"
-            >
-              <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
-              <span>{authError}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         <form onSubmit={(e) => { triggerHaptic(); onRegister(e); }} className="space-y-3">
           {/* 1. Nama Lengkap */}
           <div className="space-y-1">
@@ -195,6 +180,21 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             )}
           </div>
 
+          {/* Global Auth Error Inline Message */}
+          <AnimatePresence>
+            {authError && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                className="text-[11px] text-brand-red font-semibold flex items-center gap-1.5 pt-0.5"
+              >
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{authError}</span>
+              </motion.p>
+            )}
+          </AnimatePresence>
+
           {/* Submit Button */}
           <div className="pt-2">
             <motion.button
@@ -209,7 +209,7 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
                   <span>Mendaftarkan Akun...</span>
                 </>
               ) : (
-                <span>Daftarkan Akun Keluarga</span>
+                <span>Daftar Sekarang</span>
               )}
             </motion.button>
           </div>

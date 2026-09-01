@@ -1168,12 +1168,12 @@ export async function loginCitizenFromFirestore(
 
 export async function verifyCitizenEmailAndDistrict(
   email: string,
-  district: string
+  district?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const colRef = collection(db, "kcal_masyarakat");
     const cleanEmail = email.trim().toLowerCase();
-    const cleanDistrict = district.trim();
+    const cleanDistrict = district ? district.trim() : "";
 
     const q = query(colRef, where("email", "==", cleanEmail));
     const snap = await getDocs(q);
@@ -1186,7 +1186,7 @@ export async function verifyCitizenEmailAndDistrict(
     }
 
     const userData = snap.docs[0].data();
-    if (userData.district && userData.district.trim().toLowerCase() !== cleanDistrict.toLowerCase()) {
+    if (cleanDistrict && userData.district && userData.district.trim().toLowerCase() !== cleanDistrict.toLowerCase()) {
       return {
         success: false,
         error: `Kecamatan domisili tidak cocok. Akun ${cleanEmail} terdaftar di Kecamatan ${userData.district}. Silakan pilih Kecamatan ${userData.district}.`,
@@ -1195,7 +1195,7 @@ export async function verifyCitizenEmailAndDistrict(
 
     return { success: true };
   } catch (err: any) {
-    console.error("Error verifying citizen district:", err);
+    console.error("Error verifying citizen email:", err);
     return { success: false, error: err.message || "Gagal memverifikasi data akun." };
   }
 }

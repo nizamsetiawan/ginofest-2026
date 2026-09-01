@@ -7,8 +7,7 @@ import {
   Download,
   AlertCircle,
   CheckCircle2,
-  RefreshCw,
-  Sparkles
+  RefreshCw
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -130,21 +129,6 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
           )}
         </AnimatePresence>
 
-        {/* Error Message if any */}
-        <AnimatePresence>
-          {authError && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="p-3 rounded-2xl bg-red-50 border border-brand-red/25 text-brand-red text-[11.5px] font-medium flex items-center gap-2"
-            >
-              <AlertCircle className="w-4 h-4 shrink-0 text-brand-red" />
-              <span>{authError}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Login Form */}
         <form onSubmit={(e) => { triggerHaptic(); onLogin(e); }} className="space-y-3.5">
           {/* Alamat Email */}
@@ -185,8 +169,23 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
             </div>
           </div>
 
+          {/* Inline Error Message */}
+          <AnimatePresence>
+            {authError && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                className="text-[11px] text-brand-red font-semibold flex items-center gap-1.5 pt-0.5"
+              >
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{authError}</span>
+              </motion.p>
+            )}
+          </AnimatePresence>
+
           {/* Remember Me & Forgot Password Row */}
-          <div className="flex items-center justify-between text-[11.5px] pt-1">
+          <div className="flex items-center justify-between text-[11.5px] pt-0.5">
             <label className="flex items-center gap-2 cursor-pointer select-none text-slate-600 font-medium">
               <input
                 type="checkbox"
@@ -240,10 +239,7 @@ export const MobileLoginScreen: React.FC<MobileLoginScreenProps> = ({
                   <span>Memverifikasi Akun...</span>
                 </>
               ) : (
-                <>
-                  <span>Masuk ke Portal</span>
-                  <Sparkles className="w-4 h-4 text-ford-blue" />
-                </>
+                <span>Masuk</span>
               )}
             </motion.button>
           </div>

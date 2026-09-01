@@ -496,17 +496,13 @@ export const CitizenMobileApp: React.FC = () => {
       setResetErrorMsg("Masukkan alamat email terdaftar yang valid.");
       return;
     }
-    if (!forgotDistrict) {
-      setResetErrorMsg("Silakan pilih kecamatan domisili Anda.");
-      return;
-    }
 
     setIsResettingPassword(true);
-    const verifyRes = await verifyCitizenEmailAndDistrict(forgotEmail.trim(), forgotDistrict);
+    const verifyRes = await verifyCitizenEmailAndDistrict(forgotEmail.trim());
     setIsResettingPassword(false);
 
     if (!verifyRes.success) {
-      setResetErrorMsg(verifyRes.error || "Email dan kecamatan tidak cocok.");
+      setResetErrorMsg(verifyRes.error || "Alamat email tidak ditemukan.");
       return;
     }
 
@@ -515,7 +511,7 @@ export const CitizenMobileApp: React.FC = () => {
     setForgotStep(2);
     setOtpResendCountdown(60);
     setSimulatedEmailNotification(randomOtp);
-    setResetSuccessMsg(`Kode OTP 6-digit berhasil dikirimkan ke ${forgotEmail.trim()} (Kecamatan ${forgotDistrict}).`);
+    setResetSuccessMsg(`Kode OTP 6-digit berhasil dikirimkan ke ${forgotEmail.trim()}.`);
   };
 
   const handleVerifyOtp = (e: React.FormEvent) => {
@@ -546,13 +542,12 @@ export const CitizenMobileApp: React.FC = () => {
     }
 
     setIsResettingPassword(true);
-    const res = await resetCitizenPasswordInFirestore(forgotEmail.trim(), forgotNewPassword, forgotDistrict);
+    const res = await resetCitizenPasswordInFirestore(forgotEmail.trim(), forgotNewPassword);
     setIsResettingPassword(false);
 
     if (res.success) {
       setResetSuccessMsg("Kata sandi berhasil diperbarui! Mengalihkan ke halaman masuk...");
       setLoginIdentifier(forgotEmail.trim());
-      setLoginDistrict(forgotDistrict);
       setLoginPassword(forgotNewPassword);
 
       try {
@@ -561,7 +556,6 @@ export const CitizenMobileApp: React.FC = () => {
           localStorage.setItem("kcal_citizen_remembered_credentials", JSON.stringify({
             email: forgotEmail.trim(),
             password: forgotNewPassword,
-            district: forgotDistrict,
             rememberMe: true,
           }));
         }
@@ -867,8 +861,6 @@ export const CitizenMobileApp: React.FC = () => {
                 setForgotStep={setForgotStep}
                 forgotEmail={forgotEmail}
                 setForgotEmail={setForgotEmail}
-                forgotDistrict={forgotDistrict}
-                setForgotDistrict={setForgotDistrict}
                 inputOtp={inputOtp}
                 setInputOtp={setInputOtp}
                 otpResendCountdown={otpResendCountdown}
