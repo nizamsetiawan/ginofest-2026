@@ -754,130 +754,178 @@ export const CitizenMobileApp: React.FC = () => {
           </div>
         )}
 
-        {/* ═══ 1. SPLASH SCREEN ═══ */}
-        {currentScreen === "splash" && (
-          <MobileSplashScreen
-            onContinue={() => setCurrentScreen("onboarding")}
-          />
-        )}
+        {/* ═══ SCREEN ROUTER WITH FRAMER MOTION TRANSITIONS ═══ */}
+        <AnimatePresence mode="wait" initial={false}>
+          {/* 1. SPLASH SCREEN */}
+          {currentScreen === "splash" && (
+            <motion.div
+              key="splash"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="h-full w-full"
+            >
+              <MobileSplashScreen
+                onContinue={() => setCurrentScreen("onboarding")}
+              />
+            </motion.div>
+          )}
 
-        {/* ═══ 2. ONBOARDING SCREEN ═══ */}
-        {currentScreen === "onboarding" && (
-          <MobileOnboardingScreen
-            onSkip={() => setCurrentScreen("login")}
-            onFinish={() => setCurrentScreen("login")}
-          />
-        )}
+          {/* 2. ONBOARDING SCREEN */}
+          {currentScreen === "onboarding" && (
+            <motion.div
+              key="onboarding"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="h-full w-full"
+            >
+              <MobileOnboardingScreen
+                onSkip={() => setCurrentScreen("login")}
+                onFinish={() => setCurrentScreen("login")}
+              />
+            </motion.div>
+          )}
 
-        {/* ═══ 3. LOGIN SCREEN ═══ */}
-        {currentScreen === "login" && (
-          <MobileLoginScreen
-            loginIdentifier={loginIdentifier}
-            setLoginIdentifier={setLoginIdentifier}
-            loginPassword={loginPassword}
-            setLoginPassword={setLoginPassword}
-            loginDistrict={loginDistrict}
-            setLoginDistrict={setLoginDistrict}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-            rememberMe={rememberMe}
-            setRememberMe={setRememberMe}
-            agreePrivacy={agreePrivacy}
-            setAgreePrivacy={setAgreePrivacy}
-            isSubmittingAuth={isSubmittingAuth}
-            authError={authError}
-            authSuccessSnackbar={authSuccessSnackbar}
-            isStandalone={isStandalone}
-            onInstallPWA={handleInstallPWA}
-            onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
-            onLogin={handleLogin}
-            onNavigateToRegister={() => {
-              setAuthError("");
-              setCurrentScreen("register");
-            }}
-            onNavigateToForgotPassword={() => {
-              setAuthError("");
-              setResetErrorMsg("");
-              setResetSuccessMsg("");
-              setForgotStep(1);
-              setCurrentScreen("forgot_password");
-            }}
-          />
-        )}
+          {/* 3. LOGIN SCREEN */}
+          {currentScreen === "login" && (
+            <motion.div
+              key="login"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="h-full w-full"
+            >
+              <MobileLoginScreen
+                loginIdentifier={loginIdentifier}
+                setLoginIdentifier={setLoginIdentifier}
+                loginPassword={loginPassword}
+                setLoginPassword={setLoginPassword}
+                loginDistrict={loginDistrict}
+                setLoginDistrict={setLoginDistrict}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                rememberMe={rememberMe}
+                setRememberMe={setRememberMe}
+                agreePrivacy={agreePrivacy}
+                setAgreePrivacy={setAgreePrivacy}
+                isSubmittingAuth={isSubmittingAuth}
+                authError={authError}
+                authSuccessSnackbar={authSuccessSnackbar}
+                isStandalone={isStandalone}
+                onInstallPWA={handleInstallPWA}
+                onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
+                onLogin={handleLogin}
+                onNavigateToRegister={() => {
+                  setAuthError("");
+                  setCurrentScreen("register");
+                }}
+                onNavigateToForgotPassword={() => {
+                  setAuthError("");
+                  setResetErrorMsg("");
+                  setResetSuccessMsg("");
+                  setForgotStep(1);
+                  setCurrentScreen("forgot_password");
+                }}
+              />
+            </motion.div>
+          )}
 
-        {/* ═══ 4. REGISTER SCREEN ═══ */}
-        {currentScreen === "register" && (
-          <MobileRegisterScreen
-            regFullName={regFullName}
-            setRegFullName={setRegFullName}
-            regEmail={regEmail}
-            setRegEmail={setRegEmail}
-            regPhone={regPhone}
-            setRegPhone={setRegPhone}
-            regDistrict={regDistrict}
-            setRegDistrict={setRegDistrict}
-            regPassword={regPassword}
-            setRegPassword={setRegPassword}
-            regConfirmPassword={regConfirmPassword}
-            setRegConfirmPassword={setRegConfirmPassword}
-            showRegPassword={showRegPassword}
-            setShowRegPassword={setShowRegPassword}
-            showRegConfirmPassword={showRegConfirmPassword}
-            setShowRegConfirmPassword={setShowRegConfirmPassword}
-            agreeRegPrivacy={agreeRegPrivacy}
-            setAgreeRegPrivacy={setAgreeRegPrivacy}
-            fieldErrors={fieldErrors}
-            setFieldErrors={setFieldErrors}
-            authError={authError}
-            setAuthError={setAuthError}
-            isSubmittingAuth={isSubmittingAuth}
-            onRegister={handleRegister}
-            onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
-            onNavigateToLogin={() => {
-              setAuthError("");
-              setFieldErrors({});
-              setCurrentScreen("login");
-            }}
-          />
-        )}
+          {/* 4. REGISTER SCREEN */}
+          {currentScreen === "register" && (
+            <motion.div
+              key="register"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="h-full w-full"
+            >
+              <MobileRegisterScreen
+                regFullName={regFullName}
+                setRegFullName={setRegFullName}
+                regEmail={regEmail}
+                setRegEmail={setRegEmail}
+                regPhone={regPhone}
+                setRegPhone={setRegPhone}
+                regDistrict={regDistrict}
+                setRegDistrict={setRegDistrict}
+                regPassword={regPassword}
+                setRegPassword={setRegPassword}
+                regConfirmPassword={regConfirmPassword}
+                setRegConfirmPassword={setRegConfirmPassword}
+                showRegPassword={showRegPassword}
+                setShowRegPassword={setShowRegPassword}
+                showRegConfirmPassword={showRegConfirmPassword}
+                setShowRegConfirmPassword={setShowRegConfirmPassword}
+                agreeRegPrivacy={agreeRegPrivacy}
+                setAgreeRegPrivacy={setAgreeRegPrivacy}
+                fieldErrors={fieldErrors}
+                setFieldErrors={setFieldErrors}
+                authError={authError}
+                setAuthError={setAuthError}
+                isSubmittingAuth={isSubmittingAuth}
+                onRegister={handleRegister}
+                onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
+                onNavigateToLogin={() => {
+                  setAuthError("");
+                  setFieldErrors({});
+                  setCurrentScreen("login");
+                }}
+              />
+            </motion.div>
+          )}
 
-        {/* ═══ 5. FORGOT PASSWORD SCREEN ═══ */}
-        {currentScreen === "forgot_password" && (
-          <MobileForgotPasswordScreen
-            forgotStep={forgotStep}
-            setForgotStep={setForgotStep}
-            forgotEmail={forgotEmail}
-            setForgotEmail={setForgotEmail}
-            forgotDistrict={forgotDistrict}
-            setForgotDistrict={setForgotDistrict}
-            inputOtp={inputOtp}
-            setInputOtp={setInputOtp}
-            otpResendCountdown={otpResendCountdown}
-            forgotNewPassword={forgotNewPassword}
-            setForgotNewPassword={setForgotNewPassword}
-            forgotConfirmPassword={forgotConfirmPassword}
-            setForgotConfirmPassword={setForgotConfirmPassword}
-            showForgotPass={showForgotPass}
-            setShowForgotPass={setShowForgotPass}
-            showForgotConfirmPass={showForgotConfirmPass}
-            setShowForgotConfirmPass={setShowForgotConfirmPass}
-            isResettingPassword={isResettingPassword}
-            resetSuccessMsg={resetSuccessMsg}
-            setResetSuccessMsg={setResetSuccessMsg}
-            resetErrorMsg={resetErrorMsg}
-            setResetErrorMsg={setResetErrorMsg}
-            simulatedEmailNotification={simulatedEmailNotification}
-            setSimulatedEmailNotification={setSimulatedEmailNotification}
-            onSendOtp={handleSendOtp}
-            onVerifyOtp={handleVerifyOtp}
-            onSaveNewPassword={handleSaveNewPassword}
-            onNavigateToLogin={() => {
-              setResetErrorMsg("");
-              setResetSuccessMsg("");
-              setCurrentScreen("login");
-            }}
-          />
-        )}
+          {/* 5. FORGOT PASSWORD SCREEN */}
+          {currentScreen === "forgot_password" && (
+            <motion.div
+              key="forgot_password"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="h-full w-full"
+            >
+              <MobileForgotPasswordScreen
+                forgotStep={forgotStep}
+                setForgotStep={setForgotStep}
+                forgotEmail={forgotEmail}
+                setForgotEmail={setForgotEmail}
+                forgotDistrict={forgotDistrict}
+                setForgotDistrict={setForgotDistrict}
+                inputOtp={inputOtp}
+                setInputOtp={setInputOtp}
+                otpResendCountdown={otpResendCountdown}
+                forgotNewPassword={forgotNewPassword}
+                setForgotNewPassword={setForgotNewPassword}
+                forgotConfirmPassword={forgotConfirmPassword}
+                setForgotConfirmPassword={setForgotConfirmPassword}
+                showForgotPass={showForgotPass}
+                setShowForgotPass={setShowForgotPass}
+                showForgotConfirmPass={showForgotConfirmPass}
+                setShowForgotConfirmPass={setShowForgotConfirmPass}
+                isResettingPassword={isResettingPassword}
+                resetSuccessMsg={resetSuccessMsg}
+                setResetSuccessMsg={setResetSuccessMsg}
+                resetErrorMsg={resetErrorMsg}
+                setResetErrorMsg={setResetErrorMsg}
+                simulatedEmailNotification={simulatedEmailNotification}
+                setSimulatedEmailNotification={setSimulatedEmailNotification}
+                onSendOtp={handleSendOtp}
+                onVerifyOtp={handleVerifyOtp}
+                onSaveNewPassword={handleSaveNewPassword}
+                onNavigateToLogin={() => {
+                  setResetErrorMsg("");
+                  setResetSuccessMsg("");
+                  setCurrentScreen("login");
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ═══ 6. MAIN LOGGED-IN PORTAL ═══ */}
         {currentScreen === "main" && (
