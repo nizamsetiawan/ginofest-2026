@@ -304,7 +304,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {screeningStep === 1 && (
         <div className="flex-1 flex flex-col justify-between relative h-full w-full overflow-hidden">
           {/* Background: Live Camera Stream */}
-          <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-950 z-0">
+          <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-900 z-0">
             <video
               ref={videoRef}
               autoPlay
@@ -314,35 +314,35 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             />
             {/* Fallback ambient camera gradient if permission pending */}
             {!isCameraActive && (
-              <div className="absolute inset-0 bg-gradient-to-b from-[#1e293b] via-[#0f172a] to-[#020617] flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-3 backdrop-blur-md">
-                  <Scan className="w-8 h-8 text-[#79D7D2] animate-pulse" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#F0FDF8] via-white to-[#E6F7F2] flex flex-col items-center justify-center p-6 text-center z-10">
+                <div className="w-16 h-16 rounded-3xl bg-white border border-[#23B5A8]/30 shadow-lg flex items-center justify-center mb-3">
+                  <Scan className="w-8 h-8 text-[#0FA89B] animate-pulse" />
                 </div>
-                <p className="text-white/80 text-xs font-bold">Mengakses Sensor Kamera...</p>
-                <p className="text-white/40 text-[11px] mt-1 max-w-xs">Izinkan akses kamera di peramban Anda untuk memulai analisis biometrik</p>
+                <p className="text-slate-800 text-xs font-bold">Mengakses Sensor Kamera...</p>
+                <p className="text-slate-500 text-[11px] mt-1 max-w-xs">Izinkan akses kamera di peramban Anda untuk memulai analisis biometrik</p>
               </div>
             )}
-            {/* Subtle Vignette shadow overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/75 pointer-events-none" />
+            {/* Subtle soft gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/45 pointer-events-none" />
           </div>
 
           {/* ═══ PETUNJUK SCANNING GUIDE DIALOG (AUTO-SHOWS BEFORE PHOTOS BEGIN) ═══ */}
           {showScanGuide && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center px-5 bg-black/75 backdrop-blur-md">
+            <div className="absolute inset-0 z-50 flex items-center justify-center px-5 bg-slate-950/60 backdrop-blur-sm">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="w-full max-w-sm bg-[#0D1B2A]/95 border border-[#79D7D2]/30 rounded-3xl shadow-2xl overflow-hidden"
+                className="w-full max-w-sm bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden"
               >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-[#0FA89B]/30 to-[#79D7D2]/20 px-5 pt-5 pb-3 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-lg flex-shrink-0">
-                    <Scan className="w-6 h-6 text-ford-blue" />
+                <div className="bg-gradient-to-r from-[#0FA89B]/15 via-[#79D7D2]/25 to-[#0FA89B]/10 px-5 pt-5 pb-3.5 flex items-center gap-3 border-b border-slate-100">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-md flex-shrink-0">
+                    <Scan className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-[15px] font-black text-white tracking-tight">Petunjuk Analisis AI</h2>
-                    <p className="text-[11px] text-[#79D7D2] font-semibold">4 Foto Biometrik Berurutan</p>
+                    <h2 className="text-[15px] font-black text-slate-800 tracking-tight">Petunjuk Analisis AI</h2>
+                    <p className="text-[11px] text-[#0FA89B] font-bold">4 Foto Biometrik Berurutan</p>
                   </div>
                 </div>
 
@@ -350,14 +350,14 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <div className="px-5 py-4 space-y-3">
                   {biometricFlow.map((step, idx) => (
                     <div key={step.id} className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#23B5A8]/30 to-[#79D7D2]/20 border border-[#79D7D2]/40 flex items-center justify-center flex-shrink-0 text-[#79D7D2] font-black text-[13px]">
+                      <div className="w-7 h-7 rounded-xl bg-[#0FA89B]/10 border border-[#0FA89B]/25 flex items-center justify-center flex-shrink-0 text-[#0FA89B] font-black text-[12px]">
                         {idx + 1}
                       </div>
                       <div className="flex-1">
-                        <p className="text-[12px] font-black text-white">
+                        <p className="text-[12px] font-black text-slate-800">
                           Foto {idx + 1}: {step.label}
                         </p>
-                        <p className="text-[10.5px] text-slate-400 font-medium leading-snug">{step.desc}</p>
+                        <p className="text-[10.5px] text-slate-500 font-medium leading-snug">{step.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -372,7 +372,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                       if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
                       setShowScanGuide(false);
                     }}
-                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-ford-blue text-[13px] font-black tracking-wide shadow-lg cursor-pointer active:scale-95 transition-transform"
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white text-[13px] font-black tracking-wide shadow-md cursor-pointer active:scale-95 transition-transform"
                   >
                     Mengerti, Mulai Foto
                   </motion.button>
@@ -390,10 +390,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={onBackToHome}
-                className="w-10 h-10 rounded-2xl bg-black/40 hover:bg-black/60 text-white flex items-center justify-center shadow-lg cursor-pointer transition-all border border-white/20 backdrop-blur-md"
+                className="w-10 h-10 rounded-2xl bg-white/90 hover:bg-white text-slate-700 flex items-center justify-center shadow-md cursor-pointer transition-all border border-white/80 backdrop-blur-md"
                 title="Kembali ke Beranda"
               >
-                <ArrowLeft className="w-4.5 h-4.5 text-white stroke-[2.5]" />
+                <ArrowLeft className="w-4.5 h-4.5 text-slate-700 stroke-[2.5]" />
               </motion.button>
 
               {/* Right Action Controls: Flash + Flip only */}
@@ -403,14 +403,14 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   whileTap={{ scale: 0.9 }}
                   type="button"
                   onClick={handleToggleFlash}
-                  className={`w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg cursor-pointer transition-all border border-white/20 backdrop-blur-md ${
+                  className={`w-10 h-10 rounded-2xl flex items-center justify-center shadow-md cursor-pointer transition-all border border-white/80 backdrop-blur-md ${
                     isFlashOn
                       ? "bg-amber-400 text-slate-950 border-amber-300 ring-2 ring-amber-400/50"
-                      : "bg-black/40 hover:bg-black/60 text-white"
+                      : "bg-white/90 hover:bg-white text-slate-700"
                   }`}
                   title={isFlashOn ? "Matikan Flash" : "Nyalakan Flash"}
                 >
-                  {isFlashOn ? <Zap className="w-4 h-4 fill-current text-slate-950" /> : <ZapOff className="w-4 h-4 text-white" />}
+                  {isFlashOn ? <Zap className="w-4 h-4 fill-current text-slate-950" /> : <ZapOff className="w-4 h-4 text-slate-700" />}
                 </motion.button>
 
                 {/* Camera Flip / Rotate Button */}
@@ -418,16 +418,16 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   whileTap={{ scale: 0.9 }}
                   type="button"
                   onClick={handleFlipCamera}
-                  className="w-10 h-10 rounded-2xl bg-black/40 hover:bg-black/60 text-white flex items-center justify-center shadow-lg cursor-pointer transition-all border border-white/20 backdrop-blur-md"
+                  className="w-10 h-10 rounded-2xl bg-white/90 hover:bg-white text-slate-700 flex items-center justify-center shadow-md cursor-pointer transition-all border border-white/80 backdrop-blur-md"
                   title="Putar / Balik Kamera"
                 >
-                  <RotateCw className="w-4 h-4 text-white stroke-[2.2]" />
+                  <RotateCw className="w-4 h-4 text-slate-700 stroke-[2.2]" />
                 </motion.button>
               </div>
             </div>
 
             {/* ═══ 4-STEP SEQUENTIAL PROGRESS FLOW BAR — NO SKIP, TEXT ONLY ═══ */}
-            <div className="flex items-center justify-between gap-1.5 bg-black/45 backdrop-blur-md p-1 rounded-2xl border border-white/15 max-w-sm mx-auto shadow-xl">
+            <div className="flex items-center justify-between gap-1.5 bg-white/90 backdrop-blur-md p-1 rounded-2xl border border-white/80 max-w-sm mx-auto shadow-md">
               {biometricFlow.map((step, idx) => {
                 const isActive = captureStepIdx === idx;
                 const isCompleted = !!capturedPhotos[step.id];
@@ -447,10 +447,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     }}
                     className={`flex-1 py-1.5 px-1.5 rounded-xl text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 select-none ${
                       isActive
-                        ? "bg-gradient-to-r from-[#23B5A8] to-[#79D7D2] text-ford-blue shadow-md font-black cursor-default"
+                        ? "bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white shadow-sm font-black cursor-default"
                         : isCompleted
-                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 cursor-pointer"
-                        : "text-white/35 cursor-not-allowed"
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-pointer"
+                        : "text-slate-400 cursor-not-allowed"
                     }`}
                   >
                     <span className="truncate">{isCompleted ? "✓ " : ""}{step.label}</span>
@@ -472,8 +472,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#79D7D2] to-transparent shadow-[0_0_25px_#23B5A8] animate-bounce [animation-duration:1.2s]" />
 
                 {/* Telemetry Progress Floating Pill */}
-                <div className="px-5 py-2.5 rounded-full bg-black/85 border border-[#79D7D2] text-[#79D7D2] font-mono font-black text-xs backdrop-blur-xl shadow-2xl flex items-center gap-2.5 relative z-40 animate-in zoom-in-95">
-                  <RefreshCw className="w-4 h-4 animate-spin text-[#79D7D2]" />
+                <div className="px-5 py-2.5 rounded-full bg-white/95 border border-[#0FA89B] text-[#0FA89B] font-mono font-black text-xs backdrop-blur-xl shadow-2xl flex items-center gap-2.5 relative z-40 animate-in zoom-in-95">
+                  <RefreshCw className="w-4 h-4 animate-spin text-[#0FA89B]" />
                   <span>MEMINDAI {biometricFlow[captureStepIdx].label.toUpperCase()}: {scanProgress}%</span>
                 </div>
               </div>
@@ -490,10 +490,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   <path d="M 30,295 L 30,323 L 58,323" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
                   <path d="M 270,295 L 270,323 L 242,323" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
                   {/* Face Oval */}
-                  <ellipse cx="150" cy="162" rx="87" ry="117" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" strokeDasharray="6 6" />
-                  <ellipse cx="150" cy="162" rx="92" ry="122" fill="none" stroke="#23B5A8" strokeWidth="1.5" opacity="0.55" />
+                  <ellipse cx="150" cy="162" rx="87" ry="117" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeDasharray="6 6" />
+                  <ellipse cx="150" cy="162" rx="92" ry="122" fill="none" stroke="#23B5A8" strokeWidth="1.5" opacity="0.65" />
                   {/* Eye Level Crosshairs */}
-                  <line x1="72" y1="142" x2="228" y2="142" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.75" />
+                  <line x1="72" y1="142" x2="228" y2="142" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.85" />
                   <circle cx="110" cy="142" r="13" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
                   <circle cx="190" cy="142" r="13" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
                   <circle cx="110" cy="142" r="3" fill="#23B5A8" />
@@ -508,21 +508,21 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <svg viewBox="0 0 300 340" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
                   {/* Left Eye Reticle */}
                   <g transform="translate(28, 100)">
-                    <rect x="0" y="0" width="108" height="98" rx="18" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
-                    <circle cx="54" cy="49" r="27" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
-                    <circle cx="54" cy="49" r="8" fill="#23B5A8" opacity="0.8" />
+                    <rect x="0" y="0" width="108" height="98" rx="18" fill="rgba(35,181,168,0.12)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
+                    <circle cx="54" cy="49" r="27" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2" />
+                    <circle cx="54" cy="49" r="8" fill="#23B5A8" opacity="0.85" />
                     {/* Conjunctiva arc — visual only, no text */}
-                    <path d="M 22,72 Q 54,88 86,72" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
+                    <path d="M 22,72 Q 54,88 86,72" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
                   </g>
                   {/* Right Eye Reticle */}
                   <g transform="translate(164, 100)">
-                    <rect x="0" y="0" width="108" height="98" rx="18" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
-                    <circle cx="54" cy="49" r="27" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
-                    <circle cx="54" cy="49" r="8" fill="#23B5A8" opacity="0.8" />
-                    <path d="M 22,72 Q 54,88 86,72" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
+                    <rect x="0" y="0" width="108" height="98" rx="18" fill="rgba(35,181,168,0.12)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
+                    <circle cx="54" cy="49" r="27" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2" />
+                    <circle cx="54" cy="49" r="8" fill="#23B5A8" opacity="0.85" />
+                    <path d="M 22,72 Q 54,88 86,72" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
                   </g>
                   {/* Bridge */}
-                  <line x1="136" y1="149" x2="164" y2="149" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.7" />
+                  <line x1="136" y1="149" x2="164" y2="149" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.8" />
                 </svg>
               )}
 
@@ -537,8 +537,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   {/* Hand Silhouette */}
                   <path
                     d="M 110,300 L 110,225 C 100,205 80,165 80,125 C 80,110 95,110 95,125 L 95,185 L 115,85 C 115,70 130,70 130,85 L 130,175 L 145,65 C 145,50 160,50 160,65 L 160,175 L 175,80 C 175,65 190,65 190,80 L 190,185 L 205,115 C 205,100 220,100 220,115 C 220,155 200,225 190,235 L 190,300 Z"
-                    fill="rgba(35,181,168,0.06)"
-                    stroke="rgba(255,255,255,0.8)"
+                    fill="rgba(35,181,168,0.08)"
+                    stroke="rgba(255,255,255,0.9)"
                     strokeWidth="2"
                     strokeDasharray="6 4"
                   />
@@ -558,12 +558,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     { x: 215, label: "Kelingking" },
                   ].map((nail, i) => (
                     <g key={i} transform={`translate(${nail.x}, 90)`}>
-                      <rect x="0" y="0" width="48" height="90" rx="14" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="4 3" />
+                      <rect x="0" y="0" width="48" height="90" rx="14" fill="rgba(35,181,168,0.12)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="4 3" />
                       {/* Nail Arc */}
-                      <path d="M 8,24 Q 24,8 40,24 L 40,50 Q 24,54 8,50 Z" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" strokeWidth="1.5" />
+                      <path d="M 8,24 Q 24,8 40,24 L 40,50 Q 24,54 8,50 Z" fill="rgba(255,255,255,0.25)" stroke="#FFFFFF" strokeWidth="1.5" />
                       <circle cx="24" cy="34" r="3" fill="#23B5A8" />
                       {/* Minimal finger label under each box */}
-                      <text x="24" y="108" fill="rgba(121,215,210,0.75)" fontSize="7.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{nail.label}</text>
+                      <text x="24" y="108" fill="#79D7D2" fontSize="7.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{nail.label}</text>
                     </g>
                   ))}
                 </svg>
@@ -571,25 +571,25 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
           </div>
 
-          {/* ═══ FIXED FLOATING CAPTURE BAR — raised slightly higher ═══ */}
-          <div className="fixed bottom-0 left-0 w-full z-30 pb-4 pt-3 px-4 bg-gradient-to-t from-black/90 via-black/55 to-transparent pointer-events-none select-none">
+          {/* ═══ FIXED FLOATING CAPTURE BAR — Light frosted glass ═══ */}
+          <div className="fixed bottom-0 left-0 w-full z-30 pb-4 pt-3 px-4 bg-gradient-to-t from-white/95 via-white/70 to-transparent pointer-events-none select-none">
             <div className="max-w-sm mx-auto flex flex-col items-center space-y-3 pointer-events-auto">
               {/* Dynamic Target Instruction Glass Card */}
-              <div className="w-full bg-slate-950/80 backdrop-blur-xl p-3.5 rounded-2xl border border-white/20 text-white space-y-1 shadow-2xl">
+              <div className="w-full bg-white/95 backdrop-blur-xl p-3.5 rounded-2xl border border-slate-200/80 text-slate-800 space-y-1 shadow-xl">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-lg bg-[#23B5A8]/25 border border-[#23B5A8]/50 flex items-center justify-center">
-                      <Scan className="w-3 h-3 text-[#79D7D2]" />
+                    <div className="w-5 h-5 rounded-lg bg-[#0FA89B]/10 border border-[#0FA89B]/30 flex items-center justify-center">
+                      <Scan className="w-3 h-3 text-[#0FA89B]" />
                     </div>
-                    <h3 className="text-[12.5px] font-black tracking-wide text-white">
+                    <h3 className="text-[12.5px] font-black tracking-wide text-slate-800">
                       Foto {captureStepIdx + 1}/4: Pindai {biometricFlow[captureStepIdx].label}
                     </h3>
                   </div>
-                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#79D7D2]/20 text-[#79D7D2] font-bold border border-[#79D7D2]/30">
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#0FA89B]/10 text-[#0FA89B] font-bold border border-[#0FA89B]/25">
                     Langkah {captureStepIdx + 1} dari 4
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-300 font-medium leading-snug">
+                <p className="text-[11px] text-slate-500 font-medium leading-snug">
                   {biometricFlow[captureStepIdx].desc}
                 </p>
               </div>
@@ -605,7 +605,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     handleStartScan();
                   }}
                   disabled={isScanningActive}
-                  className="w-18 h-18 rounded-full bg-white shadow-[0_0_35px_rgba(35,181,168,0.7)] border-4 border-[#23B5A8] flex items-center justify-center relative cursor-pointer active:scale-90 transition-all group"
+                  className="w-18 h-18 rounded-full bg-white shadow-[0_4px_30px_rgba(35,181,168,0.5)] border-4 border-[#23B5A8] flex items-center justify-center relative cursor-pointer active:scale-90 transition-all group"
                   title={`Ambil Foto ${biometricFlow[captureStepIdx].label}`}
                 >
                   {/* Blinking Aura Pulse Rings */}
