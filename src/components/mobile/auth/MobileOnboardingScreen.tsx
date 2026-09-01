@@ -6,172 +6,170 @@ import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface MobileOnboardingScreenProps {
-  onSkip: () => void;
   onFinish: () => void;
+  onSkip: () => void;
 }
 
-interface OnboardingSlide {
-  badge: string;
-  badgeBg: string;
-  badgeText: string;
-  badgeBorder: string;
-  title: string;
-  description: string;
-  image: string;
-}
+export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
+  onFinish,
+  onSkip,
+}) => {
+  const [onboardingIndex, setOnboardingIndex] = useState<number>(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
-const ONBOARDING_SLIDES: OnboardingSlide[] = [
-  {
-    badge: "Masyarakat",
-    badgeBg: "bg-[#79D7D2]/15",
-    badgeText: "text-ford-blue",
-    badgeBorder: "border-[#79D7D2]/40",
-    title: "Wujudkan Keluarga & Lingkungan Sehat",
-    description:
-      "Mulai langkah awal Anda untuk kesehatan yang lebih baik. Pantau kondisi gizi diri sendiri, keluarga tercinta, hingga komunitas di sekitar Anda dengan mudah dalam satu aplikasi.",
-    image: "/onboard1.svg",
-  },
-  {
-    badge: "Deteksi Defisiensi Nutrisi",
-    badgeBg: "bg-blue-50",
-    badgeText: "text-ford-blue",
-    badgeBorder: "border-blue-200/70",
-    title: "Deteksi Cerdas Kebutuhan Gizi",
-    description:
-      "Tidak perlu menebak-nebak. Analisis defisiensi nutrisi tubuh Anda secara akurat melalui teknologi pindaian cerdas (Computer Vision) dan kuesioner interaktif berbasis Generative AI.",
-    image: "/onboard2.svg",
-  },
-  {
-    badge: "Rekomendasi Menu Bergizi",
-    badgeBg: "bg-amber-50",
-    badgeText: "text-ford-blue",
-    badgeBorder: "border-amber-200/80",
-    title: "Menu Bergizi Khusus Untuk Anda",
-    description:
-      "Dapatkan rekomendasi Makan Bergizi Gratis yang dipersonalisasi. Sistem AI kami akan merancang menu lezat yang disesuaikan persis dengan kebutuhan gizi unik harian Anda.",
-    image: "/onboard3.svg",
-  },
-];
-
-export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({ onSkip, onFinish }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-
-  const goToNext = () => {
-    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-    if (currentIndex < ONBOARDING_SLIDES.length - 1) {
-      setDirection(1);
-      setCurrentIndex((prev) => prev + 1);
-    } else {
-      onFinish();
+  const triggerHaptic = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(10);
     }
   };
 
-  const goToPrev = () => {
-    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-    if (currentIndex > 0) {
-      setDirection(-1);
-      setCurrentIndex((prev) => prev - 1);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const diff = touchStartX - e.touches[0].clientX;
+    if (diff > 50) {
+      triggerHaptic();
+      setOnboardingIndex((prev) => Math.min(prev + 1, 2));
+      setTouchStartX(null);
+    } else if (diff < -50) {
+      triggerHaptic();
+      setOnboardingIndex((prev) => Math.max(prev - 1, 0));
+      setTouchStartX(null);
     }
   };
 
-  const currentSlide = ONBOARDING_SLIDES[currentIndex];
+  const handleTouchEnd = () => {
+    setTouchStartX(null);
+  };
 
-  const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 30 : -30,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
+  const slides = [
+    {
+      badge: "Masyarakat",
+      badgeBg: "bg-[#79D7D2]/20 text-ford-blue border-[#79D7D2]/40",
+      title: "Wujudkan Keluarga & Lingkungan Sehat",
+      desc: "Mulai langkah awal Anda untuk kesehatan yang lebih baik. Pantau kondisi gizi diri sendiri, keluarga tercinta, hingga komunitas di sekitar Anda dengan mudah dalam satu aplikasi.",
+      img: "/onboard1.svg",
     },
-    exit: (dir: number) => ({
-      x: dir > 0 ? -30 : 30,
-      opacity: 0,
-    }),
-  };
+    {
+      badge: "Deteksi Defisiensi Nutrisi",
+      badgeBg: "bg-blue-50 text-ford-blue border-blue-200/70",
+      title: "Deteksi Cerdas Kebutuhan Gizi",
+      desc: "Tidak perlu menebak-nebak. Analisis defisiensi nutrisi tubuh Anda secara akurat melalui teknologi pindaian cerdas (Computer Vision) dan kuesioner interaktif berbasis Generative AI.",
+      img: "/onboard2.svg",
+    },
+    {
+      badge: "Rekomendasi Menu Bergizi",
+      badgeBg: "bg-amber-50 text-ford-blue border-amber-200/80",
+      title: "Menu Bergizi Khusus Untuk Anda",
+      desc: "Dapatkan rekomendasi Makan Bergizi Gratis yang dipersonalisasi. Sistem AI kami akan merancang menu lezat yang disesuaikan persis dengan kebutuhan gizi unik harian Anda.",
+      img: "/onboard3.svg",
+    },
+  ];
 
   return (
-    <Page className="bg-[#F8FAFC] flex flex-col justify-between px-5 py-4 text-center select-none font-sans relative overflow-hidden min-h-full">
-      {/* Soft Ambient Background Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-[#79D7D2]/15 blur-3xl pointer-events-none" />
+    <Page className="bg-[#F8FAFC] flex flex-col justify-between px-5 py-5 min-h-full relative overflow-hidden font-sans select-none overscroll-contain">
+      {/* Animated Glowing Teal & Green Background Halos */}
+      <motion.div
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.35, 0.6, 0.35],
+          x: [0, 10, 0],
+          y: [0, -10, 0],
+        }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-[#79D7D2]/30 blur-3xl pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.25, 0.45, 0.25],
+          x: [0, -15, 0],
+          y: [0, 10, 0],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-[#23B5A8]/25 blur-3xl pointer-events-none"
+      />
 
       {/* Top Bar: Skip Button */}
-      <div className="relative z-10 flex items-center justify-end pb-2">
-        <button
+      <div className="relative z-10 flex items-center justify-end pt-1">
+        <motion.button
+          whileTap={{ scale: 0.95 }}
           type="button"
           onClick={() => {
-            if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+            triggerHaptic();
             onSkip();
           }}
-          className="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-600 hover:text-ford-blue font-bold text-[11px] border border-slate-200/90 shadow-2xs transition-all cursor-pointer active:scale-95"
+          className="px-4 py-1.5 rounded-full bg-white/90 hover:bg-white text-ford-blue font-bold text-[12px] border border-slate-200/80 shadow-2xs backdrop-blur-xs transition-all cursor-pointer"
         >
           Lewati
-        </button>
+        </motion.button>
       </div>
 
-      {/* Central Content Card with Motion Animation */}
-      <div className="my-auto bg-white rounded-3xl p-6 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 relative z-10 overflow-hidden min-h-[380px] flex flex-col justify-center">
-        <AnimatePresence mode="wait" custom={direction}>
+      {/* Central Swipeable Carousel Slider */}
+      <div
+        className="my-auto py-2 w-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y relative z-10"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <AnimatePresence mode="wait">
           <motion.div
-            key={currentIndex}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="flex flex-col items-center justify-center space-y-4"
+            key={onboardingIndex}
+            initial={{ opacity: 0, x: 25 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -25 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full flex flex-col items-center justify-center space-y-4 px-2"
           >
-            {/* Illustration */}
-            <div className="w-full max-w-[190px] h-[165px] flex items-center justify-center">
+            {/* Illustration with Soft Glow */}
+            <div className="w-full max-w-[210px] sm:max-w-[230px] max-h-[200px] aspect-[914/885] flex items-center justify-center relative">
+              <div className="absolute inset-2 rounded-full bg-white/60 blur-md pointer-events-none" />
               <img
-                src={currentSlide.image}
-                alt={currentSlide.title}
-                className="w-full h-full object-contain pointer-events-none select-none"
+                src={slides[onboardingIndex].img}
+                alt={slides[onboardingIndex].title}
+                className="w-full h-full object-contain pointer-events-none select-none relative z-10"
               />
             </div>
 
             {/* Texts */}
-            <div className="space-y-2 max-w-[310px] mx-auto px-1 text-center">
+            <div className="space-y-2.5 max-w-[320px] mx-auto px-1 text-center">
               <div>
-                <span
-                  className={`inline-block px-3.5 py-0.5 rounded-full ${currentSlide.badgeBg} ${currentSlide.badgeText} text-[10.5px] font-bold border ${currentSlide.badgeBorder} tracking-wide shadow-2xs`}
-                >
-                  {currentSlide.badge}
+                <span className={`inline-block px-3.5 py-0.5 rounded-full text-[11px] font-bold border tracking-wide shadow-2xs ${slides[onboardingIndex].badgeBg}`}>
+                  {slides[onboardingIndex].badge}
                 </span>
               </div>
 
-              <h1 className="text-[20px] font-black text-ford-blue tracking-tight leading-snug">
-                {currentSlide.title}
+              <h1 className="text-[22px] font-black text-ford-blue tracking-tight leading-snug">
+                {slides[onboardingIndex].title}
               </h1>
 
-              <p className="text-[12px] font-medium text-slate-500 leading-relaxed">
-                {currentSlide.description}
+              <p className="text-[12.5px] font-medium text-slate-500 leading-relaxed">
+                {slides[onboardingIndex].desc}
               </p>
             </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Bottom Controls: Stepper Dots & Action Buttons */}
-      <div className="pt-3 pb-1 z-10 space-y-3">
+      {/* Bottom Controls: Centered Stepper Dots & Navigation Buttons */}
+      <div className="pt-3 pb-2 border-t border-slate-200/60 relative z-10 space-y-3">
         {/* Stepper Dots Indicator */}
         <div className="flex items-center justify-center gap-2">
-          {ONBOARDING_SLIDES.map((_, idx) => (
+          {[0, 1, 2].map((idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => {
-                if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                setDirection(idx > currentIndex ? 1 : -1);
-                setCurrentIndex(idx);
+                triggerHaptic();
+                setOnboardingIndex(idx);
               }}
-              className={`transition-all duration-300 shadow-2xs cursor-pointer ${
-                currentIndex === idx
-                  ? "w-6 h-2 rounded-full bg-gradient-to-r from-[#23B5A8] to-[#79D7D2]"
-                  : "w-2 h-2 rounded-full bg-slate-200 hover:bg-slate-300"
+              className={`transition-all duration-300 cursor-pointer ${
+                onboardingIndex === idx
+                  ? "w-6 h-2 rounded-full bg-gradient-to-r from-[#23B5A8] to-[#79D7D2] shadow-2xs"
+                  : "w-2 h-2 rounded-full bg-slate-300/80 hover:bg-slate-400"
               }`}
               title={`Halaman ${idx + 1}`}
               aria-label={`Halaman ${idx + 1}`}
@@ -181,40 +179,52 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({ 
 
         {/* Navigation Actions Row */}
         <div className="flex items-center justify-between">
-          {/* Left: Back Button */}
-          {currentIndex > 0 ? (
-            <button
+          {/* Left: Back Arrow Button */}
+          {onboardingIndex > 0 ? (
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               type="button"
-              onClick={goToPrev}
-              className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-white hover:bg-slate-50 text-ford-blue font-bold border border-slate-200 shadow-2xs transition-all cursor-pointer active:scale-95"
-              title="Kembali"
+              onClick={() => {
+                triggerHaptic();
+                setOnboardingIndex((prev) => Math.max(prev - 1, 0));
+              }}
+              className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-white hover:bg-slate-50 text-ford-blue font-bold shadow-2xs border border-slate-200/80 transition-all cursor-pointer"
+              title="Kembali ke halaman sebelumnya"
               aria-label="Kembali"
             >
               <ArrowLeft className="w-4 h-4" />
-            </button>
+            </motion.button>
           ) : (
             <div className="w-11 h-11" />
           )}
 
           {/* Right: Next or Start Button */}
-          {currentIndex < ONBOARDING_SLIDES.length - 1 ? (
-            <button
+          {onboardingIndex < 2 ? (
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               type="button"
-              onClick={goToNext}
-              className="inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer active:scale-95"
+              onClick={() => {
+                triggerHaptic();
+                setOnboardingIndex((prev) => Math.min(prev + 1, 2));
+              }}
+              className="inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13px] shadow-[0_4px_15px_rgba(35,181,168,0.25)] transition-all cursor-pointer"
             >
               <span>Lanjut</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </motion.button>
           ) : (
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               type="button"
-              onClick={goToNext}
-              className="inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer active:scale-95"
+              onClick={() => {
+                triggerHaptic();
+                onFinish();
+              }}
+              className="inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13.5px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer"
             >
               <span>Mulai Sekarang</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </motion.button>
           )}
         </div>
       </div>
