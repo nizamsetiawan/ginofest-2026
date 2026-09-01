@@ -14,10 +14,15 @@ import {
   Activity,
   Scan,
   FlipHorizontal,
+  RotateCw,
   Zap,
-  ZapOff
+  ZapOff,
+  Eye,
+  Hand,
+  Focus
 } from "lucide-react";
 import { Page } from "konsta/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { CitizenUser } from "../types";
 
 interface MobileScreeningTabProps {
@@ -42,6 +47,16 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [isFlashOn, setIsFlashOn] = useState(false);
   const [isScanningActive, setIsScanningActive] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
+
+  // Biometric Target Selection: Wajah, Mata, Tangan, Kuku
+  const [biometricTarget, setBiometricTarget] = useState<"wajah" | "mata" | "tangan" | "kuku">("wajah");
+
+  const biometricTargets = [
+    { id: "wajah", label: "Wajah", icon: "😊", desc: "Deteksi rona pucat wajah & mikronutrien" },
+    { id: "mata", label: "Mata", icon: "👁️", desc: "Skrining konjungtiva & indikasi anemia zat besi" },
+    { id: "tangan", label: "Tangan", icon: "✋", desc: "Analisis turgor kulit & hidrasi biometrik" },
+    { id: "kuku", label: "Kuku", icon: "💅", desc: "Pemeriksaan capillary refill & sianosis gizi" },
+  ] as const;
 
   // Initialize and cleanup live camera stream on Step 1
   useEffect(() => {
@@ -218,12 +233,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       )}
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* SCREEN 1: FULLSCREEN CAMERA WITH framebody.svg OVERLAY GUIDE   */}
+      {/* SCREEN 1: FULLSCREEN CAMERA WITH BIOMETRIC HUD & FLOATING BAR  */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 1 && (
-        <div className="flex-1 flex flex-col justify-between p-3.5 relative h-full w-full overflow-hidden">
+        <div className="flex-1 flex flex-col justify-between relative h-full w-full overflow-hidden">
           {/* Background: Live Camera Stream */}
-          <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-900 z-0">
+          <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-950 z-0">
             <video
               ref={videoRef}
               autoPlay
@@ -233,124 +248,283 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             />
             {/* Fallback ambient camera gradient if permission pending */}
             {!isCameraActive && (
-              <div className="absolute inset-0 bg-gradient-to-b from-[#8C8B85] via-[#A3A29B] to-[#73726C]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1e293b] via-[#0f172a] to-[#020617] flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-3 backdrop-blur-md">
+                  <Scan className="w-8 h-8 text-[#79D7D2] animate-pulse" />
+                </div>
+                <p className="text-white/80 text-xs font-bold">Mengakses Sensor Kamera...</p>
+                <p className="text-white/40 text-[11px] mt-1 max-w-xs">Izinkan akses kamera di peramban Anda untuk memulai analisis biometrik</p>
+              </div>
             )}
-            {/* Vignette shadow overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/50" />
+            {/* Subtle Vignette shadow overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/75 pointer-events-none" />
           </div>
 
-          {/* Top Bar Header (Z-20) */}
-          <div className="flex items-center justify-between pt-1 z-20">
-            {/* Left: Back Button */}
-            <button
-              type="button"
-              onClick={onBackToHome}
-              className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90 border border-white/60 backdrop-blur-md"
-              title="Kembali ke Beranda"
-            >
-              <ArrowLeft className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-            </button>
-
-            {/* Right Actions: Flash, Flip Camera, Help */}
-            <div className="flex items-center gap-2">
-              {/* Flash Toggle Button */}
-              <button
+          {/* ═══ TOP SECTION: HEADER CONTROLS & BIOMETRIC SELECTOR (Z-20) ═══ */}
+          <div className="space-y-3 z-20 pt-3 px-3.5">
+            {/* Top Navigation & Controls Row */}
+            <div className="flex items-center justify-between">
+              {/* Back Button */}
+              <motion.button
+                whileTap={{ scale: 0.9 }}
                 type="button"
-                onClick={handleToggleFlash}
-                className={`w-9 h-9 rounded-full flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90 border border-white/60 backdrop-blur-md ${
-                  isFlashOn ? "bg-amber-300 text-ford-blue ring-2 ring-amber-400" : "bg-white/85 hover:bg-white text-ford-blue"
-                }`}
-                title={isFlashOn ? "Matikan Flash" : "Nyalakan Flash"}
+                onClick={onBackToHome}
+                className="w-10 h-10 rounded-2xl bg-black/40 hover:bg-black/60 text-white flex items-center justify-center shadow-lg cursor-pointer transition-all border border-white/20 backdrop-blur-md"
+                title="Kembali ke Beranda"
               >
-                {isFlashOn ? <Zap className="w-4 h-4 fill-current text-ford-blue" /> : <ZapOff className="w-4 h-4 text-ford-blue" />}
-              </button>
+                <ArrowLeft className="w-4.5 h-4.5 text-white stroke-[2.5]" />
+              </motion.button>
 
-              {/* Camera Flip / Rotate Button */}
-              <button
-                type="button"
-                onClick={handleFlipCamera}
-                className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90 border border-white/60 backdrop-blur-md"
-                title="Putar / Balik Kamera"
-              >
-                <FlipHorizontal className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-              </button>
+              {/* Center Status Pill */}
+              <div className="px-3.5 py-1.5 rounded-2xl bg-black/45 border border-[#79D7D2]/40 backdrop-blur-md flex items-center gap-2 shadow-lg">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+                <span className="text-[11.5px] font-bold text-white tracking-wide">
+                  AI Biometrik Gizi
+                </span>
+              </div>
 
-              {/* Help Button */}
-              <button
-                type="button"
-                onClick={() => setShowHelpModal(true)}
-                className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-ford-blue flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90 border border-white/60 backdrop-blur-md"
-                title="Bantuan"
-              >
-                <HelpCircle className="w-4 h-4 text-ford-blue stroke-[2.5]" />
-              </button>
+              {/* Right Action Controls: Flash, Flip Camera, Help */}
+              <div className="flex items-center gap-1.5">
+                {/* Flash Toggle Button */}
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  type="button"
+                  onClick={handleToggleFlash}
+                  className={`w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg cursor-pointer transition-all border border-white/20 backdrop-blur-md ${
+                    isFlashOn
+                      ? "bg-amber-400 text-slate-950 border-amber-300 ring-2 ring-amber-400/50"
+                      : "bg-black/40 hover:bg-black/60 text-white"
+                  }`}
+                  title={isFlashOn ? "Matikan Flash" : "Nyalakan Flash"}
+                >
+                  {isFlashOn ? <Zap className="w-4 h-4 fill-current text-slate-950" /> : <ZapOff className="w-4 h-4 text-white" />}
+                </motion.button>
+
+                {/* Camera Flip / Rotate Button */}
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  type="button"
+                  onClick={handleFlipCamera}
+                  className="w-10 h-10 rounded-2xl bg-black/40 hover:bg-black/60 text-white flex items-center justify-center shadow-lg cursor-pointer transition-all border border-white/20 backdrop-blur-md"
+                  title="Putar / Balik Kamera"
+                >
+                  <RotateCw className="w-4 h-4 text-white stroke-[2.2]" />
+                </motion.button>
+
+                {/* Help Modal Button */}
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  type="button"
+                  onClick={() => setShowHelpModal(true)}
+                  className="w-10 h-10 rounded-2xl bg-black/40 hover:bg-black/60 text-white flex items-center justify-center shadow-lg cursor-pointer transition-all border border-white/20 backdrop-blur-md"
+                  title="Petunjuk"
+                >
+                  <HelpCircle className="w-4 h-4 text-white stroke-[2.2]" />
+                </motion.button>
+              </div>
+            </div>
+
+            {/* ═══ BIOMETRIC TARGET SELECTOR BAR (WAJAH, MATA, TANGAN, KUKU) ═══ */}
+            <div className="flex items-center justify-center gap-1.5 bg-black/40 backdrop-blur-md p-1 rounded-2xl border border-white/15 max-w-sm mx-auto shadow-xl">
+              {biometricTargets.map((target) => {
+                const isActive = biometricTarget === target.id;
+                return (
+                  <motion.button
+                    key={target.id}
+                    whileTap={{ scale: 0.95 }}
+                    type="button"
+                    onClick={() => {
+                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                      setBiometricTarget(target.id);
+                    }}
+                    className={`flex-1 py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer select-none ${
+                      isActive
+                        ? "bg-gradient-to-r from-[#23B5A8] to-[#79D7D2] text-ford-blue shadow-md font-black"
+                        : "text-white/70 hover:text-white hover:bg-white/10"
+                    }`}
+                  >
+                    <span className="text-xs">{target.icon}</span>
+                    <span>{target.label}</span>
+                  </motion.button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Center: Large Official framebody.svg Overlay from public/ */}
-          <div className="my-auto flex-1 flex flex-col items-center justify-center relative py-1 z-10 w-full overflow-hidden">
-            {/* Fullscreen Radial Cyber Radar & Laser Scanning Animation */}
+          {/* ═══ CENTER: BIOMETRIC VECTOR HUD OVERLAY GUIDE (Z-10) ═══ */}
+          <div className="flex-1 flex flex-col items-center justify-center relative px-4 z-10 w-full overflow-hidden pointer-events-none">
+            {/* Live Scanning Laser Sweep Animation */}
             {isScanningActive && (
               <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden flex flex-col items-center justify-center">
-                {/* Fullscreen Smooth Cyan Glow */}
-                <div className="absolute inset-0 bg-gradient-to-b from-light-sea-green/20 via-green-02/20 to-transparent backdrop-blur-[1px] animate-pulse" />
+                {/* Glowing Cyan Ambience */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#79D7D2]/20 via-[#23B5A8]/20 to-transparent backdrop-blur-[1px] animate-pulse" />
                 
-                {/* Full-width laser beam sweeping */}
-                <div className="w-full h-1.5 bg-gradient-to-r from-transparent via-green-02 to-transparent shadow-[0_0_30px_#22B5AC] animate-bounce [animation-duration:1s]" />
+                {/* Laser Sweep Line */}
+                <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#79D7D2] to-transparent shadow-[0_0_25px_#23B5A8] animate-bounce [animation-duration:1.2s]" />
 
-                {/* Centered Floating Telemetry Pill */}
-                <div className="px-4 py-2 rounded-full bg-black/80 border border-green-02 text-green-02 font-mono font-bold text-[11px] backdrop-blur-md shadow-2xl flex items-center gap-2 relative z-40 animate-in zoom-in-95">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-green-02" />
-                  <span>MEMINDAI BIOMETRIK AI: {scanProgress}%</span>
+                {/* Telemetry Progress Floating Pill */}
+                <div className="px-5 py-2.5 rounded-full bg-black/85 border border-[#79D7D2] text-[#79D7D2] font-mono font-black text-xs backdrop-blur-xl shadow-2xl flex items-center gap-2.5 relative z-40 animate-in zoom-in-95">
+                  <RefreshCw className="w-4 h-4 animate-spin text-[#79D7D2]" />
+                  <span>MEMINDAI {biometricTarget.toUpperCase()}: {scanProgress}%</span>
                 </div>
               </div>
             )}
 
-            {/* Prominent Large framebody.svg */}
-            <div className="relative w-full max-w-[340px] sm:max-w-[380px] h-[52vh] max-h-[460px] flex items-center justify-center px-1">
-              <img
-                src="/framebody.svg"
-                alt="Garis Panduan Tubuh"
-                className={`w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.55)] transition-all duration-300 ${
-                  isScanningActive ? "scale-105 filter drop-shadow-[0_0_25px_rgba(34,181,172,0.9)]" : ""
-                }`}
-              />
+            {/* Dynamic Target HUD Frame SVG */}
+            <div className="relative w-full max-w-[310px] sm:max-w-[340px] aspect-[4/5] max-h-[46vh] flex items-center justify-center">
+              {/* 1. WAJAH (Face Contour Guide) */}
+              {biometricTarget === "wajah" && (
+                <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
+                  {/* Outer Corner Frame Brackets */}
+                  <path d="M 30,60 L 30,30 L 60,30" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 270,60 L 270,30 L 240,30" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 30,300 L 30,330 L 60,330" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 270,300 L 270,330 L 240,330" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+
+                  {/* Face Oval Guideline */}
+                  <ellipse cx="150" cy="180" rx="85" ry="115" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="2" strokeDasharray="6 6" />
+                  <ellipse cx="150" cy="180" rx="90" ry="120" fill="none" stroke="#23B5A8" strokeWidth="1.5" opacity="0.6" />
+
+                  {/* Eye Level Line */}
+                  <line x1="75" y1="160" x2="225" y2="160" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.8" />
+                  <circle cx="110" cy="160" r="14" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
+                  <circle cx="190" cy="160" r="14" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
+                  <circle cx="110" cy="160" r="3" fill="#23B5A8" />
+                  <circle cx="190" cy="160" r="3" fill="#23B5A8" />
+
+                  {/* Chin Anchor Point */}
+                  <path d="M 130,295 Q 150,305 170,295" fill="none" stroke="#79D7D2" strokeWidth="2" strokeLinecap="round" />
+                  <text x="150" y="325" fill="#79D7D2" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">AREA WAJAH</text>
+                </svg>
+              )}
+
+              {/* 2. MATA (Dual Ocular & Conjunctiva Anemia Guide) */}
+              {biometricTarget === "mata" && (
+                <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
+                  {/* Left Eye Reticle */}
+                  <g transform="translate(40, 120)">
+                    <rect x="0" y="0" width="100" height="90" rx="16" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="6 4" />
+                    <circle cx="50" cy="45" r="24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" />
+                    <circle cx="50" cy="45" r="8" fill="#23B5A8" opacity="0.8" />
+                    <path d="M 25,65 Q 50,78 75,65" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
+                    <text x="50" y="20" fill="#79D7D2" fontSize="9" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">MATA KIRI</text>
+                  </g>
+
+                  {/* Right Eye Reticle */}
+                  <g transform="translate(160, 120)">
+                    <rect x="0" y="0" width="100" height="90" rx="16" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="6 4" />
+                    <circle cx="50" cy="45" r="24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" />
+                    <circle cx="50" cy="45" r="8" fill="#23B5A8" opacity="0.8" />
+                    <path d="M 25,65 Q 50,78 75,65" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
+                    <text x="50" y="20" fill="#79D7D2" fontSize="9" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">MATA KANAN</text>
+                  </g>
+
+                  {/* Anemia Scan Legend */}
+                  <rect x="55" y="245" width="190" height="28" rx="14" fill="rgba(0,0,0,0.6)" stroke="#79D7D2" strokeWidth="1" />
+                  <circle cx="75" cy="259" r="4" fill="#EF4444" />
+                  <text x="145" y="263" fill="#FFFFFF" fontSize="9.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">Zona Deteksi Konjungtiva</text>
+                </svg>
+              )}
+
+              {/* 3. TANGAN (Hand Palm Contour Guide) */}
+              {biometricTarget === "tangan" && (
+                <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
+                  {/* Outer Frame */}
+                  <path d="M 40,70 L 40,40 L 70,40" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 260,70 L 260,40 L 230,40" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 40,290 L 40,320 L 70,320" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 260,290 L 260,320 L 230,320" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+
+                  {/* Stylized Hand Silhouette Outline */}
+                  <path
+                    d="M 110,310 L 110,240 C 100,220 80,180 80,140 C 80,125 95,125 95,140 L 95,200 L 115,100 C 115,85 130,85 130,100 L 130,190 L 145,80 C 145,65 160,65 160,80 L 160,190 L 175,95 C 175,80 190,80 190,95 L 190,200 L 205,130 C 205,115 220,115 220,130 C 220,170 200,240 190,250 L 190,310 Z"
+                    fill="rgba(35,181,168,0.06)"
+                    stroke="rgba(255,255,255,0.75)"
+                    strokeWidth="2"
+                    strokeDasharray="6 4"
+                  />
+
+                  {/* Central Elasticity / Turgor Sensor Ring */}
+                  <circle cx="150" cy="225" r="28" fill="none" stroke="#79D7D2" strokeWidth="2" />
+                  <circle cx="150" cy="225" r="4" fill="#23B5A8" />
+                  <text x="150" y="275" fill="#79D7D2" fontSize="9.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">TELAPAK TANGAN</text>
+                </svg>
+              )}
+
+              {/* 4. KUKU (Capillary Refill & Nail Bed Guide) */}
+              {biometricTarget === "kuku" && (
+                <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
+                  {/* 4 Finger Nail Target Boxes */}
+                  {[
+                    { x: 45, label: "Telunjuk" },
+                    { x: 100, label: "Tengah" },
+                    { x: 155, label: "Manis" },
+                    { x: 210, label: "Kelingking" },
+                  ].map((nail, i) => (
+                    <g key={i} transform={`translate(${nail.x}, 120)`}>
+                      <rect x="0" y="0" width="45" height="75" rx="14" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="4 3" />
+                      {/* Nail Arc */}
+                      <path d="M 8,22 Q 22.5,8 37,22 L 37,45 Q 22.5,48 8,45 Z" fill="rgba(255,255,255,0.2)" stroke="#FFFFFF" strokeWidth="1.5" />
+                      <circle cx="22.5" cy="30" r="3" fill="#23B5A8" />
+                      <text x="22.5" y="92" fill="#79D7D2" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{nail.label}</text>
+                    </g>
+                  ))}
+
+                  {/* Legend Box */}
+                  <rect x="40" y="240" width="220" height="30" rx="15" fill="rgba(0,0,0,0.6)" stroke="#79D7D2" strokeWidth="1" />
+                  <text x="150" y="259" fill="#FFFFFF" fontSize="9.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">Sensor Capillary Refill &amp; Sianosis</text>
+                </svg>
+              )}
             </div>
           </div>
 
-          {/* Bottom Card & Capture Trigger Button (Z-20) */}
-          <div className="space-y-2.5 z-20 pb-2 px-0.5">
-            {/* Clean Glassmorphism Scanning Card */}
-            <div className="bg-slate-900/70 backdrop-blur-xl p-3 rounded-2xl border border-white/20 text-white space-y-1 shadow-2xl">
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-lg bg-green-02/25 border border-green-02/40 flex items-center justify-center">
-                  <Scan className="w-3 h-3 text-green-02" />
+          {/* ═══ FIXED FLOATING CAPTURE BAR (TRANSPARENT GRADIENT, UNCLIPPED ON ALL PHONES) ═══ */}
+          <div className="fixed bottom-0 left-0 w-full z-30 pb-6 pt-4 px-4 bg-gradient-to-t from-black/90 via-black/55 to-transparent pointer-events-none select-none">
+            <div className="max-w-sm mx-auto flex flex-col items-center space-y-3 pointer-events-auto">
+              {/* Dynamic Target Instruction Glass Card */}
+              <div className="w-full bg-slate-950/80 backdrop-blur-xl p-3.5 rounded-2xl border border-white/20 text-white space-y-1 shadow-2xl">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-lg bg-[#23B5A8]/25 border border-[#23B5A8]/50 flex items-center justify-center">
+                      <Scan className="w-3 h-3 text-[#79D7D2]" />
+                    </div>
+                    <h3 className="text-[12.5px] font-black tracking-wide text-white">
+                      Pindai Biometrik: {biometricTargets.find((t) => t.id === biometricTarget)?.label}
+                    </h3>
+                  </div>
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#79D7D2]/20 text-[#79D7D2] font-bold border border-[#79D7D2]/30">
+                    Live AI
+                  </span>
                 </div>
-                <h3 className="text-[12.5px] font-black tracking-wide text-white">Scanning</h3>
+                <p className="text-[11px] text-slate-300 font-medium leading-snug">
+                  {biometricTargets.find((t) => t.id === biometricTarget)?.desc}
+                </p>
               </div>
-              <p className="text-[10.5px] text-slate-200 font-medium leading-relaxed">
-                Posisikan Wajah, Tangan, Kuku, Rambut, dan Mata Anda sesuai petunjuk garis putih di atas.
-              </p>
-            </div>
 
-            {/* Circular Mascot Capture Button with Blinking Rings */}
-            <div className="flex items-center justify-center pb-0.5">
-              <button
-                type="button"
-                onClick={handleStartScan}
-                disabled={isScanningActive}
-                className="w-16 h-16 rounded-full bg-white shadow-[0_0_35px_rgba(34,181,172,0.65)] border-4 border-[#78A98A] flex items-center justify-center relative cursor-pointer active:scale-90 hover:scale-105 transition-all group"
-                title="Ambil Foto & Mulai Pindaian AI"
-              >
-                {/* Blinking Aura Pulse Rings */}
-                <div className="absolute -inset-2.5 rounded-full bg-green-02/40 animate-ping [animation-duration:2s] pointer-events-none" />
-                <div className="absolute -inset-1.5 rounded-full bg-light-sea-green/30 animate-pulse pointer-events-none" />
-                <img
-                  src="/logo_app.svg"
-                  alt="Capture"
-                  className="w-10 h-10 object-contain group-hover:scale-110 transition-transform relative z-10"
-                />
-              </button>
+              {/* Mega Shutter Capture Button with Aura Rings */}
+              <div className="flex items-center justify-center pb-1">
+                <motion.button
+                  whileTap={{ scale: 0.88 }}
+                  whileHover={{ scale: 1.05 }}
+                  type="button"
+                  onClick={() => {
+                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(30);
+                    handleStartScan();
+                  }}
+                  disabled={isScanningActive}
+                  className="w-18 h-18 rounded-full bg-white shadow-[0_0_35px_rgba(35,181,168,0.7)] border-4 border-[#23B5A8] flex items-center justify-center relative cursor-pointer active:scale-90 transition-all group"
+                  title="Ambil Foto & Mulai Pindaian AI"
+                >
+                  {/* Blinking Aura Pulse Rings */}
+                  <div className="absolute -inset-2.5 rounded-full bg-[#79D7D2]/40 animate-ping [animation-duration:2s] pointer-events-none" />
+                  <div className="absolute -inset-1.5 rounded-full bg-[#23B5A8]/30 animate-pulse pointer-events-none" />
+                  <img
+                    src="/logo_app.svg"
+                    alt="Capture"
+                    className="w-11 h-11 object-contain group-hover:scale-110 transition-transform relative z-10 drop-shadow-sm"
+                  />
+                </motion.button>
+              </div>
             </div>
           </div>
         </div>

@@ -19,6 +19,14 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const userEmail = citizenUser?.email || "nizamsetiawan@email.com";
   const userInitial = userName.charAt(0).toUpperCase();
 
+  const getTimeGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 4 && hour < 11) return "Selamat Pagi";
+    if (hour >= 11 && hour < 15) return "Selamat Siang";
+    if (hour >= 15 && hour < 18) return "Selamat Sore";
+    return "Selamat Malam";
+  };
+
   const triggerHaptic = () => {
     if (typeof navigator !== "undefined" && navigator.vibrate) {
       navigator.vibrate(10);
@@ -45,11 +53,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
           </div>
 
           <div className="min-w-0 space-y-0.5">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[11.5px] font-bold text-slate-500">Halo,</span>
-              <span className="text-[11px] px-1.5 py-0.2 rounded-md bg-[#79D7D2]/20 text-[#0F766E] font-bold">Warga</span>
-            </div>
-            <h1 className="text-[15px] font-black text-ford-blue truncate leading-tight tracking-tight">
+            <p className="text-[11.5px] font-bold text-slate-500 leading-none">
+              {getTimeGreeting()}, 👋
+            </p>
+            <h1 className="text-[15px] font-black text-ford-blue truncate leading-tight tracking-tight pt-0.5">
               {userName}
             </h1>
             <p className="text-[11px] text-slate-400 truncate font-medium">
