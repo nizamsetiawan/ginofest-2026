@@ -1031,7 +1031,7 @@ export const CitizenMobileApp: React.FC = () => {
 
             {/* ═══ 3-TAB PROMINENT & COMFORTABLE BOTTOM NAVIGATION BAR ═══ */}
             {activeTab !== "screening" && (
-              <div className="shrink-0 z-40 bg-white border-t border-slate-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2 pb-6 sm:pb-3 px-6 relative font-sans">
+              <div className="shrink-0 z-40 bg-white border-t border-slate-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pt-2.5 bottom-nav-safe sm:pb-3.5 px-6 relative font-sans">
                 <nav className="flex items-center justify-around max-w-sm mx-auto">
                   {/* 1. Beranda (Left) */}
                   <button
