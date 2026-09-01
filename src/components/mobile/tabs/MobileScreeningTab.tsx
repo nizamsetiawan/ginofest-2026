@@ -49,17 +49,26 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [scanProgress, setScanProgress] = useState(0);
 
   // 4-Step Sequential Biometric Capture Flow (Wajah -> Mata -> Tangan -> Kuku)
+  // Default camera: Wajah & Mata = front (user), Tangan & Kuku = rear (environment)
   const [captureStepIdx, setCaptureStepIdx] = useState<number>(0);
   const [capturedPhotos, setCapturedPhotos] = useState<Record<string, boolean>>({});
 
   const biometricFlow = [
-    { id: "wajah", label: "Wajah", icon: "😊", desc: "Posisikan wajah tegak lurus pada kurva oval untuk deteksi rona pucat & mikronutrien." },
-    { id: "mata", label: "Mata", icon: "👁️", desc: "Arahkan kedua mata sejajar pada kotak retikel untuk deteksi anemia konjungtiva." },
-    { id: "tangan", label: "Tangan", icon: "✋", desc: "Buka telapak tangan sejajar pada kurva panduan untuk analisis hidrasi & turgor." },
-    { id: "kuku", label: "Kuku", icon: "💅", desc: "Dekatkan 4 kuku jari pada kotak target untuk uji capillary refill & sianosis." },
+    { id: "wajah", label: "Wajah", defaultCamera: "user" as const, desc: "Posisikan wajah tegak lurus pada kurva oval untuk deteksi rona pucat & mikronutrien." },
+    { id: "mata", label: "Mata", defaultCamera: "user" as const, desc: "Arahkan kedua mata sejajar pada kotak retikel untuk deteksi anemia konjungtiva." },
+    { id: "tangan", label: "Tangan", defaultCamera: "environment" as const, desc: "Buka telapak tangan sejajar pada kurva panduan untuk analisis hidrasi & turgor." },
+    { id: "kuku", label: "Kuku", defaultCamera: "environment" as const, desc: "Dekatkan 4 kuku jari pada kotak target untuk uji capillary refill & sianosis." },
   ] as const;
 
   // Initialize and cleanup live camera stream on Step 1
+  // Auto-switch to the default camera for each biometric step
+  useEffect(() => {
+    if (screeningStep === 1) {
+      const defaultCam = biometricFlow[captureStepIdx].defaultCamera;
+      setFacingMode(defaultCam);
+    }
+  }, [captureStepIdx, screeningStep]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     let stream: MediaStream | null = null;
 
@@ -300,8 +309,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <div className="px-5 py-4 space-y-3">
                   {biometricFlow.map((step, idx) => (
                     <div key={step.id} className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#23B5A8]/30 to-[#79D7D2]/20 border border-[#79D7D2]/40 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[14px]">{step.icon}</span>
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#23B5A8]/30 to-[#79D7D2]/20 border border-[#79D7D2]/40 flex items-center justify-center flex-shrink-0 text-[#79D7D2] font-black text-[13px]">
+                        {idx + 1}
                       </div>
                       <div className="flex-1">
                         <p className="text-[12px] font-black text-white">
@@ -376,30 +385,34 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </div>
             </div>
 
-            {/* ═══ 4-STEP SEQUENTIAL PROGRESS FLOW BAR (WAJAH -> MATA -> TANGAN -> KUKU) ═══ */}
+            {/* ═══ 4-STEP SEQUENTIAL PROGRESS FLOW BAR — NO SKIP, TEXT ONLY ═══ */}
             <div className="flex items-center justify-between gap-1.5 bg-black/45 backdrop-blur-md p-1 rounded-2xl border border-white/15 max-w-sm mx-auto shadow-xl">
               {biometricFlow.map((step, idx) => {
                 const isActive = captureStepIdx === idx;
                 const isCompleted = !!capturedPhotos[step.id];
+                // Sequential lock: only allow active or already-completed steps
+                const isAccessible = isActive || isCompleted;
 
                 return (
                   <button
                     key={step.id}
                     type="button"
+                    disabled={!isAccessible}
                     onClick={() => {
+                      if (!isAccessible) return;
                       if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                      setCaptureStepIdx(idx);
+                      // Only allow going back to completed steps, not forward-skipping
+                      if (isCompleted && !isActive) setCaptureStepIdx(idx);
                     }}
-                    className={`flex-1 py-1.5 px-1.5 rounded-xl text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer select-none ${
+                    className={`flex-1 py-1.5 px-1.5 rounded-xl text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 select-none ${
                       isActive
-                        ? "bg-gradient-to-r from-[#23B5A8] to-[#79D7D2] text-ford-blue shadow-md font-black"
+                        ? "bg-gradient-to-r from-[#23B5A8] to-[#79D7D2] text-ford-blue shadow-md font-black cursor-default"
                         : isCompleted
-                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                        : "text-white/60 hover:text-white hover:bg-white/10"
+                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 cursor-pointer"
+                        : "text-white/35 cursor-not-allowed"
                     }`}
                   >
-                    <span>{isCompleted ? "✓" : step.icon}</span>
-                    <span className="truncate">{step.label}</span>
+                    <span className="truncate">{isCompleted ? "✓ " : ""}{step.label}</span>
                   </button>
                 );
               })}
@@ -517,8 +530,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
           </div>
 
-          {/* ═══ FIXED FLOATING CAPTURE BAR (TRANSPARENT GRADIENT, UNCLIPPED ON ALL PHONES) ═══ */}
-          <div className="fixed bottom-0 left-0 w-full z-30 pb-6 pt-4 px-4 bg-gradient-to-t from-black/90 via-black/55 to-transparent pointer-events-none select-none">
+          {/* ═══ FIXED FLOATING CAPTURE BAR — raised slightly higher ═══ */}
+          <div className="fixed bottom-0 left-0 w-full z-30 pb-4 pt-3 px-4 bg-gradient-to-t from-black/90 via-black/55 to-transparent pointer-events-none select-none">
             <div className="max-w-sm mx-auto flex flex-col items-center space-y-3 pointer-events-auto">
               {/* Dynamic Target Instruction Glass Card */}
               <div className="w-full bg-slate-950/80 backdrop-blur-xl p-3.5 rounded-2xl border border-white/20 text-white space-y-1 shadow-2xl">
