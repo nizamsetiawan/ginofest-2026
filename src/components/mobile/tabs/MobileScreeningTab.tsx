@@ -627,7 +627,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {/* SCREEN 2: KUESIONER INTERAKTIF AI (FIT VIEWPORT)               */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 2 && (
-        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#0A1628] via-[#0D1B2A] to-[#050D18]">
+        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
           {/* ─── TOP BAR ─── */}
           <div className="px-4 pt-4 pb-3 space-y-3">
@@ -637,15 +637,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={() => setScreeningStep(1)}
-                className="w-9 h-9 rounded-2xl bg-white/8 border border-white/15 flex items-center justify-center backdrop-blur-md cursor-pointer"
+                className="w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer"
               >
-                <ArrowLeft className="w-4 h-4 text-white stroke-[2.5]" />
+                <ArrowLeft className="w-4 h-4 text-slate-700 stroke-[2.5]" />
               </motion.button>
 
               {/* Title */}
               <div className="text-center">
-                <p className="text-[11px] font-bold text-[#79D7D2] tracking-widest uppercase">Kuesioner</p>
-                <p className="text-[10px] text-white/40 font-medium mt-0.5">
+                <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Kuesioner</p>
+                <p className="text-[10px] text-slate-400 font-medium mt-0.5">
                   Pertanyaan {currentQuestionIdx + 1} / {questions.length}
                 </p>
               </div>
@@ -655,14 +655,14 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={() => setShowHelpModal(true)}
-                className="w-9 h-9 rounded-2xl bg-white/8 border border-white/15 flex items-center justify-center backdrop-blur-md cursor-pointer"
+                className="w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer"
               >
-                <HelpCircle className="w-4 h-4 text-white/60 stroke-[2]" />
+                <HelpCircle className="w-4 h-4 text-slate-400 stroke-[2]" />
               </motion.button>
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <motion.div
                 className="h-full rounded-full bg-gradient-to-r from-[#0FA89B] to-[#79D7D2]"
                 initial={{ width: 0 }}
@@ -676,27 +676,27 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-4">
 
             {/* Logo + Question Card */}
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-5 backdrop-blur-md space-y-4">
+            <div className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm space-y-4">
               {/* App Logo */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-lg flex-shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-md flex-shrink-0">
                   <img src="/logo_app.svg" alt="Kcal" className="w-6 h-6 object-contain" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-black text-[#79D7D2] tracking-wide">Analisis Gizi AI</p>
-                  <p className="text-[9.5px] text-white/40 font-medium">Kemenkes RI & BGN 2026</p>
+                  <p className="text-[11px] font-black text-[#0FA89B] tracking-wide">Analisis Gizi AI</p>
+                  <p className="text-[9.5px] text-slate-400 font-medium">Kemenkes RI & BGN 2026</p>
                 </div>
               </div>
 
               {/* Divider */}
-              <div className="h-px bg-white/8" />
+              <div className="h-px bg-slate-100" />
 
               {/* Question */}
               <div className="space-y-1.5">
-                <h2 className="text-[15px] font-black text-white leading-snug">
+                <h2 className="text-[15px] font-black text-slate-800 leading-snug">
                   {questions[currentQuestionIdx].title}
                 </h2>
-                <p className="text-[11px] text-white/50 font-medium leading-relaxed">
+                <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
                   {questions[currentQuestionIdx].subtitle}
                 </p>
               </div>
@@ -714,15 +714,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     onClick={() => handleSelectAnswer(opt)}
                     className={`w-full py-3.5 px-4 rounded-2xl border text-left text-[12.5px] font-bold transition-all cursor-pointer flex items-center gap-3 ${
                       isSelected
-                        ? "bg-gradient-to-r from-[#0FA89B]/30 to-[#79D7D2]/20 border-[#79D7D2]/60 text-white shadow-[0_0_20px_rgba(35,181,168,0.15)]"
-                        : "bg-white/5 border-white/10 text-white/75 hover:bg-white/8 hover:border-white/20"
+                        ? "bg-gradient-to-r from-[#0FA89B]/10 to-[#79D7D2]/10 border-[#23B5A8] text-[#0D7A72] shadow-sm"
+                        : "bg-white border-slate-200 text-slate-700 hover:border-[#79D7D2]/50 hover:bg-[#F0FDF8]"
                     }`}
                   >
                     {/* Option Circle Indicator */}
                     <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
                       isSelected
-                        ? "border-[#79D7D2] bg-[#23B5A8]"
-                        : "border-white/25"
+                        ? "border-[#23B5A8] bg-[#23B5A8]"
+                        : "border-slate-300"
                     }`}>
                       {isSelected && <span className="w-2 h-2 rounded-full bg-white" />}
                     </span>
@@ -737,7 +737,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <button
                 type="button"
                 onClick={() => setShowCustomInput(true)}
-                className="flex items-center gap-1.5 text-[10.5px] font-bold text-white/40 hover:text-[#79D7D2] transition-colors cursor-pointer pt-0.5"
+                className="flex items-center gap-1.5 text-[10.5px] font-bold text-slate-400 hover:text-[#0FA89B] transition-colors cursor-pointer pt-0.5"
               >
                 <MessageSquare className="w-3 h-3" />
                 <span>Tambahkan penjelasan lain...</span>
@@ -749,13 +749,13 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   placeholder="Tuliskan keluhan atau kondisi anak..."
                   value={customAnswer}
                   onChange={(e) => setCustomAnswer(e.target.value)}
-                  className="w-full p-3 bg-white/5 border border-white/15 rounded-2xl text-[11.5px] font-medium text-white placeholder-white/25 focus:outline-none focus:border-[#79D7D2]/50 resize-none transition-colors"
+                  className="w-full p-3 bg-white border border-slate-200 rounded-2xl text-[11.5px] font-medium text-slate-700 placeholder-slate-300 focus:outline-none focus:border-[#23B5A8] resize-none transition-colors"
                 />
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   type="button"
                   onClick={() => handleSelectAnswer(customAnswer || "Penjelasan khusus tersimpan")}
-                  className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] text-[12px] font-black cursor-pointer"
+                  className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white text-[12px] font-black cursor-pointer shadow-md"
                 >
                   Simpan &amp; Lanjut
                 </motion.button>
@@ -770,26 +770,26 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {/* SCREEN 3: MENU UNTUK ANDA (FIT VIEWPORT)                       */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 3 && (
-        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#0A1628] via-[#0D1B2A] to-[#050D18]">
+        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
           {/* ─── TOP BAR ─── */}
           <div className="px-4 pt-4 pb-3 space-y-3">
             <div className="flex items-center justify-between">
               <motion.button whileTap={{ scale: 0.9 }} type="button" onClick={() => setScreeningStep(2)}
-                className="w-9 h-9 rounded-2xl bg-white/8 border border-white/15 flex items-center justify-center backdrop-blur-md cursor-pointer">
-                <ArrowLeft className="w-4 h-4 text-white stroke-[2.5]" />
+                className="w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer">
+                <ArrowLeft className="w-4 h-4 text-slate-700 stroke-[2.5]" />
               </motion.button>
 
               <div className="text-center">
-                <p className="text-[11px] font-bold text-[#79D7D2] tracking-widest uppercase">Menu untuk Anda</p>
-                <p className="text-[9.5px] text-white/40 font-medium mt-0.5">Rekomendasi Nutrisi Harian</p>
+                <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Menu untuk Anda</p>
+                <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Rekomendasi Nutrisi Harian</p>
               </div>
 
               <div className="w-9 h-9" />
             </div>
 
             {/* Progress */}
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div className="h-full rounded-full bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] w-[80%] transition-all duration-500" />
             </div>
           </div>
@@ -798,23 +798,22 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
 
             {/* Menu Image Card */}
-            <div className="rounded-3xl overflow-hidden border border-white/10 shadow-xl">
+            <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-md">
               <div className="relative">
                 <img
                   src={menuType === "ayam" ? "/assets/mbg_tray_ayam.jpg" : "/assets/mbg_tray_bandeng.jpg"}
                   alt="Menu MBG"
                   className="w-full h-36 object-cover"
                 />
-                {/* Gradient overlay on image */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A]/90 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
                   <div>
                     <h4 className="text-[13.5px] font-black text-white leading-tight drop-shadow">
                       {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"}
                     </h4>
-                    <p className="text-[10px] text-white/60 font-medium">Nasi 200g · Protein 150g · Sayur 50g</p>
+                    <p className="text-[10px] text-white/70 font-medium">Nasi 200g · Protein 150g · Sayur 50g</p>
                   </div>
-                  <span className="px-2.5 py-1 rounded-xl bg-[#23B5A8]/90 text-white text-[10px] font-black backdrop-blur-sm shadow-md flex-shrink-0">
+                  <span className="px-2.5 py-1 rounded-xl bg-[#23B5A8] text-white text-[10px] font-black shadow-md flex-shrink-0">
                     680 kkal
                   </span>
                 </div>
@@ -822,16 +821,16 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
 
             {/* Nutrition Breakdown */}
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-4 backdrop-blur-md space-y-3">
+            <div className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-[11.5px] font-black text-white">Profil Nutrisi</p>
-                <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-[#79D7D2]/15 text-[#79D7D2] font-bold border border-[#79D7D2]/25">% AKG</span>
+                <p className="text-[11.5px] font-black text-slate-800">Profil Nutrisi</p>
+                <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-[#79D7D2]/15 text-[#0FA89B] font-bold border border-[#79D7D2]/30">% AKG</span>
               </div>
 
               <div className="space-y-2.5">
                 {[
                   { label: "Lemak Total", val: "10 g", pct: 22, color: "#F59E0B" },
-                  { label: "Karbohidrat", val: "50 g", pct: 17, color: "#79D7D2" },
+                  { label: "Karbohidrat", val: "50 g", pct: 17, color: "#0FA89B" },
                   { label: "Serat", val: "7 g", pct: 18, color: "#34D399" },
                   { label: "Protein", val: "31 g", pct: 50, color: "#23B5A8" },
                   { label: "Vitamin D", val: "0.4 mg", pct: 15, color: "#A78BFA" },
@@ -839,10 +838,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 ].map((n) => (
                   <div key={n.label}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10.5px] text-white/65 font-medium">{n.label} <span className="text-white/35">({n.val})</span></span>
+                      <span className="text-[10.5px] text-slate-600 font-medium">{n.label} <span className="text-slate-400">({n.val})</span></span>
                       <span className="text-[10.5px] font-black" style={{ color: n.color }}>{n.pct}%</span>
                     </div>
-                    <div className="w-full h-1 bg-white/8 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${n.pct}%`, backgroundColor: n.color }} />
                     </div>
                   </div>
@@ -855,18 +854,18 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => setScreeningStep(4)}
-              className="w-full bg-gradient-to-r from-[#0FA89B]/20 to-[#79D7D2]/10 border border-[#79D7D2]/30 rounded-2xl p-3.5 flex items-center justify-between backdrop-blur-md cursor-pointer hover:border-[#79D7D2]/50 transition-all"
+              className="w-full bg-white border border-slate-200 rounded-2xl p-3.5 flex items-center justify-between shadow-sm cursor-pointer hover:border-[#23B5A8]/40 hover:shadow-md transition-all"
             >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-md flex-shrink-0">
-                  <QrCode className="w-4.5 h-4.5 text-[#050D18]" />
+                  <QrCode className="w-4.5 h-4.5 text-white" />
                 </div>
                 <div className="text-left">
-                  <h5 className="text-[12px] font-black text-white leading-tight">QR Code Klaim</h5>
-                  <p className="text-[9.5px] text-white/45 font-medium">Tampilkan untuk verifikasi menu</p>
+                  <h5 className="text-[12px] font-black text-slate-800 leading-tight">QR Code Klaim</h5>
+                  <p className="text-[9.5px] text-slate-400 font-medium">Tampilkan untuk verifikasi menu</p>
                 </div>
               </div>
-              <ChevronUp className="w-4 h-4 text-[#79D7D2]" />
+              <ChevronUp className="w-4 h-4 text-[#23B5A8]" />
             </motion.button>
           </div>
         </div>
@@ -876,26 +875,26 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {/* SCREEN 4: QR CODE VERIFIKASI KLAIM MBG                        */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 4 && (
-        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#0A1628] via-[#0D1B2A] to-[#050D18]">
+        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
           {/* ─── TOP BAR ─── */}
           <div className="px-4 pt-4 pb-3 space-y-3">
             <div className="flex items-center justify-between">
               <motion.button whileTap={{ scale: 0.9 }} type="button" onClick={() => setScreeningStep(3)}
-                className="w-9 h-9 rounded-2xl bg-white/8 border border-white/15 flex items-center justify-center backdrop-blur-md cursor-pointer">
-                <ArrowLeft className="w-4 h-4 text-white stroke-[2.5]" />
+                className="w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer">
+                <ArrowLeft className="w-4 h-4 text-slate-700 stroke-[2.5]" />
               </motion.button>
 
               <div className="text-center">
-                <p className="text-[11px] font-bold text-[#79D7D2] tracking-widest uppercase">Verifikasi Klaim</p>
-                <p className="text-[9.5px] text-white/40 font-medium mt-0.5">QR Code Menu MBG</p>
+                <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Verifikasi Klaim</p>
+                <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">QR Code Menu MBG</p>
               </div>
 
               <div className="w-9 h-9" />
             </div>
 
             {/* Progress */}
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div className="h-full rounded-full bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] w-[95%] transition-all duration-500" />
             </div>
           </div>
@@ -905,8 +904,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
             {/* Instruction */}
             <div className="text-center space-y-1">
-              <h4 className="text-[15px] font-black text-white">Tunjukkan QR ini pada staf!</h4>
-              <p className="text-[11px] text-white/45 font-medium max-w-xs leading-snug">
+              <h4 className="text-[15px] font-black text-slate-800">Tunjukkan QR ini pada staf!</h4>
+              <p className="text-[11px] text-slate-500 font-medium max-w-xs leading-snug">
                 Petugas SPPG MBG akan memindai kode ini untuk validasi porsi menu anak Anda.
               </p>
             </div>
@@ -942,16 +941,16 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
 
             {/* Claim ID Badge */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2.5 w-full backdrop-blur-md">
-              <p className="text-[9px] text-white/35 font-semibold tracking-widest uppercase mb-1">ID Klaim</p>
-              <p className="text-[11px] font-black text-[#79D7D2] font-mono tracking-wider">{claimId}</p>
-              <p className="text-[9.5px] text-white/40 font-medium mt-0.5">
+            <div className="bg-white border border-slate-100 rounded-2xl px-4 py-2.5 w-full shadow-sm">
+              <p className="text-[9px] text-slate-400 font-semibold tracking-widest uppercase mb-1">ID Klaim</p>
+              <p className="text-[11px] font-black text-[#0FA89B] font-mono tracking-wider">{claimId}</p>
+              <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">
                 {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"} · 680 kkal · 1x Makan Siang
               </p>
             </div>
 
             {/* Note */}
-            <p className="text-[10px] text-[#F87171] font-bold text-center max-w-xs leading-snug px-2">
+            <p className="text-[10px] text-red-400 font-bold text-center max-w-xs leading-snug px-2">
               Pastikan menu yang Anda terima sesuai dengan rekomendasi aplikasi.
             </p>
 
@@ -961,12 +960,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               type="button"
               onClick={handleVerifyQR}
               disabled={isQrVerifying}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] font-black text-[12.5px] shadow-lg cursor-pointer disabled:opacity-60"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[12.5px] shadow-md cursor-pointer disabled:opacity-60"
             >
               {isQrVerifying ? "Memproses Verifikasi..." : "Simulasikan Staf Memindai QR"}
             </motion.button>
 
-            <p className="text-[9px] text-white/25 font-semibold">
+            <p className="text-[9px] text-slate-400 font-semibold">
               Kecamatan {citizenUser?.district || "Kebomas"} • Ginofest 2026
             </p>
           </div>
@@ -977,7 +976,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {/* SCREEN 5: SCAN SUKSES!                                         */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 5 && (
-        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#0A1628] via-[#0D1B2A] to-[#050D18]">
+        <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
           {/* ─── SUCCESS BANNER ─── */}
           <div className="px-4 pt-5 pb-3 text-center">
@@ -985,12 +984,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               initial={{ scale: 0.6, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.4, ease: "backOut" }}
-              className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-[0_0_40px_rgba(35,181,168,0.5)] mb-3"
+              className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-[0_0_30px_rgba(35,181,168,0.35)] mb-3"
             >
               <Check className="w-8 h-8 text-white stroke-[3]" />
             </motion.div>
-            <h2 className="text-[20px] font-black text-white tracking-tight">Scan Sukses!</h2>
-            <p className="text-[11px] text-white/50 font-medium mt-1 max-w-xs mx-auto leading-snug">
+            <h2 className="text-[20px] font-black text-slate-800 tracking-tight">Scan Sukses!</h2>
+            <p className="text-[11px] text-slate-500 font-medium mt-1 max-w-xs mx-auto leading-snug">
               Data porsi makan & pemenuhan nutrisi telah diverifikasi. Selamat menikmati!
             </p>
           </div>
@@ -1025,15 +1024,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
 
             {/* Summary Card */}
-            <div className="w-full bg-white/5 border border-white/10 rounded-3xl p-4 backdrop-blur-md space-y-2 mt-4">
+            <div className="w-full bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-2 mt-4">
               <div className="flex items-baseline gap-2">
-                <span className="text-[24px] font-black text-[#79D7D2] leading-none">45%</span>
-                <span className="text-[12px] font-bold text-white/70 leading-snug">kebutuhan gizi harian terpenuhi</span>
+                <span className="text-[24px] font-black text-[#23B5A8] leading-none">45%</span>
+                <span className="text-[12px] font-bold text-slate-600 leading-snug">kebutuhan gizi harian terpenuhi</span>
               </div>
-              <div className="h-px bg-white/8" />
+              <div className="h-px bg-slate-100" />
               <div className="flex items-center justify-between text-[10.5px]">
-                <span className="font-black text-white">{citizenUser?.name || "Oscar Ryanda Putra"}</span>
-                <span className="text-white/40 font-medium">9 Tahun · Kec. {citizenUser?.district || "Kebomas"}</span>
+                <span className="font-black text-slate-800">{citizenUser?.name || "Oscar Ryanda Putra"}</span>
+                <span className="text-slate-400 font-medium">Kec. {citizenUser?.district || "Kebomas"}</span>
               </div>
             </div>
           </div>
@@ -1044,7 +1043,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               whileTap={{ scale: 0.95 }}
               type="button"
               onClick={() => setScreeningStep(1)}
-              className="py-3 rounded-2xl bg-white/8 border border-white/15 text-white font-bold text-[11px] cursor-pointer text-center backdrop-blur-md"
+              className="py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-[11px] cursor-pointer text-center shadow-sm"
             >
               ← Kembali
             </motion.button>
@@ -1053,7 +1052,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               whileTap={{ scale: 0.95 }}
               type="button"
               onClick={() => setShowHelpModal(true)}
-              className="py-3 rounded-2xl bg-white/8 border border-white/15 text-white/70 font-bold text-[11px] cursor-pointer text-center backdrop-blur-md"
+              className="py-3 rounded-2xl bg-white border border-slate-200 text-slate-500 font-bold text-[11px] cursor-pointer text-center shadow-sm"
             >
               ? Bantuan
             </motion.button>
@@ -1062,7 +1061,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               whileTap={{ scale: 0.95 }}
               type="button"
               onClick={onNavigateToComplaint}
-              className="py-3 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] font-black text-[11px] cursor-pointer text-center shadow-lg"
+              className="py-3 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[11px] cursor-pointer text-center shadow-md"
             >
               Feedback
             </motion.button>
