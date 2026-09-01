@@ -28,7 +28,7 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
   onLogout,
 }) => {
   return (
-    <div className="space-y-4 font-sans pb-6 animate-in fade-in duration-200 select-none">
+    <div className="space-y-4 font-sans pb-6 animate-in fade-in duration-200 select-none w-full max-w-full overflow-x-hidden touch-pan-y">
       {/* ═══ 1. CLEAN PROFILE HEADER CARD ═══ */}
       <div className="p-4 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-3">
         <div className="flex items-center gap-3.5">

@@ -31,7 +31,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [isLiked, setIsLiked] = useState(false);
 
   return (
-    <div className="space-y-4 font-sans pb-6 animate-in fade-in duration-200 select-none">
+    <div className="space-y-4 font-sans pb-6 animate-in fade-in duration-200 select-none w-full max-w-full overflow-x-hidden touch-pan-y">
       {/* ═══ 1. MINIMALIST CLEAN HEADER ═══ */}
       <div className="flex items-center justify-between pt-1">
         <div className="space-y-0.5 min-w-0">

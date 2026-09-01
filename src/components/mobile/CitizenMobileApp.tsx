@@ -718,7 +718,7 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 sm:static sm:min-h-screen w-full h-[100dvh] sm:h-auto flex items-center justify-center p-0 sm:p-4 bg-[#F8FAFC] sm:bg-slate-900/60 backdrop-blur-md select-none font-sans overflow-hidden">
+    <div className="fixed inset-0 sm:static sm:min-h-screen w-full max-w-[100vw] h-[100dvh] sm:h-auto flex items-center justify-center p-0 sm:p-4 bg-[#F8FAFC] sm:bg-slate-900/60 backdrop-blur-md select-none font-sans overflow-hidden overflow-x-hidden touch-pan-y">
       {/* ═══ MODALS & OVERLAYS ═══ */}
       <MobilePermissionsModal
         isOpen={showPermissionDialog}
@@ -767,9 +767,9 @@ export const CitizenMobileApp: React.FC = () => {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="w-full h-full sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col justify-between overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none"
+        className="w-full max-w-[100vw] h-full sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col justify-between overflow-hidden overflow-x-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none touch-pan-y"
       >
-        <KonstaApp theme={konstaTheme} safeAreas={true} className="w-full h-full flex flex-col justify-between overflow-hidden relative">
+        <KonstaApp theme={konstaTheme} safeAreas={true} className="w-full max-w-full h-full flex flex-col justify-between overflow-hidden overflow-x-hidden relative">
         {/* Dynamic Floating Transparent Pull-to-Refresh Pill Overlay (Never pushes layout) */}
         {pullY > 0 && (
           <div
@@ -975,10 +975,10 @@ export const CitizenMobileApp: React.FC = () => {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className={`flex-1 font-sans no-scrollbar ${
+              className={`flex-1 font-sans no-scrollbar w-full max-w-full overflow-x-hidden touch-pan-y ${
                 activeTab === "screening"
                   ? "p-0 m-0 h-full w-full overflow-hidden"
-                  : "p-3.5 space-y-3.5 overflow-y-auto pb-28 overscroll-y-contain min-h-0"
+                  : "p-3.5 space-y-3.5 overflow-y-auto pb-32 overscroll-y-contain min-h-0"
               }`}
             >
               {activeTab === "home" && (
