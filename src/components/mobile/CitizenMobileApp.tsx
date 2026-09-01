@@ -946,32 +946,48 @@ export const CitizenMobileApp: React.FC = () => {
               </AnimatePresence>
             </main>
 
-            {/* ═══ CLEAN 3-TAB NAVIGATION BAR (MATCHING examplebottom.svg) ═══ */}
+            {/* ═══ CLEAN 3-TAB NAVIGATION BAR (MATCHING examplebottom.svg - UNCLIPPED FLOATING HUB) ═══ */}
             {activeTab !== "screening" && (
-              <Tabbar
-                labels={true}
-                icons={true}
-                className="left-0 bottom-0 fixed z-40 bg-white/98 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.05)] pt-1.5 pb-safe-nav"
-              >
-                {/* 1. Beranda (Home) */}
-                <TabbarLink
-                  active={activeTab === "home"}
-                  onClick={() => {
-                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                    setActiveTab("home");
-                  }}
-                  icon={
-                    <div className="relative flex items-center justify-center">
-                      <Home
-                        className={`w-6 h-6 transition-all duration-200 ${
-                          activeTab === "home"
-                            ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
-                            : "text-[#B1B5C7]"
-                        }`}
-                      />
+              <div className="left-0 bottom-0 fixed z-40 w-full select-none">
+                {/* Center Floating Button Layer (Zero Clipping / 100% Visible) */}
+                <div className="absolute left-1/2 -top-5.5 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
+                      setActiveTab("screening");
+                    }}
+                    className="relative group cursor-pointer active:scale-95 transition-transform duration-200"
+                    title="Mulai Analisis Biometrik AI"
+                  >
+                    {/* Glowing Halo */}
+                    <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#79D7D2] to-[#23B5A8] opacity-35 blur-xs group-hover:opacity-75 transition-opacity" />
+
+                    {/* Circular Floating Hub */}
+                    <div className="relative w-13.5 h-13.5 rounded-full bg-gradient-to-tr from-[#23B5A8] via-[#79D7D2] to-[#A3EDE7] text-ford-blue flex items-center justify-center shadow-[0_8px_25px_rgba(35,181,168,0.45)] border-[3.5px] border-white">
+                      <Activity className="w-7 h-7 stroke-[2.8] text-ford-blue" />
                     </div>
-                  }
-                  label={
+                  </button>
+                </div>
+
+                {/* Main White Elevated Bar */}
+                <div className="bg-white/98 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.05)] pt-2 pb-safe-nav flex items-center justify-around relative px-4 min-h-[58px]">
+                  {/* 1. Beranda */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                      setActiveTab("home");
+                    }}
+                    className="flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all cursor-pointer"
+                  >
+                    <Home
+                      className={`w-6 h-6 transition-all duration-200 ${
+                        activeTab === "home"
+                          ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
+                          : "text-[#B1B5C7]"
+                      }`}
+                    />
                     <span
                       className={`text-[11px] tracking-tight transition-colors duration-200 ${
                         activeTab === "home"
@@ -981,53 +997,38 @@ export const CitizenMobileApp: React.FC = () => {
                     >
                       Beranda
                     </span>
-                  }
-                />
+                  </button>
 
-                {/* 2. Analisis Biometrik (Core Feature: Raised Glowing Action Hub) */}
-                <TabbarLink
-                  active={false}
-                  onClick={() => {
-                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
-                    setActiveTab("screening");
-                  }}
-                  icon={
-                    <div className="relative -mt-5 group flex flex-col items-center">
-                      {/* Outer Glow Halo */}
-                      <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#79D7D2] to-[#23B5A8] opacity-35 blur-xs group-hover:opacity-70 transition-opacity" />
-                      
-                      {/* Main Elevated Floating Center Button */}
-                      <div className="relative w-12.5 h-12.5 rounded-full bg-gradient-to-tr from-[#23B5A8] via-[#79D7D2] to-[#A3EDE7] text-ford-blue flex items-center justify-center shadow-[0_8px_20px_rgba(35,181,168,0.4)] border-[3px] border-white active:scale-90 transition-transform duration-200">
-                        <Activity className="w-6.5 h-6.5 stroke-[2.8] text-ford-blue drop-shadow-2xs" />
-                      </div>
-                    </div>
-                  }
-                  label={
-                    <span className="text-[11px] font-black text-[#23B5A8] tracking-tight mt-0.5">
+                  {/* 2. Analisis Center Spacer & Label */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
+                      setActiveTab("screening");
+                    }}
+                    className="flex flex-col items-center justify-center w-20 pt-7 transition-all cursor-pointer"
+                  >
+                    <span className="text-[11px] font-black text-[#23B5A8] tracking-tight">
                       Analisis
                     </span>
-                  }
-                />
+                  </button>
 
-                {/* 3. Profil */}
-                <TabbarLink
-                  active={activeTab === "profile"}
-                  onClick={() => {
-                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                    setActiveTab("profile");
-                  }}
-                  icon={
-                    <div className="relative flex items-center justify-center">
-                      <User
-                        className={`w-6 h-6 transition-all duration-200 ${
-                          activeTab === "profile"
-                            ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
-                            : "text-[#B1B5C7]"
-                        }`}
-                      />
-                    </div>
-                  }
-                  label={
+                  {/* 3. Profil */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                      setActiveTab("profile");
+                    }}
+                    className="flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all cursor-pointer"
+                  >
+                    <User
+                      className={`w-6 h-6 transition-all duration-200 ${
+                        activeTab === "profile"
+                          ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
+                          : "text-[#B1B5C7]"
+                      }`}
+                    />
                     <span
                       className={`text-[11px] tracking-tight transition-colors duration-200 ${
                         activeTab === "profile"
@@ -1037,9 +1038,9 @@ export const CitizenMobileApp: React.FC = () => {
                     >
                       Profil
                     </span>
-                  }
-                />
-              </Tabbar>
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         )}
