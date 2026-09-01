@@ -145,12 +145,12 @@ export const MobileForgotPasswordScreen: React.FC<MobileForgotPasswordScreenProp
         </div>
       </div>
 
-      {/* Main Elevated Card Container */}
+      {/* Main Elevated Card Container with Natural Upper-Center Position */}
       <motion.div 
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="my-auto bg-white rounded-3xl p-5 sm:p-6 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-4"
+        className="mt-2 sm:mt-4 mb-auto bg-white rounded-3xl p-5 sm:p-6 shadow-[0_4px_25px_rgba(0,0,0,0.04)] border border-slate-100/90 space-y-4 relative z-10"
       >
         {/* Brand Logo & Header */}
         <div className="text-center space-y-1 pt-1 pb-1">
