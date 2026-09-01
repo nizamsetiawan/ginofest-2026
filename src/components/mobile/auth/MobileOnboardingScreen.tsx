@@ -154,8 +154,8 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
         </AnimatePresence>
       </div>
 
-      {/* Fixed Bottom Navigation Controls: Fixed at bottom just like Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40 bg-[#F8FAFC]/95 backdrop-blur-md px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] border-t border-slate-200/60 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] space-y-3">
+      {/* Fixed Bottom Navigation Controls: Seamlessly blended with main screen bg, perfectly balanced margins */}
+      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/95 to-[#F8FAFC]/0 px-6 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] space-y-3.5 pointer-events-auto">
         {/* Stepper Dots Indicator */}
         <div className="flex items-center justify-center gap-2">
           {[0, 1, 2].map((idx) => (
@@ -177,10 +177,10 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
           ))}
         </div>
 
-        {/* Navigation Actions Row */}
-        <div className="flex items-center justify-between">
-          {/* Left: Back Arrow Button */}
-          {onboardingIndex > 0 ? (
+        {/* Navigation Actions Row - Symmetrically Balanced */}
+        <div className="flex items-center gap-3 w-full">
+          {/* Left: Back Arrow Button (Only on slide 1 & 2) */}
+          {onboardingIndex > 0 && (
             <motion.button
               whileTap={{ scale: 0.95 }}
               type="button"
@@ -188,39 +188,37 @@ export const MobileOnboardingScreen: React.FC<MobileOnboardingScreenProps> = ({
                 triggerHaptic();
                 setOnboardingIndex((prev) => Math.max(prev - 1, 0));
               }}
-              className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-white hover:bg-slate-50 text-ford-blue font-bold shadow-2xs border border-slate-200/80 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white hover:bg-slate-50 text-ford-blue font-bold shadow-2xs border border-slate-200/80 transition-all cursor-pointer shrink-0"
               title="Kembali ke halaman sebelumnya"
               aria-label="Kembali"
             >
-              <ArrowLeft className="w-4 h-4 text-ford-blue" />
+              <ArrowLeft className="w-4.5 h-4.5 text-ford-blue" />
             </motion.button>
-          ) : (
-            <div className="w-11 h-11" />
           )}
 
-          {/* Right: Next or Start Button */}
+          {/* Right/Full: Next or Start Button */}
           {onboardingIndex < 2 ? (
             <motion.button
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => {
                 triggerHaptic();
                 setOnboardingIndex((prev) => Math.min(prev + 1, 2));
               }}
-              className="inline-flex items-center justify-center gap-1.5 px-5.5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13.5px] shadow-[0_4px_15px_rgba(35,181,168,0.25)] transition-all cursor-pointer"
+              className="flex-1 h-12 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[14px] shadow-[0_4px_15px_rgba(35,181,168,0.25)] transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <span>Lanjutkan</span>
-              <ArrowRight className="w-3.5 h-3.5 text-ford-blue" />
+              <ArrowRight className="w-4 h-4 text-ford-blue" />
             </motion.button>
           ) : (
             <motion.button
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => {
                 triggerHaptic();
                 onFinish();
               }}
-              className="inline-flex items-center justify-center gap-1.5 px-5.5 h-11 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[13.5px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer"
+              className="flex-1 h-12 rounded-2xl bg-gradient-to-r from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] hover:opacity-95 text-ford-blue font-black text-[14px] shadow-[0_4px_15px_rgba(35,181,168,0.3)] transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <span>Mulai Sekarang</span>
               <ArrowRight className="w-4 h-4 text-ford-blue" />
