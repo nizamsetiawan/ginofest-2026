@@ -37,9 +37,9 @@ export const MobileAIChatTab: React.FC = () => {
   };
 
   return (
-    <Page className="space-y-3 font-sans pb-6 animate-in fade-in duration-200 select-none bg-transparent">
+    <div className="space-y-3 font-sans pb-6 animate-in fade-in duration-200 select-none">
       {/* Header Info */}
-      <Card className="!m-0 p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
+      <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center">
@@ -50,11 +50,11 @@ export const MobileAIChatTab: React.FC = () => {
               <p className="text-[10px] text-blue-gray">AI Nutrisi Khusus Pangan Lokal Gresik</p>
             </div>
           </div>
-          <Badge colors={{ bg: "bg-green-tint", text: "text-light-sea-green" }} className="px-2 py-0.5 rounded-full text-[9.5px] font-bold">
+          <span className="px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-green-tint text-light-sea-green">
             Online
-          </Badge>
+          </span>
         </div>
-      </Card>
+      </div>
 
       {/* Chat Messages Stream */}
       <div className="space-y-2.5 min-h-[160px]">
@@ -116,6 +116,6 @@ export const MobileAIChatTab: React.FC = () => {
           <Send className="w-4 h-4 stroke-[2.5]" />
         </Button>
       </div>
-    </Page>
+    </div>
   );
 };

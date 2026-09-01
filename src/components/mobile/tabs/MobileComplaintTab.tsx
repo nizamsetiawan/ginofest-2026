@@ -26,8 +26,8 @@ export const MobileComplaintTab: React.FC<MobileComplaintTabProps> = ({
   onSubmitComplaint,
 }) => {
   return (
-    <Page className="space-y-3.5 font-sans pb-6 animate-in fade-in duration-200 select-none bg-transparent">
-      <Card className="!m-0 p-4 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-3">
+    <div className="space-y-3.5 font-sans pb-6 animate-in fade-in duration-200 select-none">
+      <div className="p-4 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-3">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-2xl bg-amber-50 text-brand-orange flex items-center justify-center">
             <MessageSquare className="w-4 h-4 stroke-[2.5]" />
@@ -97,7 +97,7 @@ export const MobileComplaintTab: React.FC<MobileComplaintTabProps> = ({
             </Button>
           </form>
         )}
-      </Card>
-    </Page>
+      </div>
+    </div>
   );
 };
