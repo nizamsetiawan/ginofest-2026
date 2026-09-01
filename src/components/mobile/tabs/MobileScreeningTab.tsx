@@ -48,14 +48,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [isScanningActive, setIsScanningActive] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
 
-  // Biometric Target Selection: Wajah, Mata, Tangan, Kuku
-  const [biometricTarget, setBiometricTarget] = useState<"wajah" | "mata" | "tangan" | "kuku">("wajah");
+  // 4-Step Sequential Biometric Capture Flow (Wajah -> Mata -> Tangan -> Kuku)
+  const [captureStepIdx, setCaptureStepIdx] = useState<number>(0);
+  const [capturedPhotos, setCapturedPhotos] = useState<Record<string, boolean>>({});
 
-  const biometricTargets = [
-    { id: "wajah", label: "Wajah", icon: "😊", desc: "Deteksi rona pucat wajah & mikronutrien" },
-    { id: "mata", label: "Mata", icon: "👁️", desc: "Skrining konjungtiva & indikasi anemia zat besi" },
-    { id: "tangan", label: "Tangan", icon: "✋", desc: "Analisis turgor kulit & hidrasi biometrik" },
-    { id: "kuku", label: "Kuku", icon: "💅", desc: "Pemeriksaan capillary refill & sianosis gizi" },
+  const biometricFlow = [
+    { id: "wajah", label: "Wajah", icon: "😊", desc: "Posisikan wajah tegak lurus pada kurva oval untuk deteksi rona pucat & mikronutrien." },
+    { id: "mata", label: "Mata", icon: "👁️", desc: "Arahkan kedua mata sejajar pada kotak retikel untuk deteksi anemia konjungtiva." },
+    { id: "tangan", label: "Tangan", icon: "✋", desc: "Buka telapak tangan sejajar pada kurva panduan untuk analisis hidrasi & turgor." },
+    { id: "kuku", label: "Kuku", icon: "💅", desc: "Dekatkan 4 kuku jari pada kotak target untuk uji capillary refill & sianosis." },
   ] as const;
 
   // Initialize and cleanup live camera stream on Step 1
@@ -159,10 +160,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   // Help Modal State
   const [showHelpModal, setShowHelpModal] = useState(false);
 
-  // Handle Scanning Animation
+  // Scanning Guide Dialog (auto-shows when entering Step 1)
+  const [showScanGuide, setShowScanGuide] = useState(true);
+
+  // Handle Scanning Animation for 4-Step Biometric Flow
   const handleStartScan = () => {
     setIsScanningActive(true);
     setScanProgress(0);
+
+    const currentFlowId = biometricFlow[captureStepIdx].id;
 
     const interval = setInterval(() => {
       setScanProgress((prev) => {
@@ -170,13 +176,23 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           clearInterval(interval);
           setTimeout(() => {
             setIsScanningActive(false);
-            setScreeningStep(2); // Move to Questionnaire
+            setCapturedPhotos((prevPhotos) => ({
+              ...prevPhotos,
+              [currentFlowId]: true,
+            }));
+
+            if (captureStepIdx < biometricFlow.length - 1) {
+              setCaptureStepIdx((prev) => prev + 1);
+            } else {
+              // All 4 photos captured -> proceed to questionnaire (Step 2)
+              setScreeningStep(2);
+            }
           }, 350);
           return 100;
         }
         return prev + 25;
       });
-    }, 250);
+    }, 220);
   };
 
   const handleSelectAnswer = (ans: string) => {
@@ -233,7 +249,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       )}
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* SCREEN 1: FULLSCREEN CAMERA WITH BIOMETRIC HUD & FLOATING BAR  */}
+      {/* SCREEN 1: 4-STEP SEQUENTIAL BIOMETRIC CAPTURE (WAJAH -> MATA -> TANGAN -> KUKU) */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {screeningStep === 1 && (
         <div className="flex-1 flex flex-col justify-between relative h-full w-full overflow-hidden">
@@ -260,9 +276,64 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/75 pointer-events-none" />
           </div>
 
-          {/* ═══ TOP SECTION: HEADER CONTROLS & BIOMETRIC SELECTOR (Z-20) ═══ */}
-          <div className="space-y-3 z-20 pt-3 px-3.5">
-            {/* Top Navigation & Controls Row */}
+          {/* ═══ PETUNJUK SCANNING GUIDE DIALOG (AUTO-SHOWS BEFORE PHOTOS BEGIN) ═══ */}
+          {showScanGuide && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center px-5 bg-black/75 backdrop-blur-md">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="w-full max-w-sm bg-[#0D1B2A]/95 border border-[#79D7D2]/30 rounded-3xl shadow-2xl overflow-hidden"
+              >
+                {/* Header */}
+                <div className="bg-gradient-to-r from-[#0FA89B]/30 to-[#79D7D2]/20 px-5 pt-5 pb-3 flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-lg flex-shrink-0">
+                    <Scan className="w-6 h-6 text-ford-blue" />
+                  </div>
+                  <div>
+                    <h2 className="text-[15px] font-black text-white tracking-tight">Petunjuk Analisis AI</h2>
+                    <p className="text-[11px] text-[#79D7D2] font-semibold">4 Foto Biometrik Berurutan</p>
+                  </div>
+                </div>
+
+                {/* Steps Guide */}
+                <div className="px-5 py-4 space-y-3">
+                  {biometricFlow.map((step, idx) => (
+                    <div key={step.id} className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#23B5A8]/30 to-[#79D7D2]/20 border border-[#79D7D2]/40 flex items-center justify-center flex-shrink-0">
+                        <span className="text-[14px]">{step.icon}</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-[12px] font-black text-white">
+                          Foto {idx + 1}: {step.label}
+                        </p>
+                        <p className="text-[10.5px] text-slate-400 font-medium leading-snug">{step.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* OK Button */}
+                <div className="px-5 pb-5">
+                  <motion.button
+                    whileTap={{ scale: 0.96 }}
+                    type="button"
+                    onClick={() => {
+                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
+                      setShowScanGuide(false);
+                    }}
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-ford-blue text-[13px] font-black tracking-wide shadow-lg cursor-pointer active:scale-95 transition-transform"
+                  >
+                    Mengerti, Mulai Foto
+                  </motion.button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+
+          {/* ═══ TOP SECTION: HEADER CONTROLS & 4-FLOW STEP INDICATOR (Z-20) ═══ */}
+          <div className="space-y-2.5 z-20 pt-3 px-3.5">
+            {/* Top Navigation & Controls Row — Back only on left, Flash+Flip on right */}
             <div className="flex items-center justify-between">
               {/* Back Button */}
               <motion.button
@@ -275,15 +346,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <ArrowLeft className="w-4.5 h-4.5 text-white stroke-[2.5]" />
               </motion.button>
 
-              {/* Center Status Pill */}
-              <div className="px-3.5 py-1.5 rounded-2xl bg-black/45 border border-[#79D7D2]/40 backdrop-blur-md flex items-center gap-2 shadow-lg">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-                <span className="text-[11.5px] font-bold text-white tracking-wide">
-                  AI Biometrik Gizi
-                </span>
-              </div>
-
-              {/* Right Action Controls: Flash, Flip Camera, Help */}
+              {/* Right Action Controls: Flash + Flip only */}
               <div className="flex items-center gap-1.5">
                 {/* Flash Toggle Button */}
                 <motion.button
@@ -310,49 +373,41 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 >
                   <RotateCw className="w-4 h-4 text-white stroke-[2.2]" />
                 </motion.button>
-
-                {/* Help Modal Button */}
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  type="button"
-                  onClick={() => setShowHelpModal(true)}
-                  className="w-10 h-10 rounded-2xl bg-black/40 hover:bg-black/60 text-white flex items-center justify-center shadow-lg cursor-pointer transition-all border border-white/20 backdrop-blur-md"
-                  title="Petunjuk"
-                >
-                  <HelpCircle className="w-4 h-4 text-white stroke-[2.2]" />
-                </motion.button>
               </div>
             </div>
 
-            {/* ═══ BIOMETRIC TARGET SELECTOR BAR (WAJAH, MATA, TANGAN, KUKU) ═══ */}
-            <div className="flex items-center justify-center gap-1.5 bg-black/40 backdrop-blur-md p-1 rounded-2xl border border-white/15 max-w-sm mx-auto shadow-xl">
-              {biometricTargets.map((target) => {
-                const isActive = biometricTarget === target.id;
+            {/* ═══ 4-STEP SEQUENTIAL PROGRESS FLOW BAR (WAJAH -> MATA -> TANGAN -> KUKU) ═══ */}
+            <div className="flex items-center justify-between gap-1.5 bg-black/45 backdrop-blur-md p-1 rounded-2xl border border-white/15 max-w-sm mx-auto shadow-xl">
+              {biometricFlow.map((step, idx) => {
+                const isActive = captureStepIdx === idx;
+                const isCompleted = !!capturedPhotos[step.id];
+
                 return (
-                  <motion.button
-                    key={target.id}
-                    whileTap={{ scale: 0.95 }}
+                  <button
+                    key={step.id}
                     type="button"
                     onClick={() => {
                       if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                      setBiometricTarget(target.id);
+                      setCaptureStepIdx(idx);
                     }}
-                    className={`flex-1 py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer select-none ${
+                    className={`flex-1 py-1.5 px-1.5 rounded-xl text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer select-none ${
                       isActive
                         ? "bg-gradient-to-r from-[#23B5A8] to-[#79D7D2] text-ford-blue shadow-md font-black"
-                        : "text-white/70 hover:text-white hover:bg-white/10"
+                        : isCompleted
+                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                        : "text-white/60 hover:text-white hover:bg-white/10"
                     }`}
                   >
-                    <span className="text-xs">{target.icon}</span>
-                    <span>{target.label}</span>
-                  </motion.button>
+                    <span>{isCompleted ? "✓" : step.icon}</span>
+                    <span className="truncate">{step.label}</span>
+                  </button>
                 );
               })}
             </div>
           </div>
 
-          {/* ═══ CENTER: BIOMETRIC VECTOR HUD OVERLAY GUIDE (Z-10) ═══ */}
-          <div className="flex-1 flex flex-col items-center justify-center relative px-4 z-10 w-full overflow-hidden pointer-events-none">
+          {/* ═══ CENTER: UPPER-ALIGNED BIOMETRIC GUIDELINE FRAMES (Z-10) ═══ */}
+          <div className="flex-1 flex flex-col items-center justify-start pt-3 sm:pt-5 pb-24 px-4 z-10 w-full overflow-hidden pointer-events-none">
             {/* Live Scanning Laser Sweep Animation */}
             {isScanningActive && (
               <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden flex flex-col items-center justify-center">
@@ -365,94 +420,90 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 {/* Telemetry Progress Floating Pill */}
                 <div className="px-5 py-2.5 rounded-full bg-black/85 border border-[#79D7D2] text-[#79D7D2] font-mono font-black text-xs backdrop-blur-xl shadow-2xl flex items-center gap-2.5 relative z-40 animate-in zoom-in-95">
                   <RefreshCw className="w-4 h-4 animate-spin text-[#79D7D2]" />
-                  <span>MEMINDAI {biometricTarget.toUpperCase()}: {scanProgress}%</span>
+                  <span>MEMINDAI {biometricFlow[captureStepIdx].label.toUpperCase()}: {scanProgress}%</span>
                 </div>
               </div>
             )}
 
-            {/* Dynamic Target HUD Frame SVG */}
-            <div className="relative w-full max-w-[310px] sm:max-w-[340px] aspect-[4/5] max-h-[46vh] flex items-center justify-center">
-              {/* 1. WAJAH (Face Contour Guide) */}
-              {biometricTarget === "wajah" && (
+            {/* Dynamic Upper-Aligned HUD Frame SVG */}
+            <div className="relative w-full max-w-[310px] sm:max-w-[340px] aspect-[4/5] max-h-[44vh] flex items-center justify-center">
+              {/* FLOW 1: WAJAH (Upper Eye-Level Face Oval Contour) */}
+              {captureStepIdx === 0 && (
                 <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
                   {/* Outer Corner Frame Brackets */}
-                  <path d="M 30,60 L 30,30 L 60,30" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 270,60 L 270,30 L 240,30" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 30,300 L 30,330 L 60,330" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 270,300 L 270,330 L 240,330" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 30,50 L 30,20 L 60,20" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 270,50 L 270,20 L 240,20" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 30,310 L 30,340 L 60,340" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 270,310 L 270,340 L 240,340" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
 
                   {/* Face Oval Guideline */}
-                  <ellipse cx="150" cy="180" rx="85" ry="115" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="2" strokeDasharray="6 6" />
-                  <ellipse cx="150" cy="180" rx="90" ry="120" fill="none" stroke="#23B5A8" strokeWidth="1.5" opacity="0.6" />
+                  <ellipse cx="150" cy="175" rx="85" ry="115" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" strokeDasharray="6 6" />
+                  <ellipse cx="150" cy="175" rx="90" ry="120" fill="none" stroke="#23B5A8" strokeWidth="1.5" opacity="0.6" />
 
                   {/* Eye Level Line */}
-                  <line x1="75" y1="160" x2="225" y2="160" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.8" />
-                  <circle cx="110" cy="160" r="14" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
-                  <circle cx="190" cy="160" r="14" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
-                  <circle cx="110" cy="160" r="3" fill="#23B5A8" />
-                  <circle cx="190" cy="160" r="3" fill="#23B5A8" />
+                  <line x1="75" y1="155" x2="225" y2="155" stroke="#79D7D2" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.8" />
+                  <circle cx="110" cy="155" r="14" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
+                  <circle cx="190" cy="155" r="14" fill="none" stroke="#79D7D2" strokeWidth="1.5" />
+                  <circle cx="110" cy="155" r="3" fill="#23B5A8" />
+                  <circle cx="190" cy="155" r="3" fill="#23B5A8" />
 
                   {/* Chin Anchor Point */}
-                  <path d="M 130,295 Q 150,305 170,295" fill="none" stroke="#79D7D2" strokeWidth="2" strokeLinecap="round" />
-                  <text x="150" y="325" fill="#79D7D2" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">AREA WAJAH</text>
+                  <path d="M 130,290 Q 150,300 170,290" fill="none" stroke="#79D7D2" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               )}
 
-              {/* 2. MATA (Dual Ocular & Conjunctiva Anemia Guide) */}
-              {biometricTarget === "mata" && (
+              {/* FLOW 2: MATA (Upper Eye-Level Dual Ocular Frame - Clean Without Text) */}
+              {captureStepIdx === 1 && (
                 <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
-                  {/* Left Eye Reticle */}
-                  <g transform="translate(40, 120)">
-                    <rect x="0" y="0" width="100" height="90" rx="16" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="6 4" />
-                    <circle cx="50" cy="45" r="24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" />
-                    <circle cx="50" cy="45" r="8" fill="#23B5A8" opacity="0.8" />
-                    <path d="M 25,65 Q 50,78 75,65" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
-                    <text x="50" y="20" fill="#79D7D2" fontSize="9" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">MATA KIRI</text>
+                  {/* Left Eye Reticle Frame */}
+                  <g transform="translate(35, 110)">
+                    <rect x="0" y="0" width="105" height="95" rx="18" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
+                    <circle cx="52.5" cy="47.5" r="26" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+                    <circle cx="52.5" cy="47.5" r="8" fill="#23B5A8" opacity="0.8" />
+                    {/* Lower Conjunctiva Arc */}
+                    <path d="M 25,68 Q 52.5,82 80,68" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
                   </g>
 
-                  {/* Right Eye Reticle */}
-                  <g transform="translate(160, 120)">
-                    <rect x="0" y="0" width="100" height="90" rx="16" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="6 4" />
-                    <circle cx="50" cy="45" r="24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" />
-                    <circle cx="50" cy="45" r="8" fill="#23B5A8" opacity="0.8" />
-                    <path d="M 25,65 Q 50,78 75,65" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
-                    <text x="50" y="20" fill="#79D7D2" fontSize="9" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">MATA KANAN</text>
+                  {/* Right Eye Reticle Frame */}
+                  <g transform="translate(160, 110)">
+                    <rect x="0" y="0" width="105" height="95" rx="18" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2.5" strokeDasharray="6 4" />
+                    <circle cx="52.5" cy="47.5" r="26" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+                    <circle cx="52.5" cy="47.5" r="8" fill="#23B5A8" opacity="0.8" />
+                    {/* Lower Conjunctiva Arc */}
+                    <path d="M 25,68 Q 52.5,82 80,68" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
                   </g>
 
-                  {/* Anemia Scan Legend */}
-                  <rect x="55" y="245" width="190" height="28" rx="14" fill="rgba(0,0,0,0.6)" stroke="#79D7D2" strokeWidth="1" />
-                  <circle cx="75" cy="259" r="4" fill="#EF4444" />
-                  <text x="145" y="263" fill="#FFFFFF" fontSize="9.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">Zona Deteksi Konjungtiva</text>
+                  {/* Center Alignment Bridge */}
+                  <line x1="140" y1="157.5" x2="160" y2="157.5" stroke="#79D7D2" strokeWidth="2" strokeDasharray="3 3" />
                 </svg>
               )}
 
-              {/* 3. TANGAN (Hand Palm Contour Guide) */}
-              {biometricTarget === "tangan" && (
+              {/* FLOW 3: TANGAN (Upper Eye-Level Hand Palm Contour) */}
+              {captureStepIdx === 2 && (
                 <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
-                  {/* Outer Frame */}
-                  <path d="M 40,70 L 40,40 L 70,40" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 260,70 L 260,40 L 230,40" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 40,290 L 40,320 L 70,320" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M 260,290 L 260,320 L 230,320" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  {/* Outer Frame Brackets */}
+                  <path d="M 40,50 L 40,20 L 70,20" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 260,50 L 260,20 L 230,20" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 40,310 L 40,340 L 70,340" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 260,310 L 260,340 L 230,340" fill="none" stroke="#79D7D2" strokeWidth="3" strokeLinecap="round" />
 
                   {/* Stylized Hand Silhouette Outline */}
                   <path
-                    d="M 110,310 L 110,240 C 100,220 80,180 80,140 C 80,125 95,125 95,140 L 95,200 L 115,100 C 115,85 130,85 130,100 L 130,190 L 145,80 C 145,65 160,65 160,80 L 160,190 L 175,95 C 175,80 190,80 190,95 L 190,200 L 205,130 C 205,115 220,115 220,130 C 220,170 200,240 190,250 L 190,310 Z"
+                    d="M 110,310 L 110,235 C 100,215 80,175 80,135 C 80,120 95,120 95,135 L 95,195 L 115,95 C 115,80 130,80 130,95 L 130,185 L 145,75 C 145,60 160,60 160,75 L 160,185 L 175,90 C 175,75 190,75 190,90 L 190,195 L 205,125 C 205,110 220,110 220,125 C 220,165 200,235 190,245 L 190,310 Z"
                     fill="rgba(35,181,168,0.06)"
-                    stroke="rgba(255,255,255,0.75)"
+                    stroke="rgba(255,255,255,0.8)"
                     strokeWidth="2"
                     strokeDasharray="6 4"
                   />
 
                   {/* Central Elasticity / Turgor Sensor Ring */}
-                  <circle cx="150" cy="225" r="28" fill="none" stroke="#79D7D2" strokeWidth="2" />
-                  <circle cx="150" cy="225" r="4" fill="#23B5A8" />
-                  <text x="150" y="275" fill="#79D7D2" fontSize="9.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">TELAPAK TANGAN</text>
+                  <circle cx="150" cy="220" r="28" fill="none" stroke="#79D7D2" strokeWidth="2" />
+                  <circle cx="150" cy="220" r="4" fill="#23B5A8" />
                 </svg>
               )}
 
-              {/* 4. KUKU (Capillary Refill & Nail Bed Guide) */}
-              {biometricTarget === "kuku" && (
+              {/* FLOW 4: KUKU (Upper Eye-Level 4 Nail Bed Grid) */}
+              {captureStepIdx === 3 && (
                 <svg viewBox="0 0 300 360" className="w-full h-full drop-shadow-[0_0_15px_rgba(35,181,168,0.4)]">
                   {/* 4 Finger Nail Target Boxes */}
                   {[
@@ -461,18 +512,14 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     { x: 155, label: "Manis" },
                     { x: 210, label: "Kelingking" },
                   ].map((nail, i) => (
-                    <g key={i} transform={`translate(${nail.x}, 120)`}>
-                      <rect x="0" y="0" width="45" height="75" rx="14" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="4 3" />
+                    <g key={i} transform={`translate(${nail.x}, 105)`}>
+                      <rect x="0" y="0" width="45" height="85" rx="14" fill="rgba(35,181,168,0.08)" stroke="#79D7D2" strokeWidth="2" strokeDasharray="4 3" />
                       {/* Nail Arc */}
-                      <path d="M 8,22 Q 22.5,8 37,22 L 37,45 Q 22.5,48 8,45 Z" fill="rgba(255,255,255,0.2)" stroke="#FFFFFF" strokeWidth="1.5" />
-                      <circle cx="22.5" cy="30" r="3" fill="#23B5A8" />
-                      <text x="22.5" y="92" fill="#79D7D2" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{nail.label}</text>
+                      <path d="M 8,24 Q 22.5,8 37,24 L 37,50 Q 22.5,54 8,50 Z" fill="rgba(255,255,255,0.2)" stroke="#FFFFFF" strokeWidth="1.5" />
+                      <circle cx="22.5" cy="34" r="3" fill="#23B5A8" />
+                      <text x="22.5" y="104" fill="#79D7D2" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{nail.label}</text>
                     </g>
                   ))}
-
-                  {/* Legend Box */}
-                  <rect x="40" y="240" width="220" height="30" rx="15" fill="rgba(0,0,0,0.6)" stroke="#79D7D2" strokeWidth="1" />
-                  <text x="150" y="259" fill="#FFFFFF" fontSize="9.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">Sensor Capillary Refill &amp; Sianosis</text>
                 </svg>
               )}
             </div>
@@ -489,15 +536,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                       <Scan className="w-3 h-3 text-[#79D7D2]" />
                     </div>
                     <h3 className="text-[12.5px] font-black tracking-wide text-white">
-                      Pindai Biometrik: {biometricTargets.find((t) => t.id === biometricTarget)?.label}
+                      Foto {captureStepIdx + 1}/4: Pindai {biometricFlow[captureStepIdx].label}
                     </h3>
                   </div>
                   <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#79D7D2]/20 text-[#79D7D2] font-bold border border-[#79D7D2]/30">
-                    Live AI
+                    Langkah {captureStepIdx + 1} dari 4
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-300 font-medium leading-snug">
-                  {biometricTargets.find((t) => t.id === biometricTarget)?.desc}
+                  {biometricFlow[captureStepIdx].desc}
                 </p>
               </div>
 
@@ -513,7 +560,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   }}
                   disabled={isScanningActive}
                   className="w-18 h-18 rounded-full bg-white shadow-[0_0_35px_rgba(35,181,168,0.7)] border-4 border-[#23B5A8] flex items-center justify-center relative cursor-pointer active:scale-90 transition-all group"
-                  title="Ambil Foto & Mulai Pindaian AI"
+                  title={`Ambil Foto ${biometricFlow[captureStepIdx].label}`}
                 >
                   {/* Blinking Aura Pulse Rings */}
                   <div className="absolute -inset-2.5 rounded-full bg-[#79D7D2]/40 animate-ping [animation-duration:2s] pointer-events-none" />
