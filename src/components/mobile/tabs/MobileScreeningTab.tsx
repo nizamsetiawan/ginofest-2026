@@ -877,8 +877,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {screeningStep === 4 && (
         <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
-          {/* ─── TOP BAR ─── */}
-          <div className="px-4 pt-4 pb-3 space-y-3">
+          {/* ─── TOP BAR (fixed) ─── */}
+          <div className="px-4 pt-4 pb-3 space-y-3 flex-shrink-0">
             <div className="flex items-center justify-between">
               <motion.button whileTap={{ scale: 0.9 }} type="button" onClick={() => setScreeningStep(3)}
                 className="w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer">
@@ -899,75 +899,83 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
           </div>
 
-          {/* ─── QR CARD ─── */}
-          <div className="flex-1 flex flex-col items-center justify-center px-5 pb-6 gap-5">
-
+          {/* ─── SCROLLABLE BODY ─── */}
+          <div className="flex-1 overflow-y-auto px-5 pt-2 pb-4 space-y-4">
             {/* Instruction */}
-            <div className="text-center space-y-1">
+            <div className="text-center space-y-1 py-2">
               <h4 className="text-[15px] font-black text-slate-800">Tunjukkan QR ini pada staf!</h4>
-              <p className="text-[11px] text-slate-500 font-medium max-w-xs leading-snug">
+              <p className="text-[11px] text-slate-500 font-medium max-w-xs mx-auto leading-snug">
                 Petugas SPPG MBG akan memindai kode ini untuk validasi porsi menu anak Anda.
               </p>
             </div>
 
-            {/* QR Box — Real QR Code via qrcode.react */}
-            <div className="relative p-4 bg-white rounded-3xl shadow-2xl shadow-[#23B5A8]/20 border border-white/20">
-              <div className="w-44 h-44 relative flex items-center justify-center">
-                <QRCodeSVG
-                  value={claimPayload}
-                  size={176}
-                  bgColor="#FFFFFF"
-                  fgColor="#0D1B2A"
-                  level="H"
-                  includeMargin={false}
-                  imageSettings={{
-                    src: "/logo_app.svg",
-                    x: undefined,
-                    y: undefined,
-                    height: 28,
-                    width: 28,
-                    excavate: true,
-                  }}
-                />
-                {isQrVerifying && (
-                  <div className="absolute inset-0 bg-white/95 rounded-2xl flex flex-col items-center justify-center gap-1.5">
-                    <RefreshCw className="w-7 h-7 text-[#23B5A8] animate-spin" />
-                    <span className="text-[10.5px] font-black text-[#0D1B2A]">Memverifikasi...</span>
-                  </div>
-                )}
+            {/* Extra info — placeholder scrollable content */}
+            <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm space-y-2">
+              <p className="text-[10.5px] font-black text-slate-700">Ketentuan Klaim</p>
+              <ul className="space-y-1.5 text-[10px] text-slate-500 font-medium">
+                <li className="flex items-start gap-2"><span className="text-[#23B5A8] font-black mt-0.5">•</span> QR hanya dapat digunakan sekali per sesi makan siang.</li>
+                <li className="flex items-start gap-2"><span className="text-[#23B5A8] font-black mt-0.5">•</span> Berlaku 6 jam sejak QR dibuat.</li>
+                <li className="flex items-start gap-2"><span className="text-[#23B5A8] font-black mt-0.5">•</span> Pastikan menu sesuai rekomendasi AI sebelum menerima porsi.</li>
+                <li className="flex items-start gap-2"><span className="text-[#23B5A8] font-black mt-0.5">•</span> Kecamatan {citizenUser?.district || "Kebomas"} • Ginofest 2026</li>
+              </ul>
+            </div>
+
+            {/* Bottom padding so content clears the sticky bar */}
+            <div className="h-2" />
+          </div>
+
+          {/* ─── STICKY BOTTOM — QR + Claim ID + Button (bg nyatu) ─── */}
+          <div className="flex-shrink-0 relative">
+            {/* Fade from page bg — blends seamlessly */}
+            <div className="h-6 bg-gradient-to-b from-transparent to-white pointer-events-none" />
+            <div className="bg-white border-t border-slate-100 px-5 pb-6 pt-3 space-y-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+
+              {/* QR Box — Real QR Code via qrcode.react */}
+              <div className="relative p-3 bg-white rounded-2xl shadow-lg shadow-[#23B5A8]/15 border border-slate-100 flex items-center gap-4">
+                <div className="w-20 h-20 flex-shrink-0 relative flex items-center justify-center">
+                  <QRCodeSVG
+                    value={claimPayload}
+                    size={80}
+                    bgColor="#FFFFFF"
+                    fgColor="#0D1B2A"
+                    level="H"
+                    includeMargin={false}
+                    imageSettings={{
+                      src: "/logo_app.svg",
+                      x: undefined,
+                      y: undefined,
+                      height: 18,
+                      width: 18,
+                      excavate: true,
+                    }}
+                  />
+                  {isQrVerifying && (
+                    <div className="absolute inset-0 bg-white/95 rounded-xl flex items-center justify-center">
+                      <RefreshCw className="w-5 h-5 text-[#23B5A8] animate-spin" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[8.5px] text-slate-400 font-semibold tracking-widest uppercase mb-0.5">ID Klaim</p>
+                  <p className="text-[10px] font-black text-[#0FA89B] font-mono tracking-wide truncate">{claimId}</p>
+                  <p className="text-[9px] text-slate-400 font-medium mt-0.5 leading-snug">
+                    {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"} · 680 kkal
+                  </p>
+                  <p className="text-[8.5px] text-red-400 font-bold mt-1">Berlaku 6 jam • 1x pakai</p>
+                </div>
               </div>
-              {/* Teal scan line */}
-              <div className="absolute left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[#23B5A8] to-transparent top-1/2 opacity-40 animate-pulse" />
+
+              {/* Scan Button */}
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                type="button"
+                onClick={handleVerifyQR}
+                disabled={isQrVerifying}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[13px] shadow-md cursor-pointer disabled:opacity-60"
+              >
+                {isQrVerifying ? "Memproses Verifikasi..." : "Simulasikan Staf Memindai QR"}
+              </motion.button>
             </div>
-
-            {/* Claim ID Badge */}
-            <div className="bg-white border border-slate-100 rounded-2xl px-4 py-2.5 w-full shadow-sm">
-              <p className="text-[9px] text-slate-400 font-semibold tracking-widest uppercase mb-1">ID Klaim</p>
-              <p className="text-[11px] font-black text-[#0FA89B] font-mono tracking-wider">{claimId}</p>
-              <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">
-                {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"} · 680 kkal · 1x Makan Siang
-              </p>
-            </div>
-
-            {/* Note */}
-            <p className="text-[10px] text-red-400 font-bold text-center max-w-xs leading-snug px-2">
-              Pastikan menu yang Anda terima sesuai dengan rekomendasi aplikasi.
-            </p>
-
-            {/* Simulate Button */}
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              type="button"
-              onClick={handleVerifyQR}
-              disabled={isQrVerifying}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[12.5px] shadow-md cursor-pointer disabled:opacity-60"
-            >
-              {isQrVerifying ? "Memproses Verifikasi..." : "Simulasikan Staf Memindai QR"}
-            </motion.button>
-
-            <p className="text-[9px] text-slate-400 font-semibold">
-              Kecamatan {citizenUser?.district || "Kebomas"} • Ginofest 2026
-            </p>
           </div>
         </div>
       )}
@@ -978,93 +986,104 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {screeningStep === 5 && (
         <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
-          {/* ─── SUCCESS BANNER ─── */}
-          <div className="px-4 pt-5 pb-3 text-center">
-            <motion.div
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.4, ease: "backOut" }}
-              className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-[0_0_30px_rgba(35,181,168,0.35)] mb-3"
-            >
-              <Check className="w-8 h-8 text-white stroke-[3]" />
-            </motion.div>
-            <h2 className="text-[20px] font-black text-slate-800 tracking-tight">Scan Sukses!</h2>
-            <p className="text-[11px] text-slate-500 font-medium mt-1 max-w-xs mx-auto leading-snug">
-              Data porsi makan & pemenuhan nutrisi telah diverifikasi. Selamat menikmati!
-            </p>
-          </div>
+          {/* ─── SCROLLABLE BODY ─── */}
+          <div className="flex-1 overflow-y-auto">
 
-          {/* ─── BODY FILL GRAPHIC ─── */}
-          <div className="flex-1 flex flex-col items-center justify-center relative px-5">
-
-            {/* Body silhouette with teal fill */}
-            <div className="relative w-40 h-52 flex items-center justify-center">
-              <svg viewBox="0 0 200 300" className="w-full h-full drop-shadow-[0_0_20px_rgba(35,181,168,0.3)]">
-                <defs>
-                  <linearGradient id="bodyFillDark" x1="0%" y1="100%" x2="0%" y2="0%">
-                    <stop offset="0%" stopColor="#23B5A8" />
-                    <stop offset="45%" stopColor="#0FA89B" />
-                    <stop offset="45.1%" stopColor="#ffffff" stopOpacity="0.07" />
-                    <stop offset="100%" stopColor="#ffffff" stopOpacity="0.07" />
-                  </linearGradient>
-                </defs>
-                <circle cx="105" cy="40" r="22" stroke="#79D7D2" strokeWidth="2.5" fill="none" />
-                <path d="M85 68 C70 65, 55 50, 48 45 C44 42, 40 45, 42 50 C45 60, 60 75, 78 85"
-                  stroke="#79D7D2" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                <path d="M125 68 C140 75, 145 95, 148 115"
-                  stroke="#79D7D2" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                <path d="M80 65 C90 60, 120 60, 130 65 C135 90, 135 125, 130 145 C130 160, 145 200, 155 240 C156 245, 150 248, 145 245 C135 240, 120 185, 115 160 C110 160, 95 185, 80 245 C75 250, 70 245, 72 238 C80 195, 90 155, 90 145 C80 125, 75 90, 80 65 Z"
-                  stroke="#79D7D2" strokeWidth="2.5" fill="url(#bodyFillDark)" />
-              </svg>
-
-              {/* 45% badge */}
-              <div className="absolute top-[46%] left-1/2 -translate-x-1/2 px-3 py-1 rounded-xl bg-[#0D1B2A]/90 border border-[#79D7D2]/50 text-[12px] font-black text-[#79D7D2] shadow-lg backdrop-blur-md">
-                45%
-              </div>
+            {/* SUCCESS BANNER */}
+            <div className="px-4 pt-5 pb-3 text-center">
+              <motion.div
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, ease: "backOut" }}
+                className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-[0_0_30px_rgba(35,181,168,0.35)] mb-3"
+              >
+                <Check className="w-8 h-8 text-white stroke-[3]" />
+              </motion.div>
+              <h2 className="text-[20px] font-black text-slate-800 tracking-tight">Scan Sukses!</h2>
+              <p className="text-[11px] text-slate-500 font-medium mt-1 max-w-xs mx-auto leading-snug">
+                Data porsi makan & pemenuhan nutrisi telah diverifikasi. Selamat menikmati!
+              </p>
             </div>
 
-            {/* Summary Card */}
-            <div className="w-full bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-2 mt-4">
-              <div className="flex items-baseline gap-2">
-                <span className="text-[24px] font-black text-[#23B5A8] leading-none">45%</span>
-                <span className="text-[12px] font-bold text-slate-600 leading-snug">kebutuhan gizi harian terpenuhi</span>
+            {/* BODY FILL GRAPHIC */}
+            <div className="flex flex-col items-center px-5 pb-2">
+              <div className="relative w-40 h-52 flex items-center justify-center">
+                <svg viewBox="0 0 200 300" className="w-full h-full drop-shadow-[0_0_16px_rgba(35,181,168,0.2)]">
+                  <defs>
+                    <linearGradient id="bodyFillLight" x1="0%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stopColor="#23B5A8" />
+                      <stop offset="45%" stopColor="#0FA89B" />
+                      <stop offset="45.1%" stopColor="#e2f5f3" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#f0fdf8" stopOpacity="1" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="105" cy="40" r="22" stroke="#23B5A8" strokeWidth="2.5" fill="none" />
+                  <path d="M85 68 C70 65, 55 50, 48 45 C44 42, 40 45, 42 50 C45 60, 60 75, 78 85"
+                    stroke="#23B5A8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                  <path d="M125 68 C140 75, 145 95, 148 115"
+                    stroke="#23B5A8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                  <path d="M80 65 C90 60, 120 60, 130 65 C135 90, 135 125, 130 145 C130 160, 145 200, 155 240 C156 245, 150 248, 145 245 C135 240, 120 185, 115 160 C110 160, 95 185, 80 245 C75 250, 70 245, 72 238 C80 195, 90 155, 90 145 C80 125, 75 90, 80 65 Z"
+                    stroke="#23B5A8" strokeWidth="2.5" fill="url(#bodyFillLight)" />
+                </svg>
+
+                {/* 45% badge — light theme */}
+                <div className="absolute top-[46%] left-1/2 -translate-x-1/2 px-3 py-1 rounded-xl bg-white border border-[#23B5A8]/30 text-[12px] font-black text-[#23B5A8] shadow-md">
+                  45%
+                </div>
               </div>
-              <div className="h-px bg-slate-100" />
-              <div className="flex items-center justify-between text-[10.5px]">
-                <span className="font-black text-slate-800">{citizenUser?.name || "Oscar Ryanda Putra"}</span>
-                <span className="text-slate-400 font-medium">Kec. {citizenUser?.district || "Kebomas"}</span>
+
+              {/* Summary Card */}
+              <div className="w-full bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-2 mt-2">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-[24px] font-black text-[#23B5A8] leading-none">45%</span>
+                  <span className="text-[12px] font-bold text-slate-600 leading-snug">kebutuhan gizi harian terpenuhi</span>
+                </div>
+                <div className="h-px bg-slate-100" />
+                <div className="flex items-center justify-between text-[10.5px]">
+                  <span className="font-black text-slate-800">{citizenUser?.name || "Oscar Ryanda Putra"}</span>
+                  <span className="text-slate-400 font-medium">Kec. {citizenUser?.district || "Kebomas"}</span>
+                </div>
               </div>
+
+              {/* Bottom padding to clear sticky bar */}
+              <div className="h-4" />
             </div>
           </div>
 
-          {/* ─── ACTION BUTTONS ─── */}
-          <div className="px-4 pb-6 pt-3 grid grid-cols-3 gap-2">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              type="button"
-              onClick={() => setScreeningStep(1)}
-              className="py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-[11px] cursor-pointer text-center shadow-sm"
-            >
-              ← Kembali
-            </motion.button>
+          {/* ─── STICKY BOTTOM — Action Buttons (bg nyatu) ─── */}
+          <div className="flex-shrink-0 relative">
+            {/* Gradient fade — blends into page bg */}
+            <div className="h-6 bg-gradient-to-b from-transparent to-white pointer-events-none" />
+            <div className="bg-white border-t border-slate-100 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+              <div className="grid grid-cols-3 gap-2">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  onClick={() => setScreeningStep(1)}
+                  className="py-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 font-bold text-[11px] cursor-pointer text-center"
+                >
+                  ← Kembali
+                </motion.button>
 
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              type="button"
-              onClick={() => setShowHelpModal(true)}
-              className="py-3 rounded-2xl bg-white border border-slate-200 text-slate-500 font-bold text-[11px] cursor-pointer text-center shadow-sm"
-            >
-              ? Bantuan
-            </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  onClick={() => setShowHelpModal(true)}
+                  className="py-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-500 font-bold text-[11px] cursor-pointer text-center"
+                >
+                  ? Bantuan
+                </motion.button>
 
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              type="button"
-              onClick={onNavigateToComplaint}
-              className="py-3 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[11px] cursor-pointer text-center shadow-md"
-            >
-              Feedback
-            </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  onClick={onNavigateToComplaint}
+                  className="py-3 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[11px] cursor-pointer text-center shadow-md"
+                >
+                  Feedback
+                </motion.button>
+              </div>
+            </div>
           </div>
         </div>
       )}
