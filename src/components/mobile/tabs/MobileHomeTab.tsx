@@ -10,10 +10,9 @@ import {
   Utensils,
   MessageSquare,
   CheckCircle2,
-  Calendar,
   Heart
 } from "lucide-react";
-import { Page } from "konsta/react";
+import { Page, Card, Button, Badge, Progressbar, BlockTitle } from "konsta/react";
 import { CitizenUser, AtmosphereState, MobileTab } from "../types";
 
 interface MobileHomeTabProps {
@@ -31,9 +30,9 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [isLiked, setIsLiked] = useState(false);
 
   return (
-    <div className="space-y-4 font-sans pb-6 animate-in fade-in duration-200 select-none w-full max-w-full overflow-x-hidden touch-pan-y">
+    <Page className="space-y-4 font-sans pb-6 animate-in fade-in duration-200 select-none w-full max-w-full overflow-x-hidden touch-pan-y bg-transparent">
       {/* ═══ 1. MINIMALIST CLEAN HEADER ═══ */}
-      <div className="flex items-center justify-between pt-1">
+      <div className="flex items-center justify-between pt-1 px-1">
         <div className="space-y-0.5 min-w-0">
           <div className="flex items-center gap-1.5 text-[11px] font-bold text-blue-gray">
             <span className="truncate">{currentDateStr}</span>
@@ -63,8 +62,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         </button>
       </div>
 
-      {/* ═══ 2. HERO CARD: STATUS GIZI & SKRINING ANAK (CLEAN MINT GRADIENT) ═══ */}
-      <div className="p-4 rounded-3xl bg-gradient-to-br from-[#EAF6D8] via-[#F4FDF9] to-white border border-green-02/40 shadow-xs space-y-3.5 relative overflow-hidden">
+      {/* ═══ 2. HERO CARD: STATUS GIZI & SKRINING ANAK (KONSTA CARD) ═══ */}
+      <Card className="!m-0 p-4 rounded-3xl bg-gradient-to-br from-[#EAF6D8] via-[#F4FDF9] to-white border border-green-02/40 shadow-xs space-y-3.5 relative overflow-hidden">
         <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-white shadow-2xs border border-green-02/30 flex items-center justify-center text-base font-bold">
@@ -75,39 +74,38 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               <p className="text-[10.5px] text-blue-gray">SD Negeri 1 Kebomas • Kelas 4B</p>
             </div>
           </div>
-          <span className="px-2.5 py-1 rounded-full bg-green-02/20 text-ford-blue text-[10px] font-black border border-green-02/50">
+          <Badge colors={{ bg: "bg-green-02/25", text: "text-ford-blue" }} className="px-2.5 py-1 text-[10px] font-black border border-green-02/50 rounded-full">
             Optimal
-          </span>
+          </Badge>
         </div>
 
-        {/* Simple Progress AKG & Vital Stats */}
+        {/* Simple Progress AKG & Vital Stats with Konsta Progressbar */}
         <div className="p-3 rounded-2xl bg-white/90 border border-slate-100 space-y-2 relative z-10 shadow-2xs">
           <div className="flex items-center justify-between text-[11px]">
             <span className="font-bold text-ford-blue">Kecukupan AKG Harian</span>
             <span className="font-black text-light-sea-green">95% Terpenuhi</span>
           </div>
-          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-            <div className="bg-gradient-to-r from-green-02 to-light-sea-green h-full rounded-full w-[95%]" />
-          </div>
+          <Progressbar progress={0.95} className="h-2 rounded-full !bg-slate-100" />
           <div className="flex items-center justify-between text-[10px] text-blue-gray pt-0.5">
             <span>TB: <strong>138 cm</strong> • BB: <strong>32.4 kg</strong></span>
             <span>IMT: <strong>17.0 (Normal)</strong></span>
           </div>
         </div>
 
-        {/* CTA Button to Screening */}
-        <button
-          type="button"
+        {/* Konsta Button to Screening */}
+        <Button
+          large
+          rounded
           onClick={() => setActiveTab("screening")}
-          className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-green-02 via-light-sea-green to-teal-400 text-ford-blue font-black text-[12px] shadow-sm hover:shadow-md active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-1.5 relative z-10"
+          className="w-full py-2.5 bg-gradient-to-r from-green-02 via-light-sea-green to-teal-400 text-ford-blue font-black text-[12px] shadow-sm active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 cursor-pointer relative z-10"
         >
           <Activity className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>Mulai Analisis Biometrik AI</span>
           <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
-        </button>
-      </div>
+        </Button>
+      </Card>
 
-      {/* ═══ 3. TODAY'S MBG BENTO MEAL (CLEAN VISUAL CARD) ═══ */}
+      {/* ═══ 3. TODAY'S MBG BENTO MEAL (KONSTA CARD) ═══ */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
           <h4 className="text-[12.5px] font-black text-ford-blue">Menu MBG Hari Ini</h4>
@@ -117,7 +115,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
           </span>
         </div>
 
-        <div className="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-3.5">
+        <Card className="!m-0 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-3.5">
           <img
             src="/assets/mbg_tray_bandeng.jpg"
             alt="Bandeng MBG"
@@ -131,18 +129,18 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               Sayur Bayam Jagung • Nasi Putih • Buah Jeruk Manis
             </p>
             <div className="flex items-center gap-2 pt-0.5 text-[10px]">
-              <span className="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-ford-blue">
+              <Badge colors={{ bg: "bg-slate-100", text: "text-ford-blue" }} className="px-2 py-0.5 rounded-md font-bold">
                 450 kkal
-              </span>
+              </Badge>
               <span className="text-light-sea-green font-bold">
                 Protein 28g
               </span>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
-      {/* ═══ 4. CLEAN 3 ACTION SHORTCUTS ═══ */}
+      {/* ═══ 4. CLEAN 3 ACTION SHORTCUTS (KONSTA BUTTONS) ═══ */}
       <div className="grid grid-cols-3 gap-2.5 pt-1">
         {/* Shortcut 1: Menu MBG */}
         <button
@@ -181,8 +179,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         </button>
       </div>
 
-      {/* ═══ 5. SIMPLE DINKES GIZI TIP ═══ */}
-      <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+      {/* ═══ 5. SIMPLE DINKES GIZI TIP (KONSTA CARD) ═══ */}
+      <Card className="!m-0 p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-sm">🐟</span>
@@ -199,7 +197,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         <p className="text-[11px] text-slate-600 leading-relaxed">
           Ikan Bandeng lokal Gresik kaya Omega-3 dan protein hewani murni untuk menunjang daya konsentrasi belajar siswa sekolah dasar.
         </p>
-      </div>
-    </div>
+      </Card>
+    </Page>
   );
 };

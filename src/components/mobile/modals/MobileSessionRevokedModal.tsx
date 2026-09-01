@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { ShieldCheck } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
+import { Dialog, DialogButton } from "konsta/react";
 
 interface MobileSessionRevokedModalProps {
   isOpen: boolean;
@@ -9,34 +10,36 @@ interface MobileSessionRevokedModalProps {
 }
 
 export const MobileSessionRevokedModal: React.FC<MobileSessionRevokedModalProps> = ({ isOpen, onDismiss }) => {
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[999] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in">
-      <div className="w-full max-w-sm bg-white rounded-3xl p-6 text-center space-y-4 shadow-2xl border border-red-100 animate-in zoom-in-95">
-        <div className="w-16 h-16 rounded-3xl bg-red-50 text-red-500 mx-auto flex items-center justify-center border border-red-200 shadow-sm">
-          <ShieldCheck className="w-8 h-8 text-red-500" />
+    <Dialog
+      opened={isOpen}
+      onBackdropClick={onDismiss}
+      title={
+        <div className="flex flex-col items-center gap-2 text-center pt-1">
+          <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center border border-red-200">
+            <ShieldAlert className="w-6 h-6 text-brand-red" />
+          </div>
+          <span className="text-[15px] font-black text-ford-blue">Sesi Akses Dinonaktifkan</span>
         </div>
-
-        <div className="space-y-1.5">
-          <h3 className="text-[17px] font-black text-[#2C3968]">Sesi Akses Dinonaktifkan</h3>
-          <p className="text-[12px] text-slate-500 leading-relaxed">
-            Sesi login akun Anda telah dihentikan oleh Administrator Utama (Super Admin Kabupaten Gresik).
+      }
+      content={
+        <div className="space-y-2 text-center text-[12px] text-blue-gray leading-relaxed pt-1">
+          <p>
+            Sesi login akun Anda telah dihentikan oleh Administrator Super Admin Kabupaten Gresik.
           </p>
+          <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-ford-blue font-medium">
+            Silakan masuk kembali untuk memulai sesi baru.
+          </div>
         </div>
-
-        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 font-medium">
-          Silakan masuk kembali untuk memulai sesi baru.
-        </div>
-
-        <button
-          type="button"
+      }
+      buttons={
+        <DialogButton
           onClick={onDismiss}
-          className="w-full py-3 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold text-[13px] shadow-md hover:opacity-95 transition-all cursor-pointer"
+          className="bg-brand-red text-white font-bold text-[12px] py-2.5 rounded-xl"
         >
-          Kembali ke Halaman Awal
-        </button>
-      </div>
-    </div>
+          Kembali ke Halaman Masuk
+        </DialogButton>
+      }
+    />
   );
 };
