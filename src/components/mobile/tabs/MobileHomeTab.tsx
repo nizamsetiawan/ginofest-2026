@@ -41,27 +41,27 @@ const CLAIM_HISTORY = [
     menu: "Nasi Ayam Kari & Sayur",
     kalori: "680 kkal",
     waktu: "Hari Ini, 11.45 WIB",
-    lokasi: "SPPG SDN 1 Kebomas",
+    lokasi: "Dapur SPPG Kecamatan",
     status: "Sukses",
-    petugas: "Ibu Rahmawati (SPPG)",
+    petugas: "Petugas Distribusi SPPG",
   },
   {
     id: "MBG-2026-0831-4F2",
     menu: "Nasi Bandeng Bakar Madu",
     kalori: "650 kkal",
     waktu: "Kemarin, 12.10 WIB",
-    lokasi: "SPPG SDN 1 Kebomas",
+    lokasi: "Dapur SPPG Kecamatan",
     status: "Sukses",
-    petugas: "Pak Sugeng (SPPG)",
+    petugas: "Petugas Distribusi SPPG",
   },
   {
     id: "MBG-2026-0829-9C3",
     menu: "Nasi Daging Semur & Bayam",
     kalori: "690 kkal",
     waktu: "29 Agu 2026, 11.50 WIB",
-    lokasi: "SPPG SDN 1 Kebomas",
+    lokasi: "Dapur SPPG Kecamatan",
     status: "Sukses",
-    petugas: "Ibu Rahmawati (SPPG)",
+    petugas: "Petugas Distribusi SPPG",
   },
 ];
 
@@ -233,8 +233,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             <h1 className="text-[14.5px] font-black text-slate-800 tracking-tight leading-tight mt-0.5">
               {userName}
             </h1>
-            <p className="text-[10px] text-slate-500 font-medium">
-              SDN 1 {userDistrict} • Kec. {userDistrict}
+            <p className="text-[10.5px] text-[#0FA89B] font-bold">
+              Kecamatan {userDistrict}
             </p>
           </div>
         </div>
@@ -754,7 +754,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     <span className="text-[9px] text-slate-400">10.00 WIB</span>
                   </div>
                   <p className="text-[11.5px] font-black text-slate-800">Nasi Ayam Kari &amp; Sayur Siap Didistribusikan</p>
-                  <p className="text-[10.5px] text-slate-500">Porsi MBG telah diverifikasi oleh SPPG SDN 1 Kebomas.</p>
+                  <p className="text-[10.5px] text-slate-500">Porsi MBG telah diverifikasi oleh Dapur SPPG Kecamatan.</p>
                 </div>
               </div>
             </motion.div>
