@@ -216,119 +216,104 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   };
 
   return (
-    <Page className="p-4 space-y-4 font-sans select-none bg-[#F8FAFC] min-h-full pb-20">
+    <Page className="p-4 space-y-3.5 font-sans select-none bg-[#F8FAFC] min-h-full pb-28">
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 1. TOP APPBAR (CLEAN & MODERN)                                 */}
+      {/* 1. TOP APPBAR (SIMPLE & CLEAN)                                 */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <motion.div
-        initial={{ opacity: 0, y: -6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
-        className="flex items-center justify-between pt-1 px-1"
-      >
+      <div className="flex items-center justify-between pt-0.5 px-0.5">
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#0FA89B] via-[#23B5A8] to-[#79D7D2] text-white flex items-center justify-center font-black text-base shadow-[0_4px_16px_rgba(15,168,155,0.3)] border-2 border-white">
-              {userInitial}
-            </div>
-            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0FA89B] to-[#24E0D1] text-[#050D18] flex items-center justify-center font-black text-sm shadow-xs border border-white">
+            {userInitial}
           </div>
           <div>
-            <p className="text-[11px] font-semibold text-slate-400">
-              {getTimeGreeting()} 👋
+            <p className="text-[11px] font-semibold text-slate-400 leading-none">
+              {getTimeGreeting()},
             </p>
-            <h1 className="text-[15px] font-black text-slate-800 tracking-tight leading-tight">
+            <h1 className="text-[14.5px] font-black text-slate-800 tracking-tight leading-tight mt-0.5">
               {userName}
             </h1>
+            <p className="text-[10px] text-slate-500 font-medium">
+              SDN 1 {userDistrict} • Kec. {userDistrict}
+            </p>
           </div>
         </div>
 
-        <motion.button
-          whileTap={{ scale: 0.92 }}
+        <button
           type="button"
           onClick={() => {
             triggerHaptic();
             setShowNotificationModal(true);
           }}
-          className="w-10 h-10 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center text-slate-700 hover:bg-slate-50 transition-all cursor-pointer relative"
+          className="w-9 h-9 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-all cursor-pointer relative"
+          title="Notifikasi"
         >
-          <Bell className="w-4.5 h-4.5 text-slate-600 stroke-[1.8]" />
-          <span className="w-2 h-2 rounded-full bg-[#0FA89B] absolute top-2.5 right-2.5 border border-white" />
-        </motion.button>
-      </motion.div>
+          <Bell className="w-4 h-4 text-slate-600 stroke-[1.8]" />
+          <span className="w-2 h-2 rounded-full bg-[#0FA89B] absolute top-2 right-2 border border-white" />
+        </button>
+      </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 2. HERO MBG BANNER (WOW CLEAN GLASSMORPHISM)                   */}
+      {/* 2. CARD UTAMA: MENU MBG HARI INI                               */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        className="rounded-3xl p-5 bg-gradient-to-br from-[#0A192F] via-[#0D2538] to-[#0A1628] text-white shadow-xl shadow-[#0A192F]/20 relative overflow-hidden space-y-4"
-      >
-        {/* Glow decoration */}
-        <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#0FA89B]/25 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-emerald-500/15 blur-2xl pointer-events-none" />
-
-        {/* Status Pill */}
-        <div className="flex items-center justify-between relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-bold text-emerald-300">MBG Hari Ini Tersedia</span>
-          </div>
-          <span className="text-[11px] font-bold text-white/50">Kec. {userDistrict}</span>
+      <div className="bg-white border border-slate-200/90 rounded-3xl p-4.5 shadow-xs space-y-3.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            Menu Makan Siang Hari Ini
+          </span>
+          <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+            ● Porsi Tersedia
+          </span>
         </div>
 
-        {/* Menu Headline */}
-        <div className="space-y-1 relative z-10">
-          <h2 className="text-[19px] font-black tracking-tight text-white leading-tight">
-            Nasi Ayam Kari & Sayur
+        <div>
+          <h2 className="text-[17px] font-black text-slate-800 tracking-tight leading-tight">
+            Nasi Ayam Kari &amp; Sayur
           </h2>
-          <p className="text-[12px] text-white/70 font-medium">
-            Kaya protein &amp; zat besi untuk fokus belajar.
+          <p className="text-[11.5px] text-slate-500 font-medium mt-0.5">
+            Dilengkapi sayur segar &amp; buah pisang untuk energi belajar.
           </p>
         </div>
 
-        {/* Nutrition Badges Bar */}
-        <div className="grid grid-cols-3 gap-2 relative z-10 pt-1">
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2.5 text-center border border-white/10">
-            <p className="text-[14px] font-black text-[#79D7D2]">680</p>
-            <p className="text-[10px] text-white/60 font-semibold mt-0.5">Kalori (kkal)</p>
+        {/* 3 Badges Gizi Ringkas */}
+        <div className="grid grid-cols-3 gap-2 pt-0.5">
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl py-2 px-1 text-center">
+            <p className="text-[13px] font-black text-slate-800">680</p>
+            <p className="text-[9.5px] text-slate-400 font-bold">Kalori (kkal)</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2.5 text-center border border-white/10">
-            <p className="text-[14px] font-black text-emerald-300">31g</p>
-            <p className="text-[10px] text-white/60 font-semibold mt-0.5">Protein</p>
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl py-2 px-1 text-center">
+            <p className="text-[13px] font-black text-emerald-600">31g</p>
+            <p className="text-[9.5px] text-slate-400 font-bold">Protein</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2.5 text-center border border-white/10">
-            <p className="text-[14px] font-black text-amber-300">6mg</p>
-            <p className="text-[10px] text-white/60 font-semibold mt-0.5">Zat Besi</p>
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl py-2 px-1 text-center">
+            <p className="text-[13px] font-black text-amber-600">6mg</p>
+            <p className="text-[9.5px] text-slate-400 font-bold">Zat Besi</p>
           </div>
         </div>
 
-        {/* Main CTA Button */}
-        <motion.button
-          whileTap={{ scale: 0.98 }}
+        {/* Tombol Klaim */}
+        <button
           type="button"
           onClick={() => {
             triggerHaptic();
             setActiveTab("screening");
           }}
-          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] text-[13px] font-black flex items-center justify-center gap-2 shadow-lg shadow-[#0FA89B]/25 cursor-pointer relative z-10"
+          className="w-full py-3 rounded-2xl bg-[#0FA89B] hover:bg-[#0D8B80] active:scale-[0.98] text-white text-[12.5px] font-black flex items-center justify-center gap-2 shadow-sm cursor-pointer transition-all"
         >
-          <QrCode className="w-4.5 h-4.5" />
-          <span>Skrining AI &amp; Buat QR Klaim</span>
-          <ChevronRight className="w-4 h-4 ml-0.5" />
-        </motion.button>
-      </motion.div>
+          <QrCode className="w-4 h-4" />
+          <span>Ambil Porsi Makan Siang (QR)</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 3. QUICK SHORTCUTS (CLEAN 4 PILLS)                             */}
+      {/* 3. TIGA KARTU MENU UTAMA (QUICK ACTION CARDS)                  */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-4 gap-2.5">
+      <div className="grid grid-cols-3 gap-2.5">
         {[
           {
-            label: "Klaim QR",
+            label: "Klaim Porsi",
+            desc: "Kode QR",
             icon: QrCode,
             color: "text-[#0FA89B]",
             bg: "bg-[#0FA89B]/10",
@@ -339,18 +324,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             },
           },
           {
-            label: "Tanya AI",
-            icon: Bot,
-            color: "text-[#8B5CF6]",
-            bg: "bg-[#8B5CF6]/10",
-            border: "border-[#8B5CF6]/20",
-            action: () => {
-              triggerHaptic();
-              setShowChatModal(true);
-            },
-          },
-          {
             label: "Riwayat",
+            desc: "Porsi MBG",
             icon: History,
             color: "text-[#0284C7]",
             bg: "bg-[#0284C7]/10",
@@ -361,7 +336,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             },
           },
           {
-            label: "Lapor",
+            label: "Lapor Menu",
+            desc: "Evaluasi",
             icon: MessageSquare,
             color: "text-[#F59E0B]",
             bg: "bg-[#F59E0B]/10",
@@ -374,125 +350,53 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         ].map((btn, idx) => {
           const Icon = btn.icon;
           return (
-            <motion.button
+            <button
               key={idx}
-              whileTap={{ scale: 0.94 }}
               type="button"
               onClick={btn.action}
-              className="bg-white border border-slate-200/80 rounded-2xl p-3 flex flex-col items-center justify-center gap-1.5 shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+              className="bg-white border border-slate-200/80 rounded-2xl p-3 flex flex-col items-center justify-center gap-1 shadow-2xs hover:shadow-xs active:scale-[0.96] transition-all cursor-pointer text-center"
             >
               <div className={`w-10 h-10 rounded-xl ${btn.bg} ${btn.border} border flex items-center justify-center ${btn.color}`}>
                 <Icon className="w-5 h-5 stroke-[2]" />
               </div>
-              <span className="text-[11px] font-bold text-slate-700">
+              <p className="text-[11.5px] font-black text-slate-800 leading-tight mt-0.5">
                 {btn.label}
-              </span>
-            </motion.button>
+              </p>
+              <p className="text-[9.5px] font-semibold text-slate-400 leading-none">
+                {btn.desc}
+              </p>
+            </button>
           );
         })}
       </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 4. STATUS BIOMETRIK & KESEHATAN ANAK                           */}
+      {/* 4. KARTU STATUS KESEHATAN ANAK                                 */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="bg-white border border-slate-200/80 rounded-3xl p-4 shadow-2xs space-y-3">
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-4 shadow-2xs space-y-2.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <HeartPulse className="w-4.5 h-4.5 text-[#0FA89B]" />
-            <h3 className="text-[13.5px] font-black text-slate-800">Status Biometrik Anak</h3>
+            <HeartPulse className="w-4 h-4 text-[#0FA89B]" />
+            <h3 className="text-[12.5px] font-black text-slate-800">Status Kesehatan Anak</h3>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
-            Terverifikasi AI
+          <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-bold border border-emerald-200">
+            Normal &amp; Sehat
           </span>
         </div>
 
         <div className="grid grid-cols-3 gap-2 pt-0.5">
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 text-center">
-            <p className="text-[10px] text-slate-400 font-bold">Mata (Hb)</p>
-            <p className="text-[12px] font-black text-slate-800 mt-0.5">Normal</p>
+          <div className="bg-slate-50 rounded-xl p-2 text-center border border-slate-100">
+            <p className="text-[9.5px] text-slate-400 font-bold">Mata (Hb)</p>
+            <p className="text-[11.5px] font-black text-slate-700 mt-0.5">Segar</p>
           </div>
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 text-center">
-            <p className="text-[10px] text-slate-400 font-bold">Kuku (Fe)</p>
-            <p className="text-[12px] font-black text-slate-800 mt-0.5">Sehat</p>
+          <div className="bg-slate-50 rounded-xl p-2 text-center border border-slate-100">
+            <p className="text-[9.5px] text-slate-400 font-bold">Kuku (Fe)</p>
+            <p className="text-[11.5px] font-black text-slate-700 mt-0.5">Merah Muda</p>
           </div>
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 text-center">
-            <p className="text-[10px] text-slate-400 font-bold">Turgor</p>
-            <p className="text-[12px] font-black text-slate-800 mt-0.5">Elastis</p>
+          <div className="bg-slate-50 rounded-xl p-2 text-center border border-slate-100">
+            <p className="text-[9.5px] text-slate-400 font-bold">Turgor</p>
+            <p className="text-[11.5px] font-black text-slate-700 mt-0.5">Elastis</p>
           </div>
-        </div>
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 5. DR. GIZI AI INTERACTIVE PROMPT BANNER                       */}
-      {/* ══════════════════════════════════════════════════════════════ */}
-      <motion.div
-        whileTap={{ scale: 0.98 }}
-        onClick={() => {
-          triggerHaptic();
-          setShowChatModal(true);
-        }}
-        className="bg-gradient-to-r from-[#8B5CF6]/10 via-[#A78BFA]/10 to-[#8B5CF6]/5 border border-[#8B5CF6]/20 rounded-3xl p-4 flex items-center justify-between gap-3 shadow-2xs cursor-pointer hover:border-[#8B5CF6]/40 transition-all"
-      >
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#6D28D9] text-white flex items-center justify-center shadow-md flex-shrink-0">
-            <Bot className="w-5 h-5" />
-          </div>
-          <div className="min-w-0 space-y-0.5">
-            <div className="flex items-center gap-1.5">
-              <h4 className="text-[13px] font-black text-slate-800">Tanya dr. Gizi AI</h4>
-              <span className="px-1.5 py-0.2 rounded text-[8.5px] font-bold bg-[#8B5CF6] text-white">Online</span>
-            </div>
-            <p className="text-[11px] text-slate-500 font-medium truncate">
-              Konsultasi nutrisi, alergi, &amp; gizi anak instan.
-            </p>
-          </div>
-        </div>
-        <div className="w-8 h-8 rounded-xl bg-white border border-[#8B5CF6]/20 flex items-center justify-center text-[#8B5CF6] flex-shrink-0 shadow-2xs">
-          <ChevronRight className="w-4 h-4" />
-        </div>
-      </motion.div>
-
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 6. EDUKASI GIZI SINGKAT (3 CARDS RINGKAS)                      */}
-      {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="space-y-2.5 pt-0.5">
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-[#0FA89B]" />
-            <h3 className="text-[13.5px] font-black text-slate-800">Tips &amp; Edukasi Gizi</h3>
-          </div>
-          <span className="text-[10px] text-slate-400 font-bold">Kemenkes RI</span>
-        </div>
-
-        <div className="space-y-2">
-          {NUTRITION_ARTICLES.slice(0, 2).map((art) => {
-            const Icon = art.icon;
-            return (
-              <motion.button
-                key={art.id}
-                whileTap={{ scale: 0.98 }}
-                type="button"
-                onClick={() => {
-                  triggerHaptic();
-                  setSelectedArticle(art);
-                }}
-                className="w-full bg-white border border-slate-200/80 rounded-2xl p-3.5 text-left flex items-center gap-3 shadow-2xs hover:shadow-xs transition-all cursor-pointer"
-              >
-                <div className="w-9 h-9 rounded-xl bg-[#0FA89B]/10 border border-[#0FA89B]/20 text-[#0FA89B] flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4.5 h-4.5" />
-                </div>
-                <div className="flex-1 min-w-0 space-y-0.5">
-                  <span className="text-[9.5px] font-bold text-[#0FA89B] uppercase tracking-wider">
-                    {art.category}
-                  </span>
-                  <h4 className="text-[12.5px] font-black text-slate-800 truncate leading-snug">
-                    {art.title}
-                  </h4>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
-              </motion.button>
-            );
-          })}
         </div>
       </div>
 
