@@ -72,18 +72,38 @@ export class BiometricSyncService {
     const scanId = `SCAN-${timestamp}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
     const claimId = `MBG-${timestamp}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-    // 1. Upload to Azure Blob Storage
-    const blobUrls = await AzureBlobService.uploadBiometricSessionPhotos(
-      params.userId,
-      scanId,
-      params.photos
-    );
+    // 1 & 2. Execute Azure Blob Upload and Azure/Gemini AI Vision concurrently in parallel
+    const sanitizedUser = params.userId.replace(/[^a-zA-Z0-9_-]/g, "_");
+    const container = process.env.AZURE_STORAGE_CONTAINER_NAME || "gscan-media";
+    const account = process.env.AZURE_STORAGE_ACCOUNT_NAME || "stgscanginofest26";
+    const baseBlobUrl = `https://${account}.blob.core.windows.net/${container}/users/${sanitizedUser}/${scanId}`;
 
-    // 2. Extract clinical features via Azure AI Vision
-    const azureMetrics = await AzureVisionService.analyzeBiometricSession(
-      blobUrls,
-      params.userAge || 9
-    );
+    const [blobUrls, azureMetrics] = await Promise.all([
+      AzureBlobService.uploadBiometricSessionPhotos(
+        params.userId,
+        scanId,
+        params.photos
+      ),
+      AzureVisionService.analyzeBiometricSession(
+        {
+          faceBlobUrl: `${baseBlobUrl}/01_wajah.jpg`,
+          eyeBlobUrl: `${baseBlobUrl}/02_mata_konjungtiva.jpg`,
+          handBlobUrl: `${baseBlobUrl}/03_tangan_turgor.jpg`,
+          nailBlobUrl: `${baseBlobUrl}/04_kuku_capillary.jpg`,
+          uploadedAt: new Date().toISOString(),
+          storageProvider: "AZURE_BLOB_STORAGE",
+          containerName: container,
+          blobPrefix: `users/${sanitizedUser}/${scanId}`,
+        },
+        params.userAge || 9,
+        {
+          face: params.photos.faceBase64,
+          eye: params.photos.eyeBase64,
+          hand: params.photos.handBase64,
+          nail: params.photos.nailBase64,
+        }
+      )
+    ]);
 
     // 3. Determine menu via Gemini reasoning (taking allergen into account)
     let selectedMenuId: "ayam" | "bandeng" = params.preferredMenuType || "ayam";
@@ -98,7 +118,7 @@ export class BiometricSyncService {
       calories: 680,
       proteinGram: 31,
       ironMg: 6,
-      portionDesc: "1x Makan Siang Bergizi Gratis",
+      portionDesc: "1x Porsi MBG Bergizi Lengkap",
       akgPercentage: 45,
     };
 

@@ -219,109 +219,94 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
     <Page className="p-4 space-y-4 font-sans select-none bg-[#F8FAFC] min-h-full pb-20">
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 1. TOP APPBAR (PROFILE & ACTIONS)                              */}
+      {/* 1. TOP APPBAR (CLEAN & MODERN)                                 */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <motion.div
-        initial={{ opacity: 0, y: -8 }}
+        initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
-        className="flex items-center justify-between pt-1 px-0.5"
+        transition={{ duration: 0.25 }}
+        className="flex items-center justify-between pt-1 px-1"
       >
-        {/* User Info */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="relative shrink-0">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#23B5A8] via-[#79D7D2] to-[#23B5A8] text-[#050D18] flex items-center justify-center font-black text-base shadow-[0_4px_14px_rgba(35,181,168,0.25)] border-2 border-white">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#0FA89B] via-[#23B5A8] to-[#79D7D2] text-white flex items-center justify-center font-black text-base shadow-[0_4px_16px_rgba(15,168,155,0.3)] border-2 border-white">
               {userInitial}
             </div>
-            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white shadow-xs" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
           </div>
-
-          <div className="min-w-0 space-y-0.5">
-            <p className="text-[11px] font-bold text-slate-400 leading-none">
-              {getTimeGreeting()}, 👋
+          <div>
+            <p className="text-[11px] font-semibold text-slate-400">
+              {getTimeGreeting()} 👋
             </p>
-            <h1 className="text-[14.5px] font-black text-slate-800 truncate leading-tight tracking-tight pt-0.5">
+            <h1 className="text-[15px] font-black text-slate-800 tracking-tight leading-tight">
               {userName}
             </h1>
-            <p className="text-[10.5px] text-[#0FA89B] font-semibold truncate flex items-center gap-1">
-              <span>Kecamatan {userDistrict}</span>
-              <span className="text-slate-300">•</span>
-              <span className="text-slate-400">Ginofest 2026</span>
-            </p>
           </div>
         </div>
 
-        {/* Top Right Action Icons */}
-        <div className="flex items-center gap-2 shrink-0">
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            type="button"
-            onClick={() => {
-              triggerHaptic();
-              setShowNotificationModal(true);
-            }}
-            className="w-9 h-9 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center text-slate-700 hover:bg-slate-50 transition-all cursor-pointer relative"
-            title="Pemberitahuan"
-          >
-            <Bell className="w-4 h-4 text-slate-600 stroke-[1.8]" />
-            <span className="w-2 h-2 rounded-full bg-[#23B5A8] absolute top-2 right-2 border border-white" />
-          </motion.button>
-        </div>
+        <motion.button
+          whileTap={{ scale: 0.92 }}
+          type="button"
+          onClick={() => {
+            triggerHaptic();
+            setShowNotificationModal(true);
+          }}
+          className="w-10 h-10 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center text-slate-700 hover:bg-slate-50 transition-all cursor-pointer relative"
+        >
+          <Bell className="w-4.5 h-4.5 text-slate-600 stroke-[1.8]" />
+          <span className="w-2 h-2 rounded-full bg-[#0FA89B] absolute top-2.5 right-2.5 border border-white" />
+        </motion.button>
       </motion.div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 2. HERO STATUS MBG & GIZI HARI INI (DAILY CARD)                */}
+      {/* 2. HERO MBG BANNER (WOW CLEAN GLASSMORPHISM)                   */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.05 }}
-        className="rounded-3xl p-4.5 bg-gradient-to-br from-[#0D2538] via-[#0D1B2A] to-[#0A1628] text-white shadow-xl shadow-[#0D1B2A]/15 relative overflow-hidden space-y-3.5"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="rounded-3xl p-5 bg-gradient-to-br from-[#0A192F] via-[#0D2538] to-[#0A1628] text-white shadow-xl shadow-[#0A192F]/20 relative overflow-hidden space-y-4"
       >
-        {/* Background Glow */}
-        <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-[#23B5A8]/20 blur-2xl pointer-events-none" />
+        {/* Glow decoration */}
+        <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#0FA89B]/25 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-emerald-500/15 blur-2xl pointer-events-none" />
 
-        {/* Card Header Row */}
+        {/* Status Pill */}
         <div className="flex items-center justify-between relative z-10">
-          <div className="flex items-center gap-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <p className="text-[11px] font-bold text-[#79D7D2] tracking-wider uppercase">
-              Status MBG Hari Ini
-            </p>
+            <span className="text-[11px] font-bold text-emerald-300">MBG Hari Ini Tersedia</span>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[9.5px] font-bold border border-emerald-500/30">
-            1 Porsi Tersedia
-          </span>
+          <span className="text-[11px] font-bold text-white/50">Kec. {userDistrict}</span>
         </div>
 
-        {/* Menu & Portion Highlight */}
-        <div className="flex items-start justify-between gap-3 relative z-10">
-          <div className="space-y-1">
-            <h2 className="text-[16px] font-black text-white leading-tight">
-              Nasi Ayam Kari & Sayur
-            </h2>
-            <p className="text-[11px] text-white/60 font-medium leading-relaxed">
-              Porsi makan siang bergizi untuk menunjang konsentrasi & daya tahan belajar.
-            </p>
-          </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2.5 text-center border border-white/15 flex-shrink-0 min-w-[72px]">
-            <p className="text-[15px] font-black text-[#79D7D2] leading-none">680</p>
-            <p className="text-[9px] text-white/60 font-bold mt-0.5">kkal</p>
-          </div>
+        {/* Menu Headline */}
+        <div className="space-y-1 relative z-10">
+          <h2 className="text-[19px] font-black tracking-tight text-white leading-tight">
+            Nasi Ayam Kari & Sayur
+          </h2>
+          <p className="text-[12px] text-white/70 font-medium">
+            Kaya protein &amp; zat besi untuk fokus belajar.
+          </p>
         </div>
 
-        {/* Nutrition Bar Progress */}
-        <div className="space-y-1.5 pt-1 relative z-10">
-          <div className="flex items-center justify-between text-[10.5px]">
-            <span className="text-white/70 font-medium">Pemenuhan Gizi Harian</span>
-            <span className="font-black text-[#79D7D2]">45% dari AKG</span>
+        {/* Nutrition Badges Bar */}
+        <div className="grid grid-cols-3 gap-2 relative z-10 pt-1">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2.5 text-center border border-white/10">
+            <p className="text-[14px] font-black text-[#79D7D2]">680</p>
+            <p className="text-[10px] text-white/60 font-semibold mt-0.5">Kalori (kkal)</p>
           </div>
-          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full rounded-full bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] w-[45%]" />
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2.5 text-center border border-white/10">
+            <p className="text-[14px] font-black text-emerald-300">31g</p>
+            <p className="text-[10px] text-white/60 font-semibold mt-0.5">Protein</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2.5 text-center border border-white/10">
+            <p className="text-[14px] font-black text-amber-300">6mg</p>
+            <p className="text-[10px] text-white/60 font-semibold mt-0.5">Zat Besi</p>
           </div>
         </div>
 
-        {/* CTA Button to Screening Tab */}
+        {/* Main CTA Button */}
         <motion.button
           whileTap={{ scale: 0.98 }}
           type="button"
@@ -329,21 +314,21 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             triggerHaptic();
             setActiveTab("screening");
           }}
-          className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] text-[12.5px] font-black flex items-center justify-center gap-2 shadow-lg cursor-pointer transition-transform pt-2.5 pb-2.5"
+          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-[#050D18] text-[13px] font-black flex items-center justify-center gap-2 shadow-lg shadow-[#0FA89B]/25 cursor-pointer relative z-10"
         >
-          <QrCode className="w-4 h-4" />
-          <span>Mulai Analisis AI &amp; Buat QR Klaim</span>
+          <QrCode className="w-4.5 h-4.5" />
+          <span>Skrining AI &amp; Buat QR Klaim</span>
           <ChevronRight className="w-4 h-4 ml-0.5" />
         </motion.button>
       </motion.div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 3. QUICK SHORTCUTS GRID (4 ICONS)                              */}
+      {/* 3. QUICK SHORTCUTS (CLEAN 4 PILLS)                             */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-4 gap-2.5 pt-1">
+      <div className="grid grid-cols-4 gap-2.5">
         {[
           {
-            label: "Klaim MBG",
+            label: "Klaim QR",
             icon: QrCode,
             color: "text-[#0FA89B]",
             bg: "bg-[#0FA89B]/10",
@@ -351,17 +336,6 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             action: () => {
               triggerHaptic();
               setActiveTab("screening");
-            },
-          },
-          {
-            label: "Riwayat",
-            icon: History,
-            color: "text-[#0284C7]",
-            bg: "bg-[#0284C7]/10",
-            border: "border-[#0284C7]/20",
-            action: () => {
-              triggerHaptic();
-              setShowHistoryModal(true);
             },
           },
           {
@@ -376,7 +350,18 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             },
           },
           {
-            label: "Feedback",
+            label: "Riwayat",
+            icon: History,
+            color: "text-[#0284C7]",
+            bg: "bg-[#0284C7]/10",
+            border: "border-[#0284C7]/20",
+            action: () => {
+              triggerHaptic();
+              setShowHistoryModal(true);
+            },
+          },
+          {
+            label: "Lapor",
             icon: MessageSquare,
             color: "text-[#F59E0B]",
             bg: "bg-[#F59E0B]/10",
@@ -394,12 +379,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               whileTap={{ scale: 0.94 }}
               type="button"
               onClick={btn.action}
-              className="bg-white border border-slate-200/80 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 shadow-xs hover:shadow-sm cursor-pointer transition-all text-center"
+              className="bg-white border border-slate-200/80 rounded-2xl p-3 flex flex-col items-center justify-center gap-1.5 shadow-2xs hover:shadow-xs transition-all cursor-pointer"
             >
               <div className={`w-10 h-10 rounded-xl ${btn.bg} ${btn.border} border flex items-center justify-center ${btn.color}`}>
                 <Icon className="w-5 h-5 stroke-[2]" />
               </div>
-              <span className="text-[11px] font-bold text-slate-700 leading-tight">
+              <span className="text-[11px] font-bold text-slate-700">
                 {btn.label}
               </span>
             </motion.button>
@@ -408,59 +393,37 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 4. RIWAYAT KLAIM TERAKHIR (CLAIM HISTORY PREVIEW)              */}
+      {/* 4. STATUS BIOMETRIK & KESEHATAN ANAK                           */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="space-y-2.5 pt-1">
-        <div className="flex items-center justify-between px-0.5">
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-4 shadow-2xs space-y-3">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <History className="w-4 h-4 text-[#0FA89B]" />
-            <h3 className="text-[13.5px] font-black text-slate-800">Riwayat Klaim MBG</h3>
+            <HeartPulse className="w-4.5 h-4.5 text-[#0FA89B]" />
+            <h3 className="text-[13.5px] font-black text-slate-800">Status Biometrik Anak</h3>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic();
-              setShowHistoryModal(true);
-            }}
-            className="text-[11px] font-bold text-[#0FA89B] hover:text-[#0D8B80] cursor-pointer"
-          >
-            Lihat Semua
-          </button>
+          <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+            Terverifikasi AI
+          </span>
         </div>
 
-        <div className="space-y-2">
-          {CLAIM_HISTORY.slice(0, 2).map((item) => (
-            <div
-              key={item.id}
-              className="bg-white border border-slate-200/80 rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow-2xs hover:shadow-xs transition-shadow"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="w-4.5 h-4.5 stroke-[2.2]" />
-                </div>
-                <div className="min-w-0 space-y-0.5">
-                  <p className="text-[12px] font-black text-slate-800 truncate leading-tight">
-                    {item.menu}
-                  </p>
-                  <p className="text-[10px] text-slate-400 font-medium flex items-center gap-1.5">
-                    <Clock className="w-3 h-3 text-slate-400" />
-                    <span>{item.waktu}</span>
-                    <span>•</span>
-                    <span className="font-semibold text-slate-600">{item.kalori}</span>
-                  </p>
-                </div>
-              </div>
-
-              <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-bold border border-emerald-200 flex-shrink-0">
-                {item.status}
-              </span>
-            </div>
-          ))}
+        <div className="grid grid-cols-3 gap-2 pt-0.5">
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 text-center">
+            <p className="text-[10px] text-slate-400 font-bold">Mata (Hb)</p>
+            <p className="text-[12px] font-black text-slate-800 mt-0.5">Normal</p>
+          </div>
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 text-center">
+            <p className="text-[10px] text-slate-400 font-bold">Kuku (Fe)</p>
+            <p className="text-[12px] font-black text-slate-800 mt-0.5">Sehat</p>
+          </div>
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 text-center">
+            <p className="text-[10px] text-slate-400 font-bold">Turgor</p>
+            <p className="text-[12px] font-black text-slate-800 mt-0.5">Elastis</p>
+          </div>
         </div>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 5. CHAT BOT ASISTEN GIZI AI (BANNER INTERAKTIF)                */}
+      {/* 5. DR. GIZI AI INTERACTIVE PROMPT BANNER                       */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <motion.div
         whileTap={{ scale: 0.98 }}
@@ -468,7 +431,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
           triggerHaptic();
           setShowChatModal(true);
         }}
-        className="bg-gradient-to-r from-[#8B5CF6]/10 via-[#A78BFA]/10 to-[#8B5CF6]/5 border border-[#8B5CF6]/25 rounded-3xl p-4 flex items-center justify-between gap-3 shadow-xs cursor-pointer hover:border-[#8B5CF6]/40 transition-all"
+        className="bg-gradient-to-r from-[#8B5CF6]/10 via-[#A78BFA]/10 to-[#8B5CF6]/5 border border-[#8B5CF6]/20 rounded-3xl p-4 flex items-center justify-between gap-3 shadow-2xs cursor-pointer hover:border-[#8B5CF6]/40 transition-all"
       >
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#6D28D9] text-white flex items-center justify-center shadow-md flex-shrink-0">
@@ -476,33 +439,33 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
           </div>
           <div className="min-w-0 space-y-0.5">
             <div className="flex items-center gap-1.5">
-              <h4 className="text-[13px] font-black text-slate-800">Konsultasi dr. Gizi AI</h4>
+              <h4 className="text-[13px] font-black text-slate-800">Tanya dr. Gizi AI</h4>
               <span className="px-1.5 py-0.2 rounded text-[8.5px] font-bold bg-[#8B5CF6] text-white">Online</span>
             </div>
-            <p className="text-[10.5px] text-slate-500 font-medium leading-tight">
-              Tanyakan panduan nutrisi anak, alergi, dan porsi MBG secara instan.
+            <p className="text-[11px] text-slate-500 font-medium truncate">
+              Konsultasi nutrisi, alergi, &amp; gizi anak instan.
             </p>
           </div>
         </div>
-        <div className="w-7 h-7 rounded-xl bg-white border border-[#8B5CF6]/20 flex items-center justify-center text-[#8B5CF6] flex-shrink-0 shadow-2xs">
+        <div className="w-8 h-8 rounded-xl bg-white border border-[#8B5CF6]/20 flex items-center justify-center text-[#8B5CF6] flex-shrink-0 shadow-2xs">
           <ChevronRight className="w-4 h-4" />
         </div>
       </motion.div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 6. EDUKASI GIZI KEMENKES (NUTRITION ARTICLES)                  */}
+      {/* 6. EDUKASI GIZI SINGKAT (3 CARDS RINGKAS)                      */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="space-y-2.5 pt-1">
-        <div className="flex items-center justify-between px-0.5">
+      <div className="space-y-2.5 pt-0.5">
+        <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-[#0FA89B]" />
-            <h3 className="text-[13.5px] font-black text-slate-800">Edukasi &amp; Tips Gizi</h3>
+            <h3 className="text-[13.5px] font-black text-slate-800">Tips &amp; Edukasi Gizi</h3>
           </div>
-          <span className="text-[10px] text-slate-400 font-semibold">Kemenkes RI 2026</span>
+          <span className="text-[10px] text-slate-400 font-bold">Kemenkes RI</span>
         </div>
 
         <div className="space-y-2">
-          {NUTRITION_ARTICLES.map((art) => {
+          {NUTRITION_ARTICLES.slice(0, 2).map((art) => {
             const Icon = art.icon;
             return (
               <motion.button
@@ -513,55 +476,24 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   triggerHaptic();
                   setSelectedArticle(art);
                 }}
-                className="w-full bg-white border border-slate-200/80 rounded-2xl p-3.5 text-left flex items-start gap-3 shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+                className="w-full bg-white border border-slate-200/80 rounded-2xl p-3.5 text-left flex items-center gap-3 shadow-2xs hover:shadow-xs transition-all cursor-pointer"
               >
-                <div className="w-9 h-9 rounded-xl bg-[#0FA89B]/10 border border-[#0FA89B]/20 text-[#0FA89B] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-xl bg-[#0FA89B]/10 border border-[#0FA89B]/20 text-[#0FA89B] flex items-center justify-center flex-shrink-0">
                   <Icon className="w-4.5 h-4.5" />
                 </div>
-                <div className="flex-1 min-w-0 space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[9.5px] font-bold text-[#0FA89B] uppercase tracking-wider">
-                      {art.category}
-                    </span>
-                    <span className="text-[9px] text-slate-400 font-medium">{art.readTime}</span>
-                  </div>
-                  <h4 className="text-[12.5px] font-black text-slate-800 leading-snug">
+                <div className="flex-1 min-w-0 space-y-0.5">
+                  <span className="text-[9.5px] font-bold text-[#0FA89B] uppercase tracking-wider">
+                    {art.category}
+                  </span>
+                  <h4 className="text-[12.5px] font-black text-slate-800 truncate leading-snug">
                     {art.title}
                   </h4>
-                  <p className="text-[10.5px] text-slate-500 font-medium leading-relaxed line-clamp-2">
-                    {art.summary}
-                  </p>
                 </div>
+                <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
               </motion.button>
             );
           })}
         </div>
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 7. LAPOR / FEEDBACK MBG (DIRECT COMPLAINT TRIGGER)             */}
-      {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border border-amber-500/20 rounded-3xl p-4 flex items-center justify-between gap-3">
-        <div className="space-y-0.5">
-          <h4 className="text-[12.5px] font-black text-slate-800 flex items-center gap-1.5">
-            <AlertCircle className="w-4 h-4 text-amber-500" />
-            <span>Ada Keluhan Kualitas Makanan?</span>
-          </h4>
-          <p className="text-[10.5px] text-slate-500 font-medium">
-            Laporkan rasa, porsi, atau kebersihan makanan langsung ke SPPG Kecamatan.
-          </p>
-        </div>
-        <motion.button
-          whileTap={{ scale: 0.94 }}
-          type="button"
-          onClick={() => {
-            triggerHaptic();
-            setShowFeedbackModal(true);
-          }}
-          className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black shadow-xs cursor-pointer flex-shrink-0"
-        >
-          Lapor
-        </motion.button>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}

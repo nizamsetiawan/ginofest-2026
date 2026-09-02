@@ -213,13 +213,34 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
   // Scanning Guide Dialog (auto-shows when entering Step 1)
   const [showScanGuide, setShowScanGuide] = useState(true);
+  const [rawPhotosMap, setRawPhotosMap] = useState<Record<string, string>>({});
 
-  // Handle Scanning Animation for 4-Step Biometric Flow
+  // Handle Scanning Animation for 4-Step Biometric Flow & Snapshot
   const handleStartScan = () => {
     setIsScanningActive(true);
     setScanProgress(0);
 
     const currentFlowId = biometricFlow[captureStepIdx].id;
+
+    // Capture snapshot frame from video stream if active
+    try {
+      if (videoRef.current && videoRef.current.videoWidth > 0) {
+        const canvas = document.createElement("canvas");
+        canvas.width = videoRef.current.videoWidth || 640;
+        canvas.height = videoRef.current.videoHeight || 480;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+          const frameData = canvas.toDataURL("image/jpeg", 0.85);
+          setRawPhotosMap((prev) => ({
+            ...prev,
+            [currentFlowId]: frameData,
+          }));
+        }
+      }
+    } catch (snapErr) {
+      console.warn("Camera snapshot frame notice:", snapErr);
+    }
 
     const interval = setInterval(() => {
       setScanProgress((prev) => {
@@ -266,7 +287,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           userName: citizenUser?.name || "Oscar Ryanda Putra",
           userDistrict: citizenUser?.district || "Kebomas",
           userEmail: citizenUser?.email,
-          photos: {},
+          photos: {
+            faceBase64: rawPhotosMap.face,
+            eyeBase64: rawPhotosMap.eye,
+            handBase64: rawPhotosMap.hand,
+            nailBase64: rawPhotosMap.nail,
+          },
           questionnaire: {
             nafsuMakan: questions[0]?.options[0] || ans,
             aktivitasFisik: questions[1]?.options[0] || ans,
