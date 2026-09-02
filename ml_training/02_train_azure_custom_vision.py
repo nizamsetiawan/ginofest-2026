@@ -9,8 +9,12 @@ import time
 import json
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+# Load environment variables (.env.local or .env)
+env_local_path = os.path.join(os.path.dirname(__file__), "..", ".env.local")
+if os.path.exists(env_local_path):
+    load_dotenv(dotenv_path=env_local_path)
+else:
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 try:
     from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient

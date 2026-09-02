@@ -9,7 +9,11 @@ import json
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+env_local_path = os.path.join(os.path.dirname(__file__), "..", ".env.local")
+if os.path.exists(env_local_path):
+    load_dotenv(dotenv_path=env_local_path)
+else:
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 

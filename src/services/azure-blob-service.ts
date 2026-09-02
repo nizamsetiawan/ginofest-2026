@@ -30,7 +30,9 @@ export interface AzureBlobConfig {
 }
 
 export class AzureBlobService {
-  private static readonly CONTAINER = "gscan-biometrics";
+  private static getContainer(): string {
+    return process.env.AZURE_STORAGE_CONTAINER_NAME || "gscan-media";
+  }
 
   /**
    * Uploads all 4 biometric photos to Azure Blob Storage under structured paths:
@@ -44,10 +46,11 @@ export class AzureBlobService {
     const timestamp = new Date().toISOString();
     const sanitizedUser = userId.replace(/[^a-zA-Z0-9_-]/g, "_");
     const blobPrefix = `users/${sanitizedUser}/${scanId}`;
+    const container = this.getContainer();
 
     const baseUrl =
       process.env.NEXT_PUBLIC_AZURE_BLOB_BASE_URL ||
-      `https://${process.env.AZURE_STORAGE_ACCOUNT_NAME || "gscanbiometrics"}.blob.core.windows.net/${this.CONTAINER}`;
+      `https://${process.env.AZURE_STORAGE_ACCOUNT_NAME || "stgscanginofest26"}.blob.core.windows.net/${container}`;
 
     // Simulasikan atau eksekusi upload ke Azure Blob Storage
     const faceBlobUrl = photos.faceBase64
@@ -91,7 +94,7 @@ export class AzureBlobService {
       storageProvider: process.env.AZURE_STORAGE_ACCOUNT_NAME
         ? "AZURE_BLOB_STORAGE"
         : "LOCAL_BLOB_SIMULATOR",
-      containerName: this.CONTAINER,
+      containerName: container,
       blobPrefix,
     };
   }

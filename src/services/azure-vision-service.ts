@@ -42,19 +42,37 @@ export class AzureVisionService {
       nail?: string;
     }
   ): Promise<AzureVisionClinicalMetrics> {
-    // ─── METHOD 1: REAL AZURE CUSTOM VISION PREDICTION ENDPOINT ───
-    const azureCustomVisionUrl = process.env.AZURE_CUSTOM_VISION_PREDICTION_ENDPOINT;
-    const azurePredictionKey = process.env.AZURE_CUSTOM_VISION_PREDICTION_KEY;
+    // ─── METHOD 1: REAL AZURE AI VISION / CUSTOM VISION PREDICTION ENDPOINT ───
+    const azureEndpoint =
+      process.env.AZURE_CUSTOM_VISION_PREDICTION_ENDPOINT ||
+      process.env.AZURE_VISION_ENDPOINT ||
+      process.env.AZURE_COGNITIVE_ENDPOINT;
 
-    if (azureCustomVisionUrl && azurePredictionKey && typeof fetch !== "undefined") {
+    const azureApiKey =
+      process.env.AZURE_CUSTOM_VISION_PREDICTION_KEY ||
+      process.env.AZURE_VISION_API_KEY ||
+      process.env.AZURE_COGNITIVE_KEY;
+
+    if (azureEndpoint && azureApiKey && typeof fetch !== "undefined") {
       try {
-        const response = await fetch(azureCustomVisionUrl, {
+        const isCustomVision = azureEndpoint.includes("customvision");
+        const requestUrl = isCustomVision
+          ? azureEndpoint
+          : `${azureEndpoint.replace(/\/$/, "")}/computervision/imageanalysis:analyze?api-version=2024-02-01&features=caption,denseCaptions,objects`;
+
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (isCustomVision) {
+          headers["Prediction-Key"] = azureApiKey;
+        } else {
+          headers["Ocp-Apim-Subscription-Key"] = azureApiKey;
+        }
+
+        const response = await fetch(requestUrl, {
           method: "POST",
-          headers: {
-            "Prediction-Key": azurePredictionKey,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ Url: blobUrls.eyeBlobUrl }),
+          headers,
+          body: JSON.stringify({ url: blobUrls.eyeBlobUrl }),
         });
 
         if (response.ok) {
@@ -62,7 +80,7 @@ export class AzureVisionService {
           return this.parseAzureCustomVisionPrediction(predictionJson);
         }
       } catch (azureErr) {
-        console.warn("Azure Custom Vision endpoint notice:", azureErr);
+        console.warn("Azure AI Vision endpoint notice:", azureErr);
       }
     }
 
