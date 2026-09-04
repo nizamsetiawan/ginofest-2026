@@ -224,12 +224,32 @@ export class BiometricSyncService {
             curr._clinicalScore > prev._clinicalScore ? curr : prev
           );
 
-          selectedMenuId = `rag-${bestMenu.day?.toLowerCase() || 'dynamic'}`;
-          menuTitle      = bestMenu.menuTitle;
-          finalCalories  = bestMenu.calories || 680;
-          finalProtein   = bestMenu.protein  || 31;
-          finalIron      = bestMenu.iron     || 6;
-          menuSource     = "AI_RAG_PRECISION_CLINICAL";
+          if (params.preferredMenuType) {
+            const p = params.preferredMenuType.toLowerCase();
+            if (p.includes("bandeng") || p === "bandeng") {
+              menuTitle = "Nasi Bandeng Bakar Madu & Sayur Sop";
+              selectedMenuId = "bandeng";
+              finalCalories = 710;
+              finalProtein = 34;
+              finalIron = 7;
+            } else if (p.includes("ayam") || p === "ayam") {
+              menuTitle = "Nasi Ayam Kari & Sayur Sop";
+              selectedMenuId = "ayam";
+              finalCalories = 680;
+              finalProtein = 31;
+              finalIron = 6;
+            } else {
+              menuTitle = params.preferredMenuType;
+            }
+            menuSource = "USER_PREFERRED_SELECTION";
+          } else {
+            selectedMenuId = `rag-${bestMenu.day?.toLowerCase() || 'dynamic'}`;
+            menuTitle      = bestMenu.menuTitle;
+            finalCalories  = bestMenu.calories || 680;
+            finalProtein   = bestMenu.protein  || 31;
+            finalIron      = bestMenu.iron     || 6;
+            menuSource     = "AI_RAG_PRECISION_CLINICAL";
+          }
 
           console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}"`);
         }
