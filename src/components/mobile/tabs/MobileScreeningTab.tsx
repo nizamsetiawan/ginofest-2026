@@ -20,7 +20,9 @@ import {
   ZapOff,
   Eye,
   Hand,
-  Focus
+  Focus,
+  CheckCircle2,
+  Cpu,
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -143,6 +145,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [answersMap, setAnswersMap] = useState<Record<number, string>>({});
   const [customAnswer, setCustomAnswer] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [isSyncingBiometric, setIsSyncingBiometric] = useState(false);
 
   const [questions, setQuestions] = useState<ScreeningQuestionItem[]>([
     {
@@ -359,6 +362,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
     // Check if this was the last question
     if (currentQuestionIdx >= questions.length - 1) {
+      setIsSyncingBiometric(true);
       // Determine if allergen applies
       const isSeafoodAllergic = ans.toLowerCase().includes("seafood") || ans.toLowerCase().includes("ikan");
       const targetMenu = isSeafoodAllergic ? "ayam" : menuType;
@@ -368,7 +372,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       const q2Ans = answersMap[1] || ans;
       const q3Ans = ans;
 
-      // Trigger Azure Blob Upload + Azure Vision + Firebase Sync in background
+      // Trigger Azure Blob Upload + Azure Vision + Firebase Sync
       try {
         const record = await BiometricSyncService.processAndSyncBiometricScan({
           existingScanId: activeScanId,
@@ -377,10 +381,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           userDistrict: citizenUser?.district || "Kebomas",
           userEmail: citizenUser?.email,
           photos: {
-            faceBase64: rawPhotosMap.face,
-            eyeBase64: rawPhotosMap.eye,
-            handBase64: rawPhotosMap.hand,
-            nailBase64: rawPhotosMap.nail,
+            faceBase64: rawPhotosMap.wajah || rawPhotosMap.face,
+            eyeBase64: rawPhotosMap.mata || rawPhotosMap.eye,
+            handBase64: rawPhotosMap.tangan || rawPhotosMap.hand,
+            nailBase64: rawPhotosMap.kuku || rawPhotosMap.nail,
           },
           questionnaire: {
             nafsuMakan: q1Ans,
@@ -392,11 +396,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         setSyncedRecord(record);
       } catch (err) {
         console.warn("Biometric sync notice:", err);
+      } finally {
+        setIsSyncingBiometric(false);
+        setScreeningStep(3); // Move to Menu recommendation after sync finishes
       }
-
-      setTimeout(() => {
-        setScreeningStep(3); // Move to Menu recommendation
-      }, 350);
     } else {
       setTimeout(() => {
         setCurrentQuestionIdx((prev) => prev + 1);
@@ -1275,6 +1278,31 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   Feedback
                 </motion.button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ═══ BIOMETRIC SYNC & AI PROCESSING OVERLAY ═══ */}
+      {isSyncingBiometric && (
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white font-sans animate-in fade-in">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#0FA89B] to-[#79D7D2] flex items-center justify-center shadow-[0_0_35px_rgba(15,168,155,0.5)] mb-4 animate-pulse">
+            <Sparkles className="w-10 h-10 text-white animate-spin" />
+          </div>
+          <h3 className="text-base font-black text-white tracking-wide">Sinkronisasi Biometrik & AI</h3>
+          <p className="text-xs text-emerald-300 font-bold mt-1">Mengunggah bukti foto &amp; menghitung menu RAG...</p>
+
+          <div className="mt-6 w-full max-w-xs space-y-2.5 text-[11px] font-mono text-left bg-slate-900/90 p-4 rounded-2xl border border-emerald-800/60 shadow-2xl">
+            <div className="flex items-center gap-2.5 text-emerald-400">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Azure Blob Storage Photo Sync...</span>
+            </div>
+            <div className="flex items-center gap-2.5 text-teal-300">
+              <Activity className="w-4 h-4 text-teal-300 animate-spin shrink-0" />
+              <span>Azure Vision Biometric Scoring...</span>
+            </div>
+            <div className="flex items-center gap-2.5 text-purple-300">
+              <Cpu className="w-4 h-4 text-purple-300 animate-pulse shrink-0" />
+              <span>Gemini 2.0 RAG Menu Precision...</span>
             </div>
           </div>
         </div>
