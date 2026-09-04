@@ -22,7 +22,8 @@ import {
   ChevronDown,
   ChevronUp,
   Award,
-  Filter
+  Filter,
+  Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
@@ -35,6 +36,7 @@ export const LiveScanLogsView: React.FC = () => {
   const [selectedScan, setSelectedScan] = useState<CompleteBiometricScanRecord | null>(null);
   const [modelTelemetry, setModelTelemetry] = useState<ModelIterationTelemetry | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
   const [activePhotoModal, setActivePhotoModal] = useState<{ title: string; url: string } | null>(null);
   const [imageErrorMap, setImageErrorMap] = useState<Record<string, boolean>>({});
   const [showTechnicalLog, setShowTechnicalLog] = useState(false);
@@ -178,6 +180,25 @@ export const LiveScanLogsView: React.FC = () => {
     }
   };
 
+  // 4. Clear/wipe scan history from Firestore
+  const handleClearDatabase = async () => {
+    if (!window.confirm("Apakah Anda yakin ingin mengosongkan seluruh riwayat scan dan analisis dari database Firestore?")) {
+      return;
+    }
+    setIsClearing(true);
+    try {
+      const res = await BiometricSyncService.clearAllScanHistory();
+      if (res.success) {
+        setScans([]);
+        setSelectedScan(null);
+      }
+    } catch (e) {
+      console.warn("Gagal mengosongkan DB:", e);
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
   // Helper to format timestamp
   const formatActualTime = (isoString?: string) => {
     if (!isoString) return new Date().toLocaleTimeString("id-ID");
@@ -229,6 +250,17 @@ export const LiveScanLogsView: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              disabled={isClearing || scans.length === 0}
+              onClick={handleClearDatabase}
+              className="px-3.5 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all disabled:opacity-40"
+              title="Kosongkan seluruh riwayat database Firestore"
+            >
+              <Trash2 className="w-4 h-4 text-rose-600" />
+              <span>{isClearing ? "Mengosongkan..." : "Kosongkan Log DB"}</span>
+            </button>
+
             <button
               type="button"
               disabled={isSimulating}

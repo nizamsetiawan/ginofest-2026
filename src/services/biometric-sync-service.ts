@@ -7,7 +7,7 @@
  * 4. Firebase Firestore (Realtime DB Sync & Historical Audit)
  */
 
-import { doc, setDoc, getDoc, collection, getDocs, query, where, orderBy, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, getDocs, query, where, orderBy, serverTimestamp, deleteDoc } from "firebase/firestore";
 import { db, fetchMenuPlanFromFirestore, saveMenuPlanToFirestore } from "./firebase-service";
 import { generateMenuWithSinglePrompt } from "./gemini-rag-service";
 import { AzureBlobService, BiometricPhotoPayload, AzureBlobUploadedUrls } from "./azure-blob-service";
@@ -450,6 +450,36 @@ export class BiometricSyncService {
       await setDoc(docRef, { status: "CANCELLED", updatedAt: new Date().toISOString() }, { merge: true });
     } catch (e) {
       console.warn("Realtime cancel sync notice:", e);
+    }
+  }
+
+  /**
+   * Clears/wipes all scan history documents from Firestore
+   */
+  static async clearAllScanHistory(): Promise<{ success: boolean; deletedCount: number }> {
+    try {
+      if (!db) return { success: false, deletedCount: 0 };
+
+      // 1. Delete all scan history docs
+      const scansSnap = await getDocs(collection(db, this.COLLECTION_SCANS));
+      const scanDeletePromises: Promise<void>[] = [];
+      scansSnap.forEach((docSnap) => {
+        scanDeletePromises.push(deleteDoc(doc(db, this.COLLECTION_SCANS, docSnap.id)));
+      });
+      await Promise.all(scanDeletePromises);
+
+      // 2. Delete all student biometric profile docs
+      const profilesSnap = await getDocs(collection(db, this.COLLECTION_PROFILES));
+      const profileDeletePromises: Promise<void>[] = [];
+      profilesSnap.forEach((docSnap) => {
+        profileDeletePromises.push(deleteDoc(doc(db, this.COLLECTION_PROFILES, docSnap.id)));
+      });
+      await Promise.all(profileDeletePromises);
+
+      return { success: true, deletedCount: scansSnap.size };
+    } catch (e) {
+      console.error("Gagal mengosongkan riwayat Firestore:", e);
+      return { success: false, deletedCount: 0 };
     }
   }
 }
