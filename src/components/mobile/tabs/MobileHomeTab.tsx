@@ -365,7 +365,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             </p>
           </div>
           <div className="text-right shrink-0">
-            <span className="text-[10px] text-slate-400 font-mono block">94.8% Akurasi</span>
+            <span className="text-[10px] text-slate-300 font-bold block">Visi AI Presisi</span>
             <span className="text-[11px] font-bold text-[#79D7D2]">Sesi Aktif</span>
           </div>
         </div>
