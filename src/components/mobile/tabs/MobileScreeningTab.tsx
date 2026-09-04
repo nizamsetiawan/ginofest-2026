@@ -251,6 +251,34 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
   const [activeScanId] = useState(() => `SCAN-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`);
 
+  // Master Back Navigation Logic
+  const handleBackNavigation = () => {
+    // Disable back action while AI is actively processing & uploading
+    if (isSyncingBiometric) return;
+
+    if (screeningStep === 1) {
+      if (captureStepIdx > 0) {
+        setCaptureStepIdx((prev) => prev - 1);
+      } else {
+        BiometricSyncService.cancelLiveBiometricScan(activeScanId);
+        if (onBackToHome) onBackToHome();
+      }
+    } else if (screeningStep === 2) {
+      if (currentQuestionIdx > 0) {
+        setCurrentQuestionIdx((prev) => prev - 1);
+        setSelectedAnswer(answersMap[currentQuestionIdx - 1] || null);
+      } else {
+        // Return to last photo step of Step 1 (Kuku)
+        setScreeningStep(1);
+        setCaptureStepIdx(3);
+      }
+    } else {
+      // Step 3 (Result), Step 4 (QR Code), or Step 5 (Success)
+      // Session completed and verified. Reset and return directly to Mobile Home!
+      if (onBackToHome) onBackToHome();
+    }
+  };
+
   // Handle Scanning Animation for 4-Step Biometric Flow & Snapshot
   const handleStartScan = () => {
     setIsScanningActive(true);
@@ -541,12 +569,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 type="button"
-                onClick={() => {
-                  BiometricSyncService.cancelLiveBiometricScan(activeScanId);
-                  if (onBackToHome) onBackToHome();
-                }}
+                onClick={handleBackNavigation}
                 className="w-10 h-10 rounded-2xl bg-white/90 hover:bg-white text-slate-700 flex items-center justify-center shadow-md cursor-pointer transition-all border border-white/80 backdrop-blur-md"
-                title="Kembali ke Beranda"
+                title="Kembali"
               >
                 <ArrowLeft className="w-4.5 h-4.5 text-slate-700 stroke-[2.5]" />
               </motion.button>
@@ -810,7 +835,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 type="button"
-                onClick={() => setScreeningStep(1)}
+                onClick={handleBackNavigation}
                 className="w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4 text-slate-700 stroke-[2.5]" />
@@ -961,7 +986,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           {/* ─── TOP BAR ─── */}
           <div className="px-4 pt-4 pb-3 space-y-3">
             <div className="flex items-center justify-between">
-              <motion.button whileTap={{ scale: 0.9 }} type="button" onClick={() => setScreeningStep(2)}
+              <motion.button whileTap={{ scale: 0.9 }} type="button" onClick={handleBackNavigation}
                 className="w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer">
                 <ArrowLeft className="w-4 h-4 text-slate-700 stroke-[2.5]" />
               </motion.button>
@@ -1254,10 +1279,11 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   type="button"
-                  onClick={() => setScreeningStep(1)}
-                  className="py-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 font-bold text-[11px] cursor-pointer text-center"
+                  onClick={handleBackNavigation}
+                  disabled={isSyncingBiometric}
+                  className="py-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 font-bold text-[11px] cursor-pointer text-center disabled:opacity-40"
                 >
-                  ← Kembali
+                  {screeningStep >= 3 ? "🏠 Beranda" : "← Kembali"}
                 </motion.button>
 
                 <motion.button
