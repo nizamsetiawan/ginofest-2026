@@ -182,11 +182,15 @@ export const LiveScanLogsView: React.FC = () => {
     }
   };
 
+  const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
+
   // 4. Clear/wipe scan history from Firestore
-  const handleClearDatabase = async () => {
-    if (!window.confirm("Apakah Anda yakin ingin mengosongkan seluruh log konsol dan riwayat scan di database Firestore?")) {
-      return;
-    }
+  const handleClearDatabase = () => {
+    setShowClearConfirmModal(true);
+  };
+
+  const handleConfirmClear = async () => {
+    setShowClearConfirmModal(false);
     setIsClearing(true);
     try {
       const res = await BiometricSyncService.clearAllScanHistory();
@@ -751,6 +755,43 @@ export const LiveScanLogsView: React.FC = () => {
             </div>
             <div className="rounded-xl overflow-hidden bg-black flex items-center justify-center max-h-[70vh] border border-cyan-900/60">
               <img src={activePhotoModal.url} alt={activePhotoModal.title} className="max-w-full max-h-[65vh] object-contain" />
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ═══ CLEAR CONSOLE CONFIRMATION DIALOG MODAL ═══ */}
+      {showClearConfirmModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#0B132B] rounded-2xl p-6 max-w-sm w-full space-y-4 text-left border border-rose-500/50 shadow-2xl font-mono animate-in zoom-in-95">
+            <div className="flex items-center gap-3 text-rose-400">
+              <div className="w-10 h-10 rounded-xl bg-rose-950/80 border border-rose-800/80 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5 text-rose-400" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Konfirmasi Kosongkan Konsol</h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">Tindakan ini tidak dapat dibatalkan.</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed border-t border-b border-rose-950/80 py-3">
+              Apakah Anda yakin ingin menghapus seluruh riwayat log telemetry dan bukti foto biometrik dari database Firestore?
+            </p>
+
+            <div className="flex items-center justify-end gap-2.5 pt-1">
+              <button
+                type="button"
+                onClick={() => setShowClearConfirmModal(false)}
+                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-mono text-xs border border-slate-700 cursor-pointer transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmClear}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold font-mono text-xs cursor-pointer shadow-[0_0_15px_rgba(244,63,94,0.3)] transition-all"
+              >
+                Ya, Kosongkan
+              </button>
             </div>
           </div>
         </div>
