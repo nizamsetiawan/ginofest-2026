@@ -45,10 +45,10 @@ export const LiveScanLogsView: React.FC = () => {
 
   const handleRunSystemDiagnostics = () => {
     setIsCheckingServices(true);
-    const now = new Date().toISOString();
+    const timeStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     setTimeout(() => {
       const isDbOk = !!db;
-      const diagnosticLine = `[${now}] [INFO] [SYSTEM_DIAGNOSTICS] Firebase DB: ${isDbOk ? "CONNECTED (OK)" : "OFFLINE"} | Azure Blob Storage: ACTIVE (stgscanginofest26) | Azure Custom Vision: ONLINE (v2.6) | Gemini 2.0 RAG: GROUNDED (OK) | System Health: 100% OPERATIONAL`;
+      const diagnosticLine = `[${timeStr}] [INFO] [SYSTEM_DIAGNOSTICS] Firebase DB: ${isDbOk ? "CONNECTED (OK)" : "OFFLINE"} | Azure Blob Storage: ACTIVE (stgscanginofest26) | Azure Custom Vision: ONLINE (v2.6) | Gemini 2.0 RAG: GROUNDED (OK) | System Health: 100% OPERATIONAL`;
       setSystemCheckLog(diagnosticLine);
       setIsCheckingServices(false);
     }, 350);
@@ -301,8 +301,8 @@ export const LiveScanLogsView: React.FC = () => {
 
       {/* System Health Diagnostics 1-Line Status Log */}
       {systemCheckLog && (
-        <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-emerald-300 font-mono text-xs leading-relaxed my-1 animate-in fade-in">
-          {systemCheckLog}
+        <div className="p-2.5 rounded-lg bg-[#131C38] border border-[#35CBC3]/50 text-white font-mono text-[11px] leading-relaxed my-1 animate-in fade-in">
+          <span className="text-white font-mono">{systemCheckLog}</span>
         </div>
       )}
 
@@ -714,40 +714,40 @@ export const LiveScanLogsView: React.FC = () => {
               <div className="space-y-1.5 pt-1">
                 <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
                   <span>3. REALTIME PIPELINE STREAM LOGS</span>
-                  <span className="text-[9.5px] text-cyan-400 font-mono">CLAIM ID: {selectedScan.claimId}</span>
+                  <span className="text-[9.5px] text-[#35CBC3] font-mono">CLAIM ID: {selectedScan.claimId}</span>
                 </h4>
 
-                <div className="p-3.5 rounded-xl bg-[#030712] text-slate-200 font-mono text-[10.5px] space-y-1.5 max-h-56 overflow-y-auto border border-cyan-900/80 leading-relaxed shadow-inner">
-                  <p className="text-slate-400">
-                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [FRAME_STREAM] Session {selectedScan.scanId} from Node {selectedScan.userDistrict} (User: {selectedScan.userName})
+                <div className="p-3.5 rounded-xl bg-[#030712] text-slate-100 font-mono text-[10.5px] space-y-1.5 max-h-56 overflow-y-auto border border-[#1E2950] leading-relaxed shadow-inner">
+                  <p className="text-slate-300">
+                    <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-emerald-400 font-bold">[INFO] [FRAME_STREAM]</span> <span className="text-white">Session {selectedScan.scanId} from Node {selectedScan.userDistrict} (User: {selectedScan.userName})</span>
                   </p>
                   {selectedScan.lastTouchEvent && (
-                    <p className="text-sky-300">
-                      [{formatActualTime(selectedScan.createdAt)}] [INFO] [CLIENT_TOUCH_EVENT] Action: {selectedScan.lastTouchEvent.actionName} {selectedScan.lastTouchEvent.details ? `(${selectedScan.lastTouchEvent.details})` : ""}
+                    <p className="text-slate-100">
+                      <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-[#35CBC3] font-bold">[INFO] [CLIENT_TOUCH_EVENT]</span> <span className="text-white">Action: {selectedScan.lastTouchEvent.actionName} {selectedScan.lastTouchEvent.details ? `(${selectedScan.lastTouchEvent.details})` : ""}</span>
                     </p>
                   )}
-                  <p className="text-cyan-400">
-                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [MODEL_A_VISION] ({selectedScan.azureVisionMetrics?.engineUsed || "AZURE_CUSTOM_VISION_SCIN"}): Conjunctiva Status = {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
-                    {selectedScan.azureVisionMetrics?.eyePallorScore !== undefined ? ` (Pallor Score: ${selectedScan.azureVisionMetrics.eyePallorScore})` : ""}
+                  <p className="text-slate-100">
+                    <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-[#35CBC3] font-bold">[INFO] [MODEL_A_VISION]</span> <span className="text-white">({selectedScan.azureVisionMetrics?.engineUsed || "AZURE_CUSTOM_VISION_SCIN"}): Conjunctiva Status = {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
+                    {selectedScan.azureVisionMetrics?.eyePallorScore !== undefined ? ` (Pallor Score: ${selectedScan.azureVisionMetrics.eyePallorScore})` : ""}</span>
                   </p>
-                  <p className="text-cyan-300">
-                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [MODEL_A_VISION] Nail CRT = {selectedScan.azureVisionMetrics?.nailbedStatus || "Normal Sehat"}
-                    {selectedScan.azureVisionMetrics?.nailCapillaryScore !== undefined ? ` (Capillary Score: ${selectedScan.azureVisionMetrics.nailCapillaryScore})` : ""}
+                  <p className="text-slate-100">
+                    <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-[#35CBC3] font-bold">[INFO] [MODEL_A_VISION]</span> <span className="text-white">Nail CRT = {selectedScan.azureVisionMetrics?.nailbedStatus || "Normal Sehat"}
+                    {selectedScan.azureVisionMetrics?.nailCapillaryScore !== undefined ? ` (Capillary Score: ${selectedScan.azureVisionMetrics.nailCapillaryScore})` : ""}</span>
                   </p>
-                  <p className="text-purple-300">
-                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [MODEL_B_LLM] (MedQA Pediatric LLM): Risk Assessment = {selectedScan.azureVisionMetrics?.detectedDeficiencyRisk || "Normal Sehat"}
+                  <p className="text-slate-100">
+                    <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-purple-300 font-bold">[INFO] [MODEL_B_LLM]</span> <span className="text-white">(MedQA Pediatric LLM): Risk Assessment = {selectedScan.azureVisionMetrics?.detectedDeficiencyRisk || "Normal Sehat"}</span>
                   </p>
-                  <p className="text-emerald-400">
-                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [AZURE_RAG] Matched Local Commodities Kec. {selectedScan.userDistrict}
+                  <p className="text-slate-100">
+                    <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-emerald-400 font-bold">[INFO] [AZURE_RAG]</span> <span className="text-white">Matched Local Commodities Kec. {selectedScan.userDistrict}</span>
                   </p>
-                  <p className="text-emerald-300">
-                    [{formatActualTime(selectedScan.createdAt)}] [SUCCESS] [MENU_PIPELINE] Recommended Menu: {selectedScan.recommendedMenu?.menuTitle}
-                    {selectedScan.recommendedMenu?.calories !== undefined ? ` (${selectedScan.recommendedMenu.calories} kkal, Fe: ${selectedScan.recommendedMenu.ironMg}mg)` : ""}
+                  <p className="text-slate-100">
+                    <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-emerald-400 font-bold">[SUCCESS] [MENU_PIPELINE]</span> <span className="text-white">Recommended Menu: {selectedScan.recommendedMenu?.menuTitle}
+                    {selectedScan.recommendedMenu?.calories !== undefined ? ` (${selectedScan.recommendedMenu.calories} kkal, Fe: ${selectedScan.recommendedMenu.ironMg}mg)` : ""}</span>
                   </p>
                   {selectedScan.azureVisionMetrics?.confidenceScore !== undefined && (
-                    <p className="text-amber-400">
-                      [{formatActualTime(selectedScan.createdAt)}] [INFO] [TELEMETRY] Accuracy Confidence {formatConfidence(selectedScan.azureVisionMetrics.confidenceScore)}
-                      {modelTelemetry?.sensitivityRecall !== undefined ? ` | Model Recall: ${modelTelemetry.sensitivityRecall}%` : ""}
+                    <p className="text-slate-100">
+                      <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-amber-400 font-bold">[INFO] [TELEMETRY]</span> <span className="text-white">Accuracy Confidence {formatConfidence(selectedScan.azureVisionMetrics.confidenceScore)}
+                      {modelTelemetry?.sensitivityRecall !== undefined ? ` | Model Recall: ${modelTelemetry.sensitivityRecall}%` : ""}</span>
                     </p>
                   )}
                 </div>

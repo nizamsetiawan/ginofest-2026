@@ -43,10 +43,10 @@ export default function DedicatedConsolePage() {
 
   const handleRunSystemDiagnostics = () => {
     setIsCheckingServices(true);
-    const now = new Date().toISOString();
+    const timeStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     setTimeout(() => {
       const isDbOk = !!db;
-      const diagnosticLine = `[${now}] [INFO] [SYSTEM_DIAGNOSTICS] Firebase DB: ${isDbOk ? "CONNECTED (OK)" : "OFFLINE"} | Azure Blob Storage: ACTIVE (stgscanginofest26) | Azure Custom Vision: ONLINE (v2.6) | Gemini 2.0 RAG: GROUNDED (OK) | System Health: 100% OPERATIONAL`;
+      const diagnosticLine = `[${timeStr}] [INFO] [SYSTEM_DIAGNOSTICS] Firebase DB: ${isDbOk ? "CONNECTED (OK)" : "OFFLINE"} | Azure Blob Storage: ACTIVE (stgscanginofest26) | Azure Custom Vision: ONLINE (v2.6) | Gemini 2.0 RAG: GROUNDED (OK) | System Health: 100% OPERATIONAL`;
       setSystemCheckLog(diagnosticLine);
       setIsCheckingServices(false);
     }, 350);
@@ -300,8 +300,8 @@ Timestamp: ${selectedScan.createdAt}
 
           {/* System Health Diagnostics 1-Line Status Log */}
           {systemCheckLog && (
-            <div className="p-2 rounded bg-emerald-950/40 border border-emerald-800/60 text-emerald-300 font-mono text-[10.5px] leading-relaxed my-1 animate-in fade-in">
-              {systemCheckLog}
+            <div className="p-2.5 rounded-lg bg-[#131C38] border border-[#35CBC3]/50 text-white font-mono text-[11px] leading-relaxed my-1 animate-in fade-in">
+              <span className="text-white font-mono">{systemCheckLog}</span>
             </div>
           )}
 
@@ -329,16 +329,18 @@ Timestamp: ${selectedScan.createdAt}
                     }`}
                   >
                     <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[#35CBC3] font-bold">
-                        [{scan.createdAt || new Date().toISOString()}] <span className="text-emerald-400">INFO</span> [MOBILE_STREAM_NODE]
+                      <span className="text-slate-200 font-mono">
+                        <span className="text-[#35CBC3] font-bold">[{scan.createdAt || new Date().toLocaleTimeString("id-ID")}]</span>{" "}
+                        <span className="text-emerald-400 font-bold">[INFO]</span>{" "}
+                        <span className="text-white">[MOBILE_STREAM_NODE]</span>
                       </span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300 font-mono">
                         ID: {scan.scanId}
                       </span>
                     </div>
 
-                    <p className="text-slate-200 font-mono">
-                      [USER_SESSION] <strong className="text-white">{scan.userName}</strong> (Kec. {scan.userDistrict}) — Status:{" "}
+                    <p className="text-slate-100 font-mono">
+                      <span className="text-[#35CBC3] font-bold">[USER_SESSION]</span> <strong className="text-white">{scan.userName}</strong> (Kec. {scan.userDistrict}) — Status:{" "}
                       {scan.status === "SCANNING_IN_PROGRESS" ? (
                         <span className="text-amber-400 font-bold animate-pulse">[STREAMING_FRAMES ({scan.lastCapturedStep || "wajah"})]</span>
                       ) : scan.status === "CANCELLED" ? (
@@ -348,72 +350,72 @@ Timestamp: ${selectedScan.createdAt}
                       )}
                     </p>
 
-                    {/* Mobile Client Activity Stream Logs (Emoji-Free) */}
+                    {/* Mobile Client Activity Stream Logs (Emoji-Free & Predominantly White Text) */}
                     <div className="pl-3 border-l-2 border-[#35CBC3]/40 text-[10.5px] space-y-1 font-mono">
-                      <p className="text-slate-400">
-                        [INFO] [CLIENT_CAMERA_INIT] Mobile device camera stream connected (1280x720 30fps)
+                      <p className="text-slate-300">
+                        <span className="text-slate-400">[INFO]</span> <span className="text-slate-400">[CLIENT_CAMERA_INIT]</span> Mobile device camera stream connected (1280x720 30fps)
                       </p>
 
                       {scan.photos?.faceBase64 && (
-                        <p className="text-[#35CBC3]">
-                          [INFO] [FRAME_STREAM_RECEIVED] Frame 1/4 (Face Profile) | Latency: 118ms | Payload: {Math.round((scan.photos.faceBase64.length * 0.75) / 1024)}KB | SCIN Vitality Score: {scan.azureVisionMetrics?.facialVitalityScore !== undefined ? scan.azureVisionMetrics.facialVitalityScore : "Processing..."}
+                        <p className="text-slate-100">
+                          <span className="text-[#35CBC3] font-bold">[INFO]</span> <span className="text-[#35CBC3] font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 1/4 (Face Profile) | Latency: 118ms | Payload: {Math.round((scan.photos.faceBase64.length * 0.75) / 1024)}KB | SCIN Vitality Score: {scan.azureVisionMetrics?.facialVitalityScore !== undefined ? scan.azureVisionMetrics.facialVitalityScore : "Processing..."}
                         </p>
                       )}
                       {scan.photos?.eyeBase64 && (
-                        <p className="text-emerald-300">
-                          [INFO] [FRAME_STREAM_RECEIVED] Frame 2/4 (Conjunctiva Sclera) | Latency: 135ms | Payload: {Math.round((scan.photos.eyeBase64.length * 0.75) / 1024)}KB | Pallor Status: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Processing..."} (Pallor Index: {scan.azureVisionMetrics?.eyePallorScore ?? "0.22"})
+                        <p className="text-slate-100">
+                          <span className="text-emerald-400 font-bold">[INFO]</span> <span className="text-emerald-400 font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 2/4 (Conjunctiva Sclera) | Latency: 135ms | Payload: {Math.round((scan.photos.eyeBase64.length * 0.75) / 1024)}KB | Pallor Status: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Processing..."} (Pallor Index: {scan.azureVisionMetrics?.eyePallorScore ?? "0.22"})
                         </p>
                       )}
                       {scan.photos?.handBase64 && (
-                        <p className="text-teal-300">
-                          [INFO] [FRAME_STREAM_RECEIVED] Frame 3/4 (Skin Turgor) | Latency: 142ms | Payload: {Math.round((scan.photos.handBase64.length * 0.75) / 1024)}KB | Elasticity: {scan.azureVisionMetrics?.skinTurgorStatus || "Processing..."} (Turgor Score: {scan.azureVisionMetrics?.skinTurgorScore ?? "0.85"})
+                        <p className="text-slate-100">
+                          <span className="text-teal-400 font-bold">[INFO]</span> <span className="text-teal-400 font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 3/4 (Skin Turgor) | Latency: 142ms | Payload: {Math.round((scan.photos.handBase64.length * 0.75) / 1024)}KB | Elasticity: {scan.azureVisionMetrics?.skinTurgorStatus || "Processing..."} (Turgor Score: {scan.azureVisionMetrics?.skinTurgorScore ?? "0.85"})
                         </p>
                       )}
                       {scan.photos?.nailBase64 && (
-                        <p className="text-amber-300">
-                          [INFO] [FRAME_STREAM_RECEIVED] Frame 4/4 (Nailbed CRT) | Latency: 126ms | Payload: {Math.round((scan.photos.nailBase64.length * 0.75) / 1024)}KB | Capillary Refill: {scan.azureVisionMetrics?.nailbedStatus || "Processing..."} (Capillary Score: {scan.azureVisionMetrics?.nailCapillaryScore ?? "0.80"})
+                        <p className="text-slate-100">
+                          <span className="text-amber-400 font-bold">[INFO]</span> <span className="text-amber-400 font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 4/4 (Nailbed CRT) | Latency: 126ms | Payload: {Math.round((scan.photos.nailBase64.length * 0.75) / 1024)}KB | Capillary Refill: {scan.azureVisionMetrics?.nailbedStatus || "Processing..."} (Capillary Score: {scan.azureVisionMetrics?.nailCapillaryScore ?? "0.80"})
                         </p>
                       )}
 
                       {/* Recapture Event Log */}
                       {scan.lastCapturedStep?.startsWith("recapture_") && (
-                        <p className="text-yellow-300 font-bold bg-yellow-950/60 px-2 py-0.5 rounded border border-yellow-700/60 my-1">
-                          [WARN] [RECAPTURE_EVENT] User initiated recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing frame buffer &amp; recalibrating sensor...
+                        <p className="text-white font-mono text-[10.5px] bg-yellow-950/60 px-2 py-0.5 rounded border border-yellow-700/60 my-1">
+                          <span className="text-yellow-400 font-bold">[WARN] [RECAPTURE_EVENT]</span> User initiated recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing frame buffer &amp; recalibrating sensor...
                         </p>
                       )}
 
                       {/* Mobile Touch & UI Interaction Event Log */}
                       {scan.lastTouchEvent && (
-                        <p className="text-[#35CBC3] font-mono text-[10.5px] bg-[#131C38] px-2 py-0.5 rounded border border-[#1E2950] my-1">
-                          [INFO] [CLIENT_TOUCH_EVENT] Action: {scan.lastTouchEvent.actionName} {scan.lastTouchEvent.details ? `(${scan.lastTouchEvent.details})` : ""}
+                        <p className="text-white font-mono text-[10.5px] bg-[#131C38] px-2 py-0.5 rounded border border-[#1E2950] my-1">
+                          <span className="text-[#35CBC3] font-bold">[INFO] [CLIENT_TOUCH_EVENT]</span> Action: {scan.lastTouchEvent.actionName} {scan.lastTouchEvent.details ? `(${scan.lastTouchEvent.details})` : ""}
                         </p>
                       )}
 
                       {/* Q&A Interactive Anamnesis Answers Log */}
                       {scan.questionnaireAnswers && (
-                        <div className="text-purple-300 text-[10px] space-y-0.5 py-0.5 border-l-2 border-purple-500/40 pl-2 my-1 bg-purple-950/20 rounded-r">
+                        <div className="text-white text-[10.5px] space-y-0.5 py-0.5 border-l-2 border-purple-500/40 pl-2 my-1 bg-purple-950/20 rounded-r font-mono">
                           {scan.questionnaireAnswers.nafsuMakan && (
-                            <p>[INFO] [ANAMNESIS_SELECTION] Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
+                            <p><span className="text-purple-300 font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
                           )}
                           {scan.questionnaireAnswers.aktivitasFisik && (
-                            <p>[INFO] [ANAMNESIS_SELECTION] Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
+                            <p><span className="text-purple-300 font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
                           )}
                           {scan.questionnaireAnswers.alergi && (
-                            <p>[INFO] [ANAMNESIS_SELECTION] Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
+                            <p><span className="text-purple-300 font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
                           )}
                         </div>
                       )}
 
                       {scan.recommendedMenu?.menuTitle && (
-                        <p className="text-[#35CBC3] font-bold">
-                          [SUCCESS] [GEMINI_RAG_PIPELINE] Menu Matched: {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
+                        <p className="text-white font-mono">
+                          <span className="text-emerald-400 font-bold">[SUCCESS] [GEMINI_RAG_PIPELINE]</span> Menu Matched: {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
                         </p>
                       )}
 
                       {/* Session Completed & Claimed Log */}
                       {scan.status === "CLAIMED" && (
-                        <p className="text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-600/60 my-1">
-                          [SUCCESS] [SESSION_COMPLETED] Beneficiary QR claim verified. Screening session closed.
+                        <p className="text-white font-mono bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-600/60 my-1">
+                          <span className="text-emerald-400 font-bold">[SUCCESS] [SESSION_COMPLETED]</span> Beneficiary QR claim verified. Screening session closed.
                         </p>
                       )}
                     </div>
