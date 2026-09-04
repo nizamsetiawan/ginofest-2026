@@ -396,7 +396,7 @@ Timestamp: ${selectedScan.createdAt}
               <p className="text-[10px]">Perform scan on mobile device or click + TEST SCAN above.</p>
             </div>
           ) : (
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3 pt-1 font-mono text-[11px]">
               {scans.map((scan) => {
                 const isSelected = selectedScan?.scanId === scan.scanId;
                 const formattedConf = formatConfidence(scan.azureVisionMetrics?.confidenceScore);
@@ -405,22 +405,17 @@ Timestamp: ${selectedScan.createdAt}
                   <div
                     key={scan.scanId}
                     onClick={() => setSelectedScan(scan)}
-                    className={`p-3 rounded-xl border transition-all cursor-pointer space-y-1.5 text-[11px] ${
+                    className={`space-y-1 cursor-pointer py-1.5 px-2 rounded transition-colors ${
                       isSelected
-                        ? "bg-[#131C38] border-[#35CBC3] shadow-[0_0_15px_rgba(53,203,195,0.2)] ring-1 ring-[#35CBC3]/40"
-                        : "bg-[#090D18] border-[#1E2950] hover:border-[#35CBC3]/40"
+                        ? "bg-[#131C38]/70"
+                        : "hover:bg-[#131C38]/30"
                     }`}
                   >
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-white font-mono">
-                        <span className="text-[#35CBC3] font-bold">[{scan.createdAt || new Date().toLocaleTimeString("id-ID")}]</span>{" "}
-                        <span className="text-white font-bold">[INFO]</span>{" "}
-                        <span className="text-white">[MOBILE_STREAM_NODE]</span>
-                      </span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300 font-mono">
-                        ID: {scan.scanId}
-                      </span>
-                    </div>
+                    <p className="text-white font-mono">
+                      <span className="text-[#35CBC3] font-bold">[{scan.createdAt || new Date().toLocaleTimeString("id-ID")}]</span>{" "}
+                      <span className="text-white font-bold">[INFO]</span>{" "}
+                      <span className="text-white font-bold">[MOBILE_STREAM_NODE]</span> ID: {scan.scanId}
+                    </p>
 
                     <p className="text-white font-mono">
                       <span className="text-[#35CBC3] font-bold">[USER_SESSION]</span> <strong className="text-white">{scan.userName}</strong> (Kec. {scan.userDistrict}) — Status:{" "}
@@ -433,10 +428,10 @@ Timestamp: ${selectedScan.createdAt}
                       )}
                     </p>
 
-                    {/* Mobile Client Activity Stream Logs (Emoji-Free & Clean White Monospace Text) */}
-                    <div className="pl-3 border-l-2 border-[#35CBC3]/40 text-[10.5px] space-y-1 font-mono text-white">
+                    {/* Mobile Client Activity Stream Logs (Seamless Borderless Monospace Output) */}
+                    <div className="space-y-1 font-mono text-[11px] text-white">
                       <p className="text-white">
-                        <span className="text-slate-400">[INFO]</span> <span className="text-slate-400">[CLIENT_CAMERA_INIT]</span> Mobile device camera stream connected (1280x720 30fps)
+                        <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[CLIENT_CAMERA_INIT]</span> Mobile device camera stream connected (1280x720 30fps)
                       </p>
 
                       {(scan.photos?.faceBase64 || scan.blobUrls?.faceBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED") && (
@@ -462,21 +457,21 @@ Timestamp: ${selectedScan.createdAt}
 
                       {/* Recapture Event Log */}
                       {scan.lastCapturedStep?.startsWith("recapture_") && (
-                        <p className="text-rose-400 font-mono text-[10.5px]">
+                        <p className="text-rose-400 font-mono text-[11px]">
                           <span className="font-bold">[WARN] [RECAPTURE_EVENT]</span> User initiated recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing frame buffer &amp; recalibrating sensor...
                         </p>
                       )}
 
                       {/* Mobile Touch & UI Interaction Event Log */}
                       {scan.lastTouchEvent && (
-                        <p className="text-white font-mono text-[10.5px]">
+                        <p className="text-white font-mono text-[11px]">
                           <span className="text-white font-bold">[INFO] [CLIENT_TOUCH_EVENT]</span> Action: {scan.lastTouchEvent.actionName} {scan.lastTouchEvent.details ? `(${scan.lastTouchEvent.details})` : ""}
                         </p>
                       )}
 
                       {/* Q&A Interactive Anamnesis Answers Log */}
                       {scan.questionnaireAnswers && (
-                        <div className="text-white text-[10.5px] space-y-0.5 py-0.5 font-mono">
+                        <div className="text-white text-[11px] space-y-0.5 font-mono">
                           {scan.questionnaireAnswers.nafsuMakan && (
                             <p><span className="text-white font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
                           )}
@@ -503,9 +498,9 @@ Timestamp: ${selectedScan.createdAt}
 
                       {/* Vercel Serverless Cloud Infrastructure Logs */}
                       {scan.serverLogs && scan.serverLogs.length > 0 && (
-                        <div className="space-y-0.5 pt-1 font-mono text-white">
+                        <div className="space-y-0.5 font-mono text-white">
                           {scan.serverLogs.map((srvLog, idx) => (
-                            <p key={idx} className="text-white text-[10.5px]">
+                            <p key={idx} className="text-white text-[11px]">
                               <span className="text-slate-400">[{srvLog.timestamp}]</span>{" "}
                               <span className={srvLog.level === "WARN" || srvLog.level === "ERROR" ? "text-rose-400 font-bold" : "text-white font-bold"}>
                                 [{srvLog.level}]
