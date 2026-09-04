@@ -26,6 +26,7 @@ import {
   X,
   Maximize2,
   User,
+  PieChart,
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -203,6 +204,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [menuType, setMenuType] = useState<"ayam" | "bandeng">("ayam");
   const [syncedRecord, setSyncedRecord] = useState<CompleteBiometricScanRecord | null>(null);
   const [showDetailedReport, setShowDetailedReport] = useState(false);
+  const [showNutritionProfile, setShowNutritionProfile] = useState(false);
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string } | null>(null);
 
   // Step 4: QR Code Scanner Timer / Verification Simulation
@@ -1042,33 +1044,73 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </div>
             </div>
 
-            {/* Nutrition Breakdown */}
-            <div className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-[11.5px] font-black text-slate-800">Profil Nutrisi</p>
-                <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-[#79D7D2]/15 text-[#0FA89B] font-bold border border-[#79D7D2]/30">% AKG</span>
-              </div>
-
-              <div className="space-y-2.5">
-                {[
-                  { label: "Lemak Total", val: "10 g", pct: 22, color: "#F59E0B" },
-                  { label: "Karbohidrat", val: "50 g", pct: 17, color: "#0FA89B" },
-                  { label: "Serat", val: "7 g", pct: 18, color: "#34D399" },
-                  { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 31} g`, pct: 50, color: "#23B5A8" },
-                  { label: "Vitamin D", val: "0.4 mg", pct: 15, color: "#A78BFA" },
-                  { label: "Zat Besi / Fe", val: `${syncedRecord?.recommendedMenu?.ironMg || 6} mg`, pct: syncedRecord?.recommendedMenu?.akgPercentage || 50, color: "#F87171" },
-                ].map((n) => (
-                  <div key={n.label}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10.5px] text-slate-600 font-medium">{n.label} <span className="text-slate-400">({n.val})</span></span>
-                      <span className="text-[10.5px] font-black" style={{ color: n.color }}>{n.pct}%</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${n.pct}%`, backgroundColor: n.color }} />
-                    </div>
+            {/* ═══ EXPANDABLE NUTRITION PROFILE SECTION ═══ */}
+            <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs transition-all">
+              <button
+                type="button"
+                onClick={() => setShowNutritionProfile((prev) => !prev)}
+                className="w-full p-4 flex items-center justify-between text-left cursor-pointer hover:bg-slate-50/80 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                    <PieChart className="w-5 h-5 text-[#0FA89B]" />
                   </div>
-                ))}
-              </div>
+                  <div>
+                    <h5 className="text-[13px] font-black text-ford-blue leading-tight flex items-center gap-2">
+                      <span>Profil Nutrisi</span>
+                      <span className="text-[9.5px] font-extrabold px-2.5 py-0.5 rounded-full bg-teal-50 text-[#0FA89B] border border-teal-200/70">
+                        % AKG
+                      </span>
+                    </h5>
+                    <p className="text-[10.5px] text-slate-400 font-medium mt-0.5">
+                      {showNutritionProfile ? "Klik untuk menyembunyikan rincian gizi" : "Lihat persentase AKG, Karbohidrat, Protein & Mikronutrien"}
+                    </p>
+                  </div>
+                </div>
+                <div className="w-7 h-7 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500">
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showNutritionProfile ? "rotate-180" : ""}`} />
+                </div>
+              </button>
+
+              <AnimatePresence>
+                {showNutritionProfile && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="px-4 pb-4.5 space-y-3 border-t border-slate-100 pt-3.5"
+                  >
+                    <div className="space-y-2.5">
+                      {[
+                        { label: "Lemak Total", val: "10 g", pct: 22, color: "#F59E0B" },
+                        { label: "Karbohidrat", val: "50 g", pct: 17, color: "#0FA89B" },
+                        { label: "Serat", val: "7 g", pct: 18, color: "#34D399" },
+                        { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 31} g`, pct: 50, color: "#23B5A8" },
+                        { label: "Vitamin D", val: "0.4 mg", pct: 15, color: "#A78BFA" },
+                        { label: "Zat Besi / Fe", val: `${syncedRecord?.recommendedMenu?.ironMg || 6} mg`, pct: syncedRecord?.recommendedMenu?.akgPercentage || 50, color: "#F87171" },
+                      ].map((n) => (
+                        <div key={n.label}>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10.5px] text-slate-600 font-medium">
+                              {n.label} <span className="text-slate-400">({n.val})</span>
+                            </span>
+                            <span className="text-[10.5px] font-black" style={{ color: n.color }}>
+                              {n.pct}%
+                            </span>
+                          </div>
+                          <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-700"
+                              style={{ width: `${n.pct}%`, backgroundColor: n.color }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* ═══ EXPANDABLE CLINICAL DETAILS & PHOTO EVIDENCE SECTION ═══ */}
