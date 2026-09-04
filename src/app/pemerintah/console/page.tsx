@@ -393,6 +393,13 @@ Timestamp: ${selectedScan.createdAt}
                         </p>
                       )}
 
+                      {/* Mobile Touch & UI Interaction Event Log */}
+                      {scan.lastTouchEvent && (
+                        <p className="text-sky-300 font-mono text-[10.5px] bg-sky-950/40 px-2 py-0.5 rounded border border-sky-800/40 my-1">
+                          [INFO] [CLIENT_TOUCH_EVENT] Action: {scan.lastTouchEvent.actionName} {scan.lastTouchEvent.details ? `(${scan.lastTouchEvent.details})` : ""}
+                        </p>
+                      )}
+
                       {/* Q&A Interactive Anamnesis Answers Log */}
                       {scan.questionnaireAnswers && (
                         <div className="text-purple-300 text-[10px] space-y-0.5 py-0.5 border-l-2 border-purple-500/40 pl-2 my-1 bg-purple-950/20 rounded-r">

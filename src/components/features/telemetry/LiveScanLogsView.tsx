@@ -735,6 +735,11 @@ export const LiveScanLogsView: React.FC = () => {
                   <p className="text-slate-400">
                     [{formatActualTime(selectedScan.createdAt)}] [INFO] [FRAME_STREAM] Session {selectedScan.scanId} from Node {selectedScan.userDistrict} (User: {selectedScan.userName})
                   </p>
+                  {selectedScan.lastTouchEvent && (
+                    <p className="text-sky-300">
+                      [{formatActualTime(selectedScan.createdAt)}] [INFO] [CLIENT_TOUCH_EVENT] Action: {selectedScan.lastTouchEvent.actionName} {selectedScan.lastTouchEvent.details ? `(${selectedScan.lastTouchEvent.details})` : ""}
+                    </p>
+                  )}
                   <p className="text-cyan-400">
                     [{formatActualTime(selectedScan.createdAt)}] [INFO] [MODEL_A_VISION] ({selectedScan.azureVisionMetrics?.engineUsed || "AZURE_CUSTOM_VISION_SCIN"}): Conjunctiva Status = {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
                     {selectedScan.azureVisionMetrics?.eyePallorScore !== undefined ? ` (Pallor Score: ${selectedScan.azureVisionMetrics.eyePallorScore})` : ""}

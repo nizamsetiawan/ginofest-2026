@@ -43,6 +43,11 @@ export interface CompleteBiometricScanRecord {
   createdAt: string;
   status: "SCANNING_IN_PROGRESS" | "CANCELLED" | "VALID" | "CLAIMED" | "EXPIRED";
   lastCapturedStep?: string;
+  lastTouchEvent?: {
+    actionName: string;
+    details?: string;
+    touchedAt?: string;
+  };
 }
 
 export class BiometricSyncService {
@@ -524,6 +529,36 @@ export class BiometricSyncService {
       );
     } catch (e) {
       console.warn("QnA sync notice:", e);
+    }
+  }
+
+  /**
+   * Syncs real-time user touch & UI interaction events from Mobile HP
+   */
+  static async syncUserTouchEvent(params: {
+    scanId: string;
+    actionName: string;
+    details?: string;
+  }): Promise<void> {
+    try {
+      if (!db) return;
+      const docRef = doc(db, this.COLLECTION_SCANS, params.scanId);
+      await setDoc(
+        docRef,
+        {
+          status: "SCANNING_IN_PROGRESS",
+          lastCapturedStep: `touch_${params.actionName.toLowerCase()}`,
+          lastTouchEvent: {
+            actionName: params.actionName,
+            details: params.details || "",
+            touchedAt: new Date().toISOString(),
+          },
+          updatedAt: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.warn("User touch event sync notice:", e);
     }
   }
 
