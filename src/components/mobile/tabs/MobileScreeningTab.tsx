@@ -774,10 +774,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ═══ FIXED FLOATING CAPTURE BAR — Light frosted glass ═══ */}
-          <div className="fixed bottom-0 left-0 w-full z-30 pb-4 pt-3 px-4 bg-gradient-to-t from-white/95 via-white/70 to-transparent pointer-events-none select-none">
-            <div className="max-w-sm mx-auto flex flex-col items-center space-y-3 pointer-events-auto">
+          <div className="fixed bottom-0 left-0 w-full z-30 pb-7 sm:pb-10 pt-2 px-4 bg-gradient-to-t from-white/95 via-white/75 to-transparent pointer-events-none select-none">
+            <div className="max-w-sm mx-auto flex flex-col items-center space-y-2.5 pointer-events-auto">
               {/* Dynamic Target Instruction Glass Card */}
-              <div className="w-full bg-white/95 backdrop-blur-xl p-3.5 rounded-2xl border border-slate-200/80 text-slate-800 space-y-1 shadow-xl">
+              <div className="w-full bg-white/95 backdrop-blur-xl p-3 rounded-2xl border border-slate-200/80 text-slate-800 space-y-1 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-lg bg-[#0FA89B]/10 border border-[#0FA89B]/30 flex items-center justify-center">
@@ -796,8 +796,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 </p>
               </div>
 
-              {/* Mega Shutter Capture Button with Aura Rings */}
-              <div className="flex items-center justify-center pb-1">
+              {/* Mega Shutter Capture Button with Aura Rings (Enlarged & Lifted Up) */}
+              <div className="flex items-center justify-center pt-1 pb-1">
                 <motion.button
                   whileTap={{ scale: 0.88 }}
                   whileHover={{ scale: 1.05 }}
@@ -807,16 +807,16 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     handleStartScan();
                   }}
                   disabled={isScanningActive}
-                  className="w-18 h-18 rounded-full bg-white shadow-[0_4px_30px_rgba(35,181,168,0.5)] border-4 border-[#23B5A8] flex items-center justify-center relative cursor-pointer active:scale-90 transition-all group"
+                  className="w-21 h-21 rounded-full bg-white shadow-[0_6px_35px_rgba(35,181,168,0.55)] border-[4.5px] border-[#0FA89B] flex items-center justify-center relative cursor-pointer active:scale-90 transition-all group"
                   title={`Ambil Foto ${biometricFlow[captureStepIdx].label}`}
                 >
                   {/* Blinking Aura Pulse Rings */}
-                  <div className="absolute -inset-2.5 rounded-full bg-[#79D7D2]/40 animate-ping [animation-duration:2s] pointer-events-none" />
-                  <div className="absolute -inset-1.5 rounded-full bg-[#23B5A8]/30 animate-pulse pointer-events-none" />
+                  <div className="absolute -inset-3 rounded-full bg-[#79D7D2]/40 animate-ping [animation-duration:2s] pointer-events-none" />
+                  <div className="absolute -inset-2 rounded-full bg-[#23B5A8]/30 animate-pulse pointer-events-none" />
                   <img
                     src="/logo_app.svg"
                     alt="Capture"
-                    className="w-11 h-11 object-contain group-hover:scale-110 transition-transform relative z-10 drop-shadow-sm"
+                    className="w-13 h-13 object-contain group-hover:scale-110 transition-transform relative z-10 drop-shadow-md"
                   />
                 </motion.button>
               </div>
