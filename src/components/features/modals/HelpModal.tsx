@@ -57,7 +57,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
             <div>
               <h3 className="text-[16px] font-black text-[#2C3968]">Pusat Bantuan & Panduan</h3>
               <p className="text-[11px] text-[#64748b]">
-                Panduan operasional sistem G-Scan dan AI Makan Bergizi Gratis
+                Panduan operasional sistem Kcal dan AI Makan Bergizi Gratis
               </p>
             </div>
           </div>
@@ -78,7 +78,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, onOpenCha
             </div>
             <div>
               <h4 className="text-[12px] font-bold text-[#2C3968]">Butuh bantuan interaktif cepat?</h4>
-              <p className="text-[11px] text-[#64748b]">Tanyakan apa saja kepada Asisten AI G-Scan</p>
+              <p className="text-[11px] text-[#64748b]">Tanyakan apa saja kepada Asisten AI Kcal</p>
             </div>
           </div>
           <button

@@ -254,7 +254,7 @@ export const LiveScanLogsView: React.FC = () => {
             <div className="flex items-center gap-2">
               <Terminal className="w-5 h-5 text-[#35CBC3] animate-pulse" />
               <h1 className="text-sm font-black tracking-wider text-[#35CBC3] uppercase">
-                G-SCAN REALTIME AI LOG CONSOLE
+                KCAL REALTIME AI LOG CONSOLE
               </h1>
             </div>
             <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/40 flex items-center gap-1.5 font-mono">

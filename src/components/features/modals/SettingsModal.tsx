@@ -137,7 +137,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
             {/* App Info */}
             <div className="text-center pt-2 text-[11px] text-slate-400">
-              G-Scan Dashboard MBG • Versi 2.4.0 • Pemerintah Kabupaten Gresik
+              Kcal Dashboard MBG • Versi 2.4.0 • Pemerintah Kabupaten Gresik
             </div>
           </div>
         </div>

@@ -6,7 +6,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: "1",
     sender: "ai",
-    text: "Halo! Saya Asisten AI Gizi GScan Pemkab Gresik. Ada yang bisa saya bantu terkait kebutuhan nutrisi MBG, potensi pangan lokal (Bandeng, Kupang, Udang), atau strategi penanganan stunting di wilayah Anda?",
+    text: "Halo! Saya Asisten AI Gizi Kcal Pemkab Gresik. Ada yang bisa saya bantu terkait kebutuhan nutrisi MBG, potensi pangan lokal (Bandeng, Kupang, Udang), atau strategi penanganan stunting di wilayah Anda?",
     timestamp: "Sekarang",
   },
 ];

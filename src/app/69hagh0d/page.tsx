@@ -619,7 +619,7 @@ export default function SecretDiagnosticsPage() {
 
           <div className="pb-6 text-center">
             <span className="text-[11px] text-slate-400 font-mono">
-              Ekstraksi Visi Biometrik G-Scan • Azure Blob Storage Verified
+              Ekstraksi Visi Biometrik Kcal • Azure Blob Storage Verified
             </span>
           </div>
         </div>

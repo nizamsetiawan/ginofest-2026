@@ -376,7 +376,7 @@ Berikan output HANYA dalam format JSON murni tanpa markdown backticks:
 
       // Tentukan jumlah pertanyaan: Gemini yang memutuskan antara 5-10 tergantung keparahan temuan
       const enrichedContext = await getEnrichedKBContext();
-      const prompt = `Anda adalah Dokter Spesialis Gizi Anak AI G-SCAN berbasis standar Kemenkes RI 2026.
+      const prompt = `Anda adalah Dokter Spesialis Gizi Anak AI Kcal berbasis standar Kemenkes RI 2026.
 
 PENGETAHUAN KLINIS MEDQA PEDIATRIK (Distilled dari MedAlpaca MedQA — 10.178 Kasus):
 ${medqaContext}

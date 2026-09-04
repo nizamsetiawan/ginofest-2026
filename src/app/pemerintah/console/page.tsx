@@ -238,7 +238,7 @@ export default function DedicatedConsolePage() {
   const handleCopyLogs = () => {
     if (!selectedScan) return;
     const logText = `
-[G-SCAN LOG CONSOLE SCAN SESSION ${selectedScan.scanId}]
+[KCAL LOG CONSOLE SCAN SESSION ${selectedScan.scanId}]
 User: ${selectedScan.userName} (${selectedScan.userDistrict})
 Status: ${selectedScan.status}
 Confidence: ${formatConfidence(selectedScan.azureVisionMetrics?.confidenceScore)}
@@ -258,7 +258,7 @@ Timestamp: ${selectedScan.createdAt}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 font-black tracking-wider text-[#35CBC3]">
             <TerminalIcon className="w-5 h-5 text-[#35CBC3] animate-pulse" />
-            <span className="uppercase text-sm">G-SCAN REALTIME AI LOG CONSOLE</span>
+            <span className="uppercase text-sm">KCAL REALTIME AI LOG CONSOLE</span>
           </div>
           <span className="px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/80 text-[10px] font-bold flex items-center gap-1.5 font-mono">
             <Radio className="w-3 h-3 text-emerald-400 animate-ping" />

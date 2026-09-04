@@ -1552,7 +1552,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
             <div className="pb-6 text-center">
               <span className="text-[11px] text-slate-400 font-mono">
-                Ekstraksi Visi Biometrik G-Scan • Pemkab Gresik 2026
+                Ekstraksi Visi Biometrik Kcal • Pemkab Gresik 2026
               </span>
             </div>
           </motion.div>
