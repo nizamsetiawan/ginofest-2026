@@ -245,6 +245,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [showScanGuide, setShowScanGuide] = useState(true);
   const [rawPhotosMap, setRawPhotosMap] = useState<Record<string, string>>({});
 
+  const [activeScanId] = useState(() => `SCAN-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`);
+
   // Handle Scanning Animation for 4-Step Biometric Flow & Snapshot
   const handleStartScan = () => {
     setIsScanningActive(true);
@@ -263,10 +265,27 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         if (ctx) {
           ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
           capturedFrame = canvas.toDataURL("image/jpeg", 0.85);
-          setRawPhotosMap((prev) => ({
-            ...prev,
+          const updatedPhotos = {
+            ...rawPhotosMap,
             [currentFlowId]: capturedFrame,
-          }));
+          };
+          setRawPhotosMap(updatedPhotos);
+
+          // Realtime live sync to Firestore web console as photo is taken
+          BiometricSyncService.syncLiveBiometricFrame({
+            scanId: activeScanId,
+            userId: citizenUser?.id || citizenUser?.email || "user_guest",
+            userName: citizenUser?.name || "Muhammad Nizam Setiawan",
+            userDistrict: citizenUser?.district || "Kebomas",
+            userAge: citizenUser?.age || 9,
+            capturedStep: currentFlowId as any,
+            photos: {
+              faceBase64: updatedPhotos.wajah,
+              eyeBase64: updatedPhotos.mata,
+              handBase64: updatedPhotos.tangan,
+              nailBase64: updatedPhotos.kuku,
+            },
+          });
         }
       }
     } catch (snapErr) {
@@ -332,8 +351,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       // Trigger Azure Blob Upload + Azure Vision + Firebase Sync in background
       try {
         const record = await BiometricSyncService.processAndSyncBiometricScan({
+          existingScanId: activeScanId,
           userId: citizenUser?.id || citizenUser?.email || "user_guest",
-          userName: citizenUser?.name || "Oscar Ryanda Putra",
+          userName: citizenUser?.name || "Muhammad Nizam Setiawan",
           userDistrict: citizenUser?.district || "Kebomas",
           userEmail: citizenUser?.email,
           photos: {
@@ -497,7 +517,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 type="button"
-                onClick={onBackToHome}
+                onClick={() => {
+                  BiometricSyncService.cancelLiveBiometricScan(activeScanId);
+                  if (onBackToHome) onBackToHome();
+                }}
                 className="w-10 h-10 rounded-2xl bg-white/90 hover:bg-white text-slate-700 flex items-center justify-center shadow-md cursor-pointer transition-all border border-white/80 backdrop-blur-md"
                 title="Kembali ke Beranda"
               >

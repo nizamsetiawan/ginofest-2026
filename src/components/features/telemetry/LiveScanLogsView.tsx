@@ -278,7 +278,15 @@ export const LiveScanLogsView: React.FC = () => {
                       </div>
 
                       <div className="text-right">
-                        {actualConfidence !== undefined ? (
+                        {scan.status === "SCANNING_IN_PROGRESS" ? (
+                          <span className="px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-700 border border-cyan-300 text-[10px] font-bold block animate-pulse">
+                            📸 Scanning ({scan.lastCapturedStep || "proses"})
+                          </span>
+                        ) : scan.status === "CANCELLED" ? (
+                          <span className="px-2 py-0.5 rounded-md bg-red-50 text-red-700 border border-red-200 text-[10px] font-bold block">
+                            ✕ Dibatalkan
+                          </span>
+                        ) : actualConfidence !== undefined ? (
                           <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold block">
                             Confidence {actualConfidence}%
                           </span>
@@ -288,7 +296,7 @@ export const LiveScanLogsView: React.FC = () => {
                           </span>
                         )}
                         <span className="text-[9.5px] font-bold text-[#0FA89B] block mt-0.5 max-w-[140px] truncate">
-                          {actualMenu || "Menu MBG"}
+                          {scan.status === "SCANNING_IN_PROGRESS" ? "Memindai Biometrik..." : scan.status === "CANCELLED" ? "Sesi Dibatalkan" : actualMenu || "Menu MBG"}
                         </span>
                       </div>
                     </div>
@@ -357,124 +365,135 @@ export const LiveScanLogsView: React.FC = () => {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {/* Photo 1: Wajah */}
-                  <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
-                    <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                      {selectedScan.blobUrls?.faceBlobUrl && !imageErrorMap[`face_${selectedScan.scanId}`] ? (
-                        <img
-                          src={selectedScan.blobUrls.faceBlobUrl}
-                          alt="Wajah"
-                          onError={() => handleImageError(`face_${selectedScan.scanId}`)}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-[#23B5A8] font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
-                          <User className="w-6 h-6 mb-1 text-[#23B5A8] stroke-[1.8]" />
-                          <span>Frame Wajah</span>
-                          <span className="text-[9px] text-slate-400 font-normal">Captured Live</span>
-                        </div>
-                      )}
-                      {selectedScan.blobUrls?.faceBlobUrl && !imageErrorMap[`face_${selectedScan.scanId}`] && (
-                        <button
-                          type="button"
-                          onClick={() => setActivePhotoModal({ title: "Foto Profil Wajah", url: selectedScan.blobUrls.faceBlobUrl })}
-                          className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
-                        >
-                          <Maximize2 className="w-3 h-3" />
-                        </button>
-                      )}
-                    </div>
-                    <span className="text-[10.5px] font-bold text-slate-700 block">1. Profile Wajah</span>
-                  </div>
+                  {(() => {
+                    const faceSrc = selectedScan.photos?.faceBase64 || selectedScan.blobUrls?.faceBlobUrl;
+                    const eyeSrc = selectedScan.photos?.eyeBase64 || selectedScan.blobUrls?.eyeBlobUrl;
+                    const handSrc = selectedScan.photos?.handBase64 || selectedScan.blobUrls?.handBlobUrl;
+                    const nailSrc = selectedScan.photos?.nailBase64 || selectedScan.blobUrls?.nailBlobUrl;
 
-                  {/* Photo 2: Mata Konjungtiva */}
-                  <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
-                    <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                      {selectedScan.blobUrls?.eyeBlobUrl && !imageErrorMap[`eye_${selectedScan.scanId}`] ? (
-                        <img
-                          src={selectedScan.blobUrls.eyeBlobUrl}
-                          alt="Mata"
-                          onError={() => handleImageError(`eye_${selectedScan.scanId}`)}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-cyan-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
-                          <Eye className="w-6 h-6 mb-1 text-cyan-400 stroke-[1.8]" />
-                          <span>Konjungtiva</span>
-                          <span className="text-[9px] text-slate-400 font-normal">Hb Scan</span>
+                    return (
+                      <>
+                        <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
+                          <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                            {faceSrc && !imageErrorMap[`face_${selectedScan.scanId}`] ? (
+                              <img
+                                src={faceSrc}
+                                alt="Wajah"
+                                onError={() => handleImageError(`face_${selectedScan.scanId}`)}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-[#23B5A8] font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
+                                <User className="w-6 h-6 mb-1 text-[#23B5A8] stroke-[1.8]" />
+                                <span>Profil Wajah</span>
+                                <span className="text-[9px] text-slate-400 font-normal">Captured Live</span>
+                              </div>
+                            )}
+                            {faceSrc && !imageErrorMap[`face_${selectedScan.scanId}`] && (
+                              <button
+                                type="button"
+                                onClick={() => setActivePhotoModal({ title: "Foto Profil Wajah", url: faceSrc })}
+                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
+                              >
+                                <Maximize2 className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+                          <span className="text-[10.5px] font-bold text-slate-700 block">1. Profile Wajah</span>
                         </div>
-                      )}
-                      {selectedScan.blobUrls?.eyeBlobUrl && !imageErrorMap[`eye_${selectedScan.scanId}`] && (
-                        <button
-                          type="button"
-                          onClick={() => setActivePhotoModal({ title: "Foto Konjungtiva Sklera", url: selectedScan.blobUrls.eyeBlobUrl })}
-                          className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
-                        >
-                          <Maximize2 className="w-3 h-3" />
-                        </button>
-                      )}
-                    </div>
-                    <span className="text-[10.5px] font-bold text-slate-700 block">2. Mata Konjungtiva</span>
-                  </div>
 
-                  {/* Photo 3: Tangan Turgor */}
-                  <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
-                    <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                      {selectedScan.blobUrls?.handBlobUrl && !imageErrorMap[`hand_${selectedScan.scanId}`] ? (
-                        <img
-                          src={selectedScan.blobUrls.handBlobUrl}
-                          alt="Tangan"
-                          onError={() => handleImageError(`hand_${selectedScan.scanId}`)}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-emerald-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
-                          <Hand className="w-6 h-6 mb-1 text-emerald-400 stroke-[1.8]" />
-                          <span>Turgor Kulit</span>
-                          <span className="text-[9px] text-slate-400 font-normal">Hidrasi Scan</span>
+                        {/* Photo 2: Mata Konjungtiva */}
+                        <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
+                          <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                            {eyeSrc && !imageErrorMap[`eye_${selectedScan.scanId}`] ? (
+                              <img
+                                src={eyeSrc}
+                                alt="Mata"
+                                onError={() => handleImageError(`eye_${selectedScan.scanId}`)}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-cyan-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
+                                <Eye className="w-6 h-6 mb-1 text-cyan-400 stroke-[1.8]" />
+                                <span>Konjungtiva</span>
+                                <span className="text-[9px] text-slate-400 font-normal">Hb Scan</span>
+                              </div>
+                            )}
+                            {eyeSrc && !imageErrorMap[`eye_${selectedScan.scanId}`] && (
+                              <button
+                                type="button"
+                                onClick={() => setActivePhotoModal({ title: "Foto Konjungtiva Sklera", url: eyeSrc })}
+                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
+                              >
+                                <Maximize2 className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+                          <span className="text-[10.5px] font-bold text-slate-700 block">2. Mata Konjungtiva</span>
                         </div>
-                      )}
-                      {selectedScan.blobUrls?.handBlobUrl && !imageErrorMap[`hand_${selectedScan.scanId}`] && (
-                        <button
-                          type="button"
-                          onClick={() => setActivePhotoModal({ title: "Foto Telapak Tangan & Turgor", url: selectedScan.blobUrls.handBlobUrl })}
-                          className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
-                        >
-                          <Maximize2 className="w-3 h-3" />
-                        </button>
-                      )}
-                    </div>
-                    <span className="text-[10.5px] font-bold text-slate-700 block">3. Turgor Tangan</span>
-                  </div>
 
-                  {/* Photo 4: Kuku Capillary */}
-                  <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
-                    <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                      {selectedScan.blobUrls?.nailBlobUrl && !imageErrorMap[`nail_${selectedScan.scanId}`] ? (
-                        <img
-                          src={selectedScan.blobUrls.nailBlobUrl}
-                          alt="Kuku"
-                          onError={() => handleImageError(`nail_${selectedScan.scanId}`)}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-amber-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
-                          <Sparkles className="w-6 h-6 mb-1 text-amber-400 stroke-[1.8]" />
-                          <span>CRT Kuku</span>
-                          <span className="text-[9px] text-slate-400 font-normal">Kapiler Scan</span>
+                        {/* Photo 3: Tangan Turgor */}
+                        <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
+                          <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                            {handSrc && !imageErrorMap[`hand_${selectedScan.scanId}`] ? (
+                              <img
+                                src={handSrc}
+                                alt="Tangan"
+                                onError={() => handleImageError(`hand_${selectedScan.scanId}`)}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-emerald-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
+                                <Hand className="w-6 h-6 mb-1 text-emerald-400 stroke-[1.8]" />
+                                <span>Turgor Kulit</span>
+                                <span className="text-[9px] text-slate-400 font-normal">Hidrasi Scan</span>
+                              </div>
+                            )}
+                            {handSrc && !imageErrorMap[`hand_${selectedScan.scanId}`] && (
+                              <button
+                                type="button"
+                                onClick={() => setActivePhotoModal({ title: "Foto Telapak Tangan & Turgor", url: handSrc })}
+                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
+                              >
+                                <Maximize2 className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+                          <span className="text-[10.5px] font-bold text-slate-700 block">3. Turgor Tangan</span>
                         </div>
-                      )}
-                      {selectedScan.blobUrls?.nailBlobUrl && !imageErrorMap[`nail_${selectedScan.scanId}`] && (
-                        <button
-                          type="button"
-                          onClick={() => setActivePhotoModal({ title: "Foto Bantalan Kuku (CRT)", url: selectedScan.blobUrls.nailBlobUrl })}
-                          className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
-                        >
-                          <Maximize2 className="w-3 h-3" />
-                        </button>
-                      )}
-                    </div>
-                    <span className="text-[10.5px] font-bold text-slate-700 block">4. CRT Kuku</span>
-                  </div>
+
+                        {/* Photo 4: Kuku Capillary */}
+                        <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
+                          <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                            {nailSrc && !imageErrorMap[`nail_${selectedScan.scanId}`] ? (
+                              <img
+                                src={nailSrc}
+                                alt="Kuku"
+                                onError={() => handleImageError(`nail_${selectedScan.scanId}`)}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-amber-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
+                                <Sparkles className="w-6 h-6 mb-1 text-amber-400 stroke-[1.8]" />
+                                <span>CRT Kuku</span>
+                                <span className="text-[9px] text-slate-400 font-normal">Kapiler Scan</span>
+                              </div>
+                            )}
+                            {nailSrc && !imageErrorMap[`nail_${selectedScan.scanId}`] && (
+                              <button
+                                type="button"
+                                onClick={() => setActivePhotoModal({ title: "Foto Bantalan Kuku (CRT)", url: nailSrc })}
+                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
+                              >
+                                <Maximize2 className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+                          <span className="text-[10.5px] font-bold text-slate-700 block">4. CRT Kuku</span>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 

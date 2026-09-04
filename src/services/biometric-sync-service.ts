@@ -21,6 +21,7 @@ export interface CompleteBiometricScanRecord {
   userDistrict: string;
   userAge: number;
   userEmail?: string;
+  photos?: BiometricPhotoPayload;
   blobUrls: AzureBlobUploadedUrls;
   azureVisionMetrics: AzureVisionClinicalMetrics;
   questionnaireAnswers: {
@@ -40,7 +41,8 @@ export interface CompleteBiometricScanRecord {
   };
   qrCodePayloadString: string;
   createdAt: string;
-  status: "VALID" | "CLAIMED" | "EXPIRED";
+  status: "SCANNING_IN_PROGRESS" | "CANCELLED" | "VALID" | "CLAIMED" | "EXPIRED";
+  lastCapturedStep?: string;
 }
 
 export class BiometricSyncService {
@@ -68,9 +70,10 @@ export class BiometricSyncService {
       catatanTambahan?: string;
     };
     preferredMenuType?: "ayam" | "bandeng";
+    existingScanId?: string;
   }): Promise<CompleteBiometricScanRecord> {
     const timestamp = Date.now();
-    const scanId = `SCAN-${timestamp}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+    const scanId = params.existingScanId || `SCAN-${timestamp}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
     const claimId = `MBG-${timestamp}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
     // 1 & 2. Execute Azure Blob Upload and Azure/Gemini AI Vision concurrently in parallel
@@ -361,5 +364,72 @@ export class BiometricSyncService {
       console.warn("Gagal mengambil data dari Firebase:", err);
     }
     return [];
+  }
+
+  /**
+   * Syncs intermediate photo capture step in real-time to Firestore during Step 1 scanning
+   */
+  static async syncLiveBiometricFrame(params: {
+    scanId: string;
+    userId: string;
+    userName: string;
+    userDistrict: string;
+    userAge?: number;
+    capturedStep: "wajah" | "mata" | "tangan" | "kuku";
+    photos: BiometricPhotoPayload;
+  }): Promise<void> {
+    try {
+      if (!db) return;
+
+      const docRef = doc(db, this.COLLECTION_SCANS, params.scanId);
+      const sanitizedUser = params.userId.replace(/[^a-zA-Z0-9_-]/g, "_");
+      const container = process.env.AZURE_STORAGE_CONTAINER_NAME || "gscan-media";
+      const account = process.env.AZURE_STORAGE_ACCOUNT_NAME || "stgscanginofest26";
+      const baseBlobUrl = `https://${account}.blob.core.windows.net/${container}/users/${sanitizedUser}/${params.scanId}`;
+
+      const partialBlobUrls: AzureBlobUploadedUrls = {
+        faceBlobUrl: params.photos.faceBase64 || `${baseBlobUrl}/01_wajah.jpg`,
+        eyeBlobUrl: params.photos.eyeBase64 || `${baseBlobUrl}/02_mata_konjungtiva.jpg`,
+        handBlobUrl: params.photos.handBase64 || `${baseBlobUrl}/03_tangan_turgor.jpg`,
+        nailBlobUrl: params.photos.nailBase64 || `${baseBlobUrl}/04_kuku_capillary.jpg`,
+        uploadedAt: new Date().toISOString(),
+        storageProvider: "AZURE_BLOB_STORAGE",
+        containerName: container,
+        blobPrefix: `users/${sanitizedUser}/${params.scanId}`,
+      };
+
+      await setDoc(
+        docRef,
+        {
+          scanId: params.scanId,
+          claimId: `MBG-${Date.now()}`,
+          userId: params.userId,
+          userName: params.userName,
+          userDistrict: params.userDistrict,
+          userAge: params.userAge || 9,
+          status: "SCANNING_IN_PROGRESS",
+          lastCapturedStep: params.capturedStep,
+          photos: params.photos,
+          blobUrls: partialBlobUrls,
+          createdAt: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.warn("Realtime frame sync notice:", e);
+    }
+  }
+
+  /**
+   * Cancels/removes live scan progress in Firestore if user aborts/deletes scan
+   */
+  static async cancelLiveBiometricScan(scanId: string): Promise<void> {
+    try {
+      if (!db) return;
+      const docRef = doc(db, this.COLLECTION_SCANS, scanId);
+      await setDoc(docRef, { status: "CANCELLED", updatedAt: new Date().toISOString() }, { merge: true });
+    } catch (e) {
+      console.warn("Realtime cancel sync notice:", e);
+    }
   }
 }
