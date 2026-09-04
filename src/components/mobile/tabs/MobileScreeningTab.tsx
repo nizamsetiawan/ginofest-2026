@@ -774,30 +774,30 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ═══ FIXED FLOATING CAPTURE BAR — Light frosted glass ═══ */}
-          <div className="fixed bottom-0 left-0 w-full z-30 pb-7 sm:pb-10 pt-2 px-4 bg-gradient-to-t from-white/95 via-white/75 to-transparent pointer-events-none select-none">
-            <div className="max-w-sm mx-auto flex flex-col items-center space-y-2.5 pointer-events-auto">
+          <div className="fixed bottom-0 left-0 w-full z-30 pb-5 sm:pb-7 pt-1 px-4 bg-gradient-to-t from-white/95 via-white/75 to-transparent pointer-events-none select-none">
+            <div className="max-w-xs sm:max-w-sm mx-auto flex flex-col items-center space-y-2 pointer-events-auto">
               {/* Dynamic Target Instruction Glass Card */}
-              <div className="w-full bg-white/95 backdrop-blur-xl p-3 rounded-2xl border border-slate-200/80 text-slate-800 space-y-1 shadow-lg">
+              <div className="w-full bg-white/95 backdrop-blur-xl px-3 py-2 rounded-xl border border-slate-200/80 text-slate-800 space-y-0.5 shadow-md">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-lg bg-[#0FA89B]/10 border border-[#0FA89B]/30 flex items-center justify-center">
-                      <Scan className="w-3 h-3 text-[#0FA89B]" />
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-4.5 h-4.5 rounded-md bg-[#0FA89B]/10 border border-[#0FA89B]/30 flex items-center justify-center">
+                      <Scan className="w-2.5 h-2.5 text-[#0FA89B]" />
                     </div>
-                    <h3 className="text-[12.5px] font-black tracking-wide text-slate-800">
+                    <h3 className="text-[11.5px] font-black tracking-wide text-slate-800">
                       Foto {captureStepIdx + 1}/4: Pindai {biometricFlow[captureStepIdx].label}
                     </h3>
                   </div>
-                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#0FA89B]/10 text-[#0FA89B] font-bold border border-[#0FA89B]/25">
+                  <span className="text-[8.5px] px-1.5 py-0.2 rounded-full bg-[#0FA89B]/10 text-[#0FA89B] font-bold border border-[#0FA89B]/25">
                     Langkah {captureStepIdx + 1} dari 4
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 font-medium leading-snug">
+                <p className="text-[10.5px] text-slate-500 font-medium leading-snug">
                   {biometricFlow[captureStepIdx].desc}
                 </p>
               </div>
 
-              {/* Mega Shutter Capture Button with Aura Rings (Enlarged & Lifted Up) */}
-              <div className="flex items-center justify-center pt-1 pb-1">
+              {/* Sleek Shutter Capture Button */}
+              <div className="flex items-center justify-center pt-0.5">
                 <motion.button
                   whileTap={{ scale: 0.88 }}
                   whileHover={{ scale: 1.05 }}
@@ -807,16 +807,16 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     handleStartScan();
                   }}
                   disabled={isScanningActive}
-                  className="w-21 h-21 rounded-full bg-white shadow-[0_6px_35px_rgba(35,181,168,0.55)] border-[4.5px] border-[#0FA89B] flex items-center justify-center relative cursor-pointer active:scale-90 transition-all group"
+                  className="w-15 h-15 rounded-full bg-white shadow-[0_4px_20px_rgba(35,181,168,0.4)] border-[3.5px] border-[#0FA89B] flex items-center justify-center relative cursor-pointer active:scale-90 transition-all group"
                   title={`Ambil Foto ${biometricFlow[captureStepIdx].label}`}
                 >
                   {/* Blinking Aura Pulse Rings */}
-                  <div className="absolute -inset-3 rounded-full bg-[#79D7D2]/40 animate-ping [animation-duration:2s] pointer-events-none" />
-                  <div className="absolute -inset-2 rounded-full bg-[#23B5A8]/30 animate-pulse pointer-events-none" />
+                  <div className="absolute -inset-1.5 rounded-full bg-[#79D7D2]/35 animate-ping [animation-duration:2s] pointer-events-none" />
+                  <div className="absolute -inset-1 rounded-full bg-[#23B5A8]/25 animate-pulse pointer-events-none" />
                   <img
                     src="/logo_app.svg"
                     alt="Capture"
-                    className="w-13 h-13 object-contain group-hover:scale-110 transition-transform relative z-10 drop-shadow-md"
+                    className="w-8.5 h-8.5 object-contain group-hover:scale-110 transition-transform relative z-10 drop-shadow-sm"
                   />
                 </motion.button>
               </div>
