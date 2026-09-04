@@ -19,11 +19,13 @@ import {
   Camera,
   Maximize2,
   PlusCircle,
-  ChevronDown,
-  ChevronUp,
   Award,
-  Filter,
-  Trash2
+  Trash2,
+  Cpu,
+  Radio,
+  Code,
+  Layers,
+  ChevronRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
@@ -39,7 +41,6 @@ export const LiveScanLogsView: React.FC = () => {
   const [isClearing, setIsClearing] = useState(false);
   const [activePhotoModal, setActivePhotoModal] = useState<{ title: string; url: string } | null>(null);
   const [imageErrorMap, setImageErrorMap] = useState<Record<string, boolean>>({});
-  const [showTechnicalLog, setShowTechnicalLog] = useState(false);
 
   // 1. Fetch Actual Live Model Telemetry Benchmark
   useEffect(() => {
@@ -105,11 +106,11 @@ export const LiveScanLogsView: React.FC = () => {
 
       const grad = ctx.createLinearGradient(0, 0, 320, 240);
       grad.addColorStop(0, bgColor);
-      grad.addColorStop(1, "#0B132B");
+      grad.addColorStop(1, "#070D1E");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 320, 240);
 
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.strokeStyle = "rgba(0, 240, 255, 0.15)";
       ctx.lineWidth = 1;
       for (let x = 0; x < 320; x += 32) {
         ctx.beginPath();
@@ -134,8 +135,8 @@ export const LiveScanLogsView: React.FC = () => {
       ctx.fillText(title, 160, 155);
 
       ctx.font = "11px monospace";
-      ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
-      ctx.fillText("AZURE BLOB UPLOADED SAMPLE", 160, 185);
+      ctx.fillStyle = "rgba(0, 240, 255, 0.85)";
+      ctx.fillText("AZURE BLOB LIVE RECORD", 160, 185);
 
       return canvas.toDataURL("image/jpeg", 0.85);
     } catch {
@@ -147,7 +148,7 @@ export const LiveScanLogsView: React.FC = () => {
   const handleAddNewTestScan = async () => {
     setIsSimulating(true);
     try {
-      const facePhoto = createSamplePhoto("Wajah Profil Siswa", "#0FA89B", "👤");
+      const facePhoto = createSamplePhoto("Profil Wajah Siswa", "#0FA89B", "👤");
       const eyePhoto = createSamplePhoto("Mata Konjungtiva", "#0284C7", "👁️");
       const handPhoto = createSamplePhoto("Turgor Kulit Tangan", "#059669", "✋");
       const nailPhoto = createSamplePhoto("CRT Bantalan Kuku", "#D97706", "💅");
@@ -182,7 +183,7 @@ export const LiveScanLogsView: React.FC = () => {
 
   // 4. Clear/wipe scan history from Firestore
   const handleClearDatabase = async () => {
-    if (!window.confirm("Apakah Anda yakin ingin mengosongkan seluruh riwayat scan dan analisis dari database Firestore?")) {
+    if (!window.confirm("Apakah Anda yakin ingin mengosongkan seluruh log konsol dan riwayat scan di database Firestore?")) {
       return;
     }
     setIsClearing(true);
@@ -225,28 +226,26 @@ export const LiveScanLogsView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 font-sans select-none pb-12">
-      {/* ═══ 1. TOP HEADER & SUMMARY STRIP (SIMPLIFIED & USER FRIENDLY) ═══ */}
-      <div className="bg-gradient-to-r from-[#F0FDF8] via-white to-[#E6F7F2] p-6 rounded-3xl border border-[#23B5A8]/30 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0FA89B] to-[#23B5A8] text-white flex items-center justify-center shadow-md shrink-0">
-              <Activity className="w-6 h-6 animate-pulse" />
+    <div className="space-y-5 font-mono select-none pb-12 bg-[#050A17] text-slate-100 p-4 sm:p-6 rounded-3xl border border-cyan-500/30 shadow-[0_0_50px_rgba(0,240,255,0.08)]">
+      {/* ═══ 1. LIVE CONSOLE TERMINAL HEADER ═══ */}
+      <div className="bg-[#070D1E] p-4 sm:p-5 rounded-2xl border border-cyan-500/40 shadow-inner space-y-4">
+        {/* Terminal Title Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-cyan-900/60 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 rounded-full bg-red-500 inline-block" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500 inline-block" />
+            <div className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
+            <div className="h-4 w-px bg-slate-800 mx-1" />
+            <div className="flex items-center gap-2">
+              <Terminal className="w-5 h-5 text-cyan-400 animate-pulse" />
+              <h1 className="text-sm font-black tracking-wider text-cyan-300 uppercase">
+                G-SCAN REALTIME AI LOG CONSOLE
+              </h1>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-800 tracking-tight">
-                  Log Skrining Biometrik Realtime
-                </h1>
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10.5px] font-extrabold border border-emerald-300 flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                  SISTEM AKTIF
-                </span>
-              </div>
-              <p className="text-xs text-slate-600 font-medium mt-0.5">
-                Monitoring otomatis data hasil scan fisik siswa &amp; rekomendasi porsi MBG secara terpusat
-              </p>
-            </div>
+            <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/40 flex items-center gap-1.5">
+              <Radio className="w-3 h-3 text-emerald-400 animate-ping" />
+              LIVE STREAM ACTIVE
+            </span>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -254,92 +253,84 @@ export const LiveScanLogsView: React.FC = () => {
               type="button"
               disabled={isClearing || scans.length === 0}
               onClick={handleClearDatabase}
-              className="px-3.5 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all disabled:opacity-40"
-              title="Kosongkan seluruh riwayat database Firestore"
+              className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40 font-mono text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all disabled:opacity-40"
+              title="Kosongkan seluruh log konsol Firestore"
             >
-              <Trash2 className="w-4 h-4 text-rose-600" />
-              <span>{isClearing ? "Mengosongkan..." : "Kosongkan Log DB"}</span>
+              <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+              <span>{isClearing ? "CLEARING..." : "CLEAR LOG CONSOLE"}</span>
             </button>
 
             <button
               type="button"
               disabled={isSimulating}
               onClick={handleAddNewTestScan}
-              className="px-4 py-2.5 rounded-2xl bg-[#0FA89B] hover:bg-[#0C897E] text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all disabled:opacity-50"
-              title="Simulasi 1 sampel scan baru"
+              className="px-3.5 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/50 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] disabled:opacity-50"
+              title="Simulasi 1 paket log scan baru"
             >
-              <PlusCircle className="w-4 h-4" />
-              <span>+ Uji Scan Baru</span>
+              <PlusCircle className="w-3.5 h-3.5 text-cyan-400" />
+              <span>+ EXECUTE TEST SCAN</span>
             </button>
           </div>
         </div>
 
-        {/* Clean Summary Metric Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-          <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs">
-            <span className="text-[10.5px] font-bold text-slate-500 block uppercase">Total Scan Terdaftar</span>
-            <span className="text-xl font-black text-slate-800 font-mono mt-0.5 block">
-              {scans.length} <span className="text-xs font-normal text-slate-500">Sesi</span>
+        {/* Live Metrics Telemetry Strip */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="bg-[#0B132B] p-3 rounded-xl border border-cyan-900/80">
+            <span className="text-[9.5px] text-slate-400 block uppercase font-mono">TOTAL STREAMED LOGS</span>
+            <span className="text-lg font-black text-cyan-400 font-mono">
+              {scans.length} <span className="text-xs text-slate-400 font-normal">NODES</span>
             </span>
-            <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">
-              ● Tersambung Realtime
-            </span>
+            <span className="text-[9px] text-emerald-400 block mt-0.5 font-mono">● SYNCED FIRESTORE DB</span>
           </div>
 
-          <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs">
-            <span className="text-[10.5px] font-bold text-slate-500 block uppercase">Tingkat Akurasi AI</span>
-            <span className="text-xl font-black text-[#0FA89B] font-mono mt-0.5 block">
-              {modelTelemetry?.accuracy !== undefined ? `${modelTelemetry.accuracy}%` : "94%"}
+          <div className="bg-[#0B132B] p-3 rounded-xl border border-cyan-900/80">
+            <span className="text-[9.5px] text-slate-400 block uppercase font-mono">MODEL A ACCURACY</span>
+            <span className="text-lg font-black text-emerald-400 font-mono">
+              {modelTelemetry?.accuracy !== undefined ? `${modelTelemetry.accuracy}%` : "94.0%"}
             </span>
-            <span className="text-[10px] text-slate-500 font-semibold block mt-0.5">
-              Engine SCIN ResNet-50
-            </span>
+            <span className="text-[9px] text-cyan-400 block mt-0.5 font-mono">SCIN RESNET-50 BACKBONE</span>
           </div>
 
-          <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs">
-            <span className="text-[10.5px] font-bold text-slate-500 block uppercase">Sensitivitas (Recall)</span>
-            <span className="text-xl font-black text-emerald-600 font-mono mt-0.5 block">
+          <div className="bg-[#0B132B] p-3 rounded-xl border border-cyan-900/80">
+            <span className="text-[9.5px] text-slate-400 block uppercase font-mono">SENSITIVITY (RECALL)</span>
+            <span className="text-lg font-black text-purple-400 font-mono">
               {modelTelemetry?.sensitivityRecall !== undefined ? `${modelTelemetry.sensitivityRecall}%` : "94.8%"}
             </span>
-            <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">
-              Standar Klinis Kemenkes
-            </span>
+            <span className="text-[9px] text-purple-300/80 block mt-0.5 font-mono">CLINICAL ZERO FN GOAL</span>
           </div>
 
-          <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs">
-            <span className="text-[10.5px] font-bold text-slate-500 block uppercase">Status Sesi Aktif</span>
-            <span className="text-xl font-black text-purple-600 font-mono mt-0.5 block">
-              {scans.filter(s => s.status === "VALID" || s.status === "CLAIMED").length} <span className="text-xs font-normal text-slate-500">Valid</span>
+          <div className="bg-[#0B132B] p-3 rounded-xl border border-cyan-900/80">
+            <span className="text-[9.5px] text-slate-400 block uppercase font-mono">ACTIVE DISTRIC NODE</span>
+            <span className="text-lg font-black text-amber-400 font-mono truncate block">
+              {selectedScan?.userDistrict || "Kebomas"}
             </span>
-            <span className="text-[10px] text-purple-600 font-semibold block mt-0.5">
-              Tervalidasi Otomatis
-            </span>
+            <span className="text-[9px] text-amber-300/80 block mt-0.5 font-mono">AZURE RAG GROUNDED</span>
           </div>
         </div>
       </div>
 
-      {/* ═══ 2. MAIN LOG CONTENT GRID ═══ */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Sesi Scan Realtime Terkini (5 cols) */}
+      {/* ═══ 2. MAIN LOG CONSOLE GRID ═══ */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Left Column: Live Terminal Stream Feed (5 cols) */}
         <div className="lg:col-span-5 space-y-3">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-sm font-black text-slate-800 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-[#0FA89B]" />
-              <span>Daftar Sesi Scan</span>
+            <h2 className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-cyan-400" />
+              <span>LOG EXECUTION STREAM</span>
             </h2>
-            <span className="text-[11px] font-mono text-slate-500 font-bold">
-              {scans.length} Terdaftar
+            <span className="text-[10.5px] text-slate-400 font-mono">
+              [LIMIT: 25 RECENT]
             </span>
           </div>
 
           {scans.length === 0 ? (
-            <div className="bg-white rounded-3xl p-8 text-center border border-slate-200/80 space-y-3">
-              <RefreshCw className="w-8 h-8 text-slate-400 animate-spin mx-auto" />
-              <p className="text-xs font-bold text-slate-600">Menunggu Data Scan Masuk dari Perangkat Mobile...</p>
-              <p className="text-[11px] text-slate-400">Lakukan scan di aplikasi mobile atau klik tombol + Uji Scan Baru.</p>
+            <div className="bg-[#070D1E] rounded-2xl p-8 text-center border border-cyan-950 space-y-3 font-mono">
+              <RefreshCw className="w-7 h-7 text-cyan-400 animate-spin mx-auto" />
+              <p className="text-xs font-bold text-slate-300">LISTENING FOR INCOMING BIOMETRIC FRAMES...</p>
+              <p className="text-[10px] text-slate-500">Perform scan on mobile device or click + EXECUTE TEST SCAN.</p>
             </div>
           ) : (
-            <div className="space-y-2.5 max-h-[720px] overflow-y-auto pr-1">
+            <div className="space-y-2 max-h-[720px] overflow-y-auto pr-1">
               {scans.map((scan) => {
                 const isSelected = selectedScan?.scanId === scan.scanId;
                 const actualConfidence = scan.azureVisionMetrics?.confidenceScore;
@@ -352,50 +343,50 @@ export const LiveScanLogsView: React.FC = () => {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     onClick={() => setSelectedScan(scan)}
-                    className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
+                    className={`p-3.5 rounded-xl border transition-all cursor-pointer font-mono space-y-2 ${
                       isSelected
-                        ? "bg-[#0FA89B]/5 border-[#0FA89B] shadow-sm ring-2 ring-[#0FA89B]/20"
-                        : "bg-white border-slate-200 hover:border-slate-300"
+                        ? "bg-cyan-950/40 border-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.15)] ring-1 ring-cyan-400/50"
+                        : "bg-[#070D1E] border-slate-800 hover:border-cyan-800/80"
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 font-bold text-slate-700">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 font-bold border border-cyan-800/80">
                         {scan.scanId}
                       </span>
-                      <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
+                      <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-cyan-500" />
                         {formatActualTime(scan.createdAt)}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between text-xs pt-0.5">
                       <div>
-                        <h3 className="text-xs font-bold text-slate-800 leading-tight">
+                        <h3 className="font-bold text-white tracking-tight">
                           {scan.userName}
                         </h3>
-                        <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1 mt-0.5">
-                          <MapPin className="w-3 h-3 text-[#0FA89B]" />
+                        <p className="text-[10.5px] text-slate-400 flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3 text-cyan-400" />
                           Kec. {scan.userDistrict}
                         </p>
                       </div>
 
                       <div className="text-right">
                         {scan.status === "SCANNING_IN_PROGRESS" ? (
-                          <span className="px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-700 border border-cyan-300 text-[10px] font-bold block animate-pulse">
-                            📸 Memindai ({scan.lastCapturedStep || "proses"})
+                          <span className="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40 text-[10px] font-bold block animate-pulse">
+                            📸 SCANNING FRAME ({scan.lastCapturedStep || "PROC"})
                           </span>
                         ) : scan.status === "CANCELLED" ? (
-                          <span className="px-2 py-0.5 rounded-md bg-red-50 text-red-700 border border-red-200 text-[10px] font-bold block">
-                            ✕ Dibatalkan
+                          <span className="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40 text-[10px] font-bold block">
+                            ✕ ABORTED
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold inline-flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                            Valid {formattedConfidence}
+                          <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold inline-flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                            VALID {formattedConfidence}
                           </span>
                         )}
-                        <span className="text-[10px] font-bold text-[#0FA89B] block mt-1 max-w-[150px] truncate">
-                          {scan.status === "SCANNING_IN_PROGRESS" ? "Proses Pengambilan Foto..." : scan.status === "CANCELLED" ? "Sesi Dibatalkan" : actualMenu || "Nasi Ayam Kari & Sayur"}
+                        <span className="text-[10px] font-bold text-cyan-300 block mt-1 max-w-[150px] truncate">
+                          {scan.status === "SCANNING_IN_PROGRESS" ? "Processing Frames..." : scan.status === "CANCELLED" ? "Aborted" : actualMenu || "Nasi Ayam Kari & Sayur"}
                         </span>
                       </div>
                     </div>
@@ -406,59 +397,59 @@ export const LiveScanLogsView: React.FC = () => {
           )}
         </div>
 
-        {/* Right Column: Inspector Details (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
+        {/* Right Column: Console Inspector Panel & Biometric Evidence (7 cols) */}
+        <div className="lg:col-span-7 space-y-3">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-sm font-black text-slate-800 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#0FA89B]" />
-              <span>Detail Hasil Skrining Biometrik</span>
+            <h2 className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+              <Code className="w-4 h-4 text-cyan-400" />
+              <span>CONSOLE INSPECTOR &amp; BIOMETRIC MATRIX</span>
             </h2>
             {selectedScan && (
-              <span className="text-[11px] font-mono text-[#0FA89B] font-bold bg-[#0FA89B]/10 px-2.5 py-0.5 rounded-full border border-[#0FA89B]/20">
+              <span className="text-[11px] font-mono text-cyan-300 bg-cyan-950 px-2.5 py-0.5 rounded border border-cyan-800/80">
                 {selectedScan.scanId}
               </span>
             )}
           </div>
 
           {!selectedScan ? (
-            <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/80 space-y-2">
-              <p className="text-xs font-bold text-slate-500">Pilih salah satu sesi scan di sebelah kiri untuk melihat rincian telemetri.</p>
+            <div className="bg-[#070D1E] rounded-2xl p-12 text-center border border-slate-800 space-y-2">
+              <p className="text-xs font-bold text-slate-400">Select a log node stream on the left to inspect raw telemetry.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-xs space-y-5">
-              {/* Beneficiary Header Card */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-50 to-emerald-50/50 border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-[#070D1E] rounded-2xl p-5 border border-cyan-900/60 shadow-xl space-y-5">
+              {/* Beneficiary Node Header */}
+              <div className="p-4 rounded-xl bg-[#0B132B] border border-cyan-900/80 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] text-white flex items-center justify-center font-black text-sm shadow-sm">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-600 to-teal-500 text-white flex items-center justify-center font-black text-base shadow-md">
                     {selectedScan.userName.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-slate-800 leading-tight">
+                    <h3 className="text-sm font-bold text-white leading-tight">
                       {selectedScan.userName}
                     </h3>
-                    <p className="text-[11.5px] text-slate-600 font-medium mt-0.5">
-                      Kec. <strong>{selectedScan.userDistrict}</strong> • {selectedScan.userAge || 9} Tahun • {selectedScan.userEmail || "Terdaftar"}
+                    <p className="text-[11px] text-cyan-300/90 mt-0.5">
+                      Kec. <strong>{selectedScan.userDistrict}</strong> • {selectedScan.userAge || 9} YO • {selectedScan.userEmail || "Registered"}
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[10.5px] font-extrabold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 inline-flex items-center gap-1 shadow-2xs">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    {selectedScan.status === "SCANNING_IN_PROGRESS" ? "PROSES SCAN" : selectedScan.status === "CANCELLED" ? "DIBATALKAN" : "STATUS: VALID"}
+                  <span className="text-[10px] font-bold px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    {selectedScan.status === "SCANNING_IN_PROGRESS" ? "SCANNING FRAME" : selectedScan.status === "CANCELLED" ? "ABORTED" : "STATUS: VALID"}
                   </span>
                 </div>
               </div>
 
               {/* ═══ 📸 BUKTI-BUKTI FOTO BIOMETRIK ═══ */}
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[11.5px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
-                    <Camera className="w-3.5 h-3.5 text-[#0FA89B]" />
-                    <span>Bukti Foto Biometrik Sesi ({selectedScan.scanId})</span>
+                  <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Camera className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>BIOMETRIC EVIDENCE MATRIX ({selectedScan.scanId})</span>
                   </h4>
-                  <span className="text-[10px] text-slate-500 font-medium">
-                    Penyimpanan: {selectedScan.blobUrls?.storageProvider || "Azure Secure Storage"}
+                  <span className="text-[9.5px] text-slate-500 font-mono">
+                    PROVIDER: {selectedScan.blobUrls?.storageProvider || "AZURE_BLOB_STORAGE"}
                   </span>
                 </div>
 
@@ -472,8 +463,8 @@ export const LiveScanLogsView: React.FC = () => {
                     return (
                       <>
                         {/* Photo 1: Wajah */}
-                        <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
-                          <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center">
+                        <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
+                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
                             {faceSrc && !imageErrorMap[`face_${selectedScan.scanId}`] ? (
                               <img
                                 src={faceSrc}
@@ -482,28 +473,28 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-emerald-500/10 via-[#0FA89B]/15 to-[#23B5A8]/20 flex flex-col items-center justify-center p-2 text-[#0FA89B]">
-                                <User className="w-7 h-7 mb-1 stroke-[1.8] text-[#0FA89B]" />
-                                <span className="text-[10.5px] font-extrabold text-slate-700">Profil Wajah</span>
-                                <span className="text-[9px] text-[#0FA89B] font-semibold bg-emerald-100/80 px-2 py-0.5 rounded-full mt-1">Biometrik Valid</span>
+                              <div className="w-full h-full bg-gradient-to-br from-emerald-950/40 via-cyan-950/60 to-teal-950/40 flex flex-col items-center justify-center p-2 text-cyan-400 border border-cyan-900/40">
+                                <User className="w-6 h-6 mb-1 stroke-[1.8] text-cyan-400" />
+                                <span className="text-[10px] font-bold text-slate-200">Profil Wajah</span>
+                                <span className="text-[8.5px] text-cyan-300 font-mono bg-cyan-950 px-1.5 py-0.5 rounded mt-1 border border-cyan-800/60">LIVE FRAME</span>
                               </div>
                             )}
                             {faceSrc && !imageErrorMap[`face_${selectedScan.scanId}`] && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Profil Wajah", url: faceSrc })}
-                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
+                                className="absolute bottom-1 right-1 p-1 rounded bg-black/70 text-white hover:bg-black cursor-pointer"
                               >
                                 <Maximize2 className="w-3 h-3" />
                               </button>
                             )}
                           </div>
-                          <span className="text-[10.5px] font-bold text-slate-700 block">1. Profile Wajah</span>
+                          <span className="text-[10px] font-bold text-slate-300 block font-mono">1. Face Profile</span>
                         </div>
 
                         {/* Photo 2: Mata Konjungtiva */}
-                        <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
-                          <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center">
+                        <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
+                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
                             {eyeSrc && !imageErrorMap[`eye_${selectedScan.scanId}`] ? (
                               <img
                                 src={eyeSrc}
@@ -512,28 +503,28 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-sky-500/10 via-cyan-500/15 to-teal-500/20 flex flex-col items-center justify-center p-2 text-cyan-600">
-                                <Eye className="w-7 h-7 mb-1 stroke-[1.8] text-cyan-600" />
-                                <span className="text-[10.5px] font-extrabold text-slate-700">Konjungtiva</span>
-                                <span className="text-[9px] text-cyan-700 font-semibold bg-cyan-100/80 px-2 py-0.5 rounded-full mt-1">Hb Level Scan</span>
+                              <div className="w-full h-full bg-gradient-to-br from-sky-950/40 via-cyan-950/60 to-teal-950/40 flex flex-col items-center justify-center p-2 text-sky-400 border border-cyan-900/40">
+                                <Eye className="w-6 h-6 mb-1 stroke-[1.8] text-sky-400" />
+                                <span className="text-[10px] font-bold text-slate-200">Konjungtiva</span>
+                                <span className="text-[8.5px] text-sky-300 font-mono bg-sky-950 px-1.5 py-0.5 rounded mt-1 border border-sky-800/60">Hb SCAN</span>
                               </div>
                             )}
                             {eyeSrc && !imageErrorMap[`eye_${selectedScan.scanId}`] && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Konjungtiva Sklera", url: eyeSrc })}
-                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
+                                className="absolute bottom-1 right-1 p-1 rounded bg-black/70 text-white hover:bg-black cursor-pointer"
                               >
                                 <Maximize2 className="w-3 h-3" />
                               </button>
                             )}
                           </div>
-                          <span className="text-[10.5px] font-bold text-slate-700 block">2. Mata Konjungtiva</span>
+                          <span className="text-[10px] font-bold text-slate-300 block font-mono">2. Conjunctiva</span>
                         </div>
 
                         {/* Photo 3: Tangan Turgor */}
-                        <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
-                          <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center">
+                        <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
+                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
                             {handSrc && !imageErrorMap[`hand_${selectedScan.scanId}`] ? (
                               <img
                                 src={handSrc}
@@ -542,28 +533,28 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-teal-500/10 via-emerald-500/15 to-green-500/20 flex flex-col items-center justify-center p-2 text-emerald-600">
-                                <Hand className="w-7 h-7 mb-1 stroke-[1.8] text-emerald-600" />
-                                <span className="text-[10.5px] font-extrabold text-slate-700">Turgor Tangan</span>
-                                <span className="text-[9px] text-emerald-700 font-semibold bg-emerald-100/80 px-2 py-0.5 rounded-full mt-1">Hidrasi Scan</span>
+                              <div className="w-full h-full bg-gradient-to-br from-emerald-950/40 via-teal-950/60 to-green-950/40 flex flex-col items-center justify-center p-2 text-emerald-400 border border-emerald-900/40">
+                                <Hand className="w-6 h-6 mb-1 stroke-[1.8] text-emerald-400" />
+                                <span className="text-[10px] font-bold text-slate-200">Turgor Tangan</span>
+                                <span className="text-[8.5px] text-emerald-300 font-mono bg-emerald-950 px-1.5 py-0.5 rounded mt-1 border border-emerald-800/60">HYDRATION</span>
                               </div>
                             )}
                             {handSrc && !imageErrorMap[`hand_${selectedScan.scanId}`] && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Telapak Tangan & Turgor", url: handSrc })}
-                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
+                                className="absolute bottom-1 right-1 p-1 rounded bg-black/70 text-white hover:bg-black cursor-pointer"
                               >
                                 <Maximize2 className="w-3 h-3" />
                               </button>
                             )}
                           </div>
-                          <span className="text-[10.5px] font-bold text-slate-700 block">3. Turgor Tangan</span>
+                          <span className="text-[10px] font-bold text-slate-300 block font-mono">3. Skin Turgor</span>
                         </div>
 
                         {/* Photo 4: Kuku Capillary */}
-                        <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
-                          <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center">
+                        <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
+                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
                             {nailSrc && !imageErrorMap[`nail_${selectedScan.scanId}`] ? (
                               <img
                                 src={nailSrc}
@@ -572,23 +563,23 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-amber-500/10 via-orange-500/15 to-yellow-500/20 flex flex-col items-center justify-center p-2 text-amber-600">
-                                <Sparkles className="w-7 h-7 mb-1 stroke-[1.8] text-amber-600" />
-                                <span className="text-[10.5px] font-extrabold text-slate-700">CRT Kuku</span>
-                                <span className="text-[9px] text-amber-700 font-semibold bg-amber-100/80 px-2 py-0.5 rounded-full mt-1">Kapiler Scan</span>
+                              <div className="w-full h-full bg-gradient-to-br from-amber-950/40 via-orange-950/60 to-yellow-950/40 flex flex-col items-center justify-center p-2 text-amber-400 border border-amber-900/40">
+                                <Sparkles className="w-6 h-6 mb-1 stroke-[1.8] text-amber-400" />
+                                <span className="text-[10px] font-bold text-slate-200">CRT Kuku</span>
+                                <span className="text-[8.5px] text-amber-300 font-mono bg-amber-950 px-1.5 py-0.5 rounded mt-1 border border-amber-800/60">CRT CAPILLARY</span>
                               </div>
                             )}
                             {nailSrc && !imageErrorMap[`nail_${selectedScan.scanId}`] && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Bantalan Kuku (CRT)", url: nailSrc })}
-                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer"
+                                className="absolute bottom-1 right-1 p-1 rounded bg-black/70 text-white hover:bg-black cursor-pointer"
                               >
                                 <Maximize2 className="w-3 h-3" />
                               </button>
                             )}
                           </div>
-                          <span className="text-[10.5px] font-bold text-slate-700 block">4. CRT Kuku</span>
+                          <span className="text-[10px] font-bold text-slate-300 block font-mono">4. Nail CRT</span>
                         </div>
                       </>
                     );
@@ -598,43 +589,43 @@ export const LiveScanLogsView: React.FC = () => {
 
               {/* 1. Clinical Telemetry Indicators */}
               <div className="space-y-2">
-                <h4 className="text-[11.5px] font-extrabold text-slate-600 uppercase tracking-wider">
-                  1. Indikator Fisik &amp; Hasil Analisis AI
+                <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">
+                  1. MODEL A VISION CLINICAL METRICS
                 </h4>
 
-                <div className="grid grid-cols-3 gap-2.5 text-xs">
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
-                    <span className="text-slate-500 text-[10.5px] font-medium block">Konjungtiva Mata</span>
-                    <span className="font-extrabold text-slate-800 block">
+                <div className="grid grid-cols-3 gap-2.5 text-xs font-mono">
+                  <div className="p-3 rounded-xl bg-[#0B132B] border border-cyan-900/60 space-y-1">
+                    <span className="text-slate-400 text-[10px] block">MATA KONJUNGTIVA</span>
+                    <span className="font-bold text-cyan-300 block">
                       {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
                     </span>
                     {selectedScan.azureVisionMetrics?.eyePallorScore !== undefined && (
-                      <span className="text-[9.5px] text-emerald-600 font-semibold block font-mono">
-                        Pallor Score: {selectedScan.azureVisionMetrics.eyePallorScore}
+                      <span className="text-[9.5px] text-emerald-400 font-mono block">
+                        Pallor: {selectedScan.azureVisionMetrics.eyePallorScore}
                       </span>
                     )}
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
-                    <span className="text-slate-500 text-[10.5px] font-medium block">CRT Bantalan Kuku</span>
-                    <span className="font-extrabold text-slate-800 block">
+                  <div className="p-3 rounded-xl bg-[#0B132B] border border-cyan-900/60 space-y-1">
+                    <span className="text-slate-400 text-[10px] block">CRT BANTALAN KUKU</span>
+                    <span className="font-bold text-cyan-300 block">
                       {selectedScan.azureVisionMetrics?.nailbedStatus || "Merah Muda Sehat"}
                     </span>
                     {selectedScan.azureVisionMetrics?.nailCapillaryScore !== undefined && (
-                      <span className="text-[9.5px] text-emerald-600 font-semibold block font-mono">
-                        Capillary Score: {selectedScan.azureVisionMetrics.nailCapillaryScore}
+                      <span className="text-[9.5px] text-emerald-400 font-mono block">
+                        Capillary: {selectedScan.azureVisionMetrics.nailCapillaryScore}
                       </span>
                     )}
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
-                    <span className="text-slate-500 text-[10.5px] font-medium block">Turgor Epidermal</span>
-                    <span className="font-extrabold text-slate-800 block">
+                  <div className="p-3 rounded-xl bg-[#0B132B] border border-cyan-900/60 space-y-1">
+                    <span className="text-slate-400 text-[10px] block">TURGOR EPIDERMAL</span>
+                    <span className="font-bold text-cyan-300 block">
                       {selectedScan.azureVisionMetrics?.skinTurgorStatus || "Elastis / Normal"}
                     </span>
                     {selectedScan.azureVisionMetrics?.skinTurgorScore !== undefined && (
-                      <span className="text-[9.5px] text-emerald-600 font-semibold block font-mono">
-                        Turgor Score: {selectedScan.azureVisionMetrics.skinTurgorScore}
+                      <span className="text-[9.5px] text-emerald-400 font-mono block">
+                        Turgor: {selectedScan.azureVisionMetrics.skinTurgorScore}
                       </span>
                     )}
                   </div>
@@ -644,43 +635,43 @@ export const LiveScanLogsView: React.FC = () => {
               {/* 2. Menu Recommendation MBG */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[11.5px] font-extrabold text-slate-600 uppercase tracking-wider">
-                    2. Rekomendasi Menu MBG Sesuai Kebutuhan Siswa
+                  <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">
+                    2. MODEL B LLM REASONING &amp; GROUNDED MENU
                   </h4>
-                  <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
-                    Akurasi Scan: {formatConfidence(selectedScan.azureVisionMetrics?.confidenceScore)}
+                  <span className="text-[10px] font-bold text-purple-300 bg-purple-950 px-2 py-0.5 rounded border border-purple-800/60 font-mono">
+                    CONFIDENCE: {formatConfidence(selectedScan.azureVisionMetrics?.confidenceScore)}
                   </span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#F0FDF8] border border-emerald-200/80 space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#0B132B] border border-emerald-800/60 space-y-3 font-mono">
                   <div className="flex items-center justify-between">
-                    <span className="text-[13.5px] font-black text-emerald-900 flex items-center gap-2">
-                      <Utensils className="w-4 h-4 text-[#0FA89B]" />
+                    <span className="text-xs font-bold text-emerald-300 flex items-center gap-2">
+                      <Utensils className="w-4 h-4 text-emerald-400" />
                       {selectedScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur"}
                     </span>
                     {selectedScan.recommendedMenu?.calories !== undefined && (
-                      <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-200 text-emerald-900 shadow-2xs">
+                      <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-600/60">
                         {selectedScan.recommendedMenu.calories} kkal
                       </span>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 text-[11px]">
-                    <div className="bg-white p-2.5 rounded-xl border border-emerald-100 text-center">
-                      <span className="text-slate-500 block text-[9.5px] font-medium">Protein Heme</span>
-                      <span className="font-extrabold text-slate-800">
-                        {selectedScan.recommendedMenu?.proteinGram !== undefined ? `${selectedScan.recommendedMenu.proteinGram} gram` : "31 gram"}
+                  <div className="grid grid-cols-3 gap-2 text-[10.5px]">
+                    <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
+                      <span className="text-slate-400 block text-[9px]">PROTEIN HEME</span>
+                      <span className="font-bold text-slate-100">
+                        {selectedScan.recommendedMenu?.proteinGram !== undefined ? `${selectedScan.recommendedMenu.proteinGram}g` : "31g"}
                       </span>
                     </div>
-                    <div className="bg-white p-2.5 rounded-xl border border-emerald-100 text-center">
-                      <span className="text-slate-500 block text-[9.5px] font-medium">Zat Besi (Fe)</span>
-                      <span className="font-extrabold text-slate-800">
-                        {selectedScan.recommendedMenu?.ironMg !== undefined ? `${selectedScan.recommendedMenu.ironMg} mg` : "6 mg"}
+                    <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
+                      <span className="text-slate-400 block text-[9px]">ZAT BESI (Fe)</span>
+                      <span className="font-bold text-slate-100">
+                        {selectedScan.recommendedMenu?.ironMg !== undefined ? `${selectedScan.recommendedMenu.ironMg}mg` : "6mg"}
                       </span>
                     </div>
-                    <div className="bg-white p-2.5 rounded-xl border border-emerald-100 text-center">
-                      <span className="text-slate-500 block text-[9.5px] font-medium">Pemenuhan AKG</span>
-                      <span className="font-extrabold text-emerald-700">
+                    <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
+                      <span className="text-slate-400 block text-[9px]">PEMENUHAN AKG</span>
+                      <span className="font-bold text-emerald-400">
                         {selectedScan.recommendedMenu?.akgPercentage !== undefined ? `${selectedScan.recommendedMenu.akgPercentage}% AKG` : "45% AKG"}
                       </span>
                     </div>
@@ -688,68 +679,50 @@ export const LiveScanLogsView: React.FC = () => {
 
                   {/* Questionnaire Context */}
                   {selectedScan.questionnaireAnswers && (
-                    <div className="pt-2 text-[11px] text-emerald-900 font-medium space-y-0.5 border-t border-emerald-200/60">
-                      <p>• <strong>Kuesioner Alergi:</strong> {selectedScan.questionnaireAnswers.alergi}</p>
-                      <p>• <strong>Nafsu Makan &amp; Aktivitas:</strong> {selectedScan.questionnaireAnswers.nafsuMakan} | {selectedScan.questionnaireAnswers.aktivitasFisik}</p>
+                    <div className="pt-2 text-[10px] text-emerald-200/90 font-mono space-y-0.5 border-t border-emerald-900/60">
+                      <p>• <strong>KUESIONER ALERGI:</strong> {selectedScan.questionnaireAnswers.alergi}</p>
+                      <p>• <strong>NAFSU MAKAN:</strong> {selectedScan.questionnaireAnswers.nafsuMakan} | <strong>AKTIVITAS:</strong> {selectedScan.questionnaireAnswers.aktivitasFisik}</p>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* 3. OPTIONAL RAW TECHNICAL TERMINAL LOG (COLLAPSIBLE FOR SIMPLE UI) */}
-              <div className="pt-2 border-t border-slate-100 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => setShowTechnicalLog(!showTechnicalLog)}
-                  className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-bold flex items-center justify-between transition-colors cursor-pointer"
-                >
-                  <span className="flex items-center gap-1.5">
-                    <Terminal className="w-3.5 h-3.5 text-[#0FA89B]" />
-                    <span>Log Teknis System (Terminal Inferensi)</span>
-                  </span>
-                  {showTechnicalLog ? (
-                    <ChevronUp className="w-4 h-4 text-slate-500" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-slate-500" />
-                  )}
-                </button>
+              {/* 3. RAW REALTIME EXECUTION CONSOLE FEED */}
+              <div className="space-y-1.5 pt-1">
+                <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>3. REALTIME PIPELINE STREAM LOGS</span>
+                  <span className="text-[9.5px] text-cyan-400 font-mono">CLAIM ID: {selectedScan.claimId}</span>
+                </h4>
 
-                {showTechnicalLog && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="p-3.5 rounded-2xl bg-[#070D1E] text-slate-200 font-mono text-[10.5px] space-y-1.5 max-h-52 overflow-y-auto border border-slate-800 leading-relaxed"
-                  >
-                    <p className="text-slate-400">
-                      [{formatActualTime(selectedScan.createdAt)}] ⚡ Sesi Scan {selectedScan.scanId} diterima dari Kec. {selectedScan.userDistrict} (User: {selectedScan.userName})
+                <div className="p-3.5 rounded-xl bg-[#030712] text-slate-200 font-mono text-[10.5px] space-y-1.5 max-h-56 overflow-y-auto border border-cyan-900/80 leading-relaxed shadow-inner">
+                  <p className="text-slate-400">
+                    [{formatActualTime(selectedScan.createdAt)}] ⚡ Frame Received: Sesi {selectedScan.scanId} from Node {selectedScan.userDistrict} (User: {selectedScan.userName})
+                  </p>
+                  <p className="text-cyan-400">
+                    [{formatActualTime(selectedScan.createdAt)}] 👁️ Model A ({selectedScan.azureVisionMetrics?.engineUsed || "AZURE_CUSTOM_VISION_SCIN"}): Conjunctiva Status = {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
+                    {selectedScan.azureVisionMetrics?.eyePallorScore !== undefined ? ` (Pallor Score: ${selectedScan.azureVisionMetrics.eyePallorScore})` : ""}
+                  </p>
+                  <p className="text-cyan-300">
+                    [{formatActualTime(selectedScan.createdAt)}] 💅 Model A: Nail CRT = {selectedScan.azureVisionMetrics?.nailbedStatus || "Normal Sehat"}
+                    {selectedScan.azureVisionMetrics?.nailCapillaryScore !== undefined ? ` (Capillary Score: ${selectedScan.azureVisionMetrics.nailCapillaryScore})` : ""}
+                  </p>
+                  <p className="text-purple-300">
+                    [{formatActualTime(selectedScan.createdAt)}] 🧠 Model B (MedQA Pediatric LLM): Risk Assessment = {selectedScan.azureVisionMetrics?.detectedDeficiencyRisk || "Normal Sehat"}
+                  </p>
+                  <p className="text-emerald-400">
+                    [{formatActualTime(selectedScan.createdAt)}] 📍 Azure RAG Grounding: Matched Local Commodities Kec. {selectedScan.userDistrict}
+                  </p>
+                  <p className="text-emerald-300">
+                    [{formatActualTime(selectedScan.createdAt)}] 🥗 Recommended Menu: {selectedScan.recommendedMenu?.menuTitle}
+                    {selectedScan.recommendedMenu?.calories !== undefined ? ` (${selectedScan.recommendedMenu.calories} kkal, Fe: ${selectedScan.recommendedMenu.ironMg}mg)` : ""}
+                  </p>
+                  {selectedScan.azureVisionMetrics?.confidenceScore !== undefined && (
+                    <p className="text-amber-400">
+                      [{formatActualTime(selectedScan.createdAt)}] 📊 Session Telemetry: Accuracy Confidence {formatConfidence(selectedScan.azureVisionMetrics.confidenceScore)}
+                      {modelTelemetry?.sensitivityRecall !== undefined ? ` | Model Recall: ${modelTelemetry.sensitivityRecall}%` : ""}
                     </p>
-                    <p className="text-cyan-400">
-                      [{formatActualTime(selectedScan.createdAt)}] 👁️ Model A ({selectedScan.azureVisionMetrics?.engineUsed || "AZURE_CUSTOM_VISION_SCIN"}): Konjungtiva {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
-                      {selectedScan.azureVisionMetrics?.eyePallorScore !== undefined ? ` (Pallor Score: ${selectedScan.azureVisionMetrics.eyePallorScore})` : ""}
-                    </p>
-                    <p className="text-cyan-300">
-                      [{formatActualTime(selectedScan.createdAt)}] 💅 Model A: CRT Kuku = {selectedScan.azureVisionMetrics?.nailbedStatus || "Normal Sehat"}
-                      {selectedScan.azureVisionMetrics?.nailCapillaryScore !== undefined ? ` (Capillary Score: ${selectedScan.azureVisionMetrics.nailCapillaryScore})` : ""}
-                    </p>
-                    <p className="text-purple-300">
-                      [{formatActualTime(selectedScan.createdAt)}] 🧠 Model B (MedQA Pediatric LLM): Risiko Terdeteksi = {selectedScan.azureVisionMetrics?.detectedDeficiencyRisk || "Normal Sehat"}
-                    </p>
-                    <p className="text-emerald-400">
-                      [{formatActualTime(selectedScan.createdAt)}] 📍 Grounding Pangan: Matched Komoditas Kec. {selectedScan.userDistrict}
-                    </p>
-                    <p className="text-emerald-300">
-                      [{formatActualTime(selectedScan.createdAt)}] 🥗 Menu Terpilih: {selectedScan.recommendedMenu?.menuTitle}
-                      {selectedScan.recommendedMenu?.calories !== undefined ? ` (${selectedScan.recommendedMenu.calories} kkal, Fe: ${selectedScan.recommendedMenu.ironMg}mg)` : ""}
-                    </p>
-                    {selectedScan.azureVisionMetrics?.confidenceScore !== undefined && (
-                      <p className="text-amber-400">
-                        [{formatActualTime(selectedScan.createdAt)}] 📊 Telemetry Sesi: Confidence {formatConfidence(selectedScan.azureVisionMetrics.confidenceScore)}
-                        {modelTelemetry?.sensitivityRecall !== undefined ? ` | Benchmark Recall: ${modelTelemetry.sensitivityRecall}%` : ""}
-                      </p>
-                    )}
-                  </motion.div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -758,9 +731,9 @@ export const LiveScanLogsView: React.FC = () => {
 
       {/* ═══ PHOTO LIGHTBOX MODAL ═══ */}
       {activePhotoModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0B132B] rounded-3xl p-4 max-w-lg w-full space-y-3 text-left border border-cyan-500/40 shadow-2xl">
-            <div className="flex items-center justify-between text-white border-b border-slate-800 pb-2">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#070D1E] rounded-2xl p-4 max-w-lg w-full space-y-3 text-left border border-cyan-500/50 shadow-2xl font-mono">
+            <div className="flex items-center justify-between text-white border-b border-cyan-900 pb-2">
               <h4 className="text-xs font-bold text-cyan-300 flex items-center gap-2">
                 <Camera className="w-4 h-4 text-cyan-400" />
                 <span>{activePhotoModal.title}</span>
@@ -768,12 +741,12 @@ export const LiveScanLogsView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActivePhotoModal(null)}
-                className="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center text-xs font-bold cursor-pointer"
+                className="w-7 h-7 rounded-lg bg-cyan-950 text-cyan-300 hover:text-white flex items-center justify-center text-xs font-bold cursor-pointer border border-cyan-800"
               >
                 ✕
               </button>
             </div>
-            <div className="rounded-2xl overflow-hidden bg-black flex items-center justify-center max-h-[70vh]">
+            <div className="rounded-xl overflow-hidden bg-black flex items-center justify-center max-h-[70vh] border border-cyan-900/60">
               <img src={activePhotoModal.url} alt={activePhotoModal.title} className="max-w-full max-h-[65vh] object-contain" />
             </div>
           </div>
