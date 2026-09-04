@@ -406,7 +406,7 @@ Timestamp: ${selectedScan.createdAt}
                         </div>
                       )}
 
-                      {scan.recommendedMenu?.menuTitle && (
+                      {scan.status !== "SCANNING_IN_PROGRESS" && scan.recommendedMenu?.menuTitle && (
                         <p className="text-white font-mono">
                           <span className="text-emerald-400 font-bold">[SUCCESS] [GEMINI_RAG_PIPELINE]</span> Menu Matched: {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
                         </p>
@@ -622,22 +622,39 @@ Timestamp: ${selectedScan.createdAt}
               </div>
 
               {/* RECOMMENDED MENU SUMMARY */}
-              <div className="p-3.5 rounded-xl bg-[#131C38] border border-emerald-900/80 space-y-2 text-[11px]">
-                <div className="flex items-center justify-between text-[#35CBC3] font-bold">
-                  <span className="flex items-center gap-1.5">
-                    <Utensils className="w-3.5 h-3.5 text-emerald-400" />
-                    {selectedScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Sop"}
-                  </span>
-                  <span className="text-[10px] text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
-                    {selectedScan.recommendedMenu?.calories || 680} kkal
-                  </span>
+              {selectedScan.status === "SCANNING_IN_PROGRESS" ? (
+                <div className="p-3.5 rounded-xl bg-[#131C38] border border-amber-900/60 space-y-1.5 text-[11px]">
+                  <div className="flex items-center justify-between text-amber-400 font-bold">
+                    <span className="flex items-center gap-1.5">
+                      <Utensils className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+                      ANALYSIS IN PROGRESS
+                    </span>
+                    <span className="text-[10px] text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-800 animate-pulse">
+                      STREAMING
+                    </span>
+                  </div>
+                  <p className="text-[10.5px] text-slate-400">
+                    Mengumpulkan frame biometrik &amp; jawaban kuesioner MedQA untuk kalkulasi menu RAG...
+                  </p>
                 </div>
-                <div className="grid grid-cols-3 gap-1.5 text-[10px] text-slate-300 text-center pt-1 border-t border-emerald-900/60">
-                  <div>Protein: <strong className="text-white">{selectedScan.recommendedMenu?.proteinGram || 31}g</strong></div>
-                  <div>Zat Besi: <strong className="text-white">{selectedScan.recommendedMenu?.ironMg || 6}mg</strong></div>
-                  <div>AKG: <strong className="text-emerald-400">{selectedScan.recommendedMenu?.akgPercentage || 45}%</strong></div>
+              ) : (
+                <div className="p-3.5 rounded-xl bg-[#131C38] border border-emerald-900/80 space-y-2 text-[11px]">
+                  <div className="flex items-center justify-between text-[#35CBC3] font-bold">
+                    <span className="flex items-center gap-1.5">
+                      <Utensils className="w-3.5 h-3.5 text-emerald-400" />
+                      {selectedScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Sop"}
+                    </span>
+                    <span className="text-[10px] text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                      {selectedScan.recommendedMenu?.calories || 680} kkal
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5 text-[10px] text-slate-300 text-center pt-1 border-t border-emerald-900/60">
+                    <div>Protein: <strong className="text-white">{selectedScan.recommendedMenu?.proteinGram || 31}g</strong></div>
+                    <div>Zat Besi: <strong className="text-white">{selectedScan.recommendedMenu?.ironMg || 6}mg</strong></div>
+                    <div>AKG: <strong className="text-emerald-400">{selectedScan.recommendedMenu?.akgPercentage || 45}%</strong></div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>

@@ -315,6 +315,7 @@ export class BiometricSyncService {
       userDistrict: params.userDistrict,
       userAge: params.userAge || 9,
       userEmail: params.userEmail,
+      photos: params.photos,
       blobUrls,
       azureVisionMetrics: azureMetrics,
       questionnaireAnswers: params.questionnaire,
@@ -330,7 +331,7 @@ export class BiometricSyncService {
       await setDoc(docRef, {
         ...record,
         syncedToFirebaseAt: serverTimestamp(),
-      });
+      }, { merge: true });
 
       // Update / Upsert latest user biometric profile in Firestore
       const profileRef = doc(db, this.COLLECTION_PROFILES, params.userId);
