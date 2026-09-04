@@ -424,11 +424,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               1. Google AI & Google Images Engine
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-              {/* Gemini API Key */}
+              {/* Azure OpenAI API Key */}
               <div className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-light-sea-green shrink-0" />
-                  <span className="font-bold text-[#2C3968] text-[11px]">Gemini AI API Key</span>
+                  <span className="font-bold text-[#2C3968] text-[11px]">Azure OpenAI API Key</span>
                 </div>
                 {isAuthenticated && isSuperAdmin ? (
                   <input
@@ -440,7 +440,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 ) : (
                   <code className="text-[10px] text-[#64748b] font-mono block truncate">{maskKey(geminiApiKey || "NOT_SET")}</code>
                 )}
-                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 self-start">● Gemini 1.5 Flash Aktif</span>
+                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 self-start">● Azure OpenAI GPT-4o Aktif</span>
               </div>
 
               {/* SerpApi Key */}
@@ -639,7 +639,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center shrink-0"><Sparkles className="w-5 h-5" /></div>
-          <div className="text-[12px]"><h4 className="font-bold text-[#2C3968]">AI Engine</h4><p className="text-[11px] text-[#64748b]">Gemini 1.5 Flash</p><span className="text-[10px] font-bold text-emerald-700">● Aktif</span></div>
+          <div className="text-[12px]"><h4 className="font-bold text-[#2C3968]">AI Engine</h4><p className="text-[11px] text-[#64748b]">Azure OpenAI GPT-4o</p><span className="text-[10px] font-bold text-emerald-700">● Aktif</span></div>
         </div>
         <div className="bg-white rounded-3xl border border-[#e2e8f0] shadow-xs p-5 flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-green-tint text-ford-blue flex items-center justify-center shrink-0"><Database className="w-5 h-5" /></div>
@@ -696,7 +696,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             { label: "Instansi", value: "ginofest 2026" },
             { label: "Tahun Anggaran", value: "TA 2026/2027" },
             { label: "Framework", value: "Next.js 15 + React 19" },
-            { label: "AI Model", value: "Gemini 1.5 Flash" },
+            { label: "AI Model", value: "Azure OpenAI GPT-4o" },
             { label: "Database", value: "Cloud Firestore" },
             { label: "Hosting", value: "Firebase App Hosting" },
           ].map((item, idx) => (

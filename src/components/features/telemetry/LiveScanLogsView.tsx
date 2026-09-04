@@ -48,7 +48,7 @@ export const LiveScanLogsView: React.FC = () => {
     const timeStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     setTimeout(() => {
       const isDbOk = !!db;
-      const diagnosticLine = `[${timeStr}] [INFO] [SYSTEM_DIAGNOSTICS] Firebase DB: ${isDbOk ? "CONNECTED (OK)" : "OFFLINE"} | Azure Blob Storage: ACTIVE (stgscanginofest26) | Azure Custom Vision: ONLINE (v2.6) | Gemini 2.0 RAG: GROUNDED (OK) | System Health: 100% OPERATIONAL`;
+      const diagnosticLine = `[${timeStr}] [INFO] [SYSTEM_DIAGNOSTICS] Firebase DB: ${isDbOk ? "CONNECTED (OK)" : "OFFLINE"} | Azure Blob Storage: ACTIVE (stgscanginofest26) | Azure Custom Vision: ONLINE (v2.6) | Azure OpenAI RAG: GROUNDED (OK) | System Health: 100% OPERATIONAL`;
       setSystemCheckLog(diagnosticLine);
       setIsCheckingServices(false);
     }, 350);
@@ -290,7 +290,7 @@ export const LiveScanLogsView: React.FC = () => {
               disabled={isCheckingServices}
               onClick={handleRunSystemDiagnostics}
               className="px-3.5 py-1.5 rounded-xl bg-[#1E2950] hover:bg-[#2C3968] text-[#35CBC3] border border-[#35CBC3]/50 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(53,203,195,0.2)] disabled:opacity-50"
-              title="Periksa status konektivitas Firebase DB, Azure Storage & Gemini AI"
+              title="Periksa status konektivitas Firebase DB, Azure Storage & Azure OpenAI"
             >
               <Activity className="w-3.5 h-3.5 text-[#35CBC3]" />
               <span>{isCheckingServices ? "CHECKING..." : "CHECK SERVICES"}</span>

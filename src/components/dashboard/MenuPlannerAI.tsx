@@ -74,7 +74,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
                 AI Menu Planner & Commodity Cost Optimizer
                 <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                  <Sparkles className="w-3 h-3 text-amber-500" /> Gemini AI Engine
+                  <Sparkles className="w-3 h-3 text-amber-500" /> Azure OpenAI Engine
                 </span>
               </h2>
             </div>

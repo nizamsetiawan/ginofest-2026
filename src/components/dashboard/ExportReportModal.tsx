@@ -194,7 +194,7 @@ export const ExportReportModal: React.FC<ExportReportModalProps> = ({
                 <p className="text-[11px] text-slate-500">Gresik, {new Date().toLocaleDateString("id-ID")}</p>
                 <p className="font-bold text-slate-900 mt-1">Tim Ahli Gizi & AI Kcal</p>
                 <div className="h-12 flex items-center justify-center text-emerald-600 font-mono text-[10px]">
-                  ✓ Verified by Gemini AI Engine
+                  ✓ Verified by Azure OpenAI Engine
                 </div>
                 <p className="font-semibold text-slate-800">Koordinator Kcal Pemkab</p>
                 <p className="text-[10px] text-slate-400">ID Dokumen: KCAL-2026-MBG-094</p>

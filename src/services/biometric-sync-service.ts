@@ -322,8 +322,8 @@ export class BiometricSyncService {
       {
         timestamp: nowTimeStr,
         level: "SUCCESS",
-        module: "GEMINI_RAG_ENGINE",
-        message: `Gemini 2.0 Flash RAG Engine matched clinical profile for Kec. ${params.userDistrict} → ${menuTitle} (${finalCalories} kkal, Fe: ${finalIron}mg)`,
+        module: "AZURE_OPENAI_RAG_ENGINE" as any,
+        message: `Azure OpenAI GPT-4o RAG Engine matched clinical profile for Kec. ${params.userDistrict} → ${menuTitle} (${finalCalories} kkal, Fe: ${finalIron}mg)`,
       },
     ];
 

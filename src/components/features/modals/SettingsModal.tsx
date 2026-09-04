@@ -115,7 +115,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-[#64748b]">
-                Menggunakan <strong>Google Gemini 1.5 Flash</strong> dengan teknik Retrieval-Augmented Generation (RAG) 4 master dataset Kabupaten Gresik.
+                Menggunakan <strong>Azure OpenAI GPT-4o</strong> dengan teknik Retrieval-Augmented Generation (RAG) 4 master dataset Kabupaten Gresik.
               </p>
             </div>
 

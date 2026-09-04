@@ -1328,7 +1328,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
             <div className="flex items-center gap-2.5 text-purple-300">
               <Cpu className="w-4 h-4 text-purple-300 animate-pulse shrink-0" />
-              <span>Gemini 2.0 RAG Menu Precision...</span>
+              <span>Azure OpenAI RAG Menu Precision...</span>
             </div>
           </div>
         </div>

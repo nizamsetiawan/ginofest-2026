@@ -766,7 +766,7 @@ export const RAGKnowledgeBaseView: React.FC<RAGKnowledgeBaseViewProps> = ({ onBa
         updateTimestamp();
         showToast(`✓ Berhasil generate 5 Menu Baru AI! Total sekarang: ${updatedRecipes.length} menu (Tersimpan ke Cloud Firestore).`);
       } else {
-        showToast("Gemini AI belum menghasilkan menu baru. Silakan coba lagi.");
+        showToast("Azure OpenAI belum menghasilkan menu baru. Silakan coba lagi.");
       }
     } catch (err) {
       showToast("Gagal melakukan generate menu makanan AI.");
