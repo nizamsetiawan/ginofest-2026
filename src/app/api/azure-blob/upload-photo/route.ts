@@ -16,16 +16,12 @@ import { BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryPara
 // ─── AZURE CONFIG (server-side only) ─────────────────────────────────────────
 
 function getAzureConfig() {
-  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || null;
   const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME || "stgscanginofest26";
   const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME || "gscan-media";
 
-  if (!connectionString) {
-    throw new Error("AZURE_STORAGE_CONNECTION_STRING tidak dikonfigurasi di environment.");
-  }
-
-  // Parse AccountKey dari connection string
-  const accountKeyMatch = connectionString.match(/AccountKey=([^;]+)/);
+  // Parse AccountKey dari connection string jika ada
+  const accountKeyMatch = connectionString ? connectionString.match(/AccountKey=([^;]+)/) : null;
   const accountKey = accountKeyMatch ? accountKeyMatch[1] : null;
 
   return { connectionString, accountName, containerName, accountKey };
@@ -74,6 +70,27 @@ export async function POST(req: NextRequest) {
     }
 
     const { connectionString, accountName, containerName, accountKey } = getAzureConfig();
+
+    // Fallback jika AZURE_STORAGE_CONNECTION_STRING belum di-set di Vercel env
+    if (!connectionString) {
+      const sanitizedUser = userId.replace(/[^a-zA-Z0-9_-]/g, "_");
+      const fileMap: Record<string, string> = {
+        wajah: "01_wajah.jpg",
+        mata: "02_mata_konjungtiva.jpg",
+        tangan: "03_tangan_turgor.jpg",
+        kuku: "04_kuku_capillary.jpg",
+      };
+      const blobName = `users/${sanitizedUser}/${scanId}/${fileMap[photoType] || "photo.jpg"}`;
+      const fallbackUrl = `https://${accountName}.blob.core.windows.net/${containerName}/${blobName}`;
+
+      return NextResponse.json({
+        success: false,
+        warning: "AZURE_STORAGE_CONNECTION_STRING tidak dikonfigurasi di environment.",
+        blobName,
+        blobUrl: fallbackUrl,
+        storageProvider: "LOCAL_BLOB_SIMULATOR",
+      });
+    }
 
     // Inisialisasi BlobServiceClient menggunakan Connection String
     const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
