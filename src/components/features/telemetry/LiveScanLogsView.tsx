@@ -231,15 +231,15 @@ export const LiveScanLogsView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5 font-mono select-none pb-12 bg-[#050A17] text-slate-100 p-4 sm:p-6 rounded-3xl border border-cyan-500/30 shadow-[0_0_50px_rgba(0,240,255,0.08)]">
+    <div className="space-y-5 font-mono select-none pb-12 bg-[#090D18] text-slate-100 p-4 sm:p-6 rounded-3xl border border-[#35CBC3]/30 shadow-[0_0_50px_rgba(53,203,195,0.08)]">
       {/* ═══ 1. LIVE CONSOLE TERMINAL HEADER ═══ */}
-      <div className="bg-[#070D1E] p-4 sm:p-5 rounded-2xl border border-cyan-500/40 shadow-inner space-y-4">
+      <div className="bg-[#131C38] p-4 sm:p-5 rounded-2xl border border-[#1E2950] shadow-inner space-y-4">
         {/* Terminal Title Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <Terminal className="w-5 h-5 text-cyan-400 animate-pulse" />
-              <h1 className="text-sm font-black tracking-wider text-cyan-300 uppercase">
+              <Terminal className="w-5 h-5 text-[#35CBC3] animate-pulse" />
+              <h1 className="text-sm font-black tracking-wider text-[#35CBC3] uppercase">
                 G-SCAN REALTIME AI LOG CONSOLE
               </h1>
             </div>
@@ -275,10 +275,10 @@ export const LiveScanLogsView: React.FC = () => {
               type="button"
               disabled={isSimulating}
               onClick={handleAddNewTestScan}
-              className="px-3.5 py-1.5 rounded-xl bg-cyan-950/90 hover:bg-cyan-900 text-cyan-300 border border-cyan-700 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] disabled:opacity-50"
+              className="px-3.5 py-1.5 rounded-xl bg-[#1E2950] hover:bg-[#2C3968] text-[#35CBC3] border border-[#35CBC3]/50 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(53,203,195,0.2)] disabled:opacity-50"
               title="Periksa status konektivitas Firebase DB, Azure Storage & Gemini AI"
             >
-              <Activity className="w-3.5 h-3.5 text-cyan-400" />
+              <Activity className="w-3.5 h-3.5 text-[#35CBC3]" />
               <span>CHECK SERVICES</span>
             </button>
           </div>
@@ -290,8 +290,8 @@ export const LiveScanLogsView: React.FC = () => {
         {/* Left Column: Live Terminal Stream Feed (5 cols) */}
         <div className="lg:col-span-5 space-y-3">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-cyan-400" />
+            <h2 className="text-xs font-bold text-[#35CBC3] uppercase tracking-wider flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-[#35CBC3]" />
               <span>LOG EXECUTION STREAM</span>
             </h2>
             <span className="text-[10.5px] text-slate-400 font-mono">
@@ -300,8 +300,8 @@ export const LiveScanLogsView: React.FC = () => {
           </div>
 
           {scans.length === 0 ? (
-            <div className="bg-[#070D1E] rounded-2xl p-8 text-center border border-cyan-950 space-y-3 font-mono">
-              <RefreshCw className="w-7 h-7 text-cyan-400 animate-spin mx-auto" />
+            <div className="bg-[#131C38] rounded-2xl p-8 text-center border border-[#1E2950] space-y-3 font-mono">
+              <RefreshCw className="w-7 h-7 text-[#35CBC3] animate-spin mx-auto" />
               <p className="text-xs font-bold text-slate-300">LISTENING FOR INCOMING BIOMETRIC FRAMES...</p>
               <p className="text-[10px] text-slate-500">Perform scan on mobile device or click + EXECUTE TEST SCAN.</p>
             </div>
@@ -321,16 +321,16 @@ export const LiveScanLogsView: React.FC = () => {
                     onClick={() => setSelectedScan(scan)}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer font-mono space-y-2 ${
                       isSelected
-                        ? "bg-cyan-950/40 border-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.15)] ring-1 ring-cyan-400/50"
-                        : "bg-[#070D1E] border-slate-800 hover:border-cyan-800/80"
+                        ? "bg-[#131C38] border-[#35CBC3] shadow-[0_0_15px_rgba(53,203,195,0.2)] ring-1 ring-[#35CBC3]/50"
+                        : "bg-[#090D18] border-[#1E2950] hover:border-[#35CBC3]/60"
                     }`}
                   >
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 font-bold border border-cyan-800/80">
+                      <span className="px-2 py-0.5 rounded bg-[#090D18] text-[#35CBC3] font-bold border border-[#1E2950]">
                         {scan.scanId}
                       </span>
                       <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-cyan-500" />
+                        <Clock className="w-3 h-3 text-[#35CBC3]" />
                         {formatActualTime(scan.createdAt)}
                       </span>
                     </div>
@@ -341,7 +341,7 @@ export const LiveScanLogsView: React.FC = () => {
                           {scan.userName}
                         </h3>
                         <p className="text-[10.5px] text-slate-400 flex items-center gap-1 mt-0.5">
-                          <MapPin className="w-3 h-3 text-cyan-400" />
+                          <MapPin className="w-3 h-3 text-[#35CBC3]" />
                           Kec. {scan.userDistrict}
                         </p>
                       </div>
@@ -360,7 +360,7 @@ export const LiveScanLogsView: React.FC = () => {
                             [VALID: {formattedConfidence}]
                           </span>
                         )}
-                        <span className="text-[10px] font-bold text-cyan-300 block mt-1 max-w-[150px] truncate">
+                        <span className="text-[10px] font-bold text-[#35CBC3] block mt-1 max-w-[150px] truncate">
                           {scan.status === "SCANNING_IN_PROGRESS" ? "Processing Frames..." : scan.status === "CANCELLED" ? "Aborted" : actualMenu || "Nasi Ayam Kari & Sayur"}
                         </span>
                       </div>
@@ -375,34 +375,34 @@ export const LiveScanLogsView: React.FC = () => {
         {/* Right Column: Console Inspector Panel & Biometric Evidence (7 cols) */}
         <div className="lg:col-span-7 space-y-3">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-              <Code className="w-4 h-4 text-cyan-400" />
+            <h2 className="text-xs font-bold text-[#35CBC3] uppercase tracking-wider flex items-center gap-2">
+              <Code className="w-4 h-4 text-[#35CBC3]" />
               <span>CONSOLE INSPECTOR &amp; BIOMETRIC MATRIX</span>
             </h2>
             {selectedScan && (
-              <span className="text-[11px] font-mono text-cyan-300 bg-cyan-950 px-2.5 py-0.5 rounded border border-cyan-800/80">
+              <span className="text-[11px] font-mono text-[#35CBC3] bg-[#131C38] px-2.5 py-0.5 rounded border border-[#1E2950]">
                 {selectedScan.scanId}
               </span>
             )}
           </div>
 
           {!selectedScan ? (
-            <div className="bg-[#070D1E] rounded-2xl p-12 text-center border border-slate-800 space-y-2">
+            <div className="bg-[#131C38] rounded-2xl p-12 text-center border border-[#1E2950] space-y-2">
               <p className="text-xs font-bold text-slate-400">Select a log node stream on the left to inspect raw telemetry.</p>
             </div>
           ) : (
-            <div className="bg-[#070D1E] rounded-2xl p-5 border border-cyan-900/60 shadow-xl space-y-5">
+            <div className="bg-[#131C38] rounded-2xl p-5 border border-[#1E2950] shadow-xl space-y-5">
               {/* Beneficiary Node Header */}
-              <div className="p-4 rounded-xl bg-[#0B132B] border border-cyan-900/80 flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-[#090D18] border border-[#1E2950] flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-600 to-teal-500 text-white flex items-center justify-center font-black text-base shadow-md">
+                  <div className="w-11 h-11 rounded-xl bg-[#1E2950] text-[#35CBC3] flex items-center justify-center font-black text-base border border-[#35CBC3]/40 shadow-md">
                     {selectedScan.userName.charAt(0)}
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-white leading-tight">
                       {selectedScan.userName}
                     </h3>
-                    <p className="text-[11px] text-cyan-300/90 mt-0.5">
+                    <p className="text-[11px] text-[#35CBC3] mt-0.5">
                       Kec. <strong>{selectedScan.userDistrict}</strong> • {selectedScan.userAge || 9} YO • {selectedScan.userEmail || "Registered"}
                     </p>
                   </div>
