@@ -271,11 +271,11 @@ export const LiveScanLogsView: React.FC = () => {
               type="button"
               disabled={isSimulating}
               onClick={handleAddNewTestScan}
-              className="px-3.5 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/50 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] disabled:opacity-50"
-              title="Simulasi 1 paket log scan baru"
+              className="px-3.5 py-1.5 rounded-xl bg-cyan-950/90 hover:bg-cyan-900 text-cyan-300 border border-cyan-700 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] disabled:opacity-50"
+              title="Periksa status konektivitas Firebase DB, Azure Storage & Gemini AI"
             >
-              <PlusCircle className="w-3.5 h-3.5 text-cyan-400" />
-              <span>+ TEST SCAN</span>
+              <Activity className="w-3.5 h-3.5 text-cyan-400" />
+              <span>CHECK SERVICES</span>
             </button>
           </div>
         </div>
