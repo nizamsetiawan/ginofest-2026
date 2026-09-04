@@ -26,7 +26,8 @@ import {
   recordCitizenSessionLog,
   verifyCitizenEmailAndDistrict,
   resetCitizenPasswordInFirestore,
-  updateCitizenDistrictInFirestore
+  updateCitizenDistrictInFirestore,
+  updateCitizenProfileInFirestore
 } from "@/services/firebase-service";
 
 // Auth & Onboarding Components
@@ -84,6 +85,7 @@ export const CitizenMobileApp: React.FC = () => {
   const [regPassword, setRegPassword] = useState("");
   const [regConfirmPassword, setRegConfirmPassword] = useState("");
   const [regDistrict, setRegDistrict] = useState("");
+  const [regAge, setRegAge] = useState("");
   const [showRegPassword, setShowRegPassword] = useState(false);
   const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
   const [agreeRegPrivacy, setAgreeRegPrivacy] = useState(true);
@@ -481,6 +483,7 @@ export const CitizenMobileApp: React.FC = () => {
       errors.email = "Format email tidak valid";
     }
     if (!regDistrict) errors.district = "Pilih kecamatan domisili Anda";
+    if (!regAge) errors.age = "Pilih usia anak (1-17 tahun)";
     if (!regPassword || regPassword.length < 6) errors.password = "Kata sandi minimal 6 karakter";
 
     if (Object.keys(errors).length > 0) {
@@ -493,6 +496,7 @@ export const CitizenMobileApp: React.FC = () => {
       fullName: regFullName.trim(),
       email: regEmail.trim(),
       district: regDistrict,
+      age: Number(regAge) || 9,
       password: regPassword,
       role: "masyarakat",
       createdAtIso: new Date().toISOString(),
@@ -506,6 +510,7 @@ export const CitizenMobileApp: React.FC = () => {
       setRegFullName("");
       setRegEmail("");
       setRegDistrict("");
+      setRegAge("");
       setRegPassword("");
       setCurrentScreen("login");
     } else {
@@ -514,14 +519,22 @@ export const CitizenMobileApp: React.FC = () => {
   };
 
   const handleUpdateDistrict = async (newDistrict: string) => {
+    await handleUpdateProfile({ district: newDistrict });
+  };
+
+  const handleUpdateProfile = async (updates: { district?: string; age?: number }) => {
     if (!citizenUser) return;
-    const updatedUser = { ...citizenUser, district: newDistrict };
+    const updatedUser: CitizenUser = {
+      ...citizenUser,
+      ...(updates.district ? { district: updates.district } : {}),
+      ...(updates.age !== undefined ? { age: updates.age } : {}),
+    };
     setCitizenUser(updatedUser);
     if (typeof window !== "undefined") {
       localStorage.setItem("gscan_citizen_session", JSON.stringify(updatedUser));
     }
     if (citizenUser.email) {
-      await updateCitizenDistrictInFirestore(citizenUser.email, newDistrict);
+      await updateCitizenProfileInFirestore(citizenUser.email, updates);
     }
   };
 
@@ -930,6 +943,8 @@ export const CitizenMobileApp: React.FC = () => {
                 setRegEmail={setRegEmail}
                 regDistrict={regDistrict}
                 setRegDistrict={setRegDistrict}
+                regAge={regAge}
+                setRegAge={setRegAge}
                 regPassword={regPassword}
                 setRegPassword={setRegPassword}
                 showRegPassword={showRegPassword}
@@ -1053,6 +1068,7 @@ export const CitizenMobileApp: React.FC = () => {
                       setActiveTab={setActiveTab}
                       onLogout={handleCitizenLogout}
                       onUpdateDistrict={handleUpdateDistrict}
+                      onUpdateProfile={handleUpdateProfile}
                     />
                   </motion.div>
                 )}

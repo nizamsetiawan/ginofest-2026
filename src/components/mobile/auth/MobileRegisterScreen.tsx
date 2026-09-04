@@ -21,6 +21,8 @@ interface MobileRegisterScreenProps {
   setRegEmail: (val: string) => void;
   regDistrict: string;
   setRegDistrict: (val: string) => void;
+  regAge: string;
+  setRegAge: (val: string) => void;
   regPassword: string;
   setRegPassword: (val: string) => void;
   showRegPassword: boolean;
@@ -41,6 +43,8 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
   setRegEmail,
   regDistrict,
   setRegDistrict,
+  regAge,
+  setRegAge,
   regPassword,
   setRegPassword,
   showRegPassword,
@@ -180,6 +184,33 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             </select>
             {fieldErrors.district && (
               <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.district}</p>
+            )}
+          </div>
+
+          {/* 4. Usia Anak (Tahun) */}
+          <div className="space-y-1">
+            <label className="text-[11.5px] font-bold text-ford-blue block">
+              Usia Anak (Tahun) <span className="text-brand-red">*</span>
+            </label>
+            <select
+              value={regAge}
+              onChange={(e) => {
+                setRegAge(e.target.value);
+                if (fieldErrors.age) setFieldErrors((p) => ({ ...p, age: "" }));
+              }}
+              className={`w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all appearance-none cursor-pointer ${
+                fieldErrors.age ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+              }`}
+            >
+              <option value="">-- Pilih Usia Anak (1-17 Tahun) --</option>
+              {Array.from({ length: 17 }, (_, i) => i + 1).map((ageNum) => (
+                <option key={ageNum} value={ageNum}>
+                  {ageNum} Tahun (Standar AKG &amp; DermNet)
+                </option>
+              ))}
+            </select>
+            {fieldErrors.age && (
+              <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.age}</p>
             )}
           </div>
 

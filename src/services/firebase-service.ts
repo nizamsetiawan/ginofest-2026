@@ -923,6 +923,13 @@ export async function saveComplaintToFirestore(complaint: Omit<ComplaintRecord, 
 }
 
 export async function updateCitizenDistrictInFirestore(email: string, district: string): Promise<{ success: boolean; error?: string }> {
+  return updateCitizenProfileInFirestore(email, { district });
+}
+
+export async function updateCitizenProfileInFirestore(
+  email: string,
+  updates: { district?: string; age?: number }
+): Promise<{ success: boolean; error?: string }> {
   try {
     const colRef = collection(db, "kcal_masyarakat");
     const q = query(colRef, where("email", "==", email.trim().toLowerCase()));
@@ -933,14 +940,18 @@ export async function updateCitizenDistrictInFirestore(email: string, district: 
     }
 
     const docId = snap.docs[0].id;
-    await setDoc(doc(db, "kcal_masyarakat", docId), {
-      district: district,
-      updatedAtIso: new Date().toISOString(),
-    }, { merge: true });
+    await setDoc(
+      doc(db, "kcal_masyarakat", docId),
+      {
+        ...updates,
+        updatedAtIso: new Date().toISOString(),
+      },
+      { merge: true }
+    );
 
     return { success: true };
   } catch (err: any) {
-    console.error("Gagal update domisili:", err);
+    console.error("Gagal update profil warga:", err);
     return { success: false, error: err.message };
   }
 }
@@ -996,6 +1007,7 @@ export interface CitizenAccountRecord {
   email: string;
   phone?: string;
   district?: string;
+  age?: number;
   password?: string;
   role: "masyarakat";
   avatarBg?: string;
