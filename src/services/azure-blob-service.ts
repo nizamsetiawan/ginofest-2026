@@ -120,10 +120,10 @@ export class AzureBlobService {
         : Promise.resolve(null),
     ]);
 
-    const faceBlobUrl = faceUrl || fallbacks.face;
-    const eyeBlobUrl = eyeUrl || fallbacks.eye;
-    const handBlobUrl = handUrl || fallbacks.hand;
-    const nailBlobUrl = nailUrl || fallbacks.nail;
+    const faceBlobUrl = faceUrl || photos.faceBase64 || "";
+    const eyeBlobUrl = eyeUrl || photos.eyeBase64 || "";
+    const handBlobUrl = handUrl || photos.handBase64 || "";
+    const nailBlobUrl = nailUrl || photos.nailBase64 || "";
 
     // Tentukan provider: jika minimal 1 sukses → AZURE_BLOB_STORAGE
     const anyUploaded = [faceUrl, eyeUrl, handUrl, nailUrl].some((u) => u !== null);
@@ -132,7 +132,7 @@ export class AzureBlobService {
       : "LOCAL_BLOB_SIMULATOR";
 
     if (!anyUploaded) {
-      console.warn("[AzureBlob] Semua upload gagal, menggunakan URL simulasi. Cek AZURE_STORAGE_CONNECTION_STRING.");
+      console.warn("[AzureBlob] Upload ke Azure tidak aktif / gagal. Menggunakan data foto lokal / visual fallback.");
     } else {
       console.log(`[AzureBlob] Upload sukses: ${[faceUrl, eyeUrl, handUrl, nailUrl].filter(Boolean).length}/4 foto`);
     }
