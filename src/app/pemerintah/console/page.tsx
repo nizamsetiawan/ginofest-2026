@@ -439,22 +439,22 @@ Timestamp: ${selectedScan.createdAt}
                         <span className="text-slate-400">[INFO]</span> <span className="text-slate-400">[CLIENT_CAMERA_INIT]</span> Mobile device camera stream connected (1280x720 30fps)
                       </p>
 
-                      {(scan.photos?.faceBase64 || scan.blobUrls?.faceBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED" || scan.azureVisionMetrics) && (
+                      {(scan.photos?.faceBase64 || scan.blobUrls?.faceBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED") && (
                         <p className="text-white">
                           <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 1/4 (Face Profile) | Latency: 118ms | Payload: {scan.photos?.faceBase64 ? Math.round((scan.photos.faceBase64.length * 0.75) / 1024) : 48}KB | SCIN Vitality Score: {scan.azureVisionMetrics?.facialVitalityScore !== undefined ? scan.azureVisionMetrics.facialVitalityScore : "Processing..."}
                         </p>
                       )}
-                      {(scan.photos?.eyeBase64 || scan.blobUrls?.eyeBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED" || scan.azureVisionMetrics) && (
+                      {(scan.photos?.eyeBase64 || scan.blobUrls?.eyeBlobUrl || (scan.status !== "SCANNING_IN_PROGRESS" && scan.azureVisionMetrics?.eyeConjunctivaStatus)) && (
                         <p className="text-white">
                           <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 2/4 (Conjunctiva Sclera) | Latency: 135ms | Payload: {scan.photos?.eyeBase64 ? Math.round((scan.photos.eyeBase64.length * 0.75) / 1024) : 52}KB | Pallor Status: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Processing..."} (Pallor Index: {scan.azureVisionMetrics?.eyePallorScore ?? "0.22"})
                         </p>
                       )}
-                      {(scan.photos?.handBase64 || scan.blobUrls?.handBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED" || scan.azureVisionMetrics) && (
+                      {(scan.photos?.handBase64 || scan.blobUrls?.handBlobUrl || (scan.status !== "SCANNING_IN_PROGRESS" && scan.azureVisionMetrics?.skinTurgorStatus)) && (
                         <p className="text-white">
                           <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 3/4 (Skin Turgor) | Latency: 142ms | Payload: {scan.photos?.handBase64 ? Math.round((scan.photos.handBase64.length * 0.75) / 1024) : 45}KB | Elasticity: {scan.azureVisionMetrics?.skinTurgorStatus || "Processing..."} (Turgor Score: {scan.azureVisionMetrics?.skinTurgorScore ?? "0.85"})
                         </p>
                       )}
-                      {(scan.photos?.nailBase64 || scan.blobUrls?.nailBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED" || scan.azureVisionMetrics) && (
+                      {(scan.photos?.nailBase64 || scan.blobUrls?.nailBlobUrl || (scan.status !== "SCANNING_IN_PROGRESS" && scan.azureVisionMetrics?.nailbedStatus)) && (
                         <p className="text-white">
                           <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 4/4 (Nailbed CRT) | Latency: 126ms | Payload: {scan.photos?.nailBase64 ? Math.round((scan.photos.nailBase64.length * 0.75) / 1024) : 39}KB | Capillary Refill: {scan.azureVisionMetrics?.nailbedStatus || "Processing..."} (Capillary Score: {scan.azureVisionMetrics?.nailCapillaryScore ?? "0.80"})
                         </p>
