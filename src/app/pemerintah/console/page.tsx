@@ -39,7 +39,7 @@ export default function DedicatedConsolePage() {
   const [modelTelemetry, setModelTelemetry] = useState<ModelIterationTelemetry | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
-  const [systemCheckLog, setSystemCheckLog] = useState<string | null>(null);
+  const [systemCheckLogs, setSystemCheckLogs] = useState<string[]>([]);
   const [isCheckingServices, setIsCheckingServices] = useState(false);
   const [vercelLogs, setVercelLogs] = useState<VercelHttpLogEntry[]>(() => VercelLogService.getInitialVercelLogs());
   const [logTab, setLogTab] = useState<"NODES" | "VERCEL">("NODES");
@@ -50,7 +50,7 @@ export default function DedicatedConsolePage() {
     setTimeout(() => {
       const isDbOk = !!db;
       const diagnosticLine = `[${timeStr}] [INFO] [SYSTEM_DIAGNOSTICS] Firebase DB: ${isDbOk ? "CONNECTED (OK)" : "OFFLINE"} | Azure Blob Storage: ACTIVE (stgscanginofest26) | Azure Custom Vision: ONLINE (v2.6) | Gemini 2.0 RAG: GROUNDED (OK) | System Health: 100% OPERATIONAL`;
-      setSystemCheckLog(diagnosticLine);
+      setSystemCheckLogs((prev) => [diagnosticLine, ...prev]);
       setIsCheckingServices(false);
     }, 350);
   };
@@ -215,7 +215,7 @@ export default function DedicatedConsolePage() {
   const handleConfirmClear = async () => {
     setShowClearConfirmModal(false);
     setIsClearing(true);
-    setSystemCheckLog(null);
+    setSystemCheckLogs([]);
     try {
       const res = await BiometricSyncService.clearAllScanHistory();
       if (res.success) {
@@ -269,7 +269,7 @@ Timestamp: ${selectedScan.createdAt}
         <div className="flex items-center gap-2">
           <button
             type="button"
-            disabled={isClearing || (scans.length === 0 && !systemCheckLog)}
+            disabled={isClearing || (scans.length === 0 && systemCheckLogs.length === 0)}
             onClick={handleClearDatabase}
             className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/80 text-[11px] font-mono flex items-center gap-1.5 cursor-pointer transition-colors disabled:opacity-40"
           >
@@ -311,13 +311,12 @@ Timestamp: ${selectedScan.createdAt}
               <button
                 type="button"
                 onClick={() => setLogTab("VERCEL")}
-                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer ${
                   logTab === "VERCEL"
-                    ? "bg-purple-950/80 text-purple-300 border border-purple-500/50 shadow-[0_0_10px_rgba(168,85,247,0.3)]"
+                    ? "bg-[#1E2950] text-[#35CBC3] border border-[#35CBC3]/50 shadow-[0_0_10px_rgba(53,203,195,0.2)]"
                     : "bg-[#090D18] text-slate-400 border border-slate-800 hover:text-slate-200"
                 }`}
               >
-                <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
                 VERCEL CLOUD LOGS ({vercelLogs.length})
               </button>
             </div>
@@ -334,42 +333,46 @@ Timestamp: ${selectedScan.createdAt}
             </div>
           </div>
 
-          {/* System Health Diagnostics 1-Line Status Log */}
-          {systemCheckLog && (
-            <div className="p-2.5 rounded-lg bg-[#131C38] border border-[#35CBC3]/50 text-white font-mono text-[11px] leading-relaxed my-1 animate-in fade-in">
-              <span className="text-white font-mono">{systemCheckLog}</span>
+          {/* System Health Diagnostics In-Console Stream */}
+          {systemCheckLogs.length > 0 && (
+            <div className="space-y-1 font-mono text-[11px] pt-1">
+              {systemCheckLogs.map((log, idx) => (
+                <p key={idx} className="text-white font-mono text-[11px] leading-relaxed">
+                  {log}
+                </p>
+              ))}
             </div>
           )}
 
           {/* Render Vercel HTTP Log Stream View */}
           {logTab === "VERCEL" ? (
             <div className="space-y-2 pt-2 font-mono text-[11px]">
-              <div className="p-2.5 rounded-xl bg-purple-950/50 border border-purple-800/80 text-purple-200 text-[10.5px] flex items-center justify-between shadow-lg">
-                <span className="font-bold flex items-center gap-2 text-white">
-                  <Radio className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+              <div className="p-2.5 rounded-xl bg-[#131C38] border border-[#1E2950] text-slate-200 text-[10.5px] flex items-center justify-between">
+                <span className="font-bold flex items-center gap-2 text-white font-mono">
+                  <Radio className="w-3.5 h-3.5 text-[#35CBC3]" />
                   VERCEL PRODUCTION DEPLOYMENT LOG STREAM (ginofest-2026.vercel.app)
                 </span>
-                <span className="text-[9.5px] bg-purple-900/90 text-purple-200 px-2 py-0.5 rounded border border-purple-600 font-bold">
+                <span className="text-[9.5px] bg-[#090D18] text-slate-300 px-2 py-0.5 rounded border border-[#1E2950] font-bold font-mono">
                   REGION: sin1 (Singapore)
                 </span>
               </div>
 
               {vercelLogs.map((log) => (
-                <div key={log.id} className="p-2.5 rounded-xl bg-[#090D18] border border-[#1E2950] space-y-1 hover:border-purple-500/40 transition-all">
+                <div key={log.id} className="p-2.5 rounded-xl bg-[#090D18] border border-[#1E2950] space-y-1 hover:border-[#35CBC3]/40 transition-all">
                   <div className="flex items-center justify-between text-[10.5px]">
                     <div className="flex items-center gap-2">
-                      <span className="text-[#35CBC3] font-bold">[{log.timestamp}]</span>
-                      <span className={`font-bold px-1.5 py-0.5 rounded text-[9.5px] font-mono ${
-                        log.method === "POST" ? "bg-blue-950 text-blue-300 border border-blue-800" : "bg-emerald-950 text-emerald-300 border border-emerald-800"
+                      <span className="text-slate-400">[{log.timestamp}]</span>
+                      <span className={`font-bold text-[9.5px] font-mono ${
+                        log.method === "POST" ? "text-emerald-400" : "text-cyan-400"
                       }`}>
                         {log.method}
                       </span>
-                      <span className={`font-bold px-1.5 py-0.5 rounded text-[9.5px] font-mono ${
-                        log.status === 200 ? "bg-emerald-950 text-emerald-400 border border-emerald-800" : log.status === 304 ? "bg-slate-900 text-slate-300 border border-slate-700" : "bg-rose-950 text-rose-400 border border-rose-800"
+                      <span className={`font-bold text-[9.5px] font-mono ${
+                        log.status === 200 ? "text-emerald-400" : log.status === 304 ? "text-slate-400" : "text-rose-400 font-bold"
                       }`}>
                         {log.status} {log.status === 200 ? "OK" : log.status === 304 ? "304 NOT MODIFIED" : "500 SERVER ERROR"}
                       </span>
-                      <span className="text-purple-400 font-bold">[VERCEL_DEPLOYMENT_LOG]</span>
+                      <span className="text-white font-bold">[VERCEL_DEPLOYMENT_LOG]</span>
                     </div>
                     {log.latencyMs && (
                       <span className="text-[10px] text-slate-400 font-mono">{log.latencyMs}ms</span>
@@ -379,8 +382,8 @@ Timestamp: ${selectedScan.createdAt}
                     <span className="text-slate-400">{log.domain}</span><strong className="text-white">{log.path}</strong>
                   </p>
                   {log.errorDetail && (
-                    <p className="text-amber-300 text-[10px] bg-amber-950/60 p-2 rounded-lg border border-amber-800/80 mt-1 font-mono">
-                      ⚠️ {log.errorDetail}
+                    <p className="text-rose-400 text-[10.5px] font-mono pl-2 border-l border-rose-500 mt-1">
+                      {log.errorDetail}
                     </p>
                   )}
                 </div>
@@ -409,9 +412,9 @@ Timestamp: ${selectedScan.createdAt}
                     }`}
                   >
                     <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-slate-200 font-mono">
+                      <span className="text-white font-mono">
                         <span className="text-[#35CBC3] font-bold">[{scan.createdAt || new Date().toLocaleTimeString("id-ID")}]</span>{" "}
-                        <span className="text-emerald-400 font-bold">[INFO]</span>{" "}
+                        <span className="text-white font-bold">[INFO]</span>{" "}
                         <span className="text-white">[MOBILE_STREAM_NODE]</span>
                       </span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300 font-mono">
@@ -419,96 +422,96 @@ Timestamp: ${selectedScan.createdAt}
                       </span>
                     </div>
 
-                    <p className="text-slate-100 font-mono">
+                    <p className="text-white font-mono">
                       <span className="text-[#35CBC3] font-bold">[USER_SESSION]</span> <strong className="text-white">{scan.userName}</strong> (Kec. {scan.userDistrict}) — Status:{" "}
                       {scan.status === "SCANNING_IN_PROGRESS" ? (
                         <span className="text-amber-400 font-bold animate-pulse">[STREAMING_FRAMES ({scan.lastCapturedStep || "wajah"})]</span>
                       ) : scan.status === "CANCELLED" ? (
                         <span className="text-rose-400 font-bold">[ABORTED_RECAPTURED]</span>
                       ) : (
-                        <span className="text-emerald-400 font-bold">[VALIDATED: {formattedConf}]</span>
+                        <span className="text-white font-bold">[VALIDATED: {formattedConf}]</span>
                       )}
                     </p>
 
-                    {/* Mobile Client Activity Stream Logs (Emoji-Free & Predominantly White Text) */}
-                    <div className="pl-3 border-l-2 border-[#35CBC3]/40 text-[10.5px] space-y-1 font-mono">
-                      <p className="text-slate-300">
+                    {/* Mobile Client Activity Stream Logs (Emoji-Free & Clean White Monospace Text) */}
+                    <div className="pl-3 border-l-2 border-[#35CBC3]/40 text-[10.5px] space-y-1 font-mono text-white">
+                      <p className="text-white">
                         <span className="text-slate-400">[INFO]</span> <span className="text-slate-400">[CLIENT_CAMERA_INIT]</span> Mobile device camera stream connected (1280x720 30fps)
                       </p>
 
                       {(scan.photos?.faceBase64 || scan.blobUrls?.faceBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED" || scan.azureVisionMetrics) && (
-                        <p className="text-slate-100">
-                          <span className="text-[#35CBC3] font-bold">[INFO]</span> <span className="text-[#35CBC3] font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 1/4 (Face Profile) | Latency: 118ms | Payload: {scan.photos?.faceBase64 ? Math.round((scan.photos.faceBase64.length * 0.75) / 1024) : 48}KB | SCIN Vitality Score: {scan.azureVisionMetrics?.facialVitalityScore !== undefined ? scan.azureVisionMetrics.facialVitalityScore : "Processing..."}
+                        <p className="text-white">
+                          <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 1/4 (Face Profile) | Latency: 118ms | Payload: {scan.photos?.faceBase64 ? Math.round((scan.photos.faceBase64.length * 0.75) / 1024) : 48}KB | SCIN Vitality Score: {scan.azureVisionMetrics?.facialVitalityScore !== undefined ? scan.azureVisionMetrics.facialVitalityScore : "Processing..."}
                         </p>
                       )}
                       {(scan.photos?.eyeBase64 || scan.blobUrls?.eyeBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED" || scan.azureVisionMetrics) && (
-                        <p className="text-slate-100">
-                          <span className="text-emerald-400 font-bold">[INFO]</span> <span className="text-emerald-400 font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 2/4 (Conjunctiva Sclera) | Latency: 135ms | Payload: {scan.photos?.eyeBase64 ? Math.round((scan.photos.eyeBase64.length * 0.75) / 1024) : 52}KB | Pallor Status: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Processing..."} (Pallor Index: {scan.azureVisionMetrics?.eyePallorScore ?? "0.22"})
+                        <p className="text-white">
+                          <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 2/4 (Conjunctiva Sclera) | Latency: 135ms | Payload: {scan.photos?.eyeBase64 ? Math.round((scan.photos.eyeBase64.length * 0.75) / 1024) : 52}KB | Pallor Status: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Processing..."} (Pallor Index: {scan.azureVisionMetrics?.eyePallorScore ?? "0.22"})
                         </p>
                       )}
                       {(scan.photos?.handBase64 || scan.blobUrls?.handBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED" || scan.azureVisionMetrics) && (
-                        <p className="text-slate-100">
-                          <span className="text-teal-400 font-bold">[INFO]</span> <span className="text-teal-400 font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 3/4 (Skin Turgor) | Latency: 142ms | Payload: {scan.photos?.handBase64 ? Math.round((scan.photos.handBase64.length * 0.75) / 1024) : 45}KB | Elasticity: {scan.azureVisionMetrics?.skinTurgorStatus || "Processing..."} (Turgor Score: {scan.azureVisionMetrics?.skinTurgorScore ?? "0.85"})
+                        <p className="text-white">
+                          <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 3/4 (Skin Turgor) | Latency: 142ms | Payload: {scan.photos?.handBase64 ? Math.round((scan.photos.handBase64.length * 0.75) / 1024) : 45}KB | Elasticity: {scan.azureVisionMetrics?.skinTurgorStatus || "Processing..."} (Turgor Score: {scan.azureVisionMetrics?.skinTurgorScore ?? "0.85"})
                         </p>
                       )}
                       {(scan.photos?.nailBase64 || scan.blobUrls?.nailBlobUrl || scan.status === "VALID" || scan.status === "CLAIMED" || scan.azureVisionMetrics) && (
-                        <p className="text-slate-100">
-                          <span className="text-amber-400 font-bold">[INFO]</span> <span className="text-amber-400 font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 4/4 (Nailbed CRT) | Latency: 126ms | Payload: {scan.photos?.nailBase64 ? Math.round((scan.photos.nailBase64.length * 0.75) / 1024) : 39}KB | Capillary Refill: {scan.azureVisionMetrics?.nailbedStatus || "Processing..."} (Capillary Score: {scan.azureVisionMetrics?.nailCapillaryScore ?? "0.80"})
+                        <p className="text-white">
+                          <span className="text-white font-bold">[INFO]</span> <span className="text-white font-bold">[FRAME_STREAM_RECEIVED]</span> Frame 4/4 (Nailbed CRT) | Latency: 126ms | Payload: {scan.photos?.nailBase64 ? Math.round((scan.photos.nailBase64.length * 0.75) / 1024) : 39}KB | Capillary Refill: {scan.azureVisionMetrics?.nailbedStatus || "Processing..."} (Capillary Score: {scan.azureVisionMetrics?.nailCapillaryScore ?? "0.80"})
                         </p>
                       )}
 
                       {/* Recapture Event Log */}
                       {scan.lastCapturedStep?.startsWith("recapture_") && (
-                        <p className="text-white font-mono text-[10.5px] bg-yellow-950/60 px-2 py-0.5 rounded border border-yellow-700/60 my-1">
-                          <span className="text-yellow-400 font-bold">[WARN] [RECAPTURE_EVENT]</span> User initiated recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing frame buffer &amp; recalibrating sensor...
+                        <p className="text-rose-400 font-mono text-[10.5px]">
+                          <span className="font-bold">[WARN] [RECAPTURE_EVENT]</span> User initiated recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing frame buffer &amp; recalibrating sensor...
                         </p>
                       )}
 
                       {/* Mobile Touch & UI Interaction Event Log */}
                       {scan.lastTouchEvent && (
-                        <p className="text-white font-mono text-[10.5px] bg-[#131C38] px-2 py-0.5 rounded border border-[#1E2950] my-1">
-                          <span className="text-[#35CBC3] font-bold">[INFO] [CLIENT_TOUCH_EVENT]</span> Action: {scan.lastTouchEvent.actionName} {scan.lastTouchEvent.details ? `(${scan.lastTouchEvent.details})` : ""}
+                        <p className="text-white font-mono text-[10.5px]">
+                          <span className="text-white font-bold">[INFO] [CLIENT_TOUCH_EVENT]</span> Action: {scan.lastTouchEvent.actionName} {scan.lastTouchEvent.details ? `(${scan.lastTouchEvent.details})` : ""}
                         </p>
                       )}
 
                       {/* Q&A Interactive Anamnesis Answers Log */}
                       {scan.questionnaireAnswers && (
-                        <div className="text-white text-[10.5px] space-y-0.5 py-0.5 border-l-2 border-purple-500/40 pl-2 my-1 bg-purple-950/20 rounded-r font-mono">
+                        <div className="text-white text-[10.5px] space-y-0.5 py-0.5 font-mono">
                           {scan.questionnaireAnswers.nafsuMakan && (
-                            <p><span className="text-purple-300 font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
+                            <p><span className="text-white font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
                           )}
                           {scan.questionnaireAnswers.aktivitasFisik && (
-                            <p><span className="text-purple-300 font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
+                            <p><span className="text-white font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
                           )}
                           {scan.questionnaireAnswers.alergi && (
-                            <p><span className="text-purple-300 font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
+                            <p><span className="text-white font-bold">[INFO] [ANAMNESIS_SELECTION]</span> Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
                           )}
                         </div>
                       )}
 
                       {scan.status !== "SCANNING_IN_PROGRESS" && scan.azureVisionMetrics && (
-                        <p className="text-[#35CBC3] font-mono">
-                          <span className="text-[#35CBC3] font-bold">[INFO]</span> <span className="text-[#35CBC3] font-bold">[AZURE_VISION_PIPELINE]</span> Multimodal Feature Extraction Completed | SCIN Vitality: {scan.azureVisionMetrics.facialVitalityScore ?? 92}% | Pallor: {scan.azureVisionMetrics.eyeConjunctivaStatus || "Normal"} | Risk: {scan.azureVisionMetrics.detectedDeficiencyRisk || "LOW_RISK"}
+                        <p className="text-white font-mono">
+                          <span className="text-white font-bold">[INFO] [AZURE_VISION_PIPELINE]</span> Multimodal Feature Extraction Completed | SCIN Vitality: {scan.azureVisionMetrics.facialVitalityScore ?? 92}% | Pallor: {scan.azureVisionMetrics.eyeConjunctivaStatus || "Normal"} | Risk: {scan.azureVisionMetrics.detectedDeficiencyRisk || "LOW_RISK"}
                         </p>
                       )}
 
                       {scan.status !== "SCANNING_IN_PROGRESS" && scan.recommendedMenu?.menuTitle && (
                         <p className="text-white font-mono">
-                          <span className="text-emerald-400 font-bold">[SUCCESS] [GEMINI_RAG_PIPELINE]</span> Menu Matched: {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
+                          <span className="text-white font-bold">[SUCCESS] [GEMINI_RAG_PIPELINE]</span> Menu Matched: {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
                         </p>
                       )}
 
                       {/* Vercel Serverless Cloud Infrastructure Logs */}
                       {scan.serverLogs && scan.serverLogs.length > 0 && (
-                        <div className="space-y-0.5 pt-1 border-t border-[#1E2950]/80 my-1 font-mono">
+                        <div className="space-y-0.5 pt-1 font-mono text-white">
                           {scan.serverLogs.map((srvLog, idx) => (
                             <p key={idx} className="text-white text-[10.5px]">
                               <span className="text-slate-400">[{srvLog.timestamp}]</span>{" "}
-                              <span className={srvLog.level === "SUCCESS" ? "text-emerald-400 font-bold" : srvLog.level === "WARN" ? "text-amber-400 font-bold" : "text-[#35CBC3] font-bold"}>
+                              <span className={srvLog.level === "WARN" || srvLog.level === "ERROR" ? "text-rose-400 font-bold" : "text-white font-bold"}>
                                 [{srvLog.level}]
                               </span>{" "}
-                              <span className="text-purple-400 font-bold">[VERCEL_SERVERLESS]</span>{" "}
-                              <span className="text-cyan-300 font-bold">[{srvLog.module}]</span> {srvLog.message}
+                              <span className="text-white font-bold">[VERCEL_SERVERLESS]</span>{" "}
+                              <span className="text-white font-bold">[{srvLog.module}]</span> {srvLog.message}
                             </p>
                           ))}
                         </div>
@@ -516,8 +519,8 @@ Timestamp: ${selectedScan.createdAt}
 
                       {/* Session Completed & Claimed Log */}
                       {scan.status === "CLAIMED" && (
-                        <p className="text-white font-mono bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-600/60 my-1">
-                          <span className="text-emerald-400 font-bold">[SUCCESS] [SESSION_COMPLETED]</span> Beneficiary QR claim verified. Screening session closed.
+                        <p className="text-white font-mono">
+                          <span className="text-white font-bold">[SUCCESS] [SESSION_COMPLETED]</span> Beneficiary QR claim verified. Screening session closed.
                         </p>
                       )}
                     </div>
