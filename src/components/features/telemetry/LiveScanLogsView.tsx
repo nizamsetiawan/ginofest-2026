@@ -25,7 +25,8 @@ import {
   Radio,
   Code,
   Layers,
-  ChevronRight
+  ChevronRight,
+  ExternalLink
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
@@ -251,13 +252,23 @@ export const LiveScanLogsView: React.FC = () => {
           <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
+              onClick={() => window.open("/pemerintah/console", "_blank")}
+              className="px-3.5 py-1.5 rounded-xl bg-purple-950/60 hover:bg-purple-900 text-purple-300 border border-purple-500/50 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+              title="Buka Console Terminal IDE di Tab Baru"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-purple-400" />
+              <span>FULL CONSOLE (TAB BARU) ↗</span>
+            </button>
+
+            <button
+              type="button"
               disabled={isClearing || scans.length === 0}
               onClick={handleClearDatabase}
               className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40 font-mono text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all disabled:opacity-40"
               title="Kosongkan seluruh log konsol Firestore"
             >
               <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-              <span>{isClearing ? "CLEARING..." : "CLEAR LOG CONSOLE"}</span>
+              <span>{isClearing ? "CLEARING..." : "CLEAR CONSOLE"}</span>
             </button>
 
             <button

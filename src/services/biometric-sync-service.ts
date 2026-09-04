@@ -454,6 +454,33 @@ export class BiometricSyncService {
   }
 
   /**
+   * Syncs a recapture event when user retakes a photo step on Mobile
+   */
+  static async recaptureLiveBiometricStep(params: {
+    scanId: string;
+    stepName: "wajah" | "mata" | "tangan" | "kuku";
+    photos: BiometricPhotoPayload;
+  }): Promise<void> {
+    try {
+      if (!db) return;
+      const docRef = doc(db, this.COLLECTION_SCANS, params.scanId);
+      await setDoc(
+        docRef,
+        {
+          status: "SCANNING_IN_PROGRESS",
+          lastCapturedStep: `recapture_${params.stepName}`,
+          recaptureEventAt: new Date().toISOString(),
+          photos: params.photos,
+          updatedAt: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.warn("Recapture sync notice:", e);
+    }
+  }
+
+  /**
    * Clears/wipes all scan history documents from Firestore
    */
   static async clearAllScanHistory(): Promise<{ success: boolean; deletedCount: number }> {

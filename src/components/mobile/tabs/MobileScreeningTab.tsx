@@ -574,7 +574,26 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                       if (!isAccessible) return;
                       if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
                       // Only allow going back to completed steps, not forward-skipping
-                      if (isCompleted && !isActive) setCaptureStepIdx(idx);
+                      if (isCompleted && !isActive) {
+                        setCaptureStepIdx(idx);
+                        const targetStepId = biometricFlow[idx].id;
+                        const updatedPhotos = {
+                          ...rawPhotosMap,
+                          [targetStepId]: "",
+                        };
+                        setRawPhotosMap(updatedPhotos);
+                        setCapturedPhotos((prev) => ({ ...prev, [targetStepId]: false }));
+                        BiometricSyncService.recaptureLiveBiometricStep({
+                          scanId: activeScanId,
+                          stepName: targetStepId as any,
+                          photos: {
+                            faceBase64: updatedPhotos.wajah,
+                            eyeBase64: updatedPhotos.mata,
+                            handBase64: updatedPhotos.tangan,
+                            nailBase64: updatedPhotos.kuku,
+                          },
+                        });
+                      }
                     }}
                     className={`flex-1 py-1.5 px-1.5 rounded-xl text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 select-none ${
                       isActive
