@@ -26,6 +26,8 @@ import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CitizenUser } from "../types";
 import { BiometricSyncService, CompleteBiometricScanRecord } from "@/services/biometric-sync-service";
+import { fetchScreeningQuestionsFromFirestore, ScreeningQuestionItem } from "@/services/firebase-service";
+import { AzureVisionService } from "@/services/azure-vision-service";
 
 interface MobileScreeningTabProps {
   citizenUser: CitizenUser | null;
@@ -141,26 +143,54 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [customAnswer, setCustomAnswer] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
 
-  const questions = [
+  const [questions, setQuestions] = useState<ScreeningQuestionItem[]>([
     {
       id: 1,
-      title: "Apakah anak Anda sering merasa lelah atau lemah tanpa alasan yang jelas?",
-      subtitle: "Indikasi awal potensi defisiensi zat besi (anemia) & mikronutrien.",
+      title: "Apakah anak Anda sering merasa lelah, lemah, atau lesu saat beraktivitas?",
+      subtitle: "MedQA Anemia: Penapisan tanda klinis awal defisiensi zat besi & anemia.",
       options: ["Ya, sangat sering", "Kadang-kadang", "Tidak Pernah"],
     },
     {
       id: 2,
-      title: "Bagaimana nafsu makan dan ketertarikan anak terhadap sayur & protein hewani?",
-      subtitle: "Membantu AI menyesuaikan tekstur & variasi rasa menu MBG.",
-      options: ["Sangat lahap", "Pilih-pilih makanan (Picky Eater)", "Sering tidak habis"],
+      title: "Apakah anak sering mengeluh pusing, kepala ringan, atau pandangan berkunang saat berdiri?",
+      subtitle: "MedQA Anemia: Deteksi pusing ortostatik akibat anemia defisiensi besi (IDA).",
+      options: ["Ya, hampir setiap hari", "Kadang-kadang saja", "Belum pernah"],
     },
     {
       id: 3,
-      title: "Apakah ada riwayat alergi makanan tertentu (seafood, kacang, telur)?",
-      subtitle: "Penting untuk memastikan keamanan menu MBG bebas alergen.",
-      options: ["Tidak ada alergi", "Alergi Seafood / Ikan", "Alergi Telur / Susu"],
+      title: "Bagaimana nafsu makan dan ketertarikan anak terhadap lauk protein hewani?",
+      subtitle: "MedQA Nutrisi: Evaluasi asupan asam amino esensial & zat besi heme harian.",
+      options: ["Sangat lahap (Habis)", "Pilih-pilih makanan (Picky Eater)", "Sering bersisa / Tidak habis"],
     },
-  ];
+    {
+      id: 4,
+      title: "Berapa gelas air minum yang dikonsumsi anak per hari?",
+      subtitle: "MedQA Hidrasi: Skrining status hidrasi harian untuk turgor kulit & fungsi ginjal.",
+      options: ["≥ 8 gelas (Cukup)", "4–7 gelas (Kurang)", "< 4 gelas (Sangat Kurang)"],
+    },
+    {
+      id: 5,
+      title: "Apakah ada riwayat alergi makanan tertentu pada anak?",
+      subtitle: "MedQA Keamanan Pangan: Memastikan formula menu MBG disesuaikan bebas alergen.",
+      options: ["Tidak ada alergi", "Alergi Seafood / Ikan", "Alergi Telur / Susu Sapi"],
+    },
+  ]);
+
+
+  // Load latest screening questionnaire directly from Firestore
+  useEffect(() => {
+    let isMounted = true;
+    fetchScreeningQuestionsFromFirestore().then((items) => {
+      if (isMounted && items && items.length > 0) {
+        setQuestions(items);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const [isAdaptingQuestions, setIsAdaptingQuestions] = useState(false);
 
   // Step 3: Menu State
   const [menuType, setMenuType] = useState<"ayam" | "bandeng">("ayam");
@@ -221,6 +251,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
     setScanProgress(0);
 
     const currentFlowId = biometricFlow[captureStepIdx].id;
+    let capturedFrame = "";
 
     // Capture snapshot frame from video stream if active
     try {
@@ -231,10 +262,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         const ctx = canvas.getContext("2d");
         if (ctx) {
           ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-          const frameData = canvas.toDataURL("image/jpeg", 0.85);
+          capturedFrame = canvas.toDataURL("image/jpeg", 0.85);
           setRawPhotosMap((prev) => ({
             ...prev,
-            [currentFlowId]: frameData,
+            [currentFlowId]: capturedFrame,
           }));
         }
       }
@@ -258,6 +289,24 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             } else {
               // All 4 photos captured -> proceed to questionnaire (Step 2)
               setScreeningStep(2);
+              // Trigger adaptive visual MedQA question formulation
+              setIsAdaptingQuestions(true);
+              AzureVisionService.generateAdaptiveMedQAQuestions(
+                {
+                  ...rawPhotosMap,
+                  [currentFlowId]: capturedFrame,
+                },
+                citizenUser?.age || 9
+              )
+                .then((adaptiveQs) => {
+                  if (adaptiveQs && adaptiveQs.length >= 3) {
+                    setQuestions(adaptiveQs);
+                  }
+                  setIsAdaptingQuestions(false);
+                })
+                .catch(() => {
+                  setIsAdaptingQuestions(false);
+                });
             }
           }, 350);
           return 100;
@@ -736,15 +785,27 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
             {/* Logo + Question Card */}
             <div className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm space-y-4">
-              {/* App Logo */}
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-md flex-shrink-0">
-                  <img src="/logo_app.svg" alt="Kcal" className="w-6 h-6 object-contain" />
+              {/* App Logo & Adaptive MedQA Badge */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-md flex-shrink-0">
+                    <img src="/logo_app.svg" alt="Kcal" className="w-6 h-6 object-contain" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-black text-[#0FA89B] tracking-wide">Analisis Gizi AI</p>
+                    <p className="text-[9.5px] text-slate-400 font-medium">Kemenkes RI &amp; BGN 2026</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[11px] font-black text-[#0FA89B] tracking-wide">Analisis Gizi AI</p>
-                  <p className="text-[9.5px] text-slate-400 font-medium">Kemenkes RI & BGN 2026</p>
+
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0FA89B]/10 border border-[#0FA89B]/20 text-[#0FA89B] text-[9.5px] font-bold">
+                  <Sparkles className="w-3 h-3 text-[#0FA89B] animate-pulse" />
+                  <span>
+                    {isAdaptingQuestions
+                      ? "Menganalisis MedQA..."
+                      : `MedQA · ${questions.length} pertanyaan`}
+                  </span>
                 </div>
+
               </div>
 
               {/* Divider */}

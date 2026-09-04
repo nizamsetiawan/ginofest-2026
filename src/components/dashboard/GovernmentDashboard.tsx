@@ -13,6 +13,7 @@ import { HelpView } from "@/components/features/help/HelpView";
 import { UserManagementView } from "@/components/features/users/UserManagementView";
 import { ComplaintCenterView } from "@/components/features/complaints/ComplaintCenterView";
 import { BackupSnapshotView } from "@/components/features/backup/BackupSnapshotView";
+import { LiveScanLogsView } from "@/components/features/telemetry/LiveScanLogsView";
 import { SettingsView } from "@/components/features/settings/SettingsView";
 import { AdminSwitchModal } from "@/components/features/modals/AdminSwitchModal";
 import { AIChatbotModal } from "@/components/features/modals/AIChatbotModal";
@@ -150,6 +151,10 @@ export const GovernmentDashboard: React.FC = () => {
 
           {activeNav === "generate" && (
             <MenuPlannerAI selectedDistrict={selectedDistrictId} />
+          )}
+
+          {activeNav === "telemetry_logs" && (
+            <LiveScanLogsView />
           )}
 
           {activeNav === "map" && (

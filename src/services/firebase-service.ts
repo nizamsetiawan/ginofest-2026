@@ -922,6 +922,29 @@ export async function saveComplaintToFirestore(complaint: Omit<ComplaintRecord, 
   }
 }
 
+export async function updateCitizenDistrictInFirestore(email: string, district: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const colRef = collection(db, "kcal_masyarakat");
+    const q = query(colRef, where("email", "==", email.trim().toLowerCase()));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      return { success: false, error: "Akun tidak ditemukan" };
+    }
+
+    const docId = snap.docs[0].id;
+    await setDoc(doc(db, "kcal_masyarakat", docId), {
+      district: district,
+      updatedAtIso: new Date().toISOString(),
+    }, { merge: true });
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Gagal update domisili:", err);
+    return { success: false, error: err.message };
+  }
+}
+
 export async function fetchComplaintsFromFirestore(): Promise<{ success: boolean; data: ComplaintRecord[] }> {
   try {
     const colRef = collection(db, "gscan_complaints");
@@ -1332,6 +1355,60 @@ export async function recordCitizenSessionLog(user: { id?: string; name: string;
     console.warn("Error recording session:", err);
   }
   return logId;
+}
+
+// -------------------------------------------------------------
+// 6. MASTER KUESIONER SKRINING KLINIS (Kemenkes & BGN Standard)
+// -------------------------------------------------------------
+export interface ScreeningQuestionItem {
+  id: number | string;
+  title: string;
+  subtitle: string;
+  options: string[];
+}
+
+export async function fetchScreeningQuestionsFromFirestore(): Promise<ScreeningQuestionItem[]> {
+  try {
+    if (db) {
+      const colRef = collection(db, "master_kuesioner_skrining");
+      const snap = await getDocs(colRef);
+      if (!snap.empty) {
+        return snap.docs.map((d, idx) => {
+          const data = d.data();
+          return {
+            id: d.id || idx + 1,
+            title: data.title || data.pertanyaan || "Pertanyaan Klinis",
+            subtitle: data.subtitle || data.penjelasan || "Evaluasi status nutrisi & alergi anak",
+            options: data.options || data.pilihan || ["Ya", "Kadang-kadang", "Tidak Pernah"],
+          };
+        });
+      }
+    }
+  } catch (err) {
+    console.warn("Notice reading Firestore screening questions:", err);
+  }
+
+  // Standar Kemenkes RI & BGN 2026 (Clinical Nutrition Assessment)
+  return [
+    {
+      id: 1,
+      title: "Apakah anak Anda sering merasa lelah, lemah, atau lesu saat beraktivitas?",
+      subtitle: "Standar Kemenkes: Penapisan tanda klinis awal defisiensi zat besi & anemia.",
+      options: ["Ya, sangat sering", "Kadang-kadang", "Tidak Pernah"],
+    },
+    {
+      id: 2,
+      title: "Bagaimana nafsu makan dan ketertarikan anak terhadap lauk protein hewani?",
+      subtitle: "Standar BGN: Memantau kecukupan asupan asam amino esensial pertumbuhan tinggi badan.",
+      options: ["Sangat lahap (Habis)", "Pilih-pilih makanan (Picky Eater)", "Sering bersisa / Tidak habis"],
+    },
+    {
+      id: 3,
+      title: "Apakah ada riwayat alergi makanan tertentu pada anak?",
+      subtitle: "Keamanan Pangan: Memastikan formula menu MBG disesuaikan bebas alergen.",
+      options: ["Tidak ada alergi", "Alergi Seafood / Ikan", "Alergi Telur / Susu Sapi"],
+    },
+  ];
 }
 
 

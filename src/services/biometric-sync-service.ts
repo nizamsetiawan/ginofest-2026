@@ -8,7 +8,8 @@
  */
 
 import { doc, setDoc, getDoc, collection, getDocs, query, where, orderBy, serverTimestamp } from "firebase/firestore";
-import { db } from "./firebase-service";
+import { db, fetchMenuPlanFromFirestore, saveMenuPlanToFirestore } from "./firebase-service";
+import { generateMenuWithSinglePrompt } from "./gemini-rag-service";
 import { AzureBlobService, BiometricPhotoPayload, AzureBlobUploadedUrls } from "./azure-blob-service";
 import { AzureVisionService, AzureVisionClinicalMetrics } from "./azure-vision-service";
 
@@ -29,7 +30,7 @@ export interface CompleteBiometricScanRecord {
     catatanTambahan?: string;
   };
   recommendedMenu: {
-    menuId: "ayam" | "bandeng" | "daging";
+    menuId: string;
     menuTitle: string;
     calories: number;
     proteinGram: number;
@@ -106,20 +107,143 @@ export class BiometricSyncService {
     ]);
 
     // 3. Determine menu via Gemini reasoning (taking allergen into account)
-    let selectedMenuId: "ayam" | "bandeng" = params.preferredMenuType || "ayam";
-    if (params.questionnaire.alergi.toLowerCase().includes("seafood") || params.questionnaire.alergi.toLowerCase().includes("ikan")) {
-      selectedMenuId = "ayam";
+    // RAG Integration: Fetch real dynamic menus from district's generated plan
+    const d = new Date();
+    const currentPeriod = `${d.getFullYear()}-${d.getMonth() + 1}`;
+    
+    // Default fallback menu jika RAG belum siap di kecamatan ini
+    let selectedMenuId: string = params.preferredMenuType || "ayam";
+    let menuTitle = selectedMenuId === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu";
+    let finalCalories = 680;
+    let finalProtein = 31;
+    let finalIron = 6;
+    let menuSource = "FALLBACK_NASIONAL";
+
+    try {
+      const planRes = await fetchMenuPlanFromFirestore(params.userDistrict, currentPeriod);
+      let availableMenus: any[] = [];
+
+      if (planRes.success && planRes.data && planRes.data.availableGeneratedRecipes?.length > 0) {
+        availableMenus = planRes.data.availableGeneratedRecipes;
+      } else {
+        // AUTO GENERATE ON THE FLY!
+        console.log(`[RAG Auto-Gen] No menu plan found for ${params.userDistrict}. Generating on the fly...`);
+        const ragRes = await generateMenuWithSinglePrompt({
+          districtName: params.userDistrict,
+          districtId: params.userDistrict
+        });
+
+        if (ragRes.success && ragRes.weeklyPlan && ragRes.weeklyPlan.length > 0) {
+          availableMenus = ragRes.weeklyPlan;
+          
+          // Simpan ke Firestore (background process) agar bisa dipakai anak lain
+          saveMenuPlanToFirestore(params.userDistrict, currentPeriod, {
+            monthlyWeeks: [{ week: 1, days: ragRes.weeklyPlan }],
+            budgetSummary: ragRes.budgetSummary,
+            availableGeneratedRecipes: ragRes.weeklyPlan
+          }).catch(e => console.warn("Background save RAG failed", e));
+        }
+      }
+
+      if (availableMenus.length > 0) {
+        // ─── FILTER 1: Alergi ─────────────────────────────────────────────────
+        const alergi = params.questionnaire.alergi.toLowerCase();
+        if (alergi.includes("seafood") || alergi.includes("ikan")) {
+          availableMenus = availableMenus.filter(m =>
+            !m.proteinSource?.toLowerCase().includes("ikan") &&
+            !m.menuTitle?.toLowerCase().includes("ikan") &&
+            !m.proteinSource?.toLowerCase().includes("bandeng") &&
+            !m.menuTitle?.toLowerCase().includes("bandeng")
+          );
+        }
+        if (alergi.includes("telur")) {
+          availableMenus = availableMenus.filter(m =>
+            !m.proteinSource?.toLowerCase().includes("telur") &&
+            !m.menuTitle?.toLowerCase().includes("telur")
+          );
+        }
+        if (alergi.includes("kacang") || alergi.includes("kedelai")) {
+          availableMenus = availableMenus.filter(m =>
+            !m.proteinSource?.toLowerCase().includes("tempe") &&
+            !m.proteinSource?.toLowerCase().includes("tahu") &&
+            !m.menuTitle?.toLowerCase().includes("tempe") &&
+            !m.menuTitle?.toLowerCase().includes("tahu")
+          );
+        }
+
+        if (availableMenus.length > 0) {
+          // ─── FILTER 2: Precision Multi-Metric Clinical Scoring ──────────────
+          // Setiap metrik klinis berkontribusi ke skor "kebutuhan gizi" menu
+          //
+          // eyePallorScore       → kebutuhan Zat Besi (Fe)
+          // nailCapillaryScore   → kebutuhan Fe + Protein (sirkulasi)
+          // skinTurgorScore      → kebutuhan cairan & Energi (Kalori)
+          // facialVitalityScore  → kebutuhan Protein & Kalori overall
+          //
+          // Nilai score 0.0 = normal, 1.0 = defisiensi parah
+          const eye   = azureMetrics.eyePallorScore   || 0;
+          const nail  = azureMetrics.nailCapillaryScore || 0;
+          const turgor = azureMetrics.skinTurgorScore  || 0;
+          const vitality = azureMetrics.facialVitalityScore || 0;
+
+          // Hitung bobot kebutuhan per nutrisi (0.0 - 1.0)
+          const ironNeed    = (eye * 0.50) + (nail * 0.35) + (vitality * 0.15);
+          const proteinNeed = (vitality * 0.45) + (nail * 0.35) + (turgor * 0.20);
+          const calorieNeed = (turgor * 0.55) + (vitality * 0.30) + (eye * 0.15);
+
+          // Tentukan nutrisi mana yang paling dibutuhkan
+          const dominant = ironNeed >= proteinNeed && ironNeed >= calorieNeed
+            ? "IRON"
+            : proteinNeed >= calorieNeed
+            ? "PROTEIN"
+            : "CALORIE";
+
+          // Scoring setiap menu kandidat berdasarkan kebutuhan dominan
+          const scored = availableMenus.map(m => {
+            const mIron    = (m.iron    || 0) / 10;   // normalise ~10mg max
+            const mProtein = (m.protein || 0) / 40;   // normalise ~40g max
+            const mCal     = (m.calories || 0) / 700; // normalise ~700 kcal max
+
+            let score = 0;
+            if (dominant === "IRON") {
+              score = (mIron * 0.60) + (mProtein * 0.25) + (mCal * 0.15);
+            } else if (dominant === "PROTEIN") {
+              score = (mProtein * 0.60) + (mIron * 0.20) + (mCal * 0.20);
+            } else {
+              score = (mCal * 0.50) + (mProtein * 0.30) + (mIron * 0.20);
+            }
+
+            return { ...m, _clinicalScore: score };
+          });
+
+          // Pilih menu dengan skor klinis tertinggi
+          const bestMenu = scored.reduce((prev, curr) =>
+            curr._clinicalScore > prev._clinicalScore ? curr : prev
+          );
+
+          selectedMenuId = `rag-${bestMenu.day?.toLowerCase() || 'dynamic'}`;
+          menuTitle      = bestMenu.menuTitle;
+          finalCalories  = bestMenu.calories || 680;
+          finalProtein   = bestMenu.protein  || 31;
+          finalIron      = bestMenu.iron     || 6;
+          menuSource     = "AI_RAG_PRECISION_CLINICAL";
+
+          console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}"`);
+        }
+      }
+    } catch (e) {
+      console.warn("Gagal fetch atau generate menu RAG untuk integrasi scanner:", e);
     }
 
-    const menuTitle = selectedMenuId === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu";
     const recommendedMenu = {
       menuId: selectedMenuId,
       menuTitle,
-      calories: 680,
-      proteinGram: 31,
-      ironMg: 6,
-      portionDesc: "1x Porsi MBG Bergizi Lengkap",
+      calories: finalCalories,
+      proteinGram: finalProtein,
+      ironMg: finalIron,
+      portionDesc: "1x Porsi MBG Sesuai Anggaran (Rp15.000)",
       akgPercentage: 45,
+      source: menuSource,
     };
 
     // 4. Generate structured QR Claim JSON
@@ -139,7 +263,7 @@ export class BiometricSyncService {
       menu: {
         id: selectedMenuId,
         name: menuTitle,
-        calories: 680,
+        calories: finalCalories,
         portion: "1x Makan Siang",
       },
       clinicalSummary: {
@@ -197,11 +321,28 @@ export class BiometricSyncService {
         },
         { merge: true }
       );
+
+      // 6. Dual-write: Backup to Azure Blob Storage as JSON
+      // This allows bypassing Firestore 1MB limits and keeps historical backups cheap
+      try {
+        const azureSaveResponse = await AzureBlobService.saveScanResultToAzure(
+          record as unknown as Record<string, unknown>
+        );
+        if (azureSaveResponse.success) {
+          console.log(`[Dual-Write] Scan ${scanId} successfully backed up to Azure Blob: ${azureSaveResponse.blobName}`);
+        } else {
+          console.warn(`[Dual-Write] Azure Blob backup failed for ${scanId}:`, azureSaveResponse.error);
+        }
+      } catch (azureErr) {
+        console.warn("[Dual-Write] Unexpected error saving to Azure Blob:", azureErr);
+      }
+
     } catch (dbErr) {
       console.warn("Firestore sync warning (offline caching active):", dbErr);
     }
 
     return record;
+
   }
 
   /**

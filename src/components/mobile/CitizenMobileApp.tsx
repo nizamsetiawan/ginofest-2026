@@ -25,7 +25,8 @@ import {
   registerCitizenToFirestore,
   recordCitizenSessionLog,
   verifyCitizenEmailAndDistrict,
-  resetCitizenPasswordInFirestore
+  resetCitizenPasswordInFirestore,
+  updateCitizenDistrictInFirestore
 } from "@/services/firebase-service";
 
 // Auth & Onboarding Components
@@ -479,6 +480,7 @@ export const CitizenMobileApp: React.FC = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmail.trim())) {
       errors.email = "Format email tidak valid";
     }
+    if (!regDistrict) errors.district = "Pilih kecamatan domisili Anda";
     if (!regPassword || regPassword.length < 6) errors.password = "Kata sandi minimal 6 karakter";
 
     if (Object.keys(errors).length > 0) {
@@ -490,6 +492,7 @@ export const CitizenMobileApp: React.FC = () => {
     const res = await registerCitizenToFirestore({
       fullName: regFullName.trim(),
       email: regEmail.trim(),
+      district: regDistrict,
       password: regPassword,
       role: "masyarakat",
       createdAtIso: new Date().toISOString(),
@@ -502,10 +505,23 @@ export const CitizenMobileApp: React.FC = () => {
       setAuthSuccessSnackbar(`Akun keluarga atas nama ${regFullName.trim()} berhasil dibuat! Silakan masuk.`);
       setRegFullName("");
       setRegEmail("");
+      setRegDistrict("");
       setRegPassword("");
       setCurrentScreen("login");
     } else {
       setAuthError(res.error || "Pendaftaran gagal. Silakan coba lagi.");
+    }
+  };
+
+  const handleUpdateDistrict = async (newDistrict: string) => {
+    if (!citizenUser) return;
+    const updatedUser = { ...citizenUser, district: newDistrict };
+    setCitizenUser(updatedUser);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("gscan_citizen_session", JSON.stringify(updatedUser));
+    }
+    if (citizenUser.email) {
+      await updateCitizenDistrictInFirestore(citizenUser.email, newDistrict);
     }
   };
 
@@ -912,6 +928,8 @@ export const CitizenMobileApp: React.FC = () => {
                 setRegFullName={setRegFullName}
                 regEmail={regEmail}
                 setRegEmail={setRegEmail}
+                regDistrict={regDistrict}
+                setRegDistrict={setRegDistrict}
                 regPassword={regPassword}
                 setRegPassword={setRegPassword}
                 showRegPassword={showRegPassword}
@@ -1034,6 +1052,7 @@ export const CitizenMobileApp: React.FC = () => {
                       citizenUser={citizenUser}
                       setActiveTab={setActiveTab}
                       onLogout={handleCitizenLogout}
+                      onUpdateDistrict={handleUpdateDistrict}
                     />
                   </motion.div>
                 )}

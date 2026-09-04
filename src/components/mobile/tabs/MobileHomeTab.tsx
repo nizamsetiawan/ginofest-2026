@@ -253,6 +253,39 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
         </button>
       </div>
 
+      {/* ⚠️ SAFETY NET BANNER: MISSING DISTRICT */}
+      {!citizenUser?.district && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-amber-50/90 border border-amber-200/80 rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow-2xs"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+              <AlertCircle className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[12px] font-bold text-amber-900 leading-tight">
+                Lengkapi Domisili Anda
+              </p>
+              <p className="text-[10.5px] text-amber-700/90 truncate mt-0.5">
+                Pilih kecamatan untuk menu berbasis pangan lokal
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              setActiveTab("profile");
+            }}
+            className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] shrink-0 transition-all shadow-xs cursor-pointer"
+          >
+            Lengkapi
+          </button>
+        </motion.div>
+      )}
+
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* 2. CARD UTAMA: MENU MBG HARI INI                               */}
       {/* ══════════════════════════════════════════════════════════════ */}

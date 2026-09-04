@@ -1,0 +1,2027 @@
+{
+  "meta": {
+    "source": "medalpaca/medical_meadow_medqa",
+    "fetchedAt": "2026-09-02T12:50:18.320Z",
+    "totalCases": 89,
+    "description": "Kasus klinis MedQA terfilter untuk pediatri & gizi anak — G-SCAN Enriched KB",
+    "huggingfaceUrl": "https://huggingface.co/datasets/medalpaca/medical_meadow_medqa"
+  },
+  "clusters": {
+    "HEMATOLOGY_ANEMIA": [
+      {
+        "idx": 22,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 52-year-old woman comes to the physician because of a 6-month history of generalized fatigue, low-grade fever, and a 10-kg (22-lb) weight loss. Physical examination shows generalized pallor and splenomegaly. Her hemoglobin concentration is 7.5 g/dL and leukocyte count is 41,800/mm3. Leukocyte alka...",
+        "correctAnswer": "E: Unregulated expression of the ABL1 gene",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 24,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 48-year-old woman comes to the emergency department because of a photosensitive blistering rash on her hands, forearms, and face for 3 weeks. The lesions are not itchy. She has also noticed that her urine has been dark brown in color recently. Twenty years ago, she was successfully treated for Coa...",
+        "correctAnswer": "C: Begin phlebotomy therapy",
+        "keyFindings": [
+          "Cadangan Besi Rendah (Ferritin)"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 34,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 19-year-old woman, accompanied by her parents, presents after a one-week history of abnormal behavior, delusions, and unusual aggression. She denies fever, seizures or illicit drug use. Family history is negative for psychiatric illnesses. She was started on risperidone and sent home with her pare...",
+        "correctAnswer": "D: Stop risperidone",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 56,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 48-year-old man with HIV comes to the physician because of skin lesions over his face and neck for 2 weeks. They are not itchy or painful. He does not have fever or a sore throat. He was treated for candidal esophagitis 3 months ago. He is sexually active with his wife, who knows of his condition,...",
+        "correctAnswer": "D: Poxvirus",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 63,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 4-year-old boy is brought to the physician because of swelling around his eyes for 4 days. The swelling is most severe in the morning and milder by bedtime. Ten days ago, he had a sore throat that resolved spontaneously. His temperature is 37°C (98.6°F), pulse is 103/min, and blood pressure is 88/...",
+        "correctAnswer": "D: Prednisone therapy",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 86,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 30-year-old woman is brought to the urgent care clinic by her husband. She complains of numbness around her lips and a tingling sensation in her hands and feet. She underwent near-total thyroidectomy for an enlarged thyroid gland a month ago. Vital signs include: blood pressure is 130/70 mm Hg, pu...",
+        "correctAnswer": "E: Serum parathyroid hormone (PTH) level",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Defisiensi Vitamin D / Rikets"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 91,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 53-year-old woman comes to the physician in February because of a 1-day history of fever, chills, headache, and dry cough. She also reports malaise and generalized muscle aches. She works as a teacher at a local high school, where there was recently an outbreak of influenza. She has a history of i...",
+        "correctAnswer": "D: Oseltamivir",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 98,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "Three days after starting a new drug for malaria prophylaxis, a 19-year-old college student comes to the physician because of dark-colored urine and fatigue. He has not had any fever, dysuria, or abdominal pain. He has no history of serious illness. Physical examination shows scleral icterus. Labora...",
+        "correctAnswer": "B: Primaquine",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 116,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 61-year-old man with a history of stage IIIa lung adenocarcinoma that has been treated with wedge resection and chemotherapy presents to the primary care clinic. He is largely asymptomatic, but he demonstrates a persistent microcytic anemia despite iron supplementation. Colonoscopy performed 3 yea...",
+        "correctAnswer": "A: Decreased serum iron and transferrin, increased ferritin, normal serum transferrin receptor",
+        "keyFindings": [
+          "Cadangan Besi Rendah (Ferritin)"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 122,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 71-year-old man comes to the emergency department because of a 2-month history of severe muscle cramps and back pain. He says that he is homeless and has not visited a physician in the past 20 years. He is 183 cm (6 ft 0 in) tall and weighs 62 kg (137 lb); BMI is 18.5 kg/m2. His blood pressure is ...",
+        "correctAnswer": "B: Secondary hyperparathyroidism",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 139,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A man returns home late at night to find his 15-year-old son and 40-year-old wife unconscious in the family room. He immediately summons emergency services. In the field, pulse oximetry shows oxygen saturation at 100% for both patients. 100% yet they both appear cyanotic. Both patients are provided ...",
+        "correctAnswer": "D: Carbon monoxide poisoning",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 152,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 65-year-old man presents to his primary care physician for a pre-operative evaluation. He is scheduled for cataract surgery in 3 weeks. His past medical history is notable for diabetes, hypertension, and severe osteoarthritis of the right knee. His medications include metformin, hydrochlorothiazid...",
+        "correctAnswer": "A: Medically clear the patient for surgery",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 182,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 2-month-old boy is brought to the physician by his mother because of poor weight gain and irritability since delivery. He is at the 10th percentile for height and below the 5th percentile for weight. Physical examination shows conjunctival pallor. Laboratory studies show:\nHemoglobin 11.2 g/dL\nMean...",
+        "correctAnswer": "E: Orotate to uridine 5'-monophosphate",
+        "keyFindings": [
+          "Konjungtiva Pucat (Pallor)",
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 183,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A previously healthy 40-year-old woman comes to the physician because of a 3-day history of fever, headaches, and fatigue. She also reports a persistent tingling sensation in her right hand and numbness in her right arm that started this morning. Physical examination shows pallor, mild scleral icter...",
+        "correctAnswer": "A: Antibodies against ADAMTS13",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 186,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 55-year-old Chinese man presents to the office with a complaint of progressive unilateral nasal obstruction for 10 months. Though he was able to tolerate his symptoms at the beginning, he can’t breathe properly through the obstructed nostril anymore. Also, a bloody nasal discharge has started rece...",
+        "correctAnswer": "C: Epstein-Barr virus",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 194,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 2-year-old boy is brought to the emergency department by his parents because of fever and recurrent episodes of jerky movements of his extremities for the past 6 hours. Pregnancy and delivery were uncomplicated, and development was normal until the age of 1 year. The parents report that he has had...",
+        "correctAnswer": "E: β-Galactocerebrosidase",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 202,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 61-year-old diabetic woman is brought to the emergency department with the complaint of multiple bouts of abdominal pain in the last 24 hours. She says that the pain is dull aching in nature, radiates to the back, and worsens with meals. She also complains of nausea and occasional vomiting. She ha...",
+        "correctAnswer": "C: Pancreatitis",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 211,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 76-year-old man is brought to the emergency room because of one episode of hemoptysis. His pulse is 110/min. Physical examination shows pallor; there is blood in the oral cavity. Examination of the nasal cavity with a nasal speculum shows active bleeding from the posterior nasal cavity. Tamponade ...",
+        "correctAnswer": "E: Maxillary artery",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 219,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 67-year-old man presents to the physician with profuse watery diarrhea along with fever and crampy abdominal pain. He has been taking an antibiotic course of cefixime for about a week to treat a respiratory tract infection. At the doctor’s office, his pulse is 112/min, the blood pressure is 100/66...",
+        "correctAnswer": "A: Identification of C. difficile toxin in stool",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      },
+      {
+        "idx": 220,
+        "cluster": "HEMATOLOGY_ANEMIA",
+        "organTrigger": "eye_conjunctiva",
+        "clinicalContext": "A 45-year-old man presents to the emergency department with fever and easy bruising for 3 days. He has had fatigue for 2 weeks. He has no past medical history, and takes no medications. Excessive bleeding from intravenous lines was reported by the nurse. He does not smoke or drink alcohol. The tempe...",
+        "correctAnswer": "A: All-trans retinoic acid (ATRA)",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+      }
+    ],
+    "MICRONUTRIENT_DEFICIT": [
+      {
+        "idx": 452,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 17-year-old male is diagnosed with acne vulgaris during a visit to a dermatologist. He is prescribed a therapy that is a derivative of vitamin A. He has no other significant past medical history. Which of the following is the major side-effect of this therapy?? \n,",
+        "correctAnswer": "B: Hyperlipidemia",
+        "keyFindings": [
+          "Kelelahan & Lesu",
+          "Defisiensi Vitamin A"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 671,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 19-year-old male with cystic fibrosis is evaluated in the clinic for regular health maintenance. He is compliant with his respiratory therapy, but states that he often \"forgets\" to take the medications before he eats. A panel of labs is drawn which reveals a moderate vitamin D deficiency. Which of...",
+        "correctAnswer": "D: Decreased calcium and decreased phosphate",
+        "keyFindings": [
+          "Defisiensi Vitamin D / Rikets"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 784,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 50-year-old woman presents with a severe headache and vomiting. She says that symptoms onset after attending a wine tasting at the local brewery. She says that her headache is mostly at the back of her head and that she has been nauseous and vomited twice. Past medical history is significant for d...",
+        "correctAnswer": "D: Blood pressure",
+        "keyFindings": [
+          "Defisiensi Vitamin D / Rikets"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 919,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 10-year-old boy is brought into your clinic by his mother for sunburns that have not been healing. The mother states that he easily gets sunburned. The mother admits she gave birth to him at home and has never taken him to see a doctor. The patient walks with a wide stance gait and appears unstabl...",
+        "correctAnswer": "A: Niacin",
+        "keyFindings": [
+          "Defisiensi Vitamin A"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 1193,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 24-year-old woman comes to the physician for preconceptional advice. She has been married for 2 years and would like to conceive within the next year. Menses occur at regular 30-day intervals and last 4 days with normal flow. She does not smoke or drink alcohol and follows a balanced diet. She tak...",
+        "correctAnswer": "A: Begin folate supplementation",
+        "keyFindings": [
+          "Defisiensi Vitamin A"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 1678,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 7-year-old boy presents to the clinic with his mother, who notes that the way in which he plays has changed and that he has been limping, favoring his left leg. When asked, the patient states that his left knee hurts. He is afebrile and vital signs are stable. The patient is well nourished and mee...",
+        "correctAnswer": "C: Legg-Calvé-Perthes disease (LCPD)",
+        "keyFindings": [
+          "Defisiensi Vitamin D / Rikets"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 2050,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 46-year-old woman comes to the physician for a cognitive evaluation. She is an office manager. She has had increasing difficulties with multitasking and reports that her job performance has declined over the past 1 year. On mental status examination, short-term memory is impaired and long-term mem...",
+        "correctAnswer": "C: Mutation in presenilin 1",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 2097,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 27-year-old woman presents for a checkup. She is 20 weeks pregnant and has been admitted to the hospital multiple times during her pregnancy for seizures. She has a known seizure disorder but discontinued her valproic acid when she became pregnant. The patient's past medical history is otherwise u...",
+        "correctAnswer": "A: Folate",
+        "keyFindings": [
+          "Defisiensi Vitamin D / Rikets"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 2259,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 34-year-old woman presents with fatigue, depressed mood, weight gain, and constipation. She gradually developed these symptoms over the past 6 months. She is G2P2 with the last pregnancy 9 months ago. She had a complicated delivery with significant blood loss requiring blood transfusions. She used...",
+        "correctAnswer": "A: Free T4",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 2578,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 26-year-old gravida 2 para 1 presents to her physician at 12 weeks gestation. She has no complaints. Her previous pregnancy 5 years ago had an uncomplicated course with vaginal delivery of a healthy boy at 39 + 1 weeks gestation. Her weight is 75 kg (165 lb) and the height is 168 cm (5 ft 6 in). O...",
+        "correctAnswer": "D: Indirect Coombs test",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Cadangan Besi Rendah (Ferritin)"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3098,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 4-year-old girl is brought to the physician for a routine checkup. She was recently adopted and has never seen a doctor before. The patient's parents state she was very emaciated when they adopted her and noticed she has trouble seeing in the evening. They also noted that she was experiencing prof...",
+        "correctAnswer": "E: Xerophthalmia",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Defisiensi Vitamin A"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3105,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 36-year-old healthy man presents to his physician to discuss his concerns about developing heart disease. His father, grandfather, and older brother had heart problems, and he has become increasingly worried he might be at risk. He takes no medications and his past medical history is only signific...",
+        "correctAnswer": "D: Vitamin E",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3230,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 68-year-old woman presents to the physician with complaints of unexplained weight loss of approximately 5 kg (11.02 lb) over the last 6 months. Her other complaints include repeated stomatitis and diarrhea for 1 year. She was diagnosed with diabetes mellitus 1 year ago. Her temperature is 36.9°C (...",
+        "correctAnswer": "B: Serum glucagon",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3291,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 15-year-old Caucasian female presents with Parkinson-like symptoms. Serum analysis shows increased levels of free copper and elevated liver enzymes. What test would prove most helpful in diagnosing the patient's underlying disease?? \n,",
+        "correctAnswer": "B: Slit lamp examination",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3327,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 6-year-old refugee with delayed growth and weakness is brought to the physician. Her family has been displaced several times over the last few years, and nutrition and housing were frequently inadequate. Examination of the lower limbs shows bowing of the legs with reduced proximal muscle strength....",
+        "correctAnswer": "E: Vitamin D deficiency",
+        "keyFindings": [
+          "Kelelahan & Lesu",
+          "Defisiensi Vitamin D / Rikets"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3445,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 77-year-old Caucasian woman presents to her primary care provider for a general checkup. The patient is with her daughter who brought her to this appointment. The patient states that she is doing well and has some minor joint pain in both hips. She states that sometimes she is sad because her husb...",
+        "correctAnswer": "A: Donepezil",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3539,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 55-year-old woman is brought to the physician by her daughter because of progressive memory loss and weakness over the past 6 months. She is now unable to perform activities of daily living and has had several falls in her apartment. She has diarrhea but has not had nausea or vomiting. She was tre...",
+        "correctAnswer": "E: Vitamin B3 (niacin)",
+        "keyFindings": [
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3605,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 35-year-old woman presents to the clinic with a 2-week history of headaches. She was in her usual state of health until 2 weeks ago, when she started having headaches. The headaches are throughout her whole head and rated as a 7/10. They are worse in the mornings and when she bends over. She has s...",
+        "correctAnswer": "A: Vitamin A",
+        "keyFindings": [
+          "Defisiensi Vitamin A",
+          "Defisiensi Vitamin D / Rikets"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3643,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 68-year-old man comes to the physician because of fatigue and muscle cramps for the past 4 weeks. He has also noticed several episodes of tingling in both hands. He has not had fever or nausea. He has had a chronic cough for 10 years. He has chronic bronchitis, hypertension, and osteoarthritis of ...",
+        "correctAnswer": "D: Destruction of parathyroid glands",
+        "keyFindings": [
+          "Kelelahan & Lesu",
+          "Defisiensi Vitamin D / Rikets"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      },
+      {
+        "idx": 3880,
+        "cluster": "MICRONUTRIENT_DEFICIT",
+        "organTrigger": "nail_nailbed",
+        "clinicalContext": "A 51-year-old man is admitted to the hospital because of a 2-day history of fever, nausea, and abdominal pain. His temperature is 39.4°C (102.9°F) and pulse is 106/min. Physical examination shows tenderness in the right upper quadrant. Blood cultures grow nonhemolytic, gram-positive cocci that grow ...",
+        "correctAnswer": "B: Increase in the intracellular uptake of gentamicin",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+      }
+    ],
+    "HYDRATION_TURGOR": [
+      {
+        "idx": 77,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 3-week-old boy is brought to the emergency department by his parents because of a 3-day history of progressive lethargy and difficulty feeding. He was born at term and did not have difficulty feeding previously. His temperature is 39.4°C (103°F), pulse is 220/min, respirations are 45/min, and bloo...",
+        "correctAnswer": "D: Intraosseous cannulation",
+        "keyFindings": [
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 78,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A previously healthy 10-year-old boy is brought to the emergency room by his mother 5 hours after the onset of abdominal pain and nausea. Over the past 2 weeks, he has also had progressive abdominal pain and a 4-kg (8.8-lb) weight loss. The mother reports that her son has been drinking more water th...",
+        "correctAnswer": "A: Decreased total body potassium",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 163,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 45-year-old woman comes to the physician because of a 2-week history of fatigue and excessive thirst. During this period, she has not been able to sleep through the night because of the frequent urge to urinate. She also urinates more than usual during the day. She drinks 4–5 liters of water and 1...",
+        "correctAnswer": "D: Hydrochlorothiazide therapy",
+        "keyFindings": [
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 266,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 6-year-old boy presents to the clinic because of monosymptomatic enuresis for the past month. Urinalysis, detailed patient history, and fluid intake, stool, and voiding diary from a previous visit all show no abnormalities. The parent and child are referred for education and behavioral therapy. En...",
+        "correctAnswer": "C: Enuresis alarm",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 353,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 69-year-old woman presents with pain in her hip and groin. She states that the pain is present in the morning, and by the end of the day it is nearly unbearable. Her past medical history is notable for a treated episode of acute renal failure, diabetes mellitus, obesity, and hypertension. Her curr...",
+        "correctAnswer": "A: Loss of joint space and osteophytes",
+        "keyFindings": [
+          "Defisiensi Vitamin D / Rikets",
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 380,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 6-day-old male newborn is brought to the physician by his mother for the evaluation of yellowing of his skin and eyes for one day. The mother reports that she is breastfeeding her son about 7 times per day. She also states that her son had two wet diapers and two bowel movements yesterday. He was ...",
+        "correctAnswer": "C: Increasing frequency of breastfeeding",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 429,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 6-day-old infant who was born via uncomplicated vaginal delivery at 39 weeks of gestation is brought to the family physician for poor feeding. The mother received adequate prenatal care throughout the pregnancy, and has no medical conditions. On physical exam, the infant's temperature is 36.5°C (9...",
+        "correctAnswer": "C: Increased sex hormones, increased 17-hydroxyprogesterone",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 548,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 19-year-old man is brought to the emergency department by the resident assistant of his dormitory for strange behavior. He was found locked out of his room, where the patient admitted to attending a fraternity party before becoming paranoid that the resident assistant would report him to the polic...",
+        "correctAnswer": "E: Impaired reaction time",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 596,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 5-year-old boy is brought to the emergency department for evaluation of a progressive rash that started 2 days ago. The rash began on the face and progressed to the trunk and extremities. Over the past week, he has had a runny nose, a cough, and red, crusty eyes. He immigrated with his family from...",
+        "correctAnswer": "C: Vitamin A supplementation",
+        "keyFindings": [
+          "Kadar Hemoglobin Rendah",
+          "Defisiensi Vitamin A",
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 701,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 44-year-old female presents to her primary care physician with complaints of headache, fatigue, muscle weakness, and frequent urination. These issues have developed and worsened over the past month. She has no significant prior medical or surgical history other than cholecystitis managed with chol...",
+        "correctAnswer": "E: Metabolic alkalosis, hypernatremia, hypokalemia",
+        "keyFindings": [
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 704,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 47-year-old woman presents to a local medical shelter while on a mission trip with her church to help rebuild homes after a hurricane. She has been experiencing severe nausea, vomiting, and diarrhea for the last 2 days and was feeling too fatigued to walk this morning. On presentation, her tempera...",
+        "correctAnswer": "D: Increased adenylyl cyclase activity",
+        "keyFindings": [
+          "Kelelahan & Lesu",
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 785,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 45-year-old man undergoes a parathyroidectomy given recurrent episodes of dehydration and kidney stones caused by hypercalcemia secondary to an elevated PTH level. He is recovering on the surgical floor on day 3. His temperature is 97.6°F (36.4°C), blood pressure is 122/81 mmHg, pulse is 84/min, r...",
+        "correctAnswer": "A: Calcium gluconate",
+        "keyFindings": [
+          "Defisiensi Vitamin D / Rikets",
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 786,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 51-year-old woman comes to the physician because of daytime sleepiness and dry mouth for one month. She says her sleepiness is due to getting up to urinate several times each night. She noticed increased thirst about a month ago and now drinks up to 20 cups of water daily. She does not feel a sudd...",
+        "correctAnswer": "E: Mood stabilizer intake",
+        "keyFindings": [
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 803,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 42-year-old woman presents to the emergency department in active labor. She has had no prenatal care and is unsure of the gestational age. Labor progresses rapidly and spontaneous vaginal delivery of a baby boy occurs 3 hours after presentation. On initial exam, the child is 1.9 kg (4.2 lb) with a...",
+        "correctAnswer": "D: Cardiac defect",
+        "keyFindings": [
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 816,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 17-year-old boy is brought to the physician by his father because of a 7-month history of fatigue, recurrent leg cramps, and increased urinary frequency. His pulse is 94/min and blood pressure is 118/85 mm Hg. Physical examination shows dry mucous membranes. Laboratory studies show:\nSerum\nNa+ 130 ...",
+        "correctAnswer": "B: Distal convoluted tubule",
+        "keyFindings": [
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 883,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 62-year-old man presents to the emergency room with an acute myocardial infarction. Twenty-four hours after admission to the cardiac intensive care unit, he develops oliguria. Laboratory tests show that his serum BUN is 59 mg/dL and his serum creatinine is 6.2 mg/dL. Renal biopsy reveals necrosis ...",
+        "correctAnswer": "C: Muddy brown casts",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 897,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 17-year-old girl comes to the physician because of a 12-hour history of profuse watery diarrhea with flecks of mucus that started shortly after she returned from a trip to South America. She has not had any fever or nausea. Pulse is 104/min and blood pressure is 110/65 mm Hg. Physical examination ...",
+        "correctAnswer": "C: Luminal chloride hypersecretion due to overactivation of adenylate cyclase",
+        "keyFindings": [
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 929,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 43-year-old man is brought to the emergency department by his wife because of a 1-hour history of confusion and strange behavior. She reports that he started behaving in an agitated manner shortly after eating some wild berries that they had picked during their camping trip. His temperature is 38....",
+        "correctAnswer": "D: Physostigmine",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 1130,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 75-year-old woman is brought to a physician’s office by her son with complaints of diarrhea and vomiting for 1 day. Her stool is loose, watery, and yellow-colored, while her vomitus contains partially digested food particles. She denies having blood or mucus in her stools and vomitus. Since the on...",
+        "correctAnswer": "B: Decreased GFR, decreased RPF, increased FF",
+        "keyFindings": [
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      },
+      {
+        "idx": 1139,
+        "cluster": "HYDRATION_TURGOR",
+        "organTrigger": "skin_turgor",
+        "clinicalContext": "A 21-year-old woman presents to her primary care doctor for an initial visit. She is a Syrian refugee and arrived in the United States 2 weeks ago. She has been living in refugee camps throughout Jordan and Turkey for the past 2 years. She has a 3-year-old son and reports that she has limited her fo...",
+        "correctAnswer": "B: T-cell differentiation",
+        "keyFindings": [
+          "Dehidrasi / Turgor Kulit Buruk"
+        ],
+        "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+      }
+    ],
+    "MALNUTRITION_STUNTING": [
+      {
+        "idx": 319,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 21-year-old woman is admitted to the hospital for severe malnutrition with a BMI of 15 kg/m2. Past medical history is significant for chronic anorexia nervosa. During the course of her stay, she is treated with parenteral fluids and nutrition management. On the 4th day, her status changes. Her blo...",
+        "correctAnswer": "C: Measure electrolytes",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 943,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 2-month-old Middle Eastern female infant from a consanguinous marriage presents with seizures, anorexia, failure to thrive, developmental delay, and vomiting and fatigue after eating. Blood work demonstrated levels of methylmalonic acid nearly 500 times normal levels. A carbon-14 propionate incorp...",
+        "correctAnswer": "C: Methylmalonyl-CoA --> Succinyl-CoA",
+        "keyFindings": [
+          "Kelelahan & Lesu",
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 945,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 14-month-old boy is brought in by his parents with an 8-month history of diarrhea, abdominal tenderness and concomitant failure to thrive. The pediatric attending physician believes that Crohn’s disease is the best explanation of this patient’s symptoms. Based on the pediatric attending physician’...",
+        "correctAnswer": "A: 2.5%",
+        "keyFindings": [
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 1087,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 44-year-old woman presents to the emergency department with confusion starting this morning. Her husband states that she initially complained of abdominal pain, diarrhea, and fatigue after eating. She has vomited 3 times and progressively became more confused. Her past medical history is notable f...",
+        "correctAnswer": "A: Dumping syndrome",
+        "keyFindings": [
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 1454,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "An 85-year-old woman presents to her physician with complaints of significant weakness and weight loss. She recently has been diagnosed with stage IV breast cancer for which she currently is receiving treatment. She mentions that, despite taking a diet rich in protein and calories, she continues to ...",
+        "correctAnswer": "D: Activation of NF-κB",
+        "keyFindings": [
+          "Kelelahan & Lesu",
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 1508,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 4-month-old girl is brought to the physician by her mother because of a 4-day history of vomiting, poor feeding, and more frequent napping. She appears lethargic. Her vital signs are within normal limits. Physical examination shows a bulging, tense anterior fontanelle. Fundoscopic exam shows bilat...",
+        "correctAnswer": "B: Shearing head injury",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 1635,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 16-year-old boy is brought to the emergency department after losing consciousness. He had no preceding chest pain or palpitations. His father has cataracts and had frontal balding in his twenties but has no history of cardiac disease. His paternal grandfather also had early-onset balding. His puls...",
+        "correctAnswer": "E: Anticipation",
+        "keyFindings": [
+          "Kelelahan & Lesu",
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 1821,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 2-year-old boy is brought to his pediatrician’s office with complaints of watery diarrhea for the past 2 weeks. He has had a couple of episodes of watery diarrhea in the past, but this is the first time it failed to subside over the course of a few days. His father tells the doctor that the child ...",
+        "correctAnswer": "A: Faulty transmembrane ion channel",
+        "keyFindings": [
+          "Dehidrasi / Turgor Kulit Buruk",
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 1829,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "An 18-month-old girl is brought to the pediatrician’s office for failure to thrive and developmental delay. The patient’s mother says she has not started speaking and is just now starting to pull herself up to standing position. Furthermore, her movement appears to be restricted. Physical examinatio...",
+        "correctAnswer": "A: Failure of mannose phosphorylation",
+        "keyFindings": [
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 1836,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 2-year-old boy is brought to the physician for the evaluation of fever, difficulty breathing, and coughing for the past week. In the past year, he has had four sinus infections, three upper respiratory tract infections, and an episode of severe bronchiolitis requiring hospitalization. Since birth,...",
+        "correctAnswer": "B: T cells",
+        "keyFindings": [
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 2052,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 15-year-old male adolescent presents to the pediatrician with his parents complaining that he is shorter than his peers. His past medical history does not suggest any specific recurrent or chronic disease. There is no history of weight gain, weight loss, constipation, dry skin, headache. Both his ...",
+        "correctAnswer": "A: Constitutional growth delay",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 2156,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 44-year-old man presents to his primary care physician for muscle pain and weakness. He says that his muscle pain mainly affects his legs. He also experiences difficulty with chewing gum and has poor finger dexterity. Medical history is significant for infertility and cataracts. On physical exam, ...",
+        "correctAnswer": "A: DMPK gene CTG expansion",
+        "keyFindings": [
+          "Kelelahan & Lesu",
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 2279,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 26-year-old female college student is brought back into the university clinic for acting uncharacteristically. The patient presented to the same clinic 6 weeks ago with complaints of depressed mood, insomnia, and weightloss. She had been feeling guilty for wasting her parent’s money by doing so po...",
+        "correctAnswer": "A: Her diagnosis of unipolar depression is incorrect.",
+        "keyFindings": [
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 2853,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 1-year-old boy is brought to his pediatrician for a follow-up appointment. He was recently diagnosed with failure to thrive and developmental delay. His weight is 7 kg (15.4 lb), height is 61 cm (24 in), and head circumference is 42 cm (16.5 in). The patient’s father had a younger sister who suffe...",
+        "correctAnswer": "C: The lysosomal enzymes are secreted from the cells instead of being targeted to lysosomes because of lack of mannose phosphorylation on N-linked glycoproteins.",
+        "keyFindings": [
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 3081,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "An American doctor is on an outreach trip to visit local communities in Ethiopia. In one clinic, he found many cases of children ages 2–5 years who have significantly low weight and height for their age. These children also had pale sclerae, distended abdomens, dermatoses, and marked edema in the lo...",
+        "correctAnswer": "E: Methionine",
+        "keyFindings": [
+          "Malnutrisi Protein-Energi"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 3194,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 20-month-old boy is brought to the emergency department by his parents with fever and diarrhea that have persisted for the past 2 days. He has a history of repeated bouts of diarrhea, upper respiratory tract infections, and failure to thrive. His vital signs are as follows: blood pressure 80/40 mm...",
+        "correctAnswer": "A: X-linked severe combined immunodeficiency",
+        "keyFindings": [
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 4033,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 62-year-old woman makes an appointment with her primary care physician because she recently started experiencing post-menopausal bleeding. She states that she suffered from anorexia as a young adult and has been thin throughout her life. She says that this nutritional deficit is likely what caused...",
+        "correctAnswer": "D: Never becoming pregnant",
+        "keyFindings": [
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 4282,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 15-month-old girl is brought to the pediatrician by her mother with a history of 3 episodes of breath-holding spells. The patient’s mother says that this is a new behavior and she is concerned. The patient was born at full term by spontaneous vaginal delivery with an uneventful perinatal period. S...",
+        "correctAnswer": "D: Loss of purposeful use of her hands",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 4352,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 14-year-old boy is brought to the physician because of increasing swelling of his legs and generalized fatigue for 1 month. During this period he has also had a productive cough and shortness of breath. He has been unable to carry out his daily activities. He has a history of recurrent respiratory...",
+        "correctAnswer": "E: Cystic fibrosis",
+        "keyFindings": [
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      },
+      {
+        "idx": 4523,
+        "cluster": "MALNUTRITION_STUNTING",
+        "organTrigger": "face_vitality",
+        "clinicalContext": "A 52-year-old man is seen by his endocrinologist for routine followup of his type 2 diabetes. Although he has previously been on a number of medication regimens, his A1C has remained significantly elevated. In order to try to better control his glucose level, the endocrinologist prescribes a new med...",
+        "correctAnswer": "B: Canagliflozin",
+        "keyFindings": [
+          "Gagal Tumbuh / Underweight"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+      }
+    ],
+    "PEDIATRIC_ALLERGEN": [
+      {
+        "idx": 1845,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 12-month-old boy presents for a routine checkup. The patient immigrated from the Philippines with his parents a few months ago. No prior immunization records are available. The patient’s mother claims that he had a series of shots at 6 months of age which gave him a severe allergic reaction with s...",
+        "correctAnswer": "B: Intramuscular influenza vaccine",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      },
+      {
+        "idx": 2146,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 30-year-old man comes to the emergency department because of a painful rash for 2 days. The rash initially appeared on his left lower abdomen and has spread to the rest of the abdomen and left upper thigh over the last 24 hours. Pain is exacerbated with movement. He initially thought the skin rash...",
+        "correctAnswer": "D: Inpatient treatment with intravenous acyclovir",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      },
+      {
+        "idx": 2439,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 47-year-old woman presents to the emergency department in a frantic state and demands immediate treatment for an allergic reaction, which started soon after she had lunch (approximately 1 hour ago). She had her usual meal consisting of homemade salad and lemonade. She was recently started on niaci...",
+        "correctAnswer": "D: Prostaglandin release",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      },
+      {
+        "idx": 2836,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 23-year-old woman presented to the clinic for her first prenatal appointment with fatigue and pain in the perineum for the past 8 days. The past medical history is benign and she claimed to have only had unprotected intercourse with her husband. She had a documented allergic reaction to amoxicilli...",
+        "correctAnswer": "B: Penicillin desensitization, then intramuscular benzathine penicillin, G 2.4 million units",
+        "keyFindings": [
+          "Kelelahan & Lesu"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      },
+      {
+        "idx": 2903,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 45-year-old man presents to his primary care physician for lower extremity pain and unsteadiness. He describes the pain as severe and stabbing and affecting his lower extremities. These episodes of pain last for minutes at a time. He also reports knocking into furniture regularly. Medical history ...",
+        "correctAnswer": "D: Intravenous penicillin",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      },
+      {
+        "idx": 3610,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 7-year-old boy is brought to the pediatrician by his parents for a routine checkup. The parents note that the patient recently joined a baseball team and has had trouble keeping up with his teammates and gets short of breath with exertion. The patient has otherwise been healthy and has no known hi...",
+        "correctAnswer": "D: Holosystolic murmur at the lower left sternal border",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      },
+      {
+        "idx": 4201,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 42-year-old woman comes to her primary care physician because of an irritating sensation in her nose. She noticed recently that there seems to be a lump in her nose. Her past medical history is significant for pain that seems to migrate around her body and is refractory to treatment. She has inter...",
+        "correctAnswer": "D: Increased lipoxygenase pathway activity",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      },
+      {
+        "idx": 4827,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 72-year-old man is brought to the emergency department by his daughter because he was found to have decreased alertness that has gotten progressively worse. Three weeks ago he was diagnosed with an infection and given an antibiotic, though his daughter does not remember what drug was prescribed. H...",
+        "correctAnswer": "D: Overdiuresis by thiazides",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      },
+      {
+        "idx": 4884,
+        "cluster": "PEDIATRIC_ALLERGEN",
+        "organTrigger": "normal_baseline",
+        "clinicalContext": "A 7-year-old boy presents to an urgent care clinic from his friend’s birthday party after experiencing trouble breathing. His father explains that the patient had eaten peanut butter at the party, and soon after, he developed facial flushing and began scratching his face and neck. This has never hap...",
+        "correctAnswer": "A: Type I hypersensitivity reaction",
+        "keyFindings": [
+          "Temuan Klinis Gizi Umum"
+        ],
+        "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+      }
+    ]
+  },
+  "allCases": [
+    {
+      "idx": 22,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 52-year-old woman comes to the physician because of a 6-month history of generalized fatigue, low-grade fever, and a 10-kg (22-lb) weight loss. Physical examination shows generalized pallor and splenomegaly. Her hemoglobin concentration is 7.5 g/dL and leukocyte count is 41,800/mm3. Leukocyte alka...",
+      "correctAnswer": "E: Unregulated expression of the ABL1 gene",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 24,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 48-year-old woman comes to the emergency department because of a photosensitive blistering rash on her hands, forearms, and face for 3 weeks. The lesions are not itchy. She has also noticed that her urine has been dark brown in color recently. Twenty years ago, she was successfully treated for Coa...",
+      "correctAnswer": "C: Begin phlebotomy therapy",
+      "keyFindings": [
+        "Cadangan Besi Rendah (Ferritin)"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 34,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 19-year-old woman, accompanied by her parents, presents after a one-week history of abnormal behavior, delusions, and unusual aggression. She denies fever, seizures or illicit drug use. Family history is negative for psychiatric illnesses. She was started on risperidone and sent home with her pare...",
+      "correctAnswer": "D: Stop risperidone",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 56,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 48-year-old man with HIV comes to the physician because of skin lesions over his face and neck for 2 weeks. They are not itchy or painful. He does not have fever or a sore throat. He was treated for candidal esophagitis 3 months ago. He is sexually active with his wife, who knows of his condition,...",
+      "correctAnswer": "D: Poxvirus",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 63,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 4-year-old boy is brought to the physician because of swelling around his eyes for 4 days. The swelling is most severe in the morning and milder by bedtime. Ten days ago, he had a sore throat that resolved spontaneously. His temperature is 37°C (98.6°F), pulse is 103/min, and blood pressure is 88/...",
+      "correctAnswer": "D: Prednisone therapy",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 77,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 3-week-old boy is brought to the emergency department by his parents because of a 3-day history of progressive lethargy and difficulty feeding. He was born at term and did not have difficulty feeding previously. His temperature is 39.4°C (103°F), pulse is 220/min, respirations are 45/min, and bloo...",
+      "correctAnswer": "D: Intraosseous cannulation",
+      "keyFindings": [
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 78,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A previously healthy 10-year-old boy is brought to the emergency room by his mother 5 hours after the onset of abdominal pain and nausea. Over the past 2 weeks, he has also had progressive abdominal pain and a 4-kg (8.8-lb) weight loss. The mother reports that her son has been drinking more water th...",
+      "correctAnswer": "A: Decreased total body potassium",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 86,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 30-year-old woman is brought to the urgent care clinic by her husband. She complains of numbness around her lips and a tingling sensation in her hands and feet. She underwent near-total thyroidectomy for an enlarged thyroid gland a month ago. Vital signs include: blood pressure is 130/70 mm Hg, pu...",
+      "correctAnswer": "E: Serum parathyroid hormone (PTH) level",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Defisiensi Vitamin D / Rikets"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 91,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 53-year-old woman comes to the physician in February because of a 1-day history of fever, chills, headache, and dry cough. She also reports malaise and generalized muscle aches. She works as a teacher at a local high school, where there was recently an outbreak of influenza. She has a history of i...",
+      "correctAnswer": "D: Oseltamivir",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 98,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "Three days after starting a new drug for malaria prophylaxis, a 19-year-old college student comes to the physician because of dark-colored urine and fatigue. He has not had any fever, dysuria, or abdominal pain. He has no history of serious illness. Physical examination shows scleral icterus. Labora...",
+      "correctAnswer": "B: Primaquine",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 116,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 61-year-old man with a history of stage IIIa lung adenocarcinoma that has been treated with wedge resection and chemotherapy presents to the primary care clinic. He is largely asymptomatic, but he demonstrates a persistent microcytic anemia despite iron supplementation. Colonoscopy performed 3 yea...",
+      "correctAnswer": "A: Decreased serum iron and transferrin, increased ferritin, normal serum transferrin receptor",
+      "keyFindings": [
+        "Cadangan Besi Rendah (Ferritin)"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 122,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 71-year-old man comes to the emergency department because of a 2-month history of severe muscle cramps and back pain. He says that he is homeless and has not visited a physician in the past 20 years. He is 183 cm (6 ft 0 in) tall and weighs 62 kg (137 lb); BMI is 18.5 kg/m2. His blood pressure is ...",
+      "correctAnswer": "B: Secondary hyperparathyroidism",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 139,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A man returns home late at night to find his 15-year-old son and 40-year-old wife unconscious in the family room. He immediately summons emergency services. In the field, pulse oximetry shows oxygen saturation at 100% for both patients. 100% yet they both appear cyanotic. Both patients are provided ...",
+      "correctAnswer": "D: Carbon monoxide poisoning",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 152,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 65-year-old man presents to his primary care physician for a pre-operative evaluation. He is scheduled for cataract surgery in 3 weeks. His past medical history is notable for diabetes, hypertension, and severe osteoarthritis of the right knee. His medications include metformin, hydrochlorothiazid...",
+      "correctAnswer": "A: Medically clear the patient for surgery",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 163,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 45-year-old woman comes to the physician because of a 2-week history of fatigue and excessive thirst. During this period, she has not been able to sleep through the night because of the frequent urge to urinate. She also urinates more than usual during the day. She drinks 4–5 liters of water and 1...",
+      "correctAnswer": "D: Hydrochlorothiazide therapy",
+      "keyFindings": [
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 182,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 2-month-old boy is brought to the physician by his mother because of poor weight gain and irritability since delivery. He is at the 10th percentile for height and below the 5th percentile for weight. Physical examination shows conjunctival pallor. Laboratory studies show:\nHemoglobin 11.2 g/dL\nMean...",
+      "correctAnswer": "E: Orotate to uridine 5'-monophosphate",
+      "keyFindings": [
+        "Konjungtiva Pucat (Pallor)",
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 183,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A previously healthy 40-year-old woman comes to the physician because of a 3-day history of fever, headaches, and fatigue. She also reports a persistent tingling sensation in her right hand and numbness in her right arm that started this morning. Physical examination shows pallor, mild scleral icter...",
+      "correctAnswer": "A: Antibodies against ADAMTS13",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 186,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 55-year-old Chinese man presents to the office with a complaint of progressive unilateral nasal obstruction for 10 months. Though he was able to tolerate his symptoms at the beginning, he can’t breathe properly through the obstructed nostril anymore. Also, a bloody nasal discharge has started rece...",
+      "correctAnswer": "C: Epstein-Barr virus",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 194,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 2-year-old boy is brought to the emergency department by his parents because of fever and recurrent episodes of jerky movements of his extremities for the past 6 hours. Pregnancy and delivery were uncomplicated, and development was normal until the age of 1 year. The parents report that he has had...",
+      "correctAnswer": "E: β-Galactocerebrosidase",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 202,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 61-year-old diabetic woman is brought to the emergency department with the complaint of multiple bouts of abdominal pain in the last 24 hours. She says that the pain is dull aching in nature, radiates to the back, and worsens with meals. She also complains of nausea and occasional vomiting. She ha...",
+      "correctAnswer": "C: Pancreatitis",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 211,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 76-year-old man is brought to the emergency room because of one episode of hemoptysis. His pulse is 110/min. Physical examination shows pallor; there is blood in the oral cavity. Examination of the nasal cavity with a nasal speculum shows active bleeding from the posterior nasal cavity. Tamponade ...",
+      "correctAnswer": "E: Maxillary artery",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 219,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 67-year-old man presents to the physician with profuse watery diarrhea along with fever and crampy abdominal pain. He has been taking an antibiotic course of cefixime for about a week to treat a respiratory tract infection. At the doctor’s office, his pulse is 112/min, the blood pressure is 100/66...",
+      "correctAnswer": "A: Identification of C. difficile toxin in stool",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 220,
+      "cluster": "HEMATOLOGY_ANEMIA",
+      "organTrigger": "eye_conjunctiva",
+      "clinicalContext": "A 45-year-old man presents to the emergency department with fever and easy bruising for 3 days. He has had fatigue for 2 weeks. He has no past medical history, and takes no medications. Excessive bleeding from intravenous lines was reported by the nurse. He does not smoke or drink alcohol. The tempe...",
+      "correctAnswer": "A: All-trans retinoic acid (ATRA)",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: apakah anak sering lelah/lesu, pusing saat berdiri, atau terlihat pucat. Riwayat asupan daging merah & sayuran hijau."
+    },
+    {
+      "idx": 266,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 6-year-old boy presents to the clinic because of monosymptomatic enuresis for the past month. Urinalysis, detailed patient history, and fluid intake, stool, and voiding diary from a previous visit all show no abnormalities. The parent and child are referred for education and behavioral therapy. En...",
+      "correctAnswer": "C: Enuresis alarm",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 319,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 21-year-old woman is admitted to the hospital for severe malnutrition with a BMI of 15 kg/m2. Past medical history is significant for chronic anorexia nervosa. During the course of her stay, she is treated with parenteral fluids and nutrition management. On the 4th day, her status changes. Her blo...",
+      "correctAnswer": "C: Measure electrolytes",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 353,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 69-year-old woman presents with pain in her hip and groin. She states that the pain is present in the morning, and by the end of the day it is nearly unbearable. Her past medical history is notable for a treated episode of acute renal failure, diabetes mellitus, obesity, and hypertension. Her curr...",
+      "correctAnswer": "A: Loss of joint space and osteophytes",
+      "keyFindings": [
+        "Defisiensi Vitamin D / Rikets",
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 380,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 6-day-old male newborn is brought to the physician by his mother for the evaluation of yellowing of his skin and eyes for one day. The mother reports that she is breastfeeding her son about 7 times per day. She also states that her son had two wet diapers and two bowel movements yesterday. He was ...",
+      "correctAnswer": "C: Increasing frequency of breastfeeding",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 429,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 6-day-old infant who was born via uncomplicated vaginal delivery at 39 weeks of gestation is brought to the family physician for poor feeding. The mother received adequate prenatal care throughout the pregnancy, and has no medical conditions. On physical exam, the infant's temperature is 36.5°C (9...",
+      "correctAnswer": "C: Increased sex hormones, increased 17-hydroxyprogesterone",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 452,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 17-year-old male is diagnosed with acne vulgaris during a visit to a dermatologist. He is prescribed a therapy that is a derivative of vitamin A. He has no other significant past medical history. Which of the following is the major side-effect of this therapy?? \n,",
+      "correctAnswer": "B: Hyperlipidemia",
+      "keyFindings": [
+        "Kelelahan & Lesu",
+        "Defisiensi Vitamin A"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 548,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 19-year-old man is brought to the emergency department by the resident assistant of his dormitory for strange behavior. He was found locked out of his room, where the patient admitted to attending a fraternity party before becoming paranoid that the resident assistant would report him to the polic...",
+      "correctAnswer": "E: Impaired reaction time",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 596,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 5-year-old boy is brought to the emergency department for evaluation of a progressive rash that started 2 days ago. The rash began on the face and progressed to the trunk and extremities. Over the past week, he has had a runny nose, a cough, and red, crusty eyes. He immigrated with his family from...",
+      "correctAnswer": "C: Vitamin A supplementation",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Defisiensi Vitamin A",
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 671,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 19-year-old male with cystic fibrosis is evaluated in the clinic for regular health maintenance. He is compliant with his respiratory therapy, but states that he often \"forgets\" to take the medications before he eats. A panel of labs is drawn which reveals a moderate vitamin D deficiency. Which of...",
+      "correctAnswer": "D: Decreased calcium and decreased phosphate",
+      "keyFindings": [
+        "Defisiensi Vitamin D / Rikets"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 701,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 44-year-old female presents to her primary care physician with complaints of headache, fatigue, muscle weakness, and frequent urination. These issues have developed and worsened over the past month. She has no significant prior medical or surgical history other than cholecystitis managed with chol...",
+      "correctAnswer": "E: Metabolic alkalosis, hypernatremia, hypokalemia",
+      "keyFindings": [
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 704,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 47-year-old woman presents to a local medical shelter while on a mission trip with her church to help rebuild homes after a hurricane. She has been experiencing severe nausea, vomiting, and diarrhea for the last 2 days and was feeling too fatigued to walk this morning. On presentation, her tempera...",
+      "correctAnswer": "D: Increased adenylyl cyclase activity",
+      "keyFindings": [
+        "Kelelahan & Lesu",
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 784,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 50-year-old woman presents with a severe headache and vomiting. She says that symptoms onset after attending a wine tasting at the local brewery. She says that her headache is mostly at the back of her head and that she has been nauseous and vomited twice. Past medical history is significant for d...",
+      "correctAnswer": "D: Blood pressure",
+      "keyFindings": [
+        "Defisiensi Vitamin D / Rikets"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 785,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 45-year-old man undergoes a parathyroidectomy given recurrent episodes of dehydration and kidney stones caused by hypercalcemia secondary to an elevated PTH level. He is recovering on the surgical floor on day 3. His temperature is 97.6°F (36.4°C), blood pressure is 122/81 mmHg, pulse is 84/min, r...",
+      "correctAnswer": "A: Calcium gluconate",
+      "keyFindings": [
+        "Defisiensi Vitamin D / Rikets",
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 786,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 51-year-old woman comes to the physician because of daytime sleepiness and dry mouth for one month. She says her sleepiness is due to getting up to urinate several times each night. She noticed increased thirst about a month ago and now drinks up to 20 cups of water daily. She does not feel a sudd...",
+      "correctAnswer": "E: Mood stabilizer intake",
+      "keyFindings": [
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 803,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 42-year-old woman presents to the emergency department in active labor. She has had no prenatal care and is unsure of the gestational age. Labor progresses rapidly and spontaneous vaginal delivery of a baby boy occurs 3 hours after presentation. On initial exam, the child is 1.9 kg (4.2 lb) with a...",
+      "correctAnswer": "D: Cardiac defect",
+      "keyFindings": [
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 816,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 17-year-old boy is brought to the physician by his father because of a 7-month history of fatigue, recurrent leg cramps, and increased urinary frequency. His pulse is 94/min and blood pressure is 118/85 mm Hg. Physical examination shows dry mucous membranes. Laboratory studies show:\nSerum\nNa+ 130 ...",
+      "correctAnswer": "B: Distal convoluted tubule",
+      "keyFindings": [
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 883,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 62-year-old man presents to the emergency room with an acute myocardial infarction. Twenty-four hours after admission to the cardiac intensive care unit, he develops oliguria. Laboratory tests show that his serum BUN is 59 mg/dL and his serum creatinine is 6.2 mg/dL. Renal biopsy reveals necrosis ...",
+      "correctAnswer": "C: Muddy brown casts",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 897,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 17-year-old girl comes to the physician because of a 12-hour history of profuse watery diarrhea with flecks of mucus that started shortly after she returned from a trip to South America. She has not had any fever or nausea. Pulse is 104/min and blood pressure is 110/65 mm Hg. Physical examination ...",
+      "correctAnswer": "C: Luminal chloride hypersecretion due to overactivation of adenylate cyclase",
+      "keyFindings": [
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 919,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 10-year-old boy is brought into your clinic by his mother for sunburns that have not been healing. The mother states that he easily gets sunburned. The mother admits she gave birth to him at home and has never taken him to see a doctor. The patient walks with a wide stance gait and appears unstabl...",
+      "correctAnswer": "A: Niacin",
+      "keyFindings": [
+        "Defisiensi Vitamin A"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 929,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 43-year-old man is brought to the emergency department by his wife because of a 1-hour history of confusion and strange behavior. She reports that he started behaving in an agitated manner shortly after eating some wild berries that they had picked during their camping trip. His temperature is 38....",
+      "correctAnswer": "D: Physostigmine",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 943,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 2-month-old Middle Eastern female infant from a consanguinous marriage presents with seizures, anorexia, failure to thrive, developmental delay, and vomiting and fatigue after eating. Blood work demonstrated levels of methylmalonic acid nearly 500 times normal levels. A carbon-14 propionate incorp...",
+      "correctAnswer": "C: Methylmalonyl-CoA --> Succinyl-CoA",
+      "keyFindings": [
+        "Kelelahan & Lesu",
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 945,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 14-month-old boy is brought in by his parents with an 8-month history of diarrhea, abdominal tenderness and concomitant failure to thrive. The pediatric attending physician believes that Crohn’s disease is the best explanation of this patient’s symptoms. Based on the pediatric attending physician’...",
+      "correctAnswer": "A: 2.5%",
+      "keyFindings": [
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 1087,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 44-year-old woman presents to the emergency department with confusion starting this morning. Her husband states that she initially complained of abdominal pain, diarrhea, and fatigue after eating. She has vomited 3 times and progressively became more confused. Her past medical history is notable f...",
+      "correctAnswer": "A: Dumping syndrome",
+      "keyFindings": [
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 1130,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 75-year-old woman is brought to a physician’s office by her son with complaints of diarrhea and vomiting for 1 day. Her stool is loose, watery, and yellow-colored, while her vomitus contains partially digested food particles. She denies having blood or mucus in her stools and vomitus. Since the on...",
+      "correctAnswer": "B: Decreased GFR, decreased RPF, increased FF",
+      "keyFindings": [
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 1139,
+      "cluster": "HYDRATION_TURGOR",
+      "organTrigger": "skin_turgor",
+      "clinicalContext": "A 21-year-old woman presents to her primary care doctor for an initial visit. She is a Syrian refugee and arrived in the United States 2 weeks ago. She has been living in refugee camps throughout Jordan and Turkey for the past 2 years. She has a 3-year-old son and reports that she has limited her fo...",
+      "correctAnswer": "B: T-cell differentiation",
+      "keyFindings": [
+        "Dehidrasi / Turgor Kulit Buruk"
+      ],
+      "anamnesisHint": "Tanyakan: jumlah minum air per hari (gelas), frekuensi BAK & warna urin, aktivitas fisik & paparan panas."
+    },
+    {
+      "idx": 1193,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 24-year-old woman comes to the physician for preconceptional advice. She has been married for 2 years and would like to conceive within the next year. Menses occur at regular 30-day intervals and last 4 days with normal flow. She does not smoke or drink alcohol and follows a balanced diet. She tak...",
+      "correctAnswer": "A: Begin folate supplementation",
+      "keyFindings": [
+        "Defisiensi Vitamin A"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 1454,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "An 85-year-old woman presents to her physician with complaints of significant weakness and weight loss. She recently has been diagnosed with stage IV breast cancer for which she currently is receiving treatment. She mentions that, despite taking a diet rich in protein and calories, she continues to ...",
+      "correctAnswer": "D: Activation of NF-κB",
+      "keyFindings": [
+        "Kelelahan & Lesu",
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 1508,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 4-month-old girl is brought to the physician by her mother because of a 4-day history of vomiting, poor feeding, and more frequent napping. She appears lethargic. Her vital signs are within normal limits. Physical examination shows a bulging, tense anterior fontanelle. Fundoscopic exam shows bilat...",
+      "correctAnswer": "B: Shearing head injury",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 1635,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 16-year-old boy is brought to the emergency department after losing consciousness. He had no preceding chest pain or palpitations. His father has cataracts and had frontal balding in his twenties but has no history of cardiac disease. His paternal grandfather also had early-onset balding. His puls...",
+      "correctAnswer": "E: Anticipation",
+      "keyFindings": [
+        "Kelelahan & Lesu",
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 1678,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 7-year-old boy presents to the clinic with his mother, who notes that the way in which he plays has changed and that he has been limping, favoring his left leg. When asked, the patient states that his left knee hurts. He is afebrile and vital signs are stable. The patient is well nourished and mee...",
+      "correctAnswer": "C: Legg-Calvé-Perthes disease (LCPD)",
+      "keyFindings": [
+        "Defisiensi Vitamin D / Rikets"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 1821,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 2-year-old boy is brought to his pediatrician’s office with complaints of watery diarrhea for the past 2 weeks. He has had a couple of episodes of watery diarrhea in the past, but this is the first time it failed to subside over the course of a few days. His father tells the doctor that the child ...",
+      "correctAnswer": "A: Faulty transmembrane ion channel",
+      "keyFindings": [
+        "Dehidrasi / Turgor Kulit Buruk",
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 1829,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "An 18-month-old girl is brought to the pediatrician’s office for failure to thrive and developmental delay. The patient’s mother says she has not started speaking and is just now starting to pull herself up to standing position. Furthermore, her movement appears to be restricted. Physical examinatio...",
+      "correctAnswer": "A: Failure of mannose phosphorylation",
+      "keyFindings": [
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 1836,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 2-year-old boy is brought to the physician for the evaluation of fever, difficulty breathing, and coughing for the past week. In the past year, he has had four sinus infections, three upper respiratory tract infections, and an episode of severe bronchiolitis requiring hospitalization. Since birth,...",
+      "correctAnswer": "B: T cells",
+      "keyFindings": [
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 1845,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 12-month-old boy presents for a routine checkup. The patient immigrated from the Philippines with his parents a few months ago. No prior immunization records are available. The patient’s mother claims that he had a series of shots at 6 months of age which gave him a severe allergic reaction with s...",
+      "correctAnswer": "B: Intramuscular influenza vaccine",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    },
+    {
+      "idx": 2050,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 46-year-old woman comes to the physician for a cognitive evaluation. She is an office manager. She has had increasing difficulties with multitasking and reports that her job performance has declined over the past 1 year. On mental status examination, short-term memory is impaired and long-term mem...",
+      "correctAnswer": "C: Mutation in presenilin 1",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 2052,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 15-year-old male adolescent presents to the pediatrician with his parents complaining that he is shorter than his peers. His past medical history does not suggest any specific recurrent or chronic disease. There is no history of weight gain, weight loss, constipation, dry skin, headache. Both his ...",
+      "correctAnswer": "A: Constitutional growth delay",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 2097,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 27-year-old woman presents for a checkup. She is 20 weeks pregnant and has been admitted to the hospital multiple times during her pregnancy for seizures. She has a known seizure disorder but discontinued her valproic acid when she became pregnant. The patient's past medical history is otherwise u...",
+      "correctAnswer": "A: Folate",
+      "keyFindings": [
+        "Defisiensi Vitamin D / Rikets"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 2146,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 30-year-old man comes to the emergency department because of a painful rash for 2 days. The rash initially appeared on his left lower abdomen and has spread to the rest of the abdomen and left upper thigh over the last 24 hours. Pain is exacerbated with movement. He initially thought the skin rash...",
+      "correctAnswer": "D: Inpatient treatment with intravenous acyclovir",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    },
+    {
+      "idx": 2156,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 44-year-old man presents to his primary care physician for muscle pain and weakness. He says that his muscle pain mainly affects his legs. He also experiences difficulty with chewing gum and has poor finger dexterity. Medical history is significant for infertility and cataracts. On physical exam, ...",
+      "correctAnswer": "A: DMPK gene CTG expansion",
+      "keyFindings": [
+        "Kelelahan & Lesu",
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 2259,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 34-year-old woman presents with fatigue, depressed mood, weight gain, and constipation. She gradually developed these symptoms over the past 6 months. She is G2P2 with the last pregnancy 9 months ago. She had a complicated delivery with significant blood loss requiring blood transfusions. She used...",
+      "correctAnswer": "A: Free T4",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 2279,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 26-year-old female college student is brought back into the university clinic for acting uncharacteristically. The patient presented to the same clinic 6 weeks ago with complaints of depressed mood, insomnia, and weightloss. She had been feeling guilty for wasting her parent’s money by doing so po...",
+      "correctAnswer": "A: Her diagnosis of unipolar depression is incorrect.",
+      "keyFindings": [
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 2439,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 47-year-old woman presents to the emergency department in a frantic state and demands immediate treatment for an allergic reaction, which started soon after she had lunch (approximately 1 hour ago). She had her usual meal consisting of homemade salad and lemonade. She was recently started on niaci...",
+      "correctAnswer": "D: Prostaglandin release",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    },
+    {
+      "idx": 2578,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 26-year-old gravida 2 para 1 presents to her physician at 12 weeks gestation. She has no complaints. Her previous pregnancy 5 years ago had an uncomplicated course with vaginal delivery of a healthy boy at 39 + 1 weeks gestation. Her weight is 75 kg (165 lb) and the height is 168 cm (5 ft 6 in). O...",
+      "correctAnswer": "D: Indirect Coombs test",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Cadangan Besi Rendah (Ferritin)"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 2836,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 23-year-old woman presented to the clinic for her first prenatal appointment with fatigue and pain in the perineum for the past 8 days. The past medical history is benign and she claimed to have only had unprotected intercourse with her husband. She had a documented allergic reaction to amoxicilli...",
+      "correctAnswer": "B: Penicillin desensitization, then intramuscular benzathine penicillin, G 2.4 million units",
+      "keyFindings": [
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    },
+    {
+      "idx": 2853,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 1-year-old boy is brought to his pediatrician for a follow-up appointment. He was recently diagnosed with failure to thrive and developmental delay. His weight is 7 kg (15.4 lb), height is 61 cm (24 in), and head circumference is 42 cm (16.5 in). The patient’s father had a younger sister who suffe...",
+      "correctAnswer": "C: The lysosomal enzymes are secreted from the cells instead of being targeted to lysosomes because of lack of mannose phosphorylation on N-linked glycoproteins.",
+      "keyFindings": [
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 2903,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 45-year-old man presents to his primary care physician for lower extremity pain and unsteadiness. He describes the pain as severe and stabbing and affecting his lower extremities. These episodes of pain last for minutes at a time. He also reports knocking into furniture regularly. Medical history ...",
+      "correctAnswer": "D: Intravenous penicillin",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    },
+    {
+      "idx": 3081,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "An American doctor is on an outreach trip to visit local communities in Ethiopia. In one clinic, he found many cases of children ages 2–5 years who have significantly low weight and height for their age. These children also had pale sclerae, distended abdomens, dermatoses, and marked edema in the lo...",
+      "correctAnswer": "E: Methionine",
+      "keyFindings": [
+        "Malnutrisi Protein-Energi"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 3098,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 4-year-old girl is brought to the physician for a routine checkup. She was recently adopted and has never seen a doctor before. The patient's parents state she was very emaciated when they adopted her and noticed she has trouble seeing in the evening. They also noted that she was experiencing prof...",
+      "correctAnswer": "E: Xerophthalmia",
+      "keyFindings": [
+        "Kadar Hemoglobin Rendah",
+        "Defisiensi Vitamin A"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3105,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 36-year-old healthy man presents to his physician to discuss his concerns about developing heart disease. His father, grandfather, and older brother had heart problems, and he has become increasingly worried he might be at risk. He takes no medications and his past medical history is only signific...",
+      "correctAnswer": "D: Vitamin E",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3194,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 20-month-old boy is brought to the emergency department by his parents with fever and diarrhea that have persisted for the past 2 days. He has a history of repeated bouts of diarrhea, upper respiratory tract infections, and failure to thrive. His vital signs are as follows: blood pressure 80/40 mm...",
+      "correctAnswer": "A: X-linked severe combined immunodeficiency",
+      "keyFindings": [
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 3230,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 68-year-old woman presents to the physician with complaints of unexplained weight loss of approximately 5 kg (11.02 lb) over the last 6 months. Her other complaints include repeated stomatitis and diarrhea for 1 year. She was diagnosed with diabetes mellitus 1 year ago. Her temperature is 36.9°C (...",
+      "correctAnswer": "B: Serum glucagon",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3291,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 15-year-old Caucasian female presents with Parkinson-like symptoms. Serum analysis shows increased levels of free copper and elevated liver enzymes. What test would prove most helpful in diagnosing the patient's underlying disease?? \n,",
+      "correctAnswer": "B: Slit lamp examination",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3327,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 6-year-old refugee with delayed growth and weakness is brought to the physician. Her family has been displaced several times over the last few years, and nutrition and housing were frequently inadequate. Examination of the lower limbs shows bowing of the legs with reduced proximal muscle strength....",
+      "correctAnswer": "E: Vitamin D deficiency",
+      "keyFindings": [
+        "Kelelahan & Lesu",
+        "Defisiensi Vitamin D / Rikets"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3445,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 77-year-old Caucasian woman presents to her primary care provider for a general checkup. The patient is with her daughter who brought her to this appointment. The patient states that she is doing well and has some minor joint pain in both hips. She states that sometimes she is sad because her husb...",
+      "correctAnswer": "A: Donepezil",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3539,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 55-year-old woman is brought to the physician by her daughter because of progressive memory loss and weakness over the past 6 months. She is now unable to perform activities of daily living and has had several falls in her apartment. She has diarrhea but has not had nausea or vomiting. She was tre...",
+      "correctAnswer": "E: Vitamin B3 (niacin)",
+      "keyFindings": [
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3605,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 35-year-old woman presents to the clinic with a 2-week history of headaches. She was in her usual state of health until 2 weeks ago, when she started having headaches. The headaches are throughout her whole head and rated as a 7/10. They are worse in the mornings and when she bends over. She has s...",
+      "correctAnswer": "A: Vitamin A",
+      "keyFindings": [
+        "Defisiensi Vitamin A",
+        "Defisiensi Vitamin D / Rikets"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3610,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 7-year-old boy is brought to the pediatrician by his parents for a routine checkup. The parents note that the patient recently joined a baseball team and has had trouble keeping up with his teammates and gets short of breath with exertion. The patient has otherwise been healthy and has no known hi...",
+      "correctAnswer": "D: Holosystolic murmur at the lower left sternal border",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    },
+    {
+      "idx": 3643,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 68-year-old man comes to the physician because of fatigue and muscle cramps for the past 4 weeks. He has also noticed several episodes of tingling in both hands. He has not had fever or nausea. He has had a chronic cough for 10 years. He has chronic bronchitis, hypertension, and osteoarthritis of ...",
+      "correctAnswer": "D: Destruction of parathyroid glands",
+      "keyFindings": [
+        "Kelelahan & Lesu",
+        "Defisiensi Vitamin D / Rikets"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 3880,
+      "cluster": "MICRONUTRIENT_DEFICIT",
+      "organTrigger": "nail_nailbed",
+      "clinicalContext": "A 51-year-old man is admitted to the hospital because of a 2-day history of fever, nausea, and abdominal pain. His temperature is 39.4°C (102.9°F) and pulse is 106/min. Physical examination shows tenderness in the right upper quadrant. Blood cultures grow nonhemolytic, gram-positive cocci that grow ...",
+      "correctAnswer": "B: Increase in the intracellular uptake of gentamicin",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: pola makan & keberagaman makanan (5 kelompok pangan). Gejala spesifik: sariawan, rambut rontok, penglihatan malam, pertumbuhan terhambat."
+    },
+    {
+      "idx": 4033,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 62-year-old woman makes an appointment with her primary care physician because she recently started experiencing post-menopausal bleeding. She states that she suffered from anorexia as a young adult and has been thin throughout her life. She says that this nutritional deficit is likely what caused...",
+      "correctAnswer": "D: Never becoming pregnant",
+      "keyFindings": [
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 4201,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 42-year-old woman comes to her primary care physician because of an irritating sensation in her nose. She noticed recently that there seems to be a lump in her nose. Her past medical history is significant for pain that seems to migrate around her body and is refractory to treatment. She has inter...",
+      "correctAnswer": "D: Increased lipoxygenase pathway activity",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    },
+    {
+      "idx": 4282,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 15-month-old girl is brought to the pediatrician by her mother with a history of 3 episodes of breath-holding spells. The patient’s mother says that this is a new behavior and she is concerned. The patient was born at full term by spontaneous vaginal delivery with an uneventful perinatal period. S...",
+      "correctAnswer": "D: Loss of purposeful use of her hands",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 4352,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 14-year-old boy is brought to the physician because of increasing swelling of his legs and generalized fatigue for 1 month. During this period he has also had a productive cough and shortness of breath. He has been unable to carry out his daily activities. He has a history of recurrent respiratory...",
+      "correctAnswer": "E: Cystic fibrosis",
+      "keyFindings": [
+        "Kelelahan & Lesu"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 4523,
+      "cluster": "MALNUTRITION_STUNTING",
+      "organTrigger": "face_vitality",
+      "clinicalContext": "A 52-year-old man is seen by his endocrinologist for routine followup of his type 2 diabetes. Although he has previously been on a number of medication regimens, his A1C has remained significantly elevated. In order to try to better control his glucose level, the endocrinologist prescribes a new med...",
+      "correctAnswer": "B: Canagliflozin",
+      "keyFindings": [
+        "Gagal Tumbuh / Underweight"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat berat badan lahir, pola pertumbuhan (KMS), frekuensi sakit, asupan kalori & protein harian."
+    },
+    {
+      "idx": 4827,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 72-year-old man is brought to the emergency department by his daughter because he was found to have decreased alertness that has gotten progressively worse. Three weeks ago he was diagnosed with an infection and given an antibiotic, though his daughter does not remember what drug was prescribed. H...",
+      "correctAnswer": "D: Overdiuresis by thiazides",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    },
+    {
+      "idx": 4884,
+      "cluster": "PEDIATRIC_ALLERGEN",
+      "organTrigger": "normal_baseline",
+      "clinicalContext": "A 7-year-old boy presents to an urgent care clinic from his friend’s birthday party after experiencing trouble breathing. His father explains that the patient had eaten peanut butter at the party, and soon after, he developed facial flushing and began scratching his face and neck. This has never hap...",
+      "correctAnswer": "A: Type I hypersensitivity reaction",
+      "keyFindings": [
+        "Temuan Klinis Gizi Umum"
+      ],
+      "anamnesisHint": "Tanyakan: riwayat reaksi alergi setelah makan (apa makanannya, kapan, gejalanya). Alergen spesifik: seafood, telur, susu sapi, kacang."
+    }
+  ]
+}

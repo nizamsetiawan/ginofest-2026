@@ -1,24 +1,33 @@
 "use client";
 
-import React from "react";
-import { ShieldCheck, LogOut, User, Mail, Sparkles } from "lucide-react";
+import React, { useState } from "react";
+import { ShieldCheck, LogOut, User, Mail, MapPin, Check, Edit3, AlertCircle } from "lucide-react";
 import { Page, Button } from "konsta/react";
 import { motion } from "framer-motion";
 import { CitizenUser, MobileTab } from "../types";
+import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
 
 interface MobileProfileTabProps {
   citizenUser: CitizenUser | null;
   setActiveTab: (tab: MobileTab) => void;
   onLogout: () => void;
+  onUpdateDistrict?: (district: string) => Promise<void>;
 }
 
 export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
   citizenUser,
   onLogout,
+  onUpdateDistrict,
 }) => {
   const userName = citizenUser?.name || "Muhammad Nizam Setiawan";
   const userEmail = citizenUser?.email || "nizamsetiawan@email.com";
+  const currentDistrict = citizenUser?.district || "";
   const userInitial = userName.charAt(0).toUpperCase();
+
+  const [isEditingDistrict, setIsEditingDistrict] = useState(false);
+  const [selectedDistrict, setSelectedDistrict] = useState(currentDistrict || "Kebomas");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const triggerHaptic = () => {
     if (typeof navigator !== "undefined" && navigator.vibrate) {
@@ -26,8 +35,19 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
     }
   };
 
+  const handleSaveDistrict = async () => {
+    if (!selectedDistrict || !onUpdateDistrict) return;
+    triggerHaptic();
+    setIsSaving(true);
+    await onUpdateDistrict(selectedDistrict);
+    setIsSaving(false);
+    setSaveSuccess(true);
+    setIsEditingDistrict(false);
+    setTimeout(() => setSaveSuccess(false), 2500);
+  };
+
   return (
-    <Page className="p-4 space-y-4 font-sans select-none bg-[#F8FAFC] min-h-full">
+    <Page className="p-4 space-y-4 font-sans select-none bg-[#F8FAFC] min-h-full pb-28">
       {/* ═══ 1. APPBAR HEADER: TITLE ═══ */}
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
@@ -40,7 +60,7 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
             Profil Pengguna
           </h1>
           <p className="text-[11.5px] text-slate-500 font-medium">
-            Kelola data akun &amp; informasi personal Anda
+            Kelola data akun &amp; domisili Anda
           </p>
         </div>
 
@@ -83,7 +103,8 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
         </div>
 
         {/* Account Details Box */}
-        <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-slate-200/70 space-y-2.5 text-[12px]">
+        <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-slate-200/70 space-y-3 text-[12px]">
+          {/* Peran Akun */}
           <div className="flex items-center justify-between">
             <span className="text-slate-500 flex items-center gap-1.5 font-medium">
               <User className="w-3.5 h-3.5 text-slate-400" />
@@ -94,6 +115,7 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
 
           <div className="h-px bg-slate-200/60" />
 
+          {/* Status Login */}
           <div className="flex items-center justify-between">
             <span className="text-slate-500 flex items-center gap-1.5 font-medium">
               <Mail className="w-3.5 h-3.5 text-slate-400" />
@@ -103,6 +125,87 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               <span>Aktif</span>
             </span>
+          </div>
+
+          <div className="h-px bg-slate-200/60" />
+
+          {/* Kecamatan Domisili */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500 flex items-center gap-1.5 font-medium">
+                <MapPin className="w-3.5 h-3.5 text-[#23B5A8]" />
+                <span>Kecamatan Domisili</span>
+              </span>
+              
+              {!isEditingDistrict && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic();
+                    setIsEditingDistrict(true);
+                  }}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0FA89B] hover:underline cursor-pointer"
+                >
+                  <Edit3 className="w-3 h-3" />
+                  <span>{currentDistrict ? "Ubah" : "Pilih Kecamatan"}</span>
+                </button>
+              )}
+            </div>
+
+            {isEditingDistrict ? (
+              <div className="pt-1 space-y-2">
+                <select
+                  value={selectedDistrict}
+                  onChange={(e) => setSelectedDistrict(e.target.value)}
+                  className="w-full h-11 px-3 rounded-xl bg-white border border-slate-300 text-[12.5px] font-medium text-ford-blue focus:outline-none focus:ring-2 focus:ring-[#79D7D2]/40"
+                >
+                  <option value="">-- Pilih Kecamatan --</option>
+                  {GRESIK_DISTRICTS.map((d) => (
+                    <option key={d.id} value={d.name}>
+                      Kec. {d.name}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="flex items-center justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingDistrict(false)}
+                    className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[11px] cursor-pointer"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isSaving || !selectedDistrict}
+                    onClick={handleSaveDistrict}
+                    className="px-4 py-1.5 rounded-lg bg-[#23B5A8] hover:bg-[#1fa195] text-white font-bold text-[11px] cursor-pointer shadow-xs disabled:opacity-50"
+                  >
+                    {isSaving ? "Menyimpan..." : "Simpan"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200/80">
+                {currentDistrict ? (
+                  <span className="font-bold text-ford-blue flex items-center gap-1.5">
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
+                    Kecamatan {currentDistrict}
+                  </span>
+                ) : (
+                  <span className="font-semibold text-amber-600 flex items-center gap-1.5 text-[11.5px]">
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
+                    Belum diisi (Default Kebomas)
+                  </span>
+                )}
+                
+                {saveSuccess && (
+                  <span className="text-[10.5px] font-bold text-emerald-600 animate-pulse">
+                    ✓ Tersimpan!
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
@@ -137,4 +240,3 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
     </Page>
   );
 };
-

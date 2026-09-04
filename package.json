@@ -6,9 +6,11 @@
     "dev": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fetch-medqa": "npx -y tsx scripts/fetch-medqa-pediatric.ts"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.27.0",
     "@google/generative-ai": "^0.24.1",
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",

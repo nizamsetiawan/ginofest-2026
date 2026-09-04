@@ -16,12 +16,13 @@ import {
   LogOut,
   Users,
   MessageSquare,
-  HardDrive
+  HardDrive,
+  Terminal
 } from "lucide-react";
 import { AdminProfile } from "@/data/admin-profiles";
 import { useAuth } from "@/contexts/AuthContext";
 
-export type NavKey = "scan" | "generate" | "rag_db" | "map" | "qrcode" | "notifications" | "help" | "users" | "complaints" | "backup" | "settings";
+export type NavKey = "scan" | "generate" | "rag_db" | "telemetry_logs" | "map" | "qrcode" | "notifications" | "help" | "users" | "complaints" | "backup" | "settings";
 
 interface NavItemDef {
   key: NavKey;
@@ -79,6 +80,13 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
         label: "Basis Data RAG",
         icon: Database,
         keywords: ["basis", "data", "rag", "komoditas", "harga", "pasar", "siskaperbapo", "resep", "gizi", "tkpi", "wilayah", "upload", "excel", "kalibrasi", "grounding"],
+        section: "main",
+      },
+      {
+        key: "telemetry_logs",
+        label: "Live AI Scan Logs",
+        icon: Terminal,
+        keywords: ["live", "scan", "log", "telemetry", "ai", "realtime", "akurasi", "recall", "scin", "medqa"],
         section: "main",
       },
       {

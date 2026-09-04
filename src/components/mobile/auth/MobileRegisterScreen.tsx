@@ -12,11 +12,15 @@ import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthSpectrumBackground } from "./AuthSpectrumBackground";
 
+import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
+
 interface MobileRegisterScreenProps {
   regFullName: string;
   setRegFullName: (val: string) => void;
   regEmail: string;
   setRegEmail: (val: string) => void;
+  regDistrict: string;
+  setRegDistrict: (val: string) => void;
   regPassword: string;
   setRegPassword: (val: string) => void;
   showRegPassword: boolean;
@@ -35,6 +39,8 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
   setRegFullName,
   regEmail,
   setRegEmail,
+  regDistrict,
+  setRegDistrict,
   regPassword,
   setRegPassword,
   showRegPassword,
@@ -147,6 +153,33 @@ export const MobileRegisterScreen: React.FC<MobileRegisterScreenProps> = ({
             />
             {fieldErrors.email && (
               <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.email}</p>
+            )}
+          </div>
+
+          {/* 3. Kecamatan Domisili */}
+          <div className="space-y-1">
+            <label className="text-[11.5px] font-bold text-ford-blue block">
+              Kecamatan Domisili <span className="text-brand-red">*</span>
+            </label>
+            <select
+              value={regDistrict}
+              onChange={(e) => {
+                setRegDistrict(e.target.value);
+                if (fieldErrors.district) setFieldErrors((p) => ({ ...p, district: "" }));
+              }}
+              className={`w-full h-12 px-4 rounded-2xl bg-[#F8FAFC] border text-[13px] font-medium text-ford-blue focus:bg-white focus:outline-none transition-all appearance-none cursor-pointer ${
+                fieldErrors.district ? "border-brand-red bg-red-50/40 focus:border-brand-red" : "border-slate-200 focus:border-[#23B5A8] focus:ring-2 focus:ring-[#79D7D2]/25"
+              }`}
+            >
+              <option value="">-- Pilih Kecamatan Domisili --</option>
+              {GRESIK_DISTRICTS.map((d) => (
+                <option key={d.id} value={d.name}>
+                  Kec. {d.name}
+                </option>
+              ))}
+            </select>
+            {fieldErrors.district && (
+              <p className="text-[10px] text-brand-red font-semibold">{fieldErrors.district}</p>
             )}
           </div>
 

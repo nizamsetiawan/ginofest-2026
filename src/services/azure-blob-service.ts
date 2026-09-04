@@ -1,7 +1,11 @@
 /**
  * Azure Blob Storage Service for G-SCAN (Ginofest 2026)
- * Handles uploading 4 biometric images (Wajah, Mata, Tangan, Kuku)
- * to Microsoft Azure Blob Storage containers and generating secure URLs.
+ *
+ * Strategi upload yang digunakan:
+ *   - Di SERVER (API routes): langsung pakai @azure/storage-blob SDK dengan Connection String
+ *   - Di CLIENT (browser): kirim base64 ke /api/azure-blob/upload-photo → server yang upload
+ *
+ * Ini penting agar AZURE_STORAGE_CONNECTION_STRING tidak pernah ter-expose ke browser.
  */
 
 export interface BiometricPhotoPayload {
@@ -30,13 +34,55 @@ export interface AzureBlobConfig {
 }
 
 export class AzureBlobService {
+  private static readonly UPLOAD_API = "/api/azure-blob/upload-photo";
+  private static readonly SAVE_RESULT_API = "/api/azure-blob/save-result";
+
   private static getContainer(): string {
     return process.env.AZURE_STORAGE_CONTAINER_NAME || "gscan-media";
   }
 
+  private static getAccount(): string {
+    return process.env.AZURE_STORAGE_ACCOUNT_NAME || "stgscanginofest26";
+  }
+
+  /**
+   * Upload foto tunggal ke Azure via server API route.
+   * Memanggil POST /api/azure-blob/upload-photo agar Connection String
+   * tidak pernah ter-expose ke browser.
+   */
+  private static async uploadPhotoViaApi(
+    userId: string,
+    scanId: string,
+    photoType: "wajah" | "mata" | "tangan" | "kuku",
+    base64Data: string
+  ): Promise<string | null> {
+    try {
+      const res = await fetch(this.UPLOAD_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, scanId, photoType, base64Data }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json() as { error: string };
+        console.warn(`[AzureBlob] Upload ${photoType} gagal: ${err.error}`);
+        return null;
+      }
+
+      const data = await res.json() as { blobUrl: string };
+      return data.blobUrl;
+    } catch (err) {
+      console.warn(`[AzureBlob] Upload ${photoType} error:`, err);
+      return null;
+    }
+  }
+
   /**
    * Uploads all 4 biometric photos to Azure Blob Storage under structured paths:
-   * container/users/{userId}/{scanId}/{photoType}.jpg
+   * gscan-media/users/{userId}/{scanId}/{photoType}.jpg
+   *
+   * Upload dilakukan secara paralel untuk efisiensi.
+   * Jika upload gagal (offline/config error), fallback ke URL simulasi.
    */
   static async uploadBiometricSessionPhotos(
     userId: string,
@@ -47,42 +93,48 @@ export class AzureBlobService {
     const sanitizedUser = userId.replace(/[^a-zA-Z0-9_-]/g, "_");
     const blobPrefix = `users/${sanitizedUser}/${scanId}`;
     const container = this.getContainer();
+    const account = this.getAccount();
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_AZURE_BLOB_BASE_URL ||
-      `https://${process.env.AZURE_STORAGE_ACCOUNT_NAME || "stgscanginofest26"}.blob.core.windows.net/${container}`;
+    // Fallback URL (digunakan jika upload gagal)
+    const fallbackBase = `https://${account}.blob.core.windows.net/${container}/${blobPrefix}`;
+    const fallbacks = {
+      face: `${fallbackBase}/01_wajah.jpg`,
+      eye: `${fallbackBase}/02_mata_konjungtiva.jpg`,
+      hand: `${fallbackBase}/03_tangan_turgor.jpg`,
+      nail: `${fallbackBase}/04_kuku_capillary.jpg`,
+    };
 
-    // Simulasikan atau eksekusi upload ke Azure Blob Storage
-    const faceBlobUrl = photos.faceBase64
-      ? `${baseUrl}/${blobPrefix}/01_wajah.jpg`
-      : `${baseUrl}/placeholders/face_default.jpg`;
+    // Upload semua foto secara paralel via server API
+    const [faceUrl, eyeUrl, handUrl, nailUrl] = await Promise.all([
+      photos.faceBase64
+        ? this.uploadPhotoViaApi(userId, scanId, "wajah", photos.faceBase64)
+        : Promise.resolve(null),
+      photos.eyeBase64
+        ? this.uploadPhotoViaApi(userId, scanId, "mata", photos.eyeBase64)
+        : Promise.resolve(null),
+      photos.handBase64
+        ? this.uploadPhotoViaApi(userId, scanId, "tangan", photos.handBase64)
+        : Promise.resolve(null),
+      photos.nailBase64
+        ? this.uploadPhotoViaApi(userId, scanId, "kuku", photos.nailBase64)
+        : Promise.resolve(null),
+    ]);
 
-    const eyeBlobUrl = photos.eyeBase64
-      ? `${baseUrl}/${blobPrefix}/02_mata_konjungtiva.jpg`
-      : `${baseUrl}/placeholders/eye_default.jpg`;
+    const faceBlobUrl = faceUrl || fallbacks.face;
+    const eyeBlobUrl = eyeUrl || fallbacks.eye;
+    const handBlobUrl = handUrl || fallbacks.hand;
+    const nailBlobUrl = nailUrl || fallbacks.nail;
 
-    const handBlobUrl = photos.handBase64
-      ? `${baseUrl}/${blobPrefix}/03_tangan_turgor.jpg`
-      : `${baseUrl}/placeholders/hand_default.jpg`;
+    // Tentukan provider: jika minimal 1 sukses → AZURE_BLOB_STORAGE
+    const anyUploaded = [faceUrl, eyeUrl, handUrl, nailUrl].some((u) => u !== null);
+    const storageProvider: AzureBlobUploadedUrls["storageProvider"] = anyUploaded
+      ? "AZURE_BLOB_STORAGE"
+      : "LOCAL_BLOB_SIMULATOR";
 
-    const nailBlobUrl = photos.nailBase64
-      ? `${baseUrl}/${blobPrefix}/04_kuku_capillary.jpg`
-      : `${baseUrl}/placeholders/nail_default.jpg`;
-
-    // Jika ada SAS token atau REST API upload endpoint
-    try {
-      if (process.env.AZURE_BLOB_SAS_TOKEN && typeof fetch !== "undefined") {
-        const uploadPromises = [
-          photos.faceBase64 && this.uploadSingleBlob(faceBlobUrl, photos.faceBase64),
-          photos.eyeBase64 && this.uploadSingleBlob(eyeBlobUrl, photos.eyeBase64),
-          photos.handBase64 && this.uploadSingleBlob(handBlobUrl, photos.handBase64),
-          photos.nailBase64 && this.uploadSingleBlob(nailBlobUrl, photos.nailBase64),
-        ].filter(Boolean);
-
-        await Promise.all(uploadPromises);
-      }
-    } catch (err) {
-      console.warn("Azure Blob upload fallback active:", err);
+    if (!anyUploaded) {
+      console.warn("[AzureBlob] Semua upload gagal, menggunakan URL simulasi. Cek AZURE_STORAGE_CONNECTION_STRING.");
+    } else {
+      console.log(`[AzureBlob] Upload sukses: ${[faceUrl, eyeUrl, handUrl, nailUrl].filter(Boolean).length}/4 foto`);
     }
 
     return {
@@ -91,38 +143,63 @@ export class AzureBlobService {
       handBlobUrl,
       nailBlobUrl,
       uploadedAt: timestamp,
-      storageProvider: process.env.AZURE_STORAGE_ACCOUNT_NAME
-        ? "AZURE_BLOB_STORAGE"
-        : "LOCAL_BLOB_SIMULATOR",
+      storageProvider,
       containerName: container,
       blobPrefix,
     };
   }
 
   /**
-   * Upload single base64/binary image directly to Azure Blob via PUT request
+   * Simpan JSON hasil scan lengkap ke Azure Blob Storage container: gscan-results
+   * Dipanggil setelah analisis Gemini selesai (dual-write bersama Firestore).
+   *
+   * @param record - Record lengkap dari BiometricSyncService
+   * @param medqaQuestions - Pertanyaan anamnesis MedQA yang digenerate
+   * @param enrichedKBVersion - Versi enriched KB yang digunakan
    */
-  private static async uploadSingleBlob(blobUrlWithSas: string, base64Data: string): Promise<boolean> {
+  static async saveScanResultToAzure(
+    record: Record<string, unknown>,
+    medqaQuestions?: Array<{ id: number; title: string; subtitle: string; options: string[] }>,
+    enrichedKBVersion?: string
+  ): Promise<{ success: boolean; blobName?: string; error?: string }> {
     try {
-      const cleanBase64 = base64Data.replace(/^data:image\/\w+;base64,/, "");
-      const binary = atob(cleanBase64);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
-
-      const res = await fetch(blobUrlWithSas, {
-        method: "PUT",
-        headers: {
-          "x-ms-blob-type": "BlockBlob",
-          "Content-Type": "image/jpeg",
-        },
-        body: bytes,
+      const res = await fetch(this.SAVE_RESULT_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ record, medqaQuestions, enrichedKBVersion }),
       });
 
-      return res.ok;
+      if (!res.ok) {
+        const err = await res.json() as { error: string };
+        return { success: false, error: err.error };
+      }
+
+      const data = await res.json() as { success: boolean; blobName: string };
+      return { success: true, blobName: data.blobName };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      console.warn("[AzureBlob] Save result error:", message);
+      return { success: false, error: message };
+    }
+  }
+
+  /**
+   * Ambil riwayat scan seorang user dari Azure Blob index
+   * (Pelengkap Firestore — dipakai untuk laporan detail offline-capable)
+   */
+  static async fetchUserScanIndex(userId: string): Promise<Array<{
+    scanId: string;
+    scannedAt: string;
+    deficiencyRisk: string;
+    resultBlobPath: string;
+  }>> {
+    try {
+      const res = await fetch(`${this.SAVE_RESULT_API}?userId=${encodeURIComponent(userId)}`);
+      if (!res.ok) return [];
+      const data = await res.json() as { scanHistory: [] };
+      return data.scanHistory || [];
     } catch {
-      return false;
+      return [];
     }
   }
 }

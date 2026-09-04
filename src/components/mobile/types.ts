@@ -7,6 +7,8 @@ export interface CitizenUser {
   email: string;
   phone?: string;
   district: string;
+  age?: number;
+  childName?: string;
   photoURL?: string;
   createdAtIso?: string;
 }
