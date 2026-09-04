@@ -91,17 +91,77 @@ export const LiveScanLogsView: React.FC = () => {
     }
   }, []);
 
-  // 3. Add a new Test Scan Record to Firestore (Explicit test trigger)
+  // Helper to generate sample biometric JPEG Base64 for test scans
+  const createSamplePhoto = (title: string, bgColor: string, icon: string): string => {
+    if (typeof window === "undefined") return "";
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 320;
+      canvas.height = 240;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return "";
+
+      const grad = ctx.createLinearGradient(0, 0, 320, 240);
+      grad.addColorStop(0, bgColor);
+      grad.addColorStop(1, "#0B132B");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 320, 240);
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < 320; x += 32) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, 240);
+        ctx.stroke();
+      }
+      for (let y = 0; y < 240; y += 32) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(320, y);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 44px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(icon, 160, 95);
+
+      ctx.font = "bold 16px sans-serif";
+      ctx.fillText(title, 160, 155);
+
+      ctx.font = "11px monospace";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.fillText("AZURE BLOB UPLOADED SAMPLE", 160, 185);
+
+      return canvas.toDataURL("image/jpeg", 0.85);
+    } catch {
+      return "";
+    }
+  };
+
+  // 3. Add a new Test Scan Record to Firestore & Azure Blob Storage
   const handleAddNewTestScan = async () => {
     setIsSimulating(true);
     try {
+      const facePhoto = createSamplePhoto("Wajah Profil Siswa", "#0FA89B", "👤");
+      const eyePhoto = createSamplePhoto("Mata Konjungtiva", "#0284C7", "👁️");
+      const handPhoto = createSamplePhoto("Turgor Kulit Tangan", "#059669", "✋");
+      const nailPhoto = createSamplePhoto("CRT Bantalan Kuku", "#D97706", "💅");
+
       const record = await BiometricSyncService.processAndSyncBiometricScan({
         userId: `warga_${Date.now().toString().slice(-4)}`,
         userName: "Muhammad Nizam Setiawan",
         userDistrict: "Kebomas",
         userAge: 9,
         userEmail: "nizamsetiawan@email.com",
-        photos: {},
+        photos: {
+          faceBase64: facePhoto,
+          eyeBase64: eyePhoto,
+          handBase64: handPhoto,
+          nailBase64: nailPhoto,
+        },
         questionnaire: {
           nafsuMakan: "Sangat Lahap",
           aktivitasFisik: "Aktif",
