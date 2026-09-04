@@ -1037,15 +1037,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </div>
             </div>
 
-            {/* Cloud & AI Telemetry Badge (Azure + Firebase) */}
-            <div className="bg-[#0FA89B]/5 border border-[#0FA89B]/20 rounded-2xl p-2.5 flex items-center justify-between text-[9.5px]">
-              <div className="flex items-center gap-1.5 text-slate-700 font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span>Azure Blob Storage &amp; Vision</span>
-              </div>
-              <span className="text-[#0FA89B] font-extrabold font-mono">Firebase Synced ✓</span>
-            </div>
-
             {/* Nutrition Breakdown */}
             <div className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
