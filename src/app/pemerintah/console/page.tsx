@@ -418,6 +418,22 @@ Timestamp: ${selectedScan.createdAt}
                         </p>
                       )}
 
+                      {/* Vercel Serverless Cloud Infrastructure Logs */}
+                      {scan.serverLogs && scan.serverLogs.length > 0 && (
+                        <div className="space-y-0.5 pt-1 border-t border-[#1E2950]/80 my-1 font-mono">
+                          {scan.serverLogs.map((srvLog, idx) => (
+                            <p key={idx} className="text-white text-[10.5px]">
+                              <span className="text-slate-400">[{srvLog.timestamp}]</span>{" "}
+                              <span className={srvLog.level === "SUCCESS" ? "text-emerald-400 font-bold" : srvLog.level === "WARN" ? "text-amber-400 font-bold" : "text-[#35CBC3] font-bold"}>
+                                [{srvLog.level}]
+                              </span>{" "}
+                              <span className="text-purple-400 font-bold">[VERCEL_SERVERLESS]</span>{" "}
+                              <span className="text-cyan-300 font-bold">[{srvLog.module}]</span> {srvLog.message}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+
                       {/* Session Completed & Claimed Log */}
                       {scan.status === "CLAIMED" && (
                         <p className="text-white font-mono bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-600/60 my-1">
