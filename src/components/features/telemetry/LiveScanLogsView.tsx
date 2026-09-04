@@ -382,7 +382,7 @@ export const LiveScanLogsView: React.FC = () => {
                           </span>
                         )}
                         <span className="text-[10px] font-bold text-[#35CBC3] block mt-1 max-w-[150px] truncate">
-                          {scan.status === "SCANNING_IN_PROGRESS" ? "Processing Frames..." : scan.status === "CANCELLED" ? "Aborted" : actualMenu || "Nasi Ayam Kari & Sayur"}
+                          {scan.status === "SCANNING_IN_PROGRESS" ? "Processing Frames..." : scan.status === "CANCELLED" ? "Aborted" : scan.recommendedMenu?.menuTitle || "Menu RAG Sesuai Klinis"}
                         </span>
                       </div>
                     </div>
@@ -662,48 +662,65 @@ export const LiveScanLogsView: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#0B132B] border border-emerald-800/60 space-y-3 font-mono">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-emerald-300 flex items-center gap-2">
-                      <Utensils className="w-4 h-4 text-emerald-400" />
-                      {selectedScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur"}
-                    </span>
-                    {selectedScan.recommendedMenu?.calories !== undefined && (
-                      <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-600/60">
-                        {selectedScan.recommendedMenu.calories} kkal
+                {selectedScan.status === "SCANNING_IN_PROGRESS" ? (
+                  <div className="p-3.5 rounded-xl bg-[#0B132B] border border-amber-800/60 space-y-1.5 font-mono">
+                    <div className="flex items-center justify-between text-amber-400 font-bold text-xs">
+                      <span className="flex items-center gap-1.5">
+                        <Utensils className="w-4 h-4 text-amber-400 animate-spin" />
+                        ANALYSIS IN PROGRESS
                       </span>
+                      <span className="text-[10px] text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-800 animate-pulse">
+                        STREAMING
+                      </span>
+                    </div>
+                    <p className="text-[10.5px] text-slate-400">
+                      Mengumpulkan frame biometrik &amp; jawaban kuesioner MedQA untuk kalkulasi menu RAG...
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-3.5 rounded-xl bg-[#0B132B] border border-emerald-800/60 space-y-3 font-mono">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-emerald-300 flex items-center gap-2">
+                        <Utensils className="w-4 h-4 text-emerald-400" />
+                        {selectedScan.recommendedMenu?.menuTitle || "Menu RAG Sesuai Klinis"}
+                      </span>
+                      {selectedScan.recommendedMenu?.calories !== undefined && (
+                        <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-600/60">
+                          {selectedScan.recommendedMenu.calories} kkal
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 text-[10.5px]">
+                      <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
+                        <span className="text-slate-400 block text-[9px]">PROTEIN HEME</span>
+                        <span className="font-bold text-slate-100">
+                          {selectedScan.recommendedMenu?.proteinGram !== undefined ? `${selectedScan.recommendedMenu.proteinGram}g` : "-"}
+                        </span>
+                      </div>
+                      <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
+                        <span className="text-slate-400 block text-[9px]">ZAT BESI (Fe)</span>
+                        <span className="font-bold text-slate-100">
+                          {selectedScan.recommendedMenu?.ironMg !== undefined ? `${selectedScan.recommendedMenu.ironMg}mg` : "-"}
+                        </span>
+                      </div>
+                      <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
+                        <span className="text-slate-400 block text-[9px]">PEMENUHAN AKG</span>
+                        <span className="font-bold text-emerald-400">
+                          {selectedScan.recommendedMenu?.akgPercentage !== undefined ? `${selectedScan.recommendedMenu.akgPercentage}%` : "-"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Questionnaire Context */}
+                    {selectedScan.questionnaireAnswers && (
+                      <div className="pt-2 text-[10px] text-emerald-200/90 font-mono space-y-0.5 border-t border-emerald-900/60">
+                        <p>• <strong>KUESIONER ALERGI:</strong> {selectedScan.questionnaireAnswers.alergi}</p>
+                        <p>• <strong>NAFSU MAKAN:</strong> {selectedScan.questionnaireAnswers.nafsuMakan} | <strong>AKTIVITAS:</strong> {selectedScan.questionnaireAnswers.aktivitasFisik}</p>
+                      </div>
                     )}
                   </div>
-
-                  <div className="grid grid-cols-3 gap-2 text-[10.5px]">
-                    <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
-                      <span className="text-slate-400 block text-[9px]">PROTEIN HEME</span>
-                      <span className="font-bold text-slate-100">
-                        {selectedScan.recommendedMenu?.proteinGram !== undefined ? `${selectedScan.recommendedMenu.proteinGram}g` : "31g"}
-                      </span>
-                    </div>
-                    <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
-                      <span className="text-slate-400 block text-[9px]">ZAT BESI (Fe)</span>
-                      <span className="font-bold text-slate-100">
-                        {selectedScan.recommendedMenu?.ironMg !== undefined ? `${selectedScan.recommendedMenu.ironMg}mg` : "6mg"}
-                      </span>
-                    </div>
-                    <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
-                      <span className="text-slate-400 block text-[9px]">PEMENUHAN AKG</span>
-                      <span className="font-bold text-emerald-400">
-                        {selectedScan.recommendedMenu?.akgPercentage !== undefined ? `${selectedScan.recommendedMenu.akgPercentage}% AKG` : "45% AKG"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Questionnaire Context */}
-                  {selectedScan.questionnaireAnswers && (
-                    <div className="pt-2 text-[10px] text-emerald-200/90 font-mono space-y-0.5 border-t border-emerald-900/60">
-                      <p>• <strong>KUESIONER ALERGI:</strong> {selectedScan.questionnaireAnswers.alergi}</p>
-                      <p>• <strong>NAFSU MAKAN:</strong> {selectedScan.questionnaireAnswers.nafsuMakan} | <strong>AKTIVITAS:</strong> {selectedScan.questionnaireAnswers.aktivitasFisik}</p>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
 
               {/* 3. RAW REALTIME EXECUTION CONSOLE FEED */}
