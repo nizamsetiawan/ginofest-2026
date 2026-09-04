@@ -418,6 +418,16 @@ export class BiometricSyncService {
         blobPrefix: `users/${sanitizedUser}/${params.scanId}`,
       };
 
+      const liveMetrics = AzureVisionService.computeDynamicPixelBiometrics(
+        {
+          face: params.photos.faceBase64,
+          eye: params.photos.eyeBase64,
+          hand: params.photos.handBase64,
+          nail: params.photos.nailBase64,
+        },
+        params.userAge || 9
+      );
+
       await setDoc(
         docRef,
         {
@@ -431,6 +441,7 @@ export class BiometricSyncService {
           lastCapturedStep: params.capturedStep,
           photos: params.photos,
           blobUrls: partialBlobUrls,
+          azureVisionMetrics: liveMetrics,
           createdAt: new Date().toISOString(),
         },
         { merge: true }
@@ -492,6 +503,7 @@ export class BiometricSyncService {
     try {
       if (!db) return;
       const docRef = doc(db, this.COLLECTION_SCANS, params.scanId);
+      const fieldKey = params.questionIdx === 0 ? "nafsuMakan" : params.questionIdx === 1 ? "aktivitasFisik" : "alergi";
       await setDoc(
         docRef,
         {
@@ -502,6 +514,9 @@ export class BiometricSyncService {
             title: params.questionTitle,
             answer: params.answer,
             answeredAt: new Date().toISOString(),
+          },
+          questionnaireAnswers: {
+            [fieldKey]: params.answer,
           },
           updatedAt: new Date().toISOString(),
         },

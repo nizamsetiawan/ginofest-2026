@@ -218,7 +218,7 @@ Berikan output HANYA dalam format JSON murni tanpa markdown backticks:
    * Ekstraksi Biometrik Pixel Dinamis (Real On-Device Chromaticity Analysis):
    * Menghitung Redness Index / Hemoglobin Ratio dari foto mata & kuku asli.
    */
-  private static computeDynamicPixelBiometrics(
+  public static computeDynamicPixelBiometrics(
     rawPhotos?: { face?: string; eye?: string; hand?: string; nail?: string },
     userAge = 9
   ): AzureVisionClinicalMetrics {

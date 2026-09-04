@@ -733,29 +733,29 @@ export const LiveScanLogsView: React.FC = () => {
 
                 <div className="p-3.5 rounded-xl bg-[#030712] text-slate-200 font-mono text-[10.5px] space-y-1.5 max-h-56 overflow-y-auto border border-cyan-900/80 leading-relaxed shadow-inner">
                   <p className="text-slate-400">
-                    [{formatActualTime(selectedScan.createdAt)}] ⚡ Frame Received: Sesi {selectedScan.scanId} from Node {selectedScan.userDistrict} (User: {selectedScan.userName})
+                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [FRAME_STREAM] Session {selectedScan.scanId} from Node {selectedScan.userDistrict} (User: {selectedScan.userName})
                   </p>
                   <p className="text-cyan-400">
-                    [{formatActualTime(selectedScan.createdAt)}] 👁️ Model A ({selectedScan.azureVisionMetrics?.engineUsed || "AZURE_CUSTOM_VISION_SCIN"}): Conjunctiva Status = {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
+                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [MODEL_A_VISION] ({selectedScan.azureVisionMetrics?.engineUsed || "AZURE_CUSTOM_VISION_SCIN"}): Conjunctiva Status = {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
                     {selectedScan.azureVisionMetrics?.eyePallorScore !== undefined ? ` (Pallor Score: ${selectedScan.azureVisionMetrics.eyePallorScore})` : ""}
                   </p>
                   <p className="text-cyan-300">
-                    [{formatActualTime(selectedScan.createdAt)}] 💅 Model A: Nail CRT = {selectedScan.azureVisionMetrics?.nailbedStatus || "Normal Sehat"}
+                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [MODEL_A_VISION] Nail CRT = {selectedScan.azureVisionMetrics?.nailbedStatus || "Normal Sehat"}
                     {selectedScan.azureVisionMetrics?.nailCapillaryScore !== undefined ? ` (Capillary Score: ${selectedScan.azureVisionMetrics.nailCapillaryScore})` : ""}
                   </p>
                   <p className="text-purple-300">
-                    [{formatActualTime(selectedScan.createdAt)}] 🧠 Model B (MedQA Pediatric LLM): Risk Assessment = {selectedScan.azureVisionMetrics?.detectedDeficiencyRisk || "Normal Sehat"}
+                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [MODEL_B_LLM] (MedQA Pediatric LLM): Risk Assessment = {selectedScan.azureVisionMetrics?.detectedDeficiencyRisk || "Normal Sehat"}
                   </p>
                   <p className="text-emerald-400">
-                    [{formatActualTime(selectedScan.createdAt)}] 📍 Azure RAG Grounding: Matched Local Commodities Kec. {selectedScan.userDistrict}
+                    [{formatActualTime(selectedScan.createdAt)}] [INFO] [AZURE_RAG] Matched Local Commodities Kec. {selectedScan.userDistrict}
                   </p>
                   <p className="text-emerald-300">
-                    [{formatActualTime(selectedScan.createdAt)}] 🥗 Recommended Menu: {selectedScan.recommendedMenu?.menuTitle}
+                    [{formatActualTime(selectedScan.createdAt)}] [SUCCESS] [MENU_PIPELINE] Recommended Menu: {selectedScan.recommendedMenu?.menuTitle}
                     {selectedScan.recommendedMenu?.calories !== undefined ? ` (${selectedScan.recommendedMenu.calories} kkal, Fe: ${selectedScan.recommendedMenu.ironMg}mg)` : ""}
                   </p>
                   {selectedScan.azureVisionMetrics?.confidenceScore !== undefined && (
                     <p className="text-amber-400">
-                      [{formatActualTime(selectedScan.createdAt)}] 📊 Session Telemetry: Accuracy Confidence {formatConfidence(selectedScan.azureVisionMetrics.confidenceScore)}
+                      [{formatActualTime(selectedScan.createdAt)}] [INFO] [TELEMETRY] Accuracy Confidence {formatConfidence(selectedScan.azureVisionMetrics.confidenceScore)}
                       {modelTelemetry?.sensitivityRecall !== undefined ? ` | Model Recall: ${modelTelemetry.sensitivityRecall}%` : ""}
                     </p>
                   )}

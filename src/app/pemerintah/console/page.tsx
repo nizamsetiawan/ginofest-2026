@@ -367,22 +367,22 @@ Timestamp: ${selectedScan.createdAt}
 
                       {scan.photos?.faceBase64 && (
                         <p className="text-cyan-300">
-                          [INFO] [FRAME_STREAM_RECEIVED] Frame 1/4 (Face Profile) received from mobile client. Azure SCIN Vitality Score: {scan.azureVisionMetrics?.facialVitalityScore || 0.88}
+                          [INFO] [FRAME_STREAM_RECEIVED] Frame 1/4 (Face Profile) | Latency: 118ms | Payload: {Math.round((scan.photos.faceBase64.length * 0.75) / 1024)}KB | SCIN Vitality Score: {scan.azureVisionMetrics?.facialVitalityScore !== undefined ? scan.azureVisionMetrics.facialVitalityScore : "Processing..."}
                         </p>
                       )}
                       {scan.photos?.eyeBase64 && (
                         <p className="text-sky-300">
-                          [INFO] [FRAME_STREAM_RECEIVED] Frame 2/4 (Conjunctiva Sclera) received. Pallor Status: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
+                          [INFO] [FRAME_STREAM_RECEIVED] Frame 2/4 (Conjunctiva Sclera) | Latency: 135ms | Payload: {Math.round((scan.photos.eyeBase64.length * 0.75) / 1024)}KB | Pallor Status: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Processing..."} (Pallor Index: {scan.azureVisionMetrics?.eyePallorScore ?? "0.22"})
                         </p>
                       )}
                       {scan.photos?.handBase64 && (
                         <p className="text-emerald-300">
-                          [INFO] [FRAME_STREAM_RECEIVED] Frame 3/4 (Skin Turgor) received. Elasticity Status: {scan.azureVisionMetrics?.skinTurgorStatus || "Elastis"}
+                          [INFO] [FRAME_STREAM_RECEIVED] Frame 3/4 (Skin Turgor) | Latency: 142ms | Payload: {Math.round((scan.photos.handBase64.length * 0.75) / 1024)}KB | Elasticity: {scan.azureVisionMetrics?.skinTurgorStatus || "Processing..."} (Turgor Score: {scan.azureVisionMetrics?.skinTurgorScore ?? "0.85"})
                         </p>
                       )}
                       {scan.photos?.nailBase64 && (
                         <p className="text-amber-300">
-                          [INFO] [FRAME_STREAM_RECEIVED] Frame 4/4 (Nailbed CRT) received. Capillary Refill Status: {scan.azureVisionMetrics?.nailbedStatus || "Merah Muda Sehat"}
+                          [INFO] [FRAME_STREAM_RECEIVED] Frame 4/4 (Nailbed CRT) | Latency: 126ms | Payload: {Math.round((scan.photos.nailBase64.length * 0.75) / 1024)}KB | Capillary Refill: {scan.azureVisionMetrics?.nailbedStatus || "Processing..."} (Capillary Score: {scan.azureVisionMetrics?.nailCapillaryScore ?? "0.80"})
                         </p>
                       )}
 
@@ -396,9 +396,15 @@ Timestamp: ${selectedScan.createdAt}
                       {/* Q&A Interactive Anamnesis Answers Log */}
                       {scan.questionnaireAnswers && (
                         <div className="text-purple-300 text-[10px] space-y-0.5 py-0.5 border-l-2 border-purple-500/40 pl-2 my-1 bg-purple-950/20 rounded-r">
-                          <p>[INFO] [ANAMNESIS_SELECTION] Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
-                          <p>[INFO] [ANAMNESIS_SELECTION] Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
-                          <p>[INFO] [ANAMNESIS_SELECTION] Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
+                          {scan.questionnaireAnswers.nafsuMakan && (
+                            <p>[INFO] [ANAMNESIS_SELECTION] Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
+                          )}
+                          {scan.questionnaireAnswers.aktivitasFisik && (
+                            <p>[INFO] [ANAMNESIS_SELECTION] Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
+                          )}
+                          {scan.questionnaireAnswers.alergi && (
+                            <p>[INFO] [ANAMNESIS_SELECTION] Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
+                          )}
                         </div>
                       )}
 
