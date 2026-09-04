@@ -112,6 +112,14 @@ export default function DedicatedConsolePage() {
     }
   }, []);
 
+  // Realtime Vercel HTTP Access Log Stream Listener
+  useEffect(() => {
+    const unsubscribe = VercelLogService.subscribeRealtimeLogs((logs) => {
+      setVercelLogs(logs);
+    });
+    return () => unsubscribe();
+  }, []);
+
   // Helper to generate sample JPEG base64 for test scan
   const createSamplePhoto = (title: string, bgColor: string, icon: string): string => {
     if (typeof window === "undefined") return "";

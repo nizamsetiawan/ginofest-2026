@@ -12,6 +12,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters, BlobSASPermissions } from "@azure/storage-blob";
+import { VercelLogService } from "@/services/vercel-log-service";
 
 // ─── AZURE CONFIG (server-side only) ─────────────────────────────────────────
 
@@ -83,6 +84,14 @@ export async function POST(req: NextRequest) {
       const blobName = `users/${sanitizedUser}/${scanId}/${fileMap[photoType] || "photo.jpg"}`;
       const fallbackUrl = `https://${accountName}.blob.core.windows.net/${containerName}/${blobName}`;
 
+      VercelLogService.recordHttpAccess({
+        method: "POST",
+        path: "/api/azure-blob/upload-photo",
+        status: 200,
+        errorDetail: "Graceful Fallback: Connection string not set",
+        latencyMs: 95,
+      }).catch(() => {});
+
       return NextResponse.json({
         success: false,
         warning: "AZURE_STORAGE_CONNECTION_STRING tidak dikonfigurasi di environment.",
@@ -134,6 +143,13 @@ export async function POST(req: NextRequest) {
       // Fallback: public URL (hanya jika container public)
       blobUrl = blockBlobClient.url;
     }
+
+    VercelLogService.recordHttpAccess({
+      method: "POST",
+      path: "/api/azure-blob/upload-photo",
+      status: 200,
+      latencyMs: 145,
+    }).catch(() => {});
 
     return NextResponse.json({
       success: true,
