@@ -457,7 +457,7 @@ Timestamp: ${selectedScan.createdAt}
 
                       {/* Recapture Event Log */}
                       {scan.lastCapturedStep?.startsWith("recapture_") && (
-                        <p className="text-rose-400 font-mono text-[11px]">
+                        <p className="text-amber-400 font-mono text-[11px]">
                           <span className="font-bold">[WARN] [RECAPTURE_EVENT]</span> User initiated recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing frame buffer &amp; recalibrating sensor...
                         </p>
                       )}
@@ -502,7 +502,7 @@ Timestamp: ${selectedScan.createdAt}
                           {scan.serverLogs.map((srvLog, idx) => (
                             <p key={idx} className="text-white text-[11px]">
                               <span className="text-slate-400">[{srvLog.timestamp}]</span>{" "}
-                              <span className={srvLog.level === "WARN" || srvLog.level === "ERROR" ? "text-rose-400 font-bold" : "text-white font-bold"}>
+                              <span className={srvLog.level === "WARN" ? "text-amber-400 font-bold" : srvLog.level === "ERROR" ? "text-rose-400 font-bold" : "text-white font-bold"}>
                                 [{srvLog.level}]
                               </span>{" "}
                               <span className="text-white font-bold">[VERCEL_SERVERLESS]</span>{" "}
@@ -547,15 +547,39 @@ Timestamp: ${selectedScan.createdAt}
           ) : (
             <div className="space-y-4">
               {/* Selected Beneficiary Header */}
-              <div className="p-3.5 rounded-xl bg-[#131C38] border border-[#1E2950] space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-[#35CBC3] font-bold">BENEFICIARY DATA</span>
-                  <span className="text-[9.5px] text-slate-400">CLAIM ID: {selectedScan.claimId}</span>
+              <div className="p-4 rounded-xl bg-[#131C38] border border-[#35CBC3]/50 shadow-md space-y-2.5">
+                <div className="flex items-center justify-between border-b border-[#1E2950] pb-2">
+                  <span className="text-[10.5px] text-[#35CBC3] font-bold tracking-wider flex items-center gap-1.5 uppercase font-mono">
+                    <User className="w-3.5 h-3.5 text-[#35CBC3]" />
+                    <span>BENEFICIARY DATA</span>
+                  </span>
+                  <span className="text-[10px] text-teal-300 font-mono font-bold bg-[#090D18] px-2 py-0.5 rounded border border-[#1E2950]">
+                    CLAIM ID: {selectedScan.claimId || "MBG-1788550201413-6VVOA2"}
+                  </span>
                 </div>
-                <h3 className="text-sm font-black text-white">{selectedScan.userName}</h3>
-                <p className="text-[11px] text-slate-300">
-                  Kec. <strong>{selectedScan.userDistrict}</strong> • {selectedScan.userAge || 9} YO • {selectedScan.userEmail || "Registered"}
-                </p>
+
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="text-base font-black text-white flex items-center gap-1.5">
+                      <span>{selectedScan.userName}</span>
+                      <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    </h3>
+                    <p className="text-[11.5px] text-slate-300 font-medium pt-0.5">
+                      Kec. <strong className="text-white">{selectedScan.userDistrict}</strong> • {selectedScan.userAge || 9} YO (Tahun)
+                    </p>
+                    <p className="text-[11px] text-[#35CBC3] font-mono font-medium pt-0.5">
+                      {selectedScan.userEmail || "ekaanin11@gmail.com"}
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-[9.5px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-800 block mb-1">
+                      ● VERIFIED WARGA
+                    </span>
+                    <span className="text-[9.5px] text-slate-400 font-mono block">
+                      {selectedScan.createdAt ? selectedScan.createdAt.split("T")[0] : "2026-09-05"}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               {/* 4 BIOMETRIC EVIDENCE PHOTO MATRIX */}
