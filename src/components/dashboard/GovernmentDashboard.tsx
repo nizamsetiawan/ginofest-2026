@@ -112,7 +112,7 @@ export const GovernmentDashboard: React.FC = () => {
   // 3. IF RAG DATABASE IS ACTIVE: RENDER IN FULLSCREEN
   if (activeNav === "rag_db") {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] text-ford-blue selection:bg-green-02/30 selection:text-ford-blue font-sans">
+      <div className="h-screen w-full overflow-y-auto bg-[#F8FAFC] text-ford-blue selection:bg-green-02/30 selection:text-ford-blue font-sans">
         <RAGKnowledgeBaseView onBackToDashboard={() => setActiveNav("scan")} />
         <SetupPinModal isOpen={isSetupPinOpen} onClose={() => setIsSetupPinOpen(false)} />
       </div>
