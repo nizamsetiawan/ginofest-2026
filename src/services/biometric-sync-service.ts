@@ -481,6 +481,59 @@ export class BiometricSyncService {
   }
 
   /**
+   * Syncs Q&A answer selections in real-time as user clicks each option
+   */
+  static async syncQnAEvent(params: {
+    scanId: string;
+    questionIdx: number;
+    questionTitle: string;
+    answer: string;
+  }): Promise<void> {
+    try {
+      if (!db) return;
+      const docRef = doc(db, this.COLLECTION_SCANS, params.scanId);
+      await setDoc(
+        docRef,
+        {
+          status: "SCANNING_IN_PROGRESS",
+          lastCapturedStep: `qna_q${params.questionIdx + 1}`,
+          lastQnAEvent: {
+            questionIdx: params.questionIdx,
+            title: params.questionTitle,
+            answer: params.answer,
+            answeredAt: new Date().toISOString(),
+          },
+          updatedAt: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.warn("QnA sync notice:", e);
+    }
+  }
+
+  /**
+   * Marks session as completed and closed when user finishes/claims QR
+   */
+  static async syncSessionCompleted(scanId: string): Promise<void> {
+    try {
+      if (!db) return;
+      const docRef = doc(db, this.COLLECTION_SCANS, scanId);
+      await setDoc(
+        docRef,
+        {
+          status: "CLAIMED",
+          completedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.warn("Session completed sync notice:", e);
+    }
+  }
+
+  /**
    * Clears/wipes all scan history documents from Firestore
    */
   static async clearAllScanHistory(): Promise<{ success: boolean; deletedCount: number }> {

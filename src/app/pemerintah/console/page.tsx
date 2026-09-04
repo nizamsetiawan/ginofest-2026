@@ -405,9 +405,33 @@ Timestamp: ${selectedScan.createdAt}
                           ├─ 💅 Step 4/4 (CRT Bantalan Kuku) : Frame Received (Capillary CRT: {scan.azureVisionMetrics?.nailbedStatus || "Merah Muda Sehat"})
                         </p>
                       )}
+
+                      {/* Recapture Warning Event Log */}
+                      {scan.lastCapturedStep?.startsWith("recapture_") && (
+                        <p className="text-yellow-300 font-bold bg-yellow-950/60 px-2 py-0.5 rounded border border-yellow-700/60 my-1">
+                          ⚡ [WARN] [RECAPTURE_EVENT] User initiated Recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing previous frame buffer &amp; recalibrating...
+                        </p>
+                      )}
+
+                      {/* Q&A Interactive Anamnesis Answers Log */}
+                      {scan.questionnaireAnswers && (
+                        <div className="text-purple-300 text-[10px] space-y-0.5 py-0.5 border-l-2 border-purple-500/40 pl-2 my-1 bg-purple-950/20 rounded-r">
+                          <p>📝 [Q&amp;A_ANAMNESIS] Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
+                          <p>📝 [Q&amp;A_ANAMNESIS] Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
+                          <p>📝 [Q&amp;A_ANAMNESIS] Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
+                        </div>
+                      )}
+
                       {scan.recommendedMenu?.menuTitle && (
-                        <p className="text-purple-300">
-                          └─ 🥗 Gemini RAG Matched : {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
+                        <p className="text-[#0FA89B] font-bold">
+                          ├─ 🥗 Gemini RAG Matched : {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
+                        </p>
+                      )}
+
+                      {/* Session Completed & Claimed Log */}
+                      {scan.status === "CLAIMED" && (
+                        <p className="text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-600/60 my-1">
+                          🏁 [SUCCESS] [SESSION_COMPLETED] Beneficiary verified QR claim &amp; closed screening analysis.
                         </p>
                       )}
                     </div>

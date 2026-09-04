@@ -340,7 +340,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
   const handleSelectAnswer = async (ans: string) => {
     setSelectedAnswer(ans);
-    
+
+    // Sync Q&A Selection Event to Firestore in Realtime
+    BiometricSyncService.syncQnAEvent({
+      scanId: activeScanId,
+      questionIdx: currentQuestionIdx,
+      questionTitle: questions[currentQuestionIdx]?.title || `Pertanyaan ${currentQuestionIdx + 1}`,
+      answer: ans,
+    });
+
     // Check if this was the last question
     if (currentQuestionIdx >= questions.length - 1) {
       // Determine if allergen applies
@@ -387,6 +395,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
   const handleVerifyQR = () => {
     setIsQrVerifying(true);
+    BiometricSyncService.syncSessionCompleted(activeScanId);
     setTimeout(() => {
       setIsQrVerifying(false);
       setScreeningStep(5); // Move to Success screen
