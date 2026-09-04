@@ -221,19 +221,14 @@ Timestamp: ${selectedScan.createdAt}
 
   return (
     <div className="min-h-screen bg-[#070D1E] text-slate-200 font-mono flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
-      {/* ═══ 1. CLEAN CONSOLE HEADER & CONTROL BAR ═══ */}
+      {/* ═══ 1. CLEAN TERMINAL HEADER & CONTROL BAR ═══ */}
       <header className="bg-[#0B132B] border-b border-cyan-950 px-5 py-3 flex flex-wrap items-center justify-between gap-3 text-xs select-none shadow-md">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 mr-2">
-            <div className="w-3 h-3 rounded-full bg-red-500 inline-block" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500 inline-block" />
-            <div className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-          </div>
           <div className="flex items-center gap-2 font-black tracking-wider text-cyan-300">
             <TerminalIcon className="w-5 h-5 text-cyan-400 animate-pulse" />
             <span className="uppercase text-sm">G-SCAN REALTIME AI LOG CONSOLE</span>
           </div>
-          <span className="px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/80 text-[10px] font-bold flex items-center gap-1.5">
+          <span className="px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/80 text-[10px] font-bold flex items-center gap-1.5 font-mono">
             <Radio className="w-3 h-3 text-emerald-400 animate-ping" />
             LIVE STREAM ACTIVE
           </span>
@@ -262,45 +257,10 @@ Timestamp: ${selectedScan.createdAt}
         </div>
       </header>
 
-      {/* ═══ REALTIME METRICS STRIP ═══ */}
-      <div className="bg-[#030712] border-b border-cyan-950 px-5 py-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs select-none">
-        <div className="bg-[#0B132B] p-2.5 rounded-xl border border-cyan-900/80">
-          <span className="text-[9.5px] text-slate-400 block uppercase font-mono">TOTAL STREAMED LOGS</span>
-          <span className="text-base font-black text-cyan-400 font-mono">
-            {scans.length} <span className="text-xs text-slate-400 font-normal">NODES</span>
-          </span>
-          <span className="text-[9px] text-emerald-400 block mt-0.5 font-mono">● SYNCED FIRESTORE DB</span>
-        </div>
-
-        <div className="bg-[#0B132B] p-2.5 rounded-xl border border-cyan-900/80">
-          <span className="text-[9.5px] text-slate-400 block uppercase font-mono">MODEL A ACCURACY</span>
-          <span className="text-base font-black text-emerald-400 font-mono">
-            {modelTelemetry?.accuracy !== undefined ? `${modelTelemetry.accuracy}%` : "94.0%"}
-          </span>
-          <span className="text-[9px] text-cyan-400 block mt-0.5 font-mono">SCIN RESNET-50 BACKBONE</span>
-        </div>
-
-        <div className="bg-[#0B132B] p-2.5 rounded-xl border border-cyan-900/80">
-          <span className="text-[9.5px] text-slate-400 block uppercase font-mono">SENSITIVITY (RECALL)</span>
-          <span className="text-base font-black text-purple-400 font-mono">
-            {modelTelemetry?.sensitivityRecall !== undefined ? `${modelTelemetry.sensitivityRecall}%` : "94.8%"}
-          </span>
-          <span className="text-[9px] text-purple-300/80 block mt-0.5 font-mono">CLINICAL ZERO FN GOAL</span>
-        </div>
-
-        <div className="bg-[#0B132B] p-2.5 rounded-xl border border-cyan-900/80">
-          <span className="text-[9.5px] text-slate-400 block uppercase font-mono">ACTIVE DISTRICT NODE</span>
-          <span className="text-base font-black text-amber-400 font-mono truncate block">
-            {selectedScan?.userDistrict || "Kebomas"}
-          </span>
-          <span className="text-[9px] text-amber-300/80 block mt-0.5 font-mono">AZURE RAG GROUNDED</span>
-        </div>
-      </div>
-
-      {/* ═══ 2. MAIN FULL CONSOLE CONTENT AREA ═══ */}
+      {/* ═══ 2. MAIN FULL CONSOLE CONTENT AREA (PURE BLACK TERMINAL) ═══ */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden">
         {/* Left Console Log Output Terminal (7 cols) */}
-        <div className="lg:col-span-7 bg-[#030712] p-4 font-mono text-xs overflow-y-auto space-y-3 border-r border-cyan-950 leading-relaxed max-h-[calc(100vh-160px)]">
+        <div className="lg:col-span-7 bg-[#030712] p-4 font-mono text-xs overflow-y-auto space-y-3 border-r border-cyan-950 leading-relaxed max-h-[calc(100vh-60px)]">
           {/* Header Bar */}
           <div className="flex items-center justify-between pb-2 border-b border-cyan-950/60 text-[10.5px]">
             <span className="text-cyan-400 font-bold tracking-wider uppercase">LIVE FRAME STREAM OUTPUT ({scans.length} NODES)</span>
@@ -437,7 +397,7 @@ Timestamp: ${selectedScan.createdAt}
         </div>
 
         {/* Right Console Inspector & Evidence Matrix Panel (5 cols) */}
-        <div className="lg:col-span-5 bg-[#070D1E] p-4 font-mono text-xs overflow-y-auto space-y-4 max-h-[calc(100vh-140px)]">
+        <div className="lg:col-span-5 bg-[#030712] p-4 font-mono text-xs overflow-y-auto space-y-4 max-h-[calc(100vh-60px)]">
           <div className="flex items-center justify-between border-b border-cyan-950 pb-2">
             <h2 className="text-xs font-bold text-cyan-400 uppercase tracking-wider">
               INSPECTOR MATRIX &amp; EVIDENCE
