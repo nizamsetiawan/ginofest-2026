@@ -408,10 +408,10 @@ export class BiometricSyncService {
       const baseBlobUrl = `https://${account}.blob.core.windows.net/${container}/users/${sanitizedUser}/${params.scanId}`;
 
       const partialBlobUrls: AzureBlobUploadedUrls = {
-        faceBlobUrl: params.photos.faceBase64 || `${baseBlobUrl}/01_wajah.jpg`,
-        eyeBlobUrl: params.photos.eyeBase64 || `${baseBlobUrl}/02_mata_konjungtiva.jpg`,
-        handBlobUrl: params.photos.handBase64 || `${baseBlobUrl}/03_tangan_turgor.jpg`,
-        nailBlobUrl: params.photos.nailBase64 || `${baseBlobUrl}/04_kuku_capillary.jpg`,
+        faceBlobUrl: params.photos.faceBase64 || "",
+        eyeBlobUrl: params.photos.eyeBase64 || "",
+        handBlobUrl: params.photos.handBase64 || "",
+        nailBlobUrl: params.photos.nailBase64 || "",
         uploadedAt: new Date().toISOString(),
         storageProvider: "AZURE_BLOB_STORAGE",
         containerName: container,

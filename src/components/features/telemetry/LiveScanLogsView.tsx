@@ -466,21 +466,36 @@ export const LiveScanLogsView: React.FC = () => {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {(() => {
-                    const faceSrc = selectedScan.photos?.faceBase64 || selectedScan.blobUrls?.faceBlobUrl;
-                    const eyeSrc = selectedScan.photos?.eyeBase64 || selectedScan.blobUrls?.eyeBlobUrl;
-                    const handSrc = selectedScan.photos?.handBase64 || selectedScan.blobUrls?.handBlobUrl;
-                    const nailSrc = selectedScan.photos?.nailBase64 || selectedScan.blobUrls?.nailBlobUrl;
+                    const getPhotoSrc = (base64?: string, blobUrl?: string) => {
+                      if (base64 && base64.length > 50) return base64;
+                      if (blobUrl && blobUrl.startsWith("http")) return blobUrl;
+                      return "";
+                    };
+
+                    const faceSrc = getPhotoSrc(selectedScan.photos?.faceBase64, selectedScan.blobUrls?.faceBlobUrl);
+                    const eyeSrc = getPhotoSrc(selectedScan.photos?.eyeBase64, selectedScan.blobUrls?.eyeBlobUrl);
+                    const handSrc = getPhotoSrc(selectedScan.photos?.handBase64, selectedScan.blobUrls?.handBlobUrl);
+                    const nailSrc = getPhotoSrc(selectedScan.photos?.nailBase64, selectedScan.blobUrls?.nailBlobUrl);
+
+                    const isFaceValid = !!faceSrc && (faceSrc.startsWith("data:image") || !imageErrorMap[`face_${selectedScan.scanId}`]);
+                    const isEyeValid = !!eyeSrc && (eyeSrc.startsWith("data:image") || !imageErrorMap[`eye_${selectedScan.scanId}`]);
+                    const isHandValid = !!handSrc && (handSrc.startsWith("data:image") || !imageErrorMap[`hand_${selectedScan.scanId}`]);
+                    const isNailValid = !!nailSrc && (nailSrc.startsWith("data:image") || !imageErrorMap[`nail_${selectedScan.scanId}`]);
 
                     return (
                       <>
                         {/* Photo 1: Wajah */}
                         <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
                           <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
-                            {faceSrc && !imageErrorMap[`face_${selectedScan.scanId}`] ? (
+                            {isFaceValid ? (
                               <img
                                 src={faceSrc}
                                 alt="Wajah"
-                                onError={() => handleImageError(`face_${selectedScan.scanId}`)}
+                                onError={() => {
+                                  if (!faceSrc.startsWith("data:image")) {
+                                    handleImageError(`face_${selectedScan.scanId}`);
+                                  }
+                                }}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -490,7 +505,7 @@ export const LiveScanLogsView: React.FC = () => {
                                 <span className="text-[8.5px] text-cyan-300 font-mono bg-cyan-950 px-1.5 py-0.5 rounded mt-1 border border-cyan-800/60">LIVE FRAME</span>
                               </div>
                             )}
-                            {faceSrc && !imageErrorMap[`face_${selectedScan.scanId}`] && (
+                            {isFaceValid && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Profil Wajah", url: faceSrc })}
@@ -506,11 +521,15 @@ export const LiveScanLogsView: React.FC = () => {
                         {/* Photo 2: Mata Konjungtiva */}
                         <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
                           <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
-                            {eyeSrc && !imageErrorMap[`eye_${selectedScan.scanId}`] ? (
+                            {isEyeValid ? (
                               <img
                                 src={eyeSrc}
                                 alt="Mata"
-                                onError={() => handleImageError(`eye_${selectedScan.scanId}`)}
+                                onError={() => {
+                                  if (!eyeSrc.startsWith("data:image")) {
+                                    handleImageError(`eye_${selectedScan.scanId}`);
+                                  }
+                                }}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -520,7 +539,7 @@ export const LiveScanLogsView: React.FC = () => {
                                 <span className="text-[8.5px] text-sky-300 font-mono bg-sky-950 px-1.5 py-0.5 rounded mt-1 border border-sky-800/60">Hb SCAN</span>
                               </div>
                             )}
-                            {eyeSrc && !imageErrorMap[`eye_${selectedScan.scanId}`] && (
+                            {isEyeValid && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Konjungtiva Sklera", url: eyeSrc })}
@@ -536,11 +555,15 @@ export const LiveScanLogsView: React.FC = () => {
                         {/* Photo 3: Tangan Turgor */}
                         <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
                           <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
-                            {handSrc && !imageErrorMap[`hand_${selectedScan.scanId}`] ? (
+                            {isHandValid ? (
                               <img
                                 src={handSrc}
                                 alt="Tangan"
-                                onError={() => handleImageError(`hand_${selectedScan.scanId}`)}
+                                onError={() => {
+                                  if (!handSrc.startsWith("data:image")) {
+                                    handleImageError(`hand_${selectedScan.scanId}`);
+                                  }
+                                }}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -550,7 +573,7 @@ export const LiveScanLogsView: React.FC = () => {
                                 <span className="text-[8.5px] text-emerald-300 font-mono bg-emerald-950 px-1.5 py-0.5 rounded mt-1 border border-emerald-800/60">HYDRATION</span>
                               </div>
                             )}
-                            {handSrc && !imageErrorMap[`hand_${selectedScan.scanId}`] && (
+                            {isHandValid && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Telapak Tangan & Turgor", url: handSrc })}
@@ -566,11 +589,15 @@ export const LiveScanLogsView: React.FC = () => {
                         {/* Photo 4: Kuku Capillary */}
                         <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
                           <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
-                            {nailSrc && !imageErrorMap[`nail_${selectedScan.scanId}`] ? (
+                            {isNailValid ? (
                               <img
                                 src={nailSrc}
                                 alt="Kuku"
-                                onError={() => handleImageError(`nail_${selectedScan.scanId}`)}
+                                onError={() => {
+                                  if (!nailSrc.startsWith("data:image")) {
+                                    handleImageError(`nail_${selectedScan.scanId}`);
+                                  }
+                                }}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -580,7 +607,7 @@ export const LiveScanLogsView: React.FC = () => {
                                 <span className="text-[8.5px] text-amber-300 font-mono bg-amber-950 px-1.5 py-0.5 rounded mt-1 border border-amber-800/60">CRT CAPILLARY</span>
                               </div>
                             )}
-                            {nailSrc && !imageErrorMap[`nail_${selectedScan.scanId}`] && (
+                            {isNailValid && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Bantalan Kuku (CRT)", url: nailSrc })}
