@@ -9,10 +9,8 @@ import {
   Check,
   Edit3,
   Calendar,
-  Sparkles,
   RefreshCw,
   ChevronRight,
-  History,
   X
 } from "lucide-react";
 import { Page } from "konsta/react";
@@ -30,7 +28,6 @@ interface MobileProfileTabProps {
 
 export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
   citizenUser,
-  setActiveTab,
   onLogout,
   onUpdateDistrict,
   onUpdateProfile,
@@ -102,7 +99,7 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
 
         <div className="flex items-center gap-4 relative z-10">
           <div className="relative shrink-0">
-            <div className="w-15 h-15 rounded-2xl bg-gradient-to-tr from-[#0FA89B] via-[#23B5A8] to-[#79D7D2] text-white flex items-center justify-center font-black text-2xl shadow-md border-2 border-white">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0FA89B] via-[#23B5A8] to-[#79D7D2] text-white flex items-center justify-center font-black text-xl leading-none shadow-md border-2 border-white select-none">
               {userInitial}
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white ring-1 ring-emerald-200" />
@@ -162,7 +159,7 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
                 setSelectedAge(currentAge);
                 setIsEditing(true);
               }}
-              className="inline-flex items-center gap-1 text-[11.5px] font-bold text-[#0FA89B] hover:text-[#0b7e74] cursor-pointer transition-colors"
+              className="inline-flex items-center gap-1 text-[11.5px] font-bold text-[#0FA89B] hover:text-[#0b7e74] cursor-pointer transition-colors px-2.5 py-1 rounded-lg bg-teal-50 border border-teal-100"
             >
               <Edit3 className="w-3.5 h-3.5" />
               <span>Edit Data</span>
@@ -257,16 +254,8 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
             </motion.div>
           ) : (
             <div className="space-y-2">
-              {/* Row 1: Kecamatan */}
-              <div
-                onClick={() => {
-                  triggerHaptic();
-                  setSelectedDistrict(currentDistrict);
-                  setSelectedAge(currentAge);
-                  setIsEditing(true);
-                }}
-                className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 hover:bg-slate-100/80 border border-slate-100/90 cursor-pointer transition-colors group"
-              >
+              {/* Row 1: Kecamatan (Display Only) */}
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100/90">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-teal-50 text-[#0FA89B] border border-teal-100 flex items-center justify-center shrink-0">
                     <MapPin className="w-4 h-4" />
@@ -276,22 +265,10 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
                     <span className="text-[13px] font-bold text-ford-blue">Kec. {currentDistrict}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 text-slate-300 group-hover:text-slate-500 transition-colors">
-                  <span className="text-[10.5px] font-bold text-[#0FA89B] opacity-0 group-hover:opacity-100 transition-opacity">Ubah</span>
-                  <ChevronRight className="w-4 h-4" />
-                </div>
               </div>
 
-              {/* Row 2: Usia Anak */}
-              <div
-                onClick={() => {
-                  triggerHaptic();
-                  setSelectedDistrict(currentDistrict);
-                  setSelectedAge(currentAge);
-                  setIsEditing(true);
-                }}
-                className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 hover:bg-slate-100/80 border border-slate-100/90 cursor-pointer transition-colors group"
-              >
+              {/* Row 2: Usia Anak (Display Only) */}
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100/90">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
                     <Calendar className="w-4 h-4" />
@@ -301,65 +278,17 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
                     <span className="text-[13px] font-bold text-ford-blue">{currentAge} Tahun</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 text-slate-300 group-hover:text-slate-500 transition-colors">
-                  <span className="text-[10.5px] font-bold text-[#0FA89B] opacity-0 group-hover:opacity-100 transition-opacity">Ubah</span>
-                  <ChevronRight className="w-4 h-4" />
-                </div>
-              </div>
-
-              {/* Row 3: Engine AI */}
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100/90">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-[10.5px] text-slate-400 font-medium block">Mesin Rekomendasi Gizi</span>
-                    <span className="text-[12.5px] font-bold text-ford-blue">Azure OpenAI GPT-4o RAG</span>
-                  </div>
-                </div>
-                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 shrink-0">
-                  ● Aktif
-                </span>
               </div>
             </div>
           )}
         </AnimatePresence>
       </motion.div>
 
-      {/* ═══ 4. QUICK ACTION MENU CARD ═══ */}
+      {/* ═══ 4. LOGOUT BUTTON ═══ */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.08 }}
-        className="bg-white rounded-3xl p-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100/80 space-y-1"
-      >
-        <button
-          type="button"
-          onClick={() => {
-            triggerHaptic();
-            setActiveTab("home");
-          }}
-          className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors text-left cursor-pointer group"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center shrink-0">
-              <History className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="text-[13px] font-bold text-ford-blue block">Riwayat Screening Anak</span>
-              <span className="text-[10.5px] text-slate-400 font-medium">Lihat catatan hasil pemeriksaan fisik</span>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
-        </button>
-      </motion.div>
-
-      {/* ═══ 5. LOGOUT BUTTON ═══ */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
         className="pt-1"
       >
         <button
@@ -384,4 +313,3 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
     </Page>
   );
 };
-
