@@ -196,8 +196,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
   const [isAdaptingQuestions, setIsAdaptingQuestions] = useState(false);
 
-  // Step 3: Menu State
+  // Step 3: Menu State & Synced Biometric Scan Record
   const [menuType, setMenuType] = useState<"ayam" | "bandeng">("ayam");
+  const [syncedRecord, setSyncedRecord] = useState<CompleteBiometricScanRecord | null>(null);
 
   // Step 4: QR Code Scanner Timer / Verification Simulation
   const [isQrVerifying, setIsQrVerifying] = useState(false);
@@ -211,7 +212,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const claimPayload = useMemo(() => {
-    const menuName = menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu";
+    const menuName = syncedRecord?.recommendedMenu?.menuTitle || (menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu");
+    const calories = syncedRecord?.recommendedMenu?.calories || 680;
     const issuedAt = new Date().toISOString();
     const payload = {
       claimId,
@@ -226,9 +228,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         district: citizenUser?.district || "Kebomas",
       },
       menu: {
-        id: menuType,
+        id: syncedRecord?.recommendedMenu?.menuId || menuType,
         name: menuName,
-        kalori: 680,
+        kalori: calories,
         porsi: "1x Makan Siang",
         program: "Makan Bergizi Gratis",
       },
@@ -240,7 +242,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       status: "VALID",
     };
     return JSON.stringify(payload);
-  }, [claimId, menuType, citizenUser]);
+  }, [claimId, menuType, citizenUser, syncedRecord]);
 
   // Help Modal State
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -369,9 +371,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       });
     }, 220);
   };
-
-  // Synced Scan Record state
-  const [syncedRecord, setSyncedRecord] = useState<CompleteBiometricScanRecord | null>(null);
 
   const handleSelectAnswer = async (ans: string) => {
     setSelectedAnswer(ans);
@@ -1012,7 +1011,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-md">
               <div className="relative">
                 <img
-                  src={menuType === "ayam" ? "/assets/mbg_tray_ayam.jpg" : "/assets/mbg_tray_bandeng.jpg"}
+                  src={
+                    syncedRecord?.recommendedMenu?.menuTitle?.toLowerCase().includes("bandeng") ||
+                    syncedRecord?.recommendedMenu?.menuTitle?.toLowerCase().includes("ikan")
+                      ? "/assets/mbg_tray_bandeng.jpg"
+                      : "/assets/mbg_tray_ayam.jpg"
+                  }
                   alt="Menu MBG"
                   className="w-full h-36 object-cover"
                 />
@@ -1020,12 +1024,14 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
                   <div>
                     <h4 className="text-[13.5px] font-black text-white leading-tight drop-shadow">
-                      {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"}
+                      {syncedRecord?.recommendedMenu?.menuTitle || (menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu")}
                     </h4>
-                    <p className="text-[10px] text-white/70 font-medium">Nasi 200g · Protein 150g · Sayur 50g</p>
+                    <p className="text-[10px] text-white/70 font-medium">
+                      {syncedRecord?.recommendedMenu?.portionDesc || "Nasi 200g · Protein 150g · Sayur 50g"}
+                    </p>
                   </div>
                   <span className="px-2.5 py-1 rounded-xl bg-[#23B5A8] text-white text-[10px] font-black shadow-md flex-shrink-0">
-                    680 kkal
+                    {syncedRecord?.recommendedMenu?.calories || 680} kkal
                   </span>
                 </div>
               </div>
@@ -1052,9 +1058,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   { label: "Lemak Total", val: "10 g", pct: 22, color: "#F59E0B" },
                   { label: "Karbohidrat", val: "50 g", pct: 17, color: "#0FA89B" },
                   { label: "Serat", val: "7 g", pct: 18, color: "#34D399" },
-                  { label: "Protein", val: "31 g", pct: 50, color: "#23B5A8" },
+                  { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 31} g`, pct: 50, color: "#23B5A8" },
                   { label: "Vitamin D", val: "0.4 mg", pct: 15, color: "#A78BFA" },
-                  { label: "Zat Besi / Fe", val: "6 mg", pct: 45, color: "#F87171" },
+                  { label: "Zat Besi / Fe", val: `${syncedRecord?.recommendedMenu?.ironMg || 6} mg`, pct: syncedRecord?.recommendedMenu?.akgPercentage || 50, color: "#F87171" },
                 ].map((n) => (
                   <div key={n.label}>
                     <div className="flex items-center justify-between mb-1">
@@ -1179,7 +1185,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   <p className="text-[8.5px] text-slate-400 font-semibold tracking-widest uppercase mb-0.5">ID Klaim</p>
                   <p className="text-[10px] font-black text-[#0FA89B] font-mono tracking-wide truncate">{claimId}</p>
                   <p className="text-[9px] text-slate-400 font-medium mt-0.5 leading-snug">
-                    {menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu"} · 680 kkal
+                    {syncedRecord?.recommendedMenu?.menuTitle || (menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu")} · {syncedRecord?.recommendedMenu?.calories || 680} kkal
                   </p>
                   <p className="text-[8.5px] text-red-400 font-bold mt-1">Berlaku 6 jam • 1x pakai</p>
                 </div>
