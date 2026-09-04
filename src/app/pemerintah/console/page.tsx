@@ -499,10 +499,9 @@ Timestamp: ${selectedScan.createdAt}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-[#090D18] via-[#131C38] to-[#090D18] flex flex-col items-center justify-center p-2 text-[#35CBC3] border border-[#1E2950]">
-                                <User className="w-6 h-6 mb-1 stroke-[1.8] text-[#35CBC3]" />
-                                <span className="text-[9.5px] font-bold text-slate-200">Profil Wajah</span>
-                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#090D18] px-1 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 1/4</span>
+                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
+                                <span className="text-[10px] font-bold text-slate-200">Profil Wajah</span>
+                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 1/4</span>
                               </div>
                             )}
                             {isFaceValid && (
@@ -533,10 +532,9 @@ Timestamp: ${selectedScan.createdAt}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-[#090D18] via-[#131C38] to-[#090D18] flex flex-col items-center justify-center p-2 text-[#35CBC3] border border-[#1E2950]">
-                                <Eye className="w-6 h-6 mb-1 stroke-[1.8] text-[#35CBC3]" />
-                                <span className="text-[9.5px] font-bold text-slate-200">Konjungtiva</span>
-                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#090D18] px-1 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 2/4</span>
+                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
+                                <span className="text-[10px] font-bold text-slate-200">Konjungtiva</span>
+                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 2/4</span>
                               </div>
                             )}
                             {isEyeValid && (
@@ -567,10 +565,9 @@ Timestamp: ${selectedScan.createdAt}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-emerald-950/40 via-teal-950/60 to-green-950/40 flex flex-col items-center justify-center p-2 text-emerald-400 border border-emerald-900/40">
-                                <Hand className="w-6 h-6 mb-1 stroke-[1.8] text-emerald-400" />
-                                <span className="text-[9.5px] font-bold text-slate-200">Turgor Tangan</span>
-                                <span className="text-[8px] text-emerald-300 font-mono bg-emerald-950 px-1 py-0.5 rounded mt-1">FRAME 3/4</span>
+                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
+                                <span className="text-[10px] font-bold text-slate-200">Turgor Tangan</span>
+                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 3/4</span>
                               </div>
                             )}
                             {isHandValid && (
@@ -601,10 +598,9 @@ Timestamp: ${selectedScan.createdAt}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-amber-950/40 via-orange-950/60 to-yellow-950/40 flex flex-col items-center justify-center p-2 text-amber-400 border border-amber-900/40">
-                                <Sparkles className="w-6 h-6 mb-1 stroke-[1.8] text-amber-400" />
-                                <span className="text-[9.5px] font-bold text-slate-200">CRT Kuku</span>
-                                <span className="text-[8px] text-amber-300 font-mono bg-amber-950 px-1 py-0.5 rounded mt-1">FRAME 4/4</span>
+                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
+                                <span className="text-[10px] font-bold text-slate-200">CRT Kuku</span>
+                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 4/4</span>
                               </div>
                             )}
                             {isNailValid && (

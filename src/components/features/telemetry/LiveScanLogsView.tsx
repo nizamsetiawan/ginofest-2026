@@ -470,7 +470,7 @@ export const LiveScanLogsView: React.FC = () => {
                     return (
                       <>
                         {/* Photo 1: Wajah */}
-                        <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
+                        <div className="bg-[#131C38] border border-[#1E2950] rounded-xl p-2 space-y-1.5 text-center">
                           <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
                             {isFaceValid ? (
                               <img
@@ -484,10 +484,9 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-emerald-950/40 via-cyan-950/60 to-teal-950/40 flex flex-col items-center justify-center p-2 text-cyan-400 border border-cyan-900/40">
-                                <User className="w-6 h-6 mb-1 stroke-[1.8] text-cyan-400" />
+                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
                                 <span className="text-[10px] font-bold text-slate-200">Profil Wajah</span>
-                                <span className="text-[8.5px] text-cyan-300 font-mono bg-cyan-950 px-1.5 py-0.5 rounded mt-1 border border-cyan-800/60">LIVE FRAME</span>
+                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 1/4</span>
                               </div>
                             )}
                             {isFaceValid && (
@@ -504,7 +503,7 @@ export const LiveScanLogsView: React.FC = () => {
                         </div>
 
                         {/* Photo 2: Mata Konjungtiva */}
-                        <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
+                        <div className="bg-[#131C38] border border-[#1E2950] rounded-xl p-2 space-y-1.5 text-center">
                           <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
                             {isEyeValid ? (
                               <img
@@ -518,10 +517,9 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-sky-950/40 via-cyan-950/60 to-teal-950/40 flex flex-col items-center justify-center p-2 text-sky-400 border border-cyan-900/40">
-                                <Eye className="w-6 h-6 mb-1 stroke-[1.8] text-sky-400" />
+                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
                                 <span className="text-[10px] font-bold text-slate-200">Konjungtiva</span>
-                                <span className="text-[8.5px] text-sky-300 font-mono bg-sky-950 px-1.5 py-0.5 rounded mt-1 border border-sky-800/60">Hb SCAN</span>
+                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 2/4</span>
                               </div>
                             )}
                             {isEyeValid && (
@@ -538,7 +536,7 @@ export const LiveScanLogsView: React.FC = () => {
                         </div>
 
                         {/* Photo 3: Tangan Turgor */}
-                        <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
+                        <div className="bg-[#131C38] border border-[#1E2950] rounded-xl p-2 space-y-1.5 text-center">
                           <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
                             {isHandValid ? (
                               <img
@@ -552,10 +550,9 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-emerald-950/40 via-teal-950/60 to-green-950/40 flex flex-col items-center justify-center p-2 text-emerald-400 border border-emerald-900/40">
-                                <Hand className="w-6 h-6 mb-1 stroke-[1.8] text-emerald-400" />
+                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
                                 <span className="text-[10px] font-bold text-slate-200">Turgor Tangan</span>
-                                <span className="text-[8.5px] text-emerald-300 font-mono bg-emerald-950 px-1.5 py-0.5 rounded mt-1 border border-emerald-800/60">HYDRATION</span>
+                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 3/4</span>
                               </div>
                             )}
                             {isHandValid && (
@@ -572,7 +569,7 @@ export const LiveScanLogsView: React.FC = () => {
                         </div>
 
                         {/* Photo 4: Kuku Capillary */}
-                        <div className="bg-[#0B132B] border border-cyan-900/60 rounded-xl p-2 space-y-1.5 text-center">
+                        <div className="bg-[#131C38] border border-[#1E2950] rounded-xl p-2 space-y-1.5 text-center">
                           <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
                             {isNailValid ? (
                               <img
@@ -586,10 +583,9 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-amber-950/40 via-orange-950/60 to-yellow-950/40 flex flex-col items-center justify-center p-2 text-amber-400 border border-amber-900/40">
-                                <Sparkles className="w-6 h-6 mb-1 stroke-[1.8] text-amber-400" />
+                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
                                 <span className="text-[10px] font-bold text-slate-200">CRT Kuku</span>
-                                <span className="text-[8.5px] text-amber-300 font-mono bg-amber-950 px-1.5 py-0.5 rounded mt-1 border border-amber-800/60">CRT CAPILLARY</span>
+                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 4/4</span>
                               </div>
                             )}
                             {isNailValid && (
