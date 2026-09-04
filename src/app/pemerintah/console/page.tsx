@@ -31,6 +31,7 @@ import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestor
 import { db } from "@/services/firebase-service";
 import { CompleteBiometricScanRecord, BiometricSyncService } from "@/services/biometric-sync-service";
 import { ContinuousTrainingService, ModelIterationTelemetry } from "@/services/continuous-training-service";
+import { VercelLogService, VercelHttpLogEntry } from "@/services/vercel-log-service";
 
 export default function DedicatedConsolePage() {
   const [scans, setScans] = useState<CompleteBiometricScanRecord[]>([]);
@@ -40,6 +41,8 @@ export default function DedicatedConsolePage() {
   const [isClearing, setIsClearing] = useState(false);
   const [systemCheckLog, setSystemCheckLog] = useState<string | null>(null);
   const [isCheckingServices, setIsCheckingServices] = useState(false);
+  const [vercelLogs, setVercelLogs] = useState<VercelHttpLogEntry[]>(() => VercelLogService.getInitialVercelLogs());
+  const [logTab, setLogTab] = useState<"NODES" | "VERCEL">("NODES");
 
   const handleRunSystemDiagnostics = () => {
     setIsCheckingServices(true);
@@ -285,7 +288,32 @@ Timestamp: ${selectedScan.createdAt}
         <div className="lg:col-span-7 bg-[#050914] p-4 font-mono text-xs overflow-y-auto space-y-3 border-r border-[#1E2950] leading-relaxed max-h-[calc(100vh-60px)]">
           {/* Header Bar */}
           <div className="flex items-center justify-between pb-2 border-b border-[#1E2950] text-[10.5px]">
-            <span className="text-[#35CBC3] font-bold tracking-wider uppercase">LIVE FRAME STREAM OUTPUT ({scans.length} NODES)</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setLogTab("NODES")}
+                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer ${
+                  logTab === "NODES"
+                    ? "bg-[#1E2950] text-[#35CBC3] border border-[#35CBC3]/50 shadow-[0_0_10px_rgba(53,203,195,0.2)]"
+                    : "bg-[#090D18] text-slate-400 border border-slate-800 hover:text-slate-200"
+                }`}
+              >
+                LIVE SCAN NODES ({scans.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setLogTab("VERCEL")}
+                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  logTab === "VERCEL"
+                    ? "bg-purple-950/80 text-purple-300 border border-purple-500/50 shadow-[0_0_10px_rgba(168,85,247,0.3)]"
+                    : "bg-[#090D18] text-slate-400 border border-slate-800 hover:text-slate-200"
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
+                VERCEL CLOUD LOGS ({vercelLogs.length})
+              </button>
+            </div>
+
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
@@ -305,8 +333,52 @@ Timestamp: ${selectedScan.createdAt}
             </div>
           )}
 
-          {/* Dynamic Realtime Session Log Stream */}
-          {scans.length === 0 ? (
+          {/* Render Vercel HTTP Log Stream View */}
+          {logTab === "VERCEL" ? (
+            <div className="space-y-2 pt-2 font-mono text-[11px]">
+              <div className="p-2.5 rounded-xl bg-purple-950/50 border border-purple-800/80 text-purple-200 text-[10.5px] flex items-center justify-between shadow-lg">
+                <span className="font-bold flex items-center gap-2 text-white">
+                  <Radio className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+                  VERCEL PRODUCTION DEPLOYMENT LOG STREAM (ginofest-2026.vercel.app)
+                </span>
+                <span className="text-[9.5px] bg-purple-900/90 text-purple-200 px-2 py-0.5 rounded border border-purple-600 font-bold">
+                  REGION: sin1 (Singapore)
+                </span>
+              </div>
+
+              {vercelLogs.map((log) => (
+                <div key={log.id} className="p-2.5 rounded-xl bg-[#090D18] border border-[#1E2950] space-y-1 hover:border-purple-500/40 transition-all">
+                  <div className="flex items-center justify-between text-[10.5px]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[#35CBC3] font-bold">[{log.timestamp}]</span>
+                      <span className={`font-bold px-1.5 py-0.5 rounded text-[9.5px] font-mono ${
+                        log.method === "POST" ? "bg-blue-950 text-blue-300 border border-blue-800" : "bg-emerald-950 text-emerald-300 border border-emerald-800"
+                      }`}>
+                        {log.method}
+                      </span>
+                      <span className={`font-bold px-1.5 py-0.5 rounded text-[9.5px] font-mono ${
+                        log.status === 200 ? "bg-emerald-950 text-emerald-400 border border-emerald-800" : log.status === 304 ? "bg-slate-900 text-slate-300 border border-slate-700" : "bg-rose-950 text-rose-400 border border-rose-800"
+                      }`}>
+                        {log.status} {log.status === 200 ? "OK" : log.status === 304 ? "304 NOT MODIFIED" : "500 SERVER ERROR"}
+                      </span>
+                      <span className="text-purple-400 font-bold">[VERCEL_DEPLOYMENT_LOG]</span>
+                    </div>
+                    {log.latencyMs && (
+                      <span className="text-[10px] text-slate-400 font-mono">{log.latencyMs}ms</span>
+                    )}
+                  </div>
+                  <p className="text-white font-mono text-[11px] truncate">
+                    <span className="text-slate-400">{log.domain}</span><strong className="text-white">{log.path}</strong>
+                  </p>
+                  {log.errorDetail && (
+                    <p className="text-amber-300 text-[10px] bg-amber-950/60 p-2 rounded-lg border border-amber-800/80 mt-1 font-mono">
+                      ⚠️ {log.errorDetail}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : scans.length === 0 ? (
             <div className="p-8 text-center text-slate-500 space-y-2">
               <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#35CBC3]" />
               <p>NO ACTIVE SCAN SESSIONS RECORDED IN FIRESTORE.</p>
