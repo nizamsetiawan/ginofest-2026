@@ -204,6 +204,7 @@ export default function DedicatedConsolePage() {
   const handleConfirmClear = async () => {
     setShowClearConfirmModal(false);
     setIsClearing(true);
+    setSystemCheckLog(null);
     try {
       const res = await BiometricSyncService.clearAllScanHistory();
       if (res.success) {
@@ -257,9 +258,9 @@ Timestamp: ${selectedScan.createdAt}
         <div className="flex items-center gap-2">
           <button
             type="button"
-            disabled={isClearing || scans.length === 0}
+            disabled={isClearing || (scans.length === 0 && !systemCheckLog)}
             onClick={handleClearDatabase}
-            className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/80 text-[11px] font-mono flex items-center gap-1.5 cursor-pointer transition-colors"
+            className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/80 text-[11px] font-mono flex items-center gap-1.5 cursor-pointer transition-colors disabled:opacity-40"
           >
             <Trash2 className="w-3.5 h-3.5" />
             <span>CLEAR CONSOLE</span>
