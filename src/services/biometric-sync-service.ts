@@ -232,44 +232,26 @@ export class BiometricSyncService {
             return { ...m, _clinicalScore: score };
           });
 
-          // Pilih menu dengan skor klinis tertinggi
+          // Pilih menu dengan skor klinis tertinggi dari database Firestore RAG
           const bestMenu = scored.reduce((prev, curr) =>
             curr._clinicalScore > prev._clinicalScore ? curr : prev
           );
 
-          if (params.preferredMenuType) {
-            const p = params.preferredMenuType.toLowerCase();
-            if (p.includes("bandeng") || p === "bandeng") {
-              menuTitle = "Nasi Bandeng Bakar Madu & Sayur Sop";
-              selectedMenuId = "bandeng";
-              finalCalories = 710;
-              finalProtein = 34;
-              finalIron = 7;
-            } else if (p.includes("ayam") || p === "ayam") {
-              menuTitle = "Nasi Ayam Kari & Sayur Sop";
-              selectedMenuId = "ayam";
-              finalCalories = 680;
-              finalProtein = 31;
-              finalIron = 6;
-            } else {
-              menuTitle = params.preferredMenuType;
-            }
-            menuSource = "USER_PREFERRED_SELECTION";
-          } else {
-            selectedMenuId = `rag-${bestMenu.day?.toLowerCase() || 'dynamic'}`;
-            menuTitle      = bestMenu.menuTitle;
-            finalCalories  = bestMenu.calories || 680;
-            finalProtein   = bestMenu.protein  || 31;
-            finalIron      = bestMenu.iron     || 6;
-            menuSource     = "AI_RAG_PRECISION_CLINICAL";
-          }
+          selectedMenuId = `rag-${bestMenu.day?.toLowerCase() || 'dynamic'}`;
+          menuTitle      = bestMenu.menuTitle || "Nasi Ayam Kari & Sayur Sop";
+          finalCalories  = bestMenu.calories || 680;
+          finalProtein   = bestMenu.protein  || (bestMenu as any).proteinGram || 31;
+          finalIron      = bestMenu.iron     || (bestMenu as any).ironMg || 6;
+          menuSource     = "AI_RAG_PRECISION_CLINICAL";
 
-          console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}"`);
+          console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}" (${finalCalories} kkal, ${finalProtein}g protein, ${finalIron}mg Fe)`);
         }
       }
     } catch (e) {
       console.warn("Gagal fetch atau generate menu RAG untuk integrasi scanner:", e);
     }
+
+    const calculatedAKG = Math.min(100, Math.round((finalIron / 14) * 100)) || 45;
 
     const recommendedMenu = {
       menuId: selectedMenuId,
@@ -278,7 +260,7 @@ export class BiometricSyncService {
       proteinGram: finalProtein,
       ironMg: finalIron,
       portionDesc: "1x Porsi MBG Sesuai Anggaran (Rp15.000)",
-      akgPercentage: 45,
+      akgPercentage: calculatedAKG,
       source: menuSource,
     };
 
