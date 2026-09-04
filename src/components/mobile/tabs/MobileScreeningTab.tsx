@@ -140,6 +140,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   // Step 2: Questionnaire States
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [answersMap, setAnswersMap] = useState<Record<number, string>>({});
   const [customAnswer, setCustomAnswer] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
 
@@ -308,6 +309,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             } else {
               // All 4 photos captured -> proceed to questionnaire (Step 2)
               setScreeningStep(2);
+              setCurrentQuestionIdx(0);
+              setSelectedAnswer(null);
+              setAnswersMap({});
               // Trigger adaptive visual MedQA question formulation
               setIsAdaptingQuestions(true);
               AzureVisionService.generateAdaptiveMedQAQuestions(
@@ -340,6 +344,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
   const handleSelectAnswer = async (ans: string) => {
     setSelectedAnswer(ans);
+    setAnswersMap((prev) => ({
+      ...prev,
+      [currentQuestionIdx]: ans,
+    }));
 
     // Sync Q&A Selection Event to Firestore in Realtime
     BiometricSyncService.syncQnAEvent({
@@ -356,6 +364,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       const targetMenu = isSeafoodAllergic ? "ayam" : menuType;
       if (isSeafoodAllergic) setMenuType("ayam");
 
+      const q1Ans = answersMap[0] || ans;
+      const q2Ans = answersMap[1] || ans;
+      const q3Ans = ans;
+
       // Trigger Azure Blob Upload + Azure Vision + Firebase Sync in background
       try {
         const record = await BiometricSyncService.processAndSyncBiometricScan({
@@ -371,9 +383,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             nailBase64: rawPhotosMap.nail,
           },
           questionnaire: {
-            nafsuMakan: questions[0]?.options[0] || ans,
-            aktivitasFisik: questions[1]?.options[0] || ans,
-            alergi: ans,
+            nafsuMakan: q1Ans,
+            aktivitasFisik: q2Ans,
+            alergi: q3Ans,
           },
           preferredMenuType: targetMenu,
         });
@@ -876,17 +888,17 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             {/* Answer Options */}
             <div className="space-y-2">
               {questions[currentQuestionIdx].options.map((opt, i) => {
-                const isSelected = selectedAnswer === opt;
+                const isSelected = answersMap[currentQuestionIdx] === opt;
                 return (
                   <motion.button
-                    key={i}
+                    key={`q${currentQuestionIdx}-opt${i}`}
                     whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={() => handleSelectAnswer(opt)}
                     className={`w-full py-3.5 px-4 rounded-2xl border text-left text-[12.5px] font-bold transition-all cursor-pointer flex items-center gap-3 ${
                       isSelected
-                        ? "bg-gradient-to-r from-[#0FA89B]/10 to-[#79D7D2]/10 border-[#23B5A8] text-[#0D7A72] shadow-sm"
-                        : "bg-white border-slate-200 text-slate-700 hover:border-[#79D7D2]/50 hover:bg-[#F0FDF8]"
+                        ? "bg-[#23B5A8]/10 border-[#23B5A8] text-[#0D7A72] shadow-sm"
+                        : "bg-white border-slate-200 text-slate-700 active:bg-[#F0FDF8]"
                     }`}
                   >
                     {/* Option Circle Indicator */}
