@@ -7,7 +7,6 @@ import {
   HardDrive,
   Zap,
   RefreshCw,
-  ShieldCheck,
   ArrowLeft,
   BarChart3,
   Lock,
@@ -26,28 +25,28 @@ import {
   Settings,
   HelpCircle,
   Scan,
-  Layers
+  Layers,
+  FileCode
 } from "lucide-react";
 import Link from "next/link";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/services/firebase-service";
-import { CompleteBiometricScanRecord } from "@/services/biometric-sync-service";
 
 export default function SecretDiagnosticsPage() {
-  // State for all Firestore collections
-  const [scans, setScans] = useState<CompleteBiometricScanRecord[]>([]);
+  // State for all 7 Cloud Firestore collections
+  const [scans, setScans] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [menuPlans, setMenuPlans] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [complaints, setComplaints] = useState<any[]>([]);
-  const [settingsDoc, setSettingsDoc] = useState<any>(null);
+  const [settingsDocs, setSettingsDocs] = useState<any[]>([]);
   const [qaDocs, setQaDocs] = useState<any[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshed, setIsRefreshed] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
 
-  // Filter & Active Collection State
+  // Search & Collection Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [selectedCollection, setSelectedCollection] = useState<
@@ -127,14 +126,14 @@ export default function SecretDiagnosticsPage() {
       const unsubscribeSettings = onSnapshot(
         collection(db, "gscan_settings"),
         (snap) => {
-          if (!snap.empty) {
-            setSettingsDoc(snap.docs[0].data());
-          }
+          const loaded: any[] = [];
+          snap.forEach((docSnap) => loaded.push({ _id: docSnap.id, ...docSnap.data() }));
+          setSettingsDocs(loaded);
         },
         () => {}
       );
 
-      // 7. Q&A
+      // 7. Q&A Knowledge Engine
       const unsubscribeQA = onSnapshot(
         collection(db, "gscan_help_qa"),
         (snap) => {
@@ -173,7 +172,7 @@ export default function SecretDiagnosticsPage() {
     }
   };
 
-  // ─── INITIAL VERIFIED FALLBACK DATA (If empty in test environment) ───
+  // ─── INITIAL VERIFIED FALLBACK DATA (No Emojis, Pure Professional Data) ───
   const activeScans = scans.length > 0 ? scans : [
     {
       scanId: "SCAN-1788550201413-6VVOA2",
@@ -265,7 +264,16 @@ export default function SecretDiagnosticsPage() {
     { id: "COMP-001", citizenName: "EKA ANINDA", category: "Ketersediaan Menu", detail: "Menu porsi di sekolah sangat disukai anak-anak", status: "RESOLVED", date: "2026-09-03" }
   ];
 
-  // ─── FILTERED SCANS & DOCUMENTS ───
+  const activeSettings = settingsDocs.length > 0 ? settingsDocs : [
+    { id: "app_config", azureStorageAccount: "stgscanginofest26", azureStorageContainer: "gscan-media", azureVisionEndpoint: "https://gscan-ai-vision.cognitiveservices.azure.com/", version: "2.4.0" }
+  ];
+
+  const activeQA = qaDocs.length > 0 ? qaDocs : [
+    { id: "QA-001", command: "/skrining", question: "Bagaimana cara melakukan skrining awal?", category: "Fitur Aplikasi", answer: "Buka menu Skrining, ikuti 4 langkah foto biometrik (Wajah, Mata, Tangan, Kuku), lalu jawab 3 pertanyaan kuesioner AI." },
+    { id: "QA-002", command: "/anemia", question: "Bagaimana Kcal mendeteksi potensi anemia?", category: "Klinis Gizi", answer: "Melalui ekstraksi Visi AI konjungtiva mata dan capillary refill time kuku anak." }
+  ];
+
+  // ─── FILTERED SCANS ───
   const filteredScans = activeScans.filter((scan: any) => {
     const q = searchQuery.toLowerCase();
     const matchesSearch =
@@ -282,12 +290,16 @@ export default function SecretDiagnosticsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  // ─── TELEMETRY STATS ───
+  // ─── COUNTS ───
   const totalScansCount = activeScans.length;
   const totalUsersCount = activeUsers.length;
   const totalMenusCount = activeMenuPlans.length;
   const totalNotifsCount = activeNotifs.length;
-  const totalAllDocs = totalScansCount + totalUsersCount + totalMenusCount + totalNotifsCount + activeComplaints.length;
+  const totalComplaintsCount = activeComplaints.length;
+  const totalSettingsCount = activeSettings.length;
+  const totalQACount = activeQA.length;
+
+  const totalAllDocs = totalScansCount + totalUsersCount + totalMenusCount + totalNotifsCount + totalComplaintsCount + totalSettingsCount + totalQACount;
 
   const totalInputTokens = totalScansCount * 1250;
   const totalOutputTokens = totalScansCount * 420;
@@ -309,7 +321,8 @@ export default function SecretDiagnosticsPage() {
         mbg_menu_plans: activeMenuPlans,
         gscan_notifications: activeNotifs,
         gscan_complaints: activeComplaints,
-        gscan_settings: settingsDoc || { azureStorageAccount: "stgscanginofest26", azureContainer: "gscan-media" }
+        gscan_settings: activeSettings,
+        gscan_help_qa: activeQA
       }
     };
 
@@ -323,9 +336,9 @@ export default function SecretDiagnosticsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans p-4 sm:p-6 selection:bg-[#0FA89B] selection:text-white">
+    <div className="w-full min-h-screen bg-[#F8FAFC] text-slate-800 font-sans p-4 sm:p-6 selection:bg-[#0FA89B] selection:text-white overflow-y-auto">
       
-      {/* ═══ 1. HEADER CONTROL BAR (WHITE GOVERNMENT STYLING) ═══ */}
+      {/* ═══ 1. HEADER CONTROL BAR ═══ */}
       <header className="max-w-7xl mx-auto bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-xs mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link
@@ -381,9 +394,9 @@ export default function SecretDiagnosticsPage() {
       </header>
 
       {/* ═══ 2. MAIN DASHBOARD CONTENT ═══ */}
-      <main className="max-w-7xl mx-auto space-y-6">
+      <main className="max-w-7xl mx-auto space-y-6 pb-12">
 
-        {/* ─── SUMMARY TELEMETRY CARDS (LIGHT THEME) ─── */}
+        {/* ─── SUMMARY TELEMETRY CARDS ─── */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
@@ -424,58 +437,68 @@ export default function SecretDiagnosticsPage() {
           </div>
         </div>
 
-        {/* ─── COLLECTION SWITCHER TABS ─── */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-3.5 shadow-xs flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11.5px] font-black text-slate-400 px-2 uppercase tracking-wide flex items-center gap-1">
-              <Layers className="w-3.5 h-3.5 text-[#0FA89B]" />
-              Koleksi DB:
+        {/* ─── COLLECTION SWITCHER TABS (NO EMOJIS, PURE ICONS) ─── */}
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-xs space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[12px] font-black text-ford-blue flex items-center gap-2">
+              <Layers className="w-4 h-4 text-[#0FA89B]" />
+              <span>PILEH KOLEKSI DATABASE (7 COLLECTIONS ACTIVE):</span>
             </span>
 
-            {[
-              { id: "ALL", label: `📊 Master Explorer (${totalAllDocs})` },
-              { id: "biometric_scans_history", label: `🧬 Biometric Scans (${totalScansCount})` },
-              { id: "kcal_masyarakat", label: `🧒 Beneficiary Warga (${totalUsersCount})` },
-              { id: "mbg_menu_plans", label: `🍱 Menu Plans (${totalMenusCount})` },
-              { id: "gscan_notifications", label: `🔔 Notifikasi Log (${totalNotifsCount})` },
-              { id: "gscan_complaints", label: `💬 Complaints (${activeComplaints.length})` },
-            ].map((colTab) => (
-              <button
-                key={colTab.id}
-                type="button"
-                onClick={() => setSelectedCollection(colTab.id as any)}
-                className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer ${
-                  selectedCollection === colTab.id
-                    ? "bg-[#0FA89B] text-white shadow-xs"
-                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                }`}
-              >
-                {colTab.label}
-              </button>
-            ))}
+            {/* View Mode Switcher */}
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200/80">
+              {[
+                { id: "MASTER", label: "MASTER TABLE" },
+                { id: "PHOTOS", label: "FOTO AZURE" },
+                { id: "METRICS", label: "METRIK VISION" },
+                { id: "RAW_JSON", label: "RAW JSON" },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setViewMode(t.id as any)}
+                  className={`px-3 py-1 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+                    viewMode === t.id
+                      ? "bg-white text-ford-blue shadow-2xs border border-slate-200/70"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* View Mode Switcher */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200/80">
+          <div className="flex items-center gap-2 flex-wrap pt-1">
             {[
-              { id: "MASTER", label: "MASTER TABLE" },
-              { id: "PHOTOS", label: "FOTO AZURE" },
-              { id: "METRICS", label: "METRIK VISION" },
-              { id: "RAW_JSON", label: "RAW JSON" },
-            ].map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setViewMode(t.id as any)}
-                className={`px-3 py-1 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
-                  viewMode === t.id
-                    ? "bg-white text-ford-blue shadow-2xs border border-slate-200/70"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
+              { id: "ALL", label: `SEMUA KOLEKSI (${totalAllDocs})`, icon: BarChart3 },
+              { id: "biometric_scans_history", label: `biometric_scans_history (${totalScansCount})`, icon: Scan },
+              { id: "kcal_masyarakat", label: `kcal_masyarakat (${totalUsersCount})`, icon: Users },
+              { id: "mbg_menu_plans", label: `mbg_menu_plans (${totalMenusCount})`, icon: Utensils },
+              { id: "gscan_notifications", label: `gscan_notifications (${totalNotifsCount})`, icon: Bell },
+              { id: "gscan_complaints", label: `gscan_complaints (${totalComplaintsCount})`, icon: MessageSquare },
+              { id: "gscan_settings", label: `gscan_settings (${totalSettingsCount})`, icon: Settings },
+              { id: "gscan_help_qa", label: `gscan_help_qa (${totalQACount})`, icon: HelpCircle },
+            ].map((colTab) => {
+              const IconComp = colTab.icon;
+              const isSelected = selectedCollection === colTab.id;
+
+              return (
+                <button
+                  key={colTab.id}
+                  type="button"
+                  onClick={() => setSelectedCollection(colTab.id as any)}
+                  className={`px-3.5 py-2 rounded-2xl text-[11.5px] font-bold transition-all cursor-pointer flex items-center gap-2 border ${
+                    isSelected
+                      ? "bg-[#0FA89B] text-white border-[#0FA89B] shadow-xs"
+                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80"
+                  }`}
+                >
+                  <IconComp className={`w-3.5 h-3.5 ${isSelected ? "text-white" : "text-[#0FA89B]"}`} />
+                  <span>{colTab.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -507,25 +530,19 @@ export default function SecretDiagnosticsPage() {
           </div>
         </div>
 
-        {/* ─── TAB CONTENT 1: MASTER DATA TABLE (ALL COLLECTIONS INCLUDED) ─── */}
+        {/* ─── TAB CONTENT 1: MASTER TABLES (ALL 7 COLLECTIONS RENDERED) ─── */}
         {viewMode === "MASTER" && (
-          <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-4 overflow-hidden">
-            <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
-              <span className="font-extrabold text-ford-blue flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-[#0FA89B]" />
-                <span>INTEGRATED CLOUD DATASET TABLE ({selectedCollection === "ALL" ? totalAllDocs : filteredScans.length} RECORDS)</span>
-              </span>
-              <span className="text-slate-500 font-mono text-[11px]">Firebase Cloud Firestore + Azure Blob Storage</span>
-            </div>
-
-            {/* 1.1 BIOMETRIC SCANS TABLE */}
+          <div className="space-y-6">
+            
+            {/* 1. BIOMETRIC SCANS TABLE */}
             {(selectedCollection === "ALL" || selectedCollection === "biometric_scans_history") && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-[12px] font-bold text-ford-blue pt-1">
-                  <span className="flex items-center gap-1.5 text-[#0FA89B]">
-                    <Scan className="w-4 h-4" />
-                    Koleksi: biometric_scans_history ({filteredScans.length} Dokumen)
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
+                  <span className="font-extrabold text-ford-blue flex items-center gap-2">
+                    <Scan className="w-4 h-4 text-[#0FA89B]" />
+                    <span>KOLEKSI: biometric_scans_history ({filteredScans.length} Dokumen)</span>
                   </span>
+                  <span className="text-slate-500 font-mono text-[11px]">Hasil Skrining Biometrik &amp; Menu RAG</span>
                 </div>
 
                 <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
@@ -543,112 +560,105 @@ export default function SecretDiagnosticsPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 bg-white">
-                      {filteredScans.length === 0 ? (
-                        <tr>
-                          <td colSpan={8} className="py-8 text-center text-slate-500">
-                            {isLoading ? "Memuat data dari Cloud Firestore..." : "Tidak ada data scan yang cocok dengan filter."}
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredScans.map((scan: any) => {
-                          const facePhoto = scan.photos?.faceBase64 || scan.blobUrls?.faceBlobUrl;
-                          const eyePhoto = scan.photos?.eyeBase64 || scan.blobUrls?.eyeBlobUrl;
-                          const handPhoto = scan.photos?.handBase64 || scan.blobUrls?.handBlobUrl;
-                          const nailPhoto = scan.photos?.nailBase64 || scan.blobUrls?.nailBlobUrl;
+                      {filteredScans.map((scan: any) => {
+                        const facePhoto = scan.photos?.faceBase64 || scan.blobUrls?.faceBlobUrl;
+                        const eyePhoto = scan.photos?.eyeBase64 || scan.blobUrls?.eyeBlobUrl;
+                        const handPhoto = scan.photos?.handBase64 || scan.blobUrls?.handBlobUrl;
+                        const nailPhoto = scan.photos?.nailBase64 || scan.blobUrls?.nailBlobUrl;
 
-                          return (
-                            <tr key={scan.scanId} className="hover:bg-teal-50/30 transition-colors">
-                              <td className="py-3 px-3 text-[#0FA89B] whitespace-nowrap text-[11px] font-bold">
-                                {scan.createdAt || new Date().toLocaleTimeString("id-ID")}
-                              </td>
-                              <td className="py-3 px-3 whitespace-nowrap">
-                                <p className="font-bold text-ford-blue text-[11px]">{scan.scanId}</p>
-                                <p className="text-[10px] text-teal-700 font-mono font-bold">{scan.claimId}</p>
-                              </td>
-                              <td className="py-3 px-3 whitespace-nowrap">
-                                <p className="font-black text-ford-blue text-[12px]">{scan.userName}</p>
-                                <p className="text-[10.5px] text-slate-500">
-                                  Kec. {scan.userDistrict} • {scan.userAge || 9} Tahun
-                                </p>
-                              </td>
-                              {/* 4 Photos Thumbnails */}
-                              <td className="py-3 px-3">
-                                <div className="flex items-center gap-1.5">
-                                  {[
-                                    { title: "Wajah", url: facePhoto, icon: "👤" },
-                                    { title: "Mata", url: eyePhoto, icon: "👁️" },
-                                    { title: "Tangan", url: handPhoto, icon: "✋" },
-                                    { title: "Kuku", url: nailPhoto, icon: "💅" },
-                                  ].map((p, idx) => (
-                                    <div
-                                      key={idx}
-                                      onClick={() => {
-                                        if (p.url) {
-                                          setPreviewPhoto({ url: p.url, title: `Foto ${p.title} - ${scan.userName}` });
-                                        }
-                                      }}
-                                      className={`w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative ${
-                                        p.url ? "cursor-pointer hover:border-[#0FA89B] hover:scale-105 transition-all" : "opacity-40"
-                                      }`}
-                                      title={p.url ? `Klik zoom Foto ${p.title}` : `Foto ${p.title} belum di-upload`}
-                                    >
-                                      {p.url ? (
-                                        <img src={p.url} alt={p.title} className="w-full h-full object-cover" />
-                                      ) : (
-                                        <span className="text-xs">{p.icon}</span>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              </td>
-                              {/* Vision Metrics */}
-                              <td className="py-3 px-3 text-[10.5px] whitespace-nowrap">
-                                <p className="text-emerald-600 font-bold">SCIN: {scan.azureVisionMetrics?.facialVitalityScore ?? 0.88}</p>
-                                <p className="text-slate-600">Pallor: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Normal Sehat"}</p>
-                                <p className="text-cyan-700 font-bold">Risk: {scan.azureVisionMetrics?.detectedDeficiencyRisk || "LOW_RISK"}</p>
-                              </td>
-                              {/* Anamnesis */}
-                              <td className="py-3 px-3 text-[10.5px] whitespace-nowrap">
-                                <p className="text-slate-700">Makan: {scan.questionnaireAnswers?.nafsuMakan || "-"}</p>
-                                <p className="text-slate-500">Aktivitas: {scan.questionnaireAnswers?.aktivitasFisik || "-"}</p>
-                              </td>
-                              {/* Recommended Menu RAG */}
-                              <td className="py-3 px-3 max-w-[220px]">
-                                <p className="font-bold text-ford-blue text-[11px] truncate">
-                                  {scan.recommendedMenu?.menuTitle || "Nasi Bandeng Goreng"}
-                                </p>
-                                <p className="text-[10px] text-teal-700 font-mono font-bold">
-                                  {scan.recommendedMenu?.calories || 680} kkal • Fe: {scan.recommendedMenu?.ironMg || 6.4}mg
-                                </p>
-                              </td>
-                              {/* Actions */}
-                              <td className="py-3 px-3 text-right whitespace-nowrap">
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedDocDetail(scan)}
-                                  className="px-2.5 py-1 rounded-xl bg-teal-50 hover:bg-teal-100/80 text-[#0FA89B] border border-teal-200 text-[10.5px] font-extrabold cursor-pointer transition-colors"
-                                >
-                                  INSPECT
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
+                        return (
+                          <tr key={scan.scanId} className="hover:bg-teal-50/30 transition-colors">
+                            <td className="py-3 px-3 text-[#0FA89B] whitespace-nowrap text-[11px] font-bold">
+                              {scan.createdAt || new Date().toLocaleTimeString("id-ID")}
+                            </td>
+                            <td className="py-3 px-3 whitespace-nowrap">
+                              <p className="font-bold text-ford-blue text-[11px]">{scan.scanId}</p>
+                              <p className="text-[10px] text-teal-700 font-mono font-bold">{scan.claimId}</p>
+                            </td>
+                            <td className="py-3 px-3 whitespace-nowrap">
+                              <p className="font-black text-ford-blue text-[12px]">{scan.userName}</p>
+                              <p className="text-[10.5px] text-slate-500">
+                                Kec. {scan.userDistrict} • {scan.userAge || 9} Tahun
+                              </p>
+                            </td>
+                            {/* 4 Photos Thumbnails */}
+                            <td className="py-3 px-3">
+                              <div className="flex items-center gap-1.5">
+                                {[
+                                  { title: "Wajah", url: facePhoto },
+                                  { title: "Mata", url: eyePhoto },
+                                  { title: "Tangan", url: handPhoto },
+                                  { title: "Kuku", url: nailPhoto },
+                                ].map((p, idx) => (
+                                  <div
+                                    key={idx}
+                                    onClick={() => {
+                                      if (p.url) {
+                                        setPreviewPhoto({ url: p.url, title: `Foto ${p.title} - ${scan.userName}` });
+                                      }
+                                    }}
+                                    className={`w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative ${
+                                      p.url ? "cursor-pointer hover:border-[#0FA89B] hover:scale-105 transition-all" : "opacity-40"
+                                    }`}
+                                    title={p.url ? `Klik zoom Foto ${p.title}` : `Foto ${p.title} belum di-upload`}
+                                  >
+                                    {p.url ? (
+                                      <img src={p.url} alt={p.title} className="w-full h-full object-cover" />
+                                    ) : (
+                                      <span className="text-[9px] text-slate-400 font-bold">{p.title[0]}</span>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </td>
+                            {/* Vision Metrics */}
+                            <td className="py-3 px-3 text-[10.5px] whitespace-nowrap">
+                              <p className="text-emerald-600 font-bold">SCIN: {scan.azureVisionMetrics?.facialVitalityScore ?? 0.88}</p>
+                              <p className="text-slate-600">Pallor: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Normal Sehat"}</p>
+                              <p className="text-cyan-700 font-bold">Risk: {scan.azureVisionMetrics?.detectedDeficiencyRisk || "LOW_RISK"}</p>
+                            </td>
+                            {/* Anamnesis */}
+                            <td className="py-3 px-3 text-[10.5px] whitespace-nowrap">
+                              <p className="text-slate-700">Makan: {scan.questionnaireAnswers?.nafsuMakan || "-"}</p>
+                              <p className="text-slate-500">Aktivitas: {scan.questionnaireAnswers?.aktivitasFisik || "-"}</p>
+                            </td>
+                            {/* Recommended Menu RAG */}
+                            <td className="py-3 px-3 max-w-[220px]">
+                              <p className="font-bold text-ford-blue text-[11px] truncate">
+                                {scan.recommendedMenu?.menuTitle || "Nasi Bandeng Goreng"}
+                              </p>
+                              <p className="text-[10px] text-teal-700 font-mono font-bold">
+                                {scan.recommendedMenu?.calories || 680} kkal • Fe: {scan.recommendedMenu?.ironMg || 6.4}mg
+                              </p>
+                            </td>
+                            {/* Actions */}
+                            <td className="py-3 px-3 text-right whitespace-nowrap">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedDocDetail(scan)}
+                                className="px-2.5 py-1 rounded-xl bg-teal-50 hover:bg-teal-100/80 text-[#0FA89B] border border-teal-200 text-[10.5px] font-extrabold cursor-pointer transition-colors"
+                              >
+                                INSPECT
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
               </div>
             )}
 
-            {/* 1.2 CITIZEN USERS / MASYARAKAT TABLE */}
+            {/* 2. CITIZEN USERS / MASYARAKAT TABLE */}
             {(selectedCollection === "ALL" || selectedCollection === "kcal_masyarakat") && (
-              <div className="space-y-2 pt-4">
-                <div className="flex items-center justify-between text-[12px] font-bold text-ford-blue">
-                  <span className="flex items-center gap-1.5 text-blue-600">
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
+                  <span className="font-extrabold text-blue-600 flex items-center gap-2">
                     <Users className="w-4 h-4" />
-                    Koleksi: kcal_masyarakat ({activeUsers.length} Akun Terdaftar)
+                    <span>KOLEKSI: kcal_masyarakat ({activeUsers.length} Akun Terdaftar)</span>
                   </span>
+                  <span className="text-slate-500 font-mono text-[11px]">Database Profil Warga &amp; Penerima MBG</span>
                 </div>
 
                 <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
@@ -692,14 +702,15 @@ export default function SecretDiagnosticsPage() {
               </div>
             )}
 
-            {/* 1.3 MENU PLANS TABLE */}
+            {/* 3. MENU PLANS TABLE */}
             {(selectedCollection === "ALL" || selectedCollection === "mbg_menu_plans") && (
-              <div className="space-y-2 pt-4">
-                <div className="flex items-center justify-between text-[12px] font-bold text-ford-blue">
-                  <span className="flex items-center gap-1.5 text-emerald-600">
-                    <Utensils className="w-4 h-4" />
-                    Koleksi: mbg_menu_plans ({activeMenuPlans.length} Rencana Menu RAG)
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
+                  <span className="font-extrabold text-emerald-700 flex items-center gap-2">
+                    <Utensils className="w-4 h-4 text-emerald-600" />
+                    <span>KOLEKSI: mbg_menu_plans ({activeMenuPlans.length} Rencana Menu RAG)</span>
                   </span>
+                  <span className="text-slate-500 font-mono text-[11px]">Database Formulasi Rekomendasi Gizi</span>
                 </div>
 
                 <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
@@ -738,6 +749,199 @@ export default function SecretDiagnosticsPage() {
                 </div>
               </div>
             )}
+
+            {/* 4. NOTIFICATIONS LOG TABLE */}
+            {(selectedCollection === "ALL" || selectedCollection === "gscan_notifications") && (
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
+                  <span className="font-extrabold text-purple-700 flex items-center gap-2">
+                    <Bell className="w-4 h-4 text-purple-600" />
+                    <span>KOLEKSI: gscan_notifications ({activeNotifs.length} Log Notifikasi)</span>
+                  </span>
+                  <span className="text-slate-500 font-mono text-[11px]">Log Peristiwa Sistem &amp; Sinkronisasi</span>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
+                  <table className="w-full text-left text-xs font-mono border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-[10.5px]">
+                        <th className="py-3 px-3">TIMESTAMP</th>
+                        <th className="py-3 px-3">TIPE EVENT</th>
+                        <th className="py-3 px-3">RINCIAAN PESAN NOTIFIKASI</th>
+                        <th className="py-3 px-3 text-right">AKSI</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 bg-white">
+                      {activeNotifs.map((n: any, idx: number) => (
+                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                          <td className="py-3 px-3 text-slate-500 font-bold">{n.timestamp || "2026-09-04 18:30:15"}</td>
+                          <td className="py-3 px-3">
+                            <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-200">
+                              {n.type || "SYSTEM_LOG"}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 font-bold text-ford-blue">{n.message}</td>
+                          <td className="py-3 px-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDocDetail(n)}
+                              className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[10.5px] font-bold cursor-pointer"
+                            >
+                              INSPECT
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* 5. COMPLAINTS & FEEDBACK TABLE */}
+            {(selectedCollection === "ALL" || selectedCollection === "gscan_complaints") && (
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
+                  <span className="font-extrabold text-amber-700 flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-amber-600" />
+                    <span>KOLEKSI: gscan_complaints ({activeComplaints.length} Laporan Feedback)</span>
+                  </span>
+                  <span className="text-slate-500 font-mono text-[11px]">Database Pengaduan &amp; Masukan Warga</span>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
+                  <table className="w-full text-left text-xs font-mono border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-[10.5px]">
+                        <th className="py-3 px-3">TANGGAL</th>
+                        <th className="py-3 px-3">PELAPOR</th>
+                        <th className="py-3 px-3">KATEGORI</th>
+                        <th className="py-3 px-3">ISII UMPAN BALIK</th>
+                        <th className="py-3 px-3">STATUS</th>
+                        <th className="py-3 px-3 text-right">AKSI</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 bg-white">
+                      {activeComplaints.map((c: any, idx: number) => (
+                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                          <td className="py-3 px-3 text-slate-500">{c.date || "2026-09-03"}</td>
+                          <td className="py-3 px-3 font-black text-ford-blue">{c.citizenName}</td>
+                          <td className="py-3 px-3 font-bold text-amber-700">{c.category}</td>
+                          <td className="py-3 px-3 text-slate-700">{c.detail}</td>
+                          <td className="py-3 px-3">
+                            <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+                              {c.status || "RESOLVED"}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDocDetail(c)}
+                              className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[10.5px] font-bold cursor-pointer"
+                            >
+                              INSPECT
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* 6. SETTINGS CONFIG TABLE */}
+            {(selectedCollection === "ALL" || selectedCollection === "gscan_settings") && (
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
+                  <span className="font-extrabold text-slate-700 flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-[#0FA89B]" />
+                    <span>KOLEKSI: gscan_settings ({activeSettings.length} Konfigurasi System)</span>
+                  </span>
+                  <span className="text-slate-500 font-mono text-[11px]">Pengaturan Integrasi Cloud Azure &amp; Firestore</span>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
+                  <table className="w-full text-left text-xs font-mono border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-[10.5px]">
+                        <th className="py-3 px-3">DOCUMENT ID</th>
+                        <th className="py-3 px-3">AZURE STORAGE ACCOUNT</th>
+                        <th className="py-3 px-3">CONTAINER</th>
+                        <th className="py-3 px-3">AZURE VISION ENDPOINT</th>
+                        <th className="py-3 px-3 text-right">AKSI</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 bg-white">
+                      {activeSettings.map((s: any, idx: number) => (
+                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                          <td className="py-3 px-3 font-bold text-ford-blue">{s.id || "app_config"}</td>
+                          <td className="py-3 px-3 text-blue-700 font-bold">{s.azureStorageAccount || "stgscanginofest26"}</td>
+                          <td className="py-3 px-3 text-slate-600">{s.azureStorageContainer || "gscan-media"}</td>
+                          <td className="py-3 px-3 text-slate-500 truncate max-w-[200px]">{s.azureVisionEndpoint || "https://gscan-ai-vision..."}</td>
+                          <td className="py-3 px-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDocDetail(s)}
+                              className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[10.5px] font-bold cursor-pointer"
+                            >
+                              INSPECT
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* 7. KNOWLEDGE BASE Q&A TABLE */}
+            {(selectedCollection === "ALL" || selectedCollection === "gscan_help_qa") && (
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
+                  <span className="font-extrabold text-teal-700 flex items-center gap-2">
+                    <HelpCircle className="w-4 h-4 text-[#0FA89B]" />
+                    <span>KOLEKSI: gscan_help_qa ({activeQA.length} Knowledge Base Q&amp;A)</span>
+                  </span>
+                  <span className="text-slate-500 font-mono text-[11px]">Database Pertanyaan Asisten AI</span>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
+                  <table className="w-full text-left text-xs font-mono border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-[10.5px]">
+                        <th className="py-3 px-3">PERINTAH CHAT</th>
+                        <th className="py-3 px-3">KATEGORI</th>
+                        <th className="py-3 px-3">PERTANYAAN UTAMA</th>
+                        <th className="py-3 px-3">JAWABAN SISTEM AI</th>
+                        <th className="py-3 px-3 text-right">AKSI</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 bg-white">
+                      {activeQA.map((q: any, idx: number) => (
+                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                          <td className="py-3 px-3 font-bold text-teal-700">{q.command}</td>
+                          <td className="py-3 px-3 text-slate-500 font-bold">{q.category}</td>
+                          <td className="py-3 px-3 font-bold text-ford-blue">{q.question}</td>
+                          <td className="py-3 px-3 text-slate-600 truncate max-w-[260px]">{q.answer}</td>
+                          <td className="py-3 px-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDocDetail(q)}
+                              className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[10.5px] font-bold cursor-pointer"
+                            >
+                              INSPECT
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
           </div>
         )}
 
@@ -842,7 +1046,7 @@ export default function SecretDiagnosticsPage() {
           <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-3">
             <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
               <span className="font-extrabold text-emerald-700 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-emerald-600" />
+                <FileCode className="w-4 h-4 text-emerald-600" />
                 <span>ALL FIRESTORE DOCUMENTS RAW JSON EXPORT</span>
               </span>
               <button
@@ -855,7 +1059,7 @@ export default function SecretDiagnosticsPage() {
             </div>
 
             <pre className="p-4 rounded-2xl bg-slate-900 text-slate-200 text-[11px] font-mono overflow-x-auto max-h-[500px]">
-              {JSON.stringify({ scans: activeScans, users: activeUsers, menus: activeMenuPlans, notifs: activeNotifs }, null, 2)}
+              {JSON.stringify({ scans: activeScans, users: activeUsers, menus: activeMenuPlans, notifs: activeNotifs, complaints: activeComplaints, settings: activeSettings, qa: activeQA }, null, 2)}
             </pre>
           </div>
         )}
@@ -864,13 +1068,13 @@ export default function SecretDiagnosticsPage() {
 
       {/* ═══ DOCUMENT INSPECTION MODAL ═══ */}
       {selectedDocDetail && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="w-full max-w-2xl bg-white border border-slate-200 rounded-3xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto font-mono text-xs text-slate-800">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
                 <Scan className="w-4 h-4 text-[#0FA89B]" />
                 <h3 className="font-black text-ford-blue text-sm">
-                  DOCUMENT INSPECTOR: {selectedDocDetail.scanId || selectedDocDetail.name || selectedDocDetail.planId || "RECORD"}
+                  DOCUMENT INSPECTOR: {selectedDocDetail.scanId || selectedDocDetail.name || selectedDocDetail.planId || selectedDocDetail.id || "RECORD"}
                 </h3>
               </div>
               <button
