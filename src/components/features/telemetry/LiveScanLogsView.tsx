@@ -20,6 +20,7 @@ import {
   Layers,
   Database,
   Maximize2,
+  PlusCircle,
   X
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,8 +35,9 @@ export const LiveScanLogsView: React.FC = () => {
   const [modelTelemetry, setModelTelemetry] = useState<ModelIterationTelemetry | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [activePhotoModal, setActivePhotoModal] = useState<{ title: string; url: string } | null>(null);
+  const [imageErrorMap, setImageErrorMap] = useState<Record<string, boolean>>({});
 
-  // 1. Fetch Actual Live Model Telemetry Benchmark from ContinuousTrainingService / Firestore (No Hardcoded Fallback)
+  // 1. Fetch Actual Live Model Telemetry Benchmark from ContinuousTrainingService / Firestore
   useEffect(() => {
     let isMounted = true;
     ContinuousTrainingService.getActiveModelTelemetry().then((telemetry) => {
@@ -87,8 +89,8 @@ export const LiveScanLogsView: React.FC = () => {
     }
   }, []);
 
-  // 3. Trigger Actual Test Scan Processing (Real Live Entry with Azure Vision & Gemini Pipeline)
-  const handleTriggerActualScanTest = async () => {
+  // 3. Add a new Test Scan Record to Firestore (Only when explicitly clicking "+ Tambah Sesi Uji Baru")
+  const handleAddNewTestScan = async () => {
     setIsSimulating(true);
     try {
       const record = await BiometricSyncService.processAndSyncBiometricScan({
@@ -114,7 +116,7 @@ export const LiveScanLogsView: React.FC = () => {
     }
   };
 
-  // Format timestamp helper
+  // Helper to format actual timestamp
   const formatActualTime = (isoString?: string) => {
     if (!isoString) return new Date().toLocaleTimeString("id-ID");
     try {
@@ -126,6 +128,10 @@ export const LiveScanLogsView: React.FC = () => {
     } catch {
       return isoString;
     }
+  };
+
+  const handleImageError = (photoKey: string) => {
+    setImageErrorMap((prev) => ({ ...prev, [photoKey]: true }));
   };
 
   return (
@@ -153,15 +159,18 @@ export const LiveScanLogsView: React.FC = () => {
             </div>
           </div>
 
-          <button
-            type="button"
-            disabled={isSimulating}
-            onClick={handleTriggerActualScanTest}
-            className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#23B5A8] to-[#0FA89B] hover:opacity-95 text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-md cursor-pointer transition-all disabled:opacity-50 shrink-0"
-          >
-            <Zap className={`w-4 h-4 ${isSimulating ? "animate-spin" : ""}`} />
-            <span>{isSimulating ? "Memproses Inferensi..." : "Uji Scan Realtime Baru"}</span>
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              disabled={isSimulating}
+              onClick={handleAddNewTestScan}
+              className="px-3.5 py-2.5 rounded-2xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all disabled:opacity-50"
+              title="Menambahkan 1 sampel uji baru ke database Firestore"
+            >
+              <PlusCircle className="w-4 h-4 text-cyan-400" />
+              <span>+ Tambah Sesi Uji Baru</span>
+            </button>
+          </div>
         </div>
 
         {/* Dynamic Telemetry Benchmark Card (Purely Loaded from ContinuousTrainingService / Firestore - No Hardcoded Values) */}
@@ -197,12 +206,12 @@ export const LiveScanLogsView: React.FC = () => {
           </div>
 
           <div className="bg-[#1C2541] p-3 rounded-2xl border border-slate-700/80">
-            <span className="text-[10px] font-mono text-slate-400 block uppercase">Total Sampel Latih</span>
+            <span className="text-[10px] font-mono text-slate-400 block uppercase">Total Scan Terdaftar</span>
             <span className="text-lg font-black font-mono text-amber-400">
-              {modelTelemetry?.totalTrainingSamples !== undefined ? `${modelTelemetry.totalTrainingSamples} Dataset` : `${scans.length} Scan`}
+              {scans.length} Scan
             </span>
             <span className="text-[9.5px] text-amber-400/80 block mt-0.5">
-              SCIN + MedQA 4.058
+              Synced Realtime
             </span>
           </div>
         </div>
@@ -218,7 +227,7 @@ export const LiveScanLogsView: React.FC = () => {
               <span>Sesi Scan Realtime Terkini</span>
             </h2>
             <span className="text-[11px] font-mono text-slate-500 font-bold">
-              {scans.length} Scan Terdaftar
+              {scans.length} Sesi Terdaftar
             </span>
           </div>
 
@@ -226,7 +235,7 @@ export const LiveScanLogsView: React.FC = () => {
             <div className="bg-white rounded-3xl p-8 text-center border border-slate-200/80 space-y-3">
               <RefreshCw className="w-8 h-8 text-slate-400 animate-spin mx-auto" />
               <p className="text-xs font-bold text-slate-600">Menunggu Data Scan Masuk dari Perangkat Mobile...</p>
-              <p className="text-[11px] text-slate-400">Lakukan scan di aplikasi mobile atau klik tombol Uji Scan Realtime Baru.</p>
+              <p className="text-[11px] text-slate-400">Lakukan scan di aplikasi mobile atau klik tombol + Tambah Sesi Uji Baru.</p>
             </div>
           ) : (
             <div className="space-y-2.5 max-h-[720px] overflow-y-auto pr-1">
@@ -334,12 +343,12 @@ export const LiveScanLogsView: React.FC = () => {
                 </div>
               </div>
 
-              {/* ═══ 📸 BUKTI-BUKTI FOTO BIOMETRIK (4 MARKERS) ═══ */}
+              {/* ═══ 📸 BUKTI-BUKTI FOTO BIOMETRIK (4 MARKERS CAPTURE) ═══ */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <h4 className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                     <Camera className="w-3.5 h-3.5 text-[#0FA89B]" />
-                    <span>Bukti Foto Biometrik (4 Markers Capture)</span>
+                    <span>Bukti Foto Biometrik Sesi ({selectedScan.scanId})</span>
                   </h4>
                   <span className="text-[10px] font-mono text-slate-500">
                     Provider: {selectedScan.blobUrls?.storageProvider || "AZURE_BLOB_STORAGE"}
@@ -350,19 +359,21 @@ export const LiveScanLogsView: React.FC = () => {
                   {/* Photo 1: Wajah */}
                   <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
                     <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                      {selectedScan.blobUrls?.faceBlobUrl ? (
+                      {selectedScan.blobUrls?.faceBlobUrl && !imageErrorMap[`face_${selectedScan.scanId}`] ? (
                         <img
                           src={selectedScan.blobUrls.faceBlobUrl}
                           alt="Wajah"
+                          onError={() => handleImageError(`face_${selectedScan.scanId}`)}
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="text-[#23B5A8] font-bold text-[10px] flex flex-col items-center">
-                          <User className="w-5 h-5 mb-1 opacity-70" />
-                          <span>Profil Wajah</span>
+                        <div className="text-[#23B5A8] font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
+                          <User className="w-6 h-6 mb-1 text-[#23B5A8] stroke-[1.8]" />
+                          <span>Frame Wajah</span>
+                          <span className="text-[9px] text-slate-400 font-normal">Captured Live</span>
                         </div>
                       )}
-                      {selectedScan.blobUrls?.faceBlobUrl && (
+                      {selectedScan.blobUrls?.faceBlobUrl && !imageErrorMap[`face_${selectedScan.scanId}`] && (
                         <button
                           type="button"
                           onClick={() => setActivePhotoModal({ title: "Foto Profil Wajah", url: selectedScan.blobUrls.faceBlobUrl })}
@@ -378,19 +389,21 @@ export const LiveScanLogsView: React.FC = () => {
                   {/* Photo 2: Mata Konjungtiva */}
                   <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
                     <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                      {selectedScan.blobUrls?.eyeBlobUrl ? (
+                      {selectedScan.blobUrls?.eyeBlobUrl && !imageErrorMap[`eye_${selectedScan.scanId}`] ? (
                         <img
                           src={selectedScan.blobUrls.eyeBlobUrl}
                           alt="Mata"
+                          onError={() => handleImageError(`eye_${selectedScan.scanId}`)}
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="text-cyan-400 font-bold text-[10px] flex flex-col items-center">
-                          <Eye className="w-5 h-5 mb-1 opacity-70" />
+                        <div className="text-cyan-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
+                          <Eye className="w-6 h-6 mb-1 text-cyan-400 stroke-[1.8]" />
                           <span>Konjungtiva</span>
+                          <span className="text-[9px] text-slate-400 font-normal">Hb Scan</span>
                         </div>
                       )}
-                      {selectedScan.blobUrls?.eyeBlobUrl && (
+                      {selectedScan.blobUrls?.eyeBlobUrl && !imageErrorMap[`eye_${selectedScan.scanId}`] && (
                         <button
                           type="button"
                           onClick={() => setActivePhotoModal({ title: "Foto Konjungtiva Sklera", url: selectedScan.blobUrls.eyeBlobUrl })}
@@ -406,19 +419,21 @@ export const LiveScanLogsView: React.FC = () => {
                   {/* Photo 3: Tangan Turgor */}
                   <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
                     <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                      {selectedScan.blobUrls?.handBlobUrl ? (
+                      {selectedScan.blobUrls?.handBlobUrl && !imageErrorMap[`hand_${selectedScan.scanId}`] ? (
                         <img
                           src={selectedScan.blobUrls.handBlobUrl}
                           alt="Tangan"
+                          onError={() => handleImageError(`hand_${selectedScan.scanId}`)}
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="text-emerald-400 font-bold text-[10px] flex flex-col items-center">
-                          <Hand className="w-5 h-5 mb-1 opacity-70" />
+                        <div className="text-emerald-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
+                          <Hand className="w-6 h-6 mb-1 text-emerald-400 stroke-[1.8]" />
                           <span>Turgor Kulit</span>
+                          <span className="text-[9px] text-slate-400 font-normal">Hidrasi Scan</span>
                         </div>
                       )}
-                      {selectedScan.blobUrls?.handBlobUrl && (
+                      {selectedScan.blobUrls?.handBlobUrl && !imageErrorMap[`hand_${selectedScan.scanId}`] && (
                         <button
                           type="button"
                           onClick={() => setActivePhotoModal({ title: "Foto Telapak Tangan & Turgor", url: selectedScan.blobUrls.handBlobUrl })}
@@ -434,19 +449,21 @@ export const LiveScanLogsView: React.FC = () => {
                   {/* Photo 4: Kuku Capillary */}
                   <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-2 space-y-1.5 text-center">
                     <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                      {selectedScan.blobUrls?.nailBlobUrl ? (
+                      {selectedScan.blobUrls?.nailBlobUrl && !imageErrorMap[`nail_${selectedScan.scanId}`] ? (
                         <img
                           src={selectedScan.blobUrls.nailBlobUrl}
                           alt="Kuku"
+                          onError={() => handleImageError(`nail_${selectedScan.scanId}`)}
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="text-amber-400 font-bold text-[10px] flex flex-col items-center">
-                          <Sparkles className="w-5 h-5 mb-1 opacity-70" />
+                        <div className="text-amber-400 font-bold text-[10.5px] p-2 text-center flex flex-col items-center justify-center">
+                          <Sparkles className="w-6 h-6 mb-1 text-amber-400 stroke-[1.8]" />
                           <span>CRT Kuku</span>
+                          <span className="text-[9px] text-slate-400 font-normal">Kapiler Scan</span>
                         </div>
                       )}
-                      {selectedScan.blobUrls?.nailBlobUrl && (
+                      {selectedScan.blobUrls?.nailBlobUrl && !imageErrorMap[`nail_${selectedScan.scanId}`] && (
                         <button
                           type="button"
                           onClick={() => setActivePhotoModal({ title: "Foto Bantalan Kuku (CRT)", url: selectedScan.blobUrls.nailBlobUrl })}
