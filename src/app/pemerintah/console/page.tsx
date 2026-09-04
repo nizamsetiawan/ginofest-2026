@@ -341,73 +341,77 @@ Timestamp: ${selectedScan.createdAt}
                   >
                     <div className="flex items-center justify-between text-slate-400">
                       <span className="text-cyan-300 font-bold">
-                        {scan.createdAt || new Date().toISOString()} <span className="text-emerald-400">INFO</span> [http-nio-8080-exec-1]
+                        [{scan.createdAt || new Date().toISOString()}] <span className="text-emerald-400">INFO</span> [MOBILE_STREAM_NODE]
                       </span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300 font-mono">
                         ID: {scan.scanId}
                       </span>
                     </div>
 
-                    <p className="text-slate-200">
-                      : <strong className="text-white">{scan.userName}</strong> ({scan.userDistrict}) — Status:{" "}
+                    <p className="text-slate-200 font-mono">
+                      [USER_SESSION] <strong className="text-white">{scan.userName}</strong> (Kec. {scan.userDistrict}) — Status:{" "}
                       {scan.status === "SCANNING_IN_PROGRESS" ? (
-                        <span className="text-amber-400 font-bold animate-pulse">📸 SCANNING FRAME ({scan.lastCapturedStep || "wajah"})</span>
+                        <span className="text-amber-400 font-bold animate-pulse">[STREAMING_FRAMES ({scan.lastCapturedStep || "wajah"})]</span>
                       ) : scan.status === "CANCELLED" ? (
-                        <span className="text-rose-400 font-bold">✕ ABORTED / RECAPTURED</span>
+                        <span className="text-rose-400 font-bold">[ABORTED_RECAPTURED]</span>
                       ) : (
-                        <span className="text-emerald-400 font-bold">🟢 VALIDATED ({formattedConf})</span>
+                        <span className="text-emerald-400 font-bold">[VALIDATED: {formattedConf}]</span>
                       )}
                     </p>
 
-                    {/* Step-by-Step Frame Capture Breakdown */}
-                    <div className="pl-3 border-l-2 border-cyan-500/30 text-[10.5px] space-y-0.5">
+                    {/* Mobile Client Activity Stream Logs (Emoji-Free) */}
+                    <div className="pl-3 border-l-2 border-cyan-500/30 text-[10.5px] space-y-1 font-mono">
+                      <p className="text-slate-400">
+                        [INFO] [CLIENT_CAMERA_INIT] Mobile device camera stream connected (1280x720 30fps)
+                      </p>
+
                       {scan.photos?.faceBase64 && (
                         <p className="text-cyan-300">
-                          ├─ 📸 Step 1/4 (Profil Wajah) : Frame Received (SCIN Vitality: {scan.azureVisionMetrics?.facialVitalityScore || 0.88})
+                          [INFO] [FRAME_STREAM_RECEIVED] Frame 1/4 (Face Profile) received from mobile client. Azure SCIN Vitality Score: {scan.azureVisionMetrics?.facialVitalityScore || 0.88}
                         </p>
                       )}
                       {scan.photos?.eyeBase64 && (
                         <p className="text-sky-300">
-                          ├─ 👁️ Step 2/4 (Mata Konjungtiva) : Frame Received (Eye Pallor: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"})
+                          [INFO] [FRAME_STREAM_RECEIVED] Frame 2/4 (Conjunctiva Sclera) received. Pallor Status: {scan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
                         </p>
                       )}
                       {scan.photos?.handBase64 && (
                         <p className="text-emerald-300">
-                          ├─ ✋ Step 3/4 (Turgor Kulit Tangan) : Frame Received (Epidermal Turgor: {scan.azureVisionMetrics?.skinTurgorStatus || "Elastis"})
+                          [INFO] [FRAME_STREAM_RECEIVED] Frame 3/4 (Skin Turgor) received. Elasticity Status: {scan.azureVisionMetrics?.skinTurgorStatus || "Elastis"}
                         </p>
                       )}
                       {scan.photos?.nailBase64 && (
                         <p className="text-amber-300">
-                          ├─ 💅 Step 4/4 (CRT Bantalan Kuku) : Frame Received (Capillary CRT: {scan.azureVisionMetrics?.nailbedStatus || "Merah Muda Sehat"})
+                          [INFO] [FRAME_STREAM_RECEIVED] Frame 4/4 (Nailbed CRT) received. Capillary Refill Status: {scan.azureVisionMetrics?.nailbedStatus || "Merah Muda Sehat"}
                         </p>
                       )}
 
-                      {/* Recapture Warning Event Log */}
+                      {/* Recapture Event Log */}
                       {scan.lastCapturedStep?.startsWith("recapture_") && (
                         <p className="text-yellow-300 font-bold bg-yellow-950/60 px-2 py-0.5 rounded border border-yellow-700/60 my-1">
-                          ⚡ [WARN] [RECAPTURE_EVENT] User initiated Recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing previous frame buffer &amp; recalibrating...
+                          [WARN] [RECAPTURE_EVENT] User initiated recapture for Step ({scan.lastCapturedStep.replace("recapture_", "").toUpperCase()}). Clearing frame buffer &amp; recalibrating sensor...
                         </p>
                       )}
 
                       {/* Q&A Interactive Anamnesis Answers Log */}
                       {scan.questionnaireAnswers && (
                         <div className="text-purple-300 text-[10px] space-y-0.5 py-0.5 border-l-2 border-purple-500/40 pl-2 my-1 bg-purple-950/20 rounded-r">
-                          <p>📝 [Q&amp;A_ANAMNESIS] Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
-                          <p>📝 [Q&amp;A_ANAMNESIS] Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
-                          <p>📝 [Q&amp;A_ANAMNESIS] Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
+                          <p>[INFO] [ANAMNESIS_SELECTION] Q1 (Nafsu Makan): {scan.questionnaireAnswers.nafsuMakan}</p>
+                          <p>[INFO] [ANAMNESIS_SELECTION] Q2 (Aktivitas Fisik): {scan.questionnaireAnswers.aktivitasFisik}</p>
+                          <p>[INFO] [ANAMNESIS_SELECTION] Q3 (Riwayat Alergi): {scan.questionnaireAnswers.alergi}</p>
                         </div>
                       )}
 
                       {scan.recommendedMenu?.menuTitle && (
                         <p className="text-[#0FA89B] font-bold">
-                          ├─ 🥗 Gemini RAG Matched : {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
+                          [SUCCESS] [GEMINI_RAG_PIPELINE] Menu Matched: {scan.recommendedMenu.menuTitle} ({scan.recommendedMenu.calories} kkal, Fe: {scan.recommendedMenu.ironMg}mg)
                         </p>
                       )}
 
                       {/* Session Completed & Claimed Log */}
                       {scan.status === "CLAIMED" && (
                         <p className="text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-600/60 my-1">
-                          🏁 [SUCCESS] [SESSION_COMPLETED] Beneficiary verified QR claim &amp; closed screening analysis.
+                          [SUCCESS] [SESSION_COMPLETED] Beneficiary QR claim verified. Screening session closed.
                         </p>
                       )}
                     </div>
