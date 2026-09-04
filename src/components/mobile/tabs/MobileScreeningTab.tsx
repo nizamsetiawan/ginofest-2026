@@ -25,6 +25,7 @@ import {
   Cpu,
   X,
   Maximize2,
+  User,
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -1070,28 +1071,28 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </div>
             </div>
 
-            {/* ═══ EXPANDABLE CLINICAL DETAILS & PHOTO EVIDENCE SECTION (COLLAPSED BY DEFAULT) ═══ */}
-            <div className="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm transition-all">
+            {/* ═══ EXPANDABLE CLINICAL DETAILS & PHOTO EVIDENCE SECTION ═══ */}
+            <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs transition-all">
               <button
                 type="button"
                 onClick={() => setShowDetailedReport((prev) => !prev)}
                 className="w-full p-4 flex items-center justify-between text-left cursor-pointer hover:bg-slate-50/80 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-100 flex items-center justify-center shrink-0">
-                    <Activity className="w-4.5 h-4.5" />
+                  <div className="w-10 h-10 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Activity className="w-5 h-5 text-[#0FA89B]" />
                   </div>
                   <div>
-                    <h5 className="text-[12.5px] font-black text-slate-800 leading-tight flex items-center gap-1.5">
-                      <span>Detail Analisis Klinis &amp; Foto</span>
-                      <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                    <h5 className="text-[13px] font-black text-ford-blue leading-tight flex items-center gap-2">
+                      <span>Detail Analisis Klinis &amp; Bukti Foto</span>
+                      <span className="text-[9.5px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70">
                         {syncedRecord?.azureVisionMetrics?.confidenceScore
                           ? `${(syncedRecord.azureVisionMetrics.confidenceScore * (syncedRecord.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}% Akurasi`
                           : "Visi AI Presisi"}
                       </span>
                     </h5>
-                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                      {showDetailedReport ? "Klik untuk menyembunyikan bukti biometrik" : "Lihat 4 foto biometrik, akurasi AI & skor klinis"}
+                    <p className="text-[10.5px] text-slate-400 font-medium mt-0.5">
+                      {showDetailedReport ? "Klik untuk menyembunyikan laporan detail" : "Lihat 4 foto biometrik, skor SCIN & hasil analisis AI"}
                     </p>
                   </div>
                 </div>
@@ -1107,153 +1108,166 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.25, ease: "easeInOut" }}
-                    className="px-4 pb-4 space-y-3.5 border-t border-slate-100 pt-3"
+                    className="px-4 pb-4.5 space-y-4 border-t border-slate-100 pt-3.5"
                   >
                     {/* 1. Lampiran Foto Biometrik (4 Frame) */}
-                    <div className="space-y-1.5">
-                      <p className="text-[10.5px] font-extrabold text-slate-700 flex items-center gap-1.5">
-                        <Scan className="w-3.5 h-3.5 text-[#0FA89B]" />
-                        <span>Lampiran 4 Frame Foto Biometrik</span>
-                      </p>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-[11px] font-black text-ford-blue flex items-center gap-1.5">
+                          <Scan className="w-3.5 h-3.5 text-[#0FA89B]" />
+                          <span>Bukti 4 Frame Foto Biometrik</span>
+                        </p>
+                        <span className="text-[9.5px] font-semibold text-slate-400">Klik foto untuk zoom</span>
+                      </div>
 
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                         {[
                           {
                             id: "wajah",
-                            label: "Wajah",
+                            label: "Wajah (SCIN)",
+                            sub: "Vitalitas Kulit",
                             img: rawPhotosMap.wajah || rawPhotosMap.face || syncedRecord?.photos?.faceBase64 || syncedRecord?.blobUrls?.faceBlobUrl,
-                            fallbackIcon: "👤",
+                            icon: User,
                           },
                           {
                             id: "mata",
                             label: "Konjungtiva",
+                            sub: "Warna Mata",
                             img: rawPhotosMap.mata || rawPhotosMap.eye || syncedRecord?.photos?.eyeBase64 || syncedRecord?.blobUrls?.eyeBlobUrl,
-                            fallbackIcon: "👁️",
+                            icon: Eye,
                           },
                           {
                             id: "tangan",
                             label: "Turgor Kulit",
+                            sub: "Tangan Anak",
                             img: rawPhotosMap.tangan || rawPhotosMap.hand || syncedRecord?.photos?.handBase64 || syncedRecord?.blobUrls?.handBlobUrl,
-                            fallbackIcon: "✋",
+                            icon: Hand,
                           },
                           {
                             id: "kuku",
                             label: "CRT Kuku",
+                            sub: "Refill Kapiler",
                             img: rawPhotosMap.kuku || rawPhotosMap.nail || syncedRecord?.photos?.nailBase64 || syncedRecord?.blobUrls?.nailBlobUrl,
-                            fallbackIcon: "💅",
+                            icon: Focus,
                           },
-                        ].map((item) => (
-                          <div key={item.id} className="space-y-1 text-center">
-                            <div
-                              onClick={() => {
-                                if (item.img) {
-                                  if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                                  setPreviewPhoto({ url: item.img, title: `Foto ${item.label}` });
-                                }
-                              }}
-                              className={`w-full aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${
-                                item.img ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""
-                              }`}
-                            >
-                              {item.img ? (
-                                <>
-                                  <img src={item.img} alt={item.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                    <Maximize2 className="w-3.5 h-3.5 text-white" />
+                        ].map((item) => {
+                          const ItemIcon = item.icon;
+
+                          return (
+                            <div key={item.id} className="bg-slate-50 border border-slate-200/80 p-2 rounded-2xl space-y-1.5 text-center">
+                              <div
+                                onClick={() => {
+                                  if (item.img) {
+                                    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                                    setPreviewPhoto({ url: item.img, title: `Foto ${item.label}` });
+                                  }
+                                }}
+                                className={`w-full aspect-square rounded-xl bg-slate-200/60 border border-slate-200 overflow-hidden relative flex flex-col items-center justify-center ${
+                                  item.img ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""
+                                }`}
+                              >
+                                {item.img ? (
+                                  <>
+                                    <img src={item.img} alt={item.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                                    <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                      <Maximize2 className="w-4 h-4 text-white drop-shadow-md" />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div className="flex flex-col items-center text-slate-400 space-y-1 p-1">
+                                    <ItemIcon className="w-5 h-5 text-slate-400 stroke-[1.8]" />
+                                    <span className="text-[8.5px] font-bold">Biometrik</span>
                                   </div>
-                                </>
-                              ) : (
-                                <span className="text-xl">{item.fallbackIcon}</span>
-                              )}
-                              <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[7px] text-white font-bold">
-                                ✓
-                              </span>
+                                )}
+                                <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold shadow-2xs">
+                                  ✓
+                                </span>
+                              </div>
+
+                              <div>
+                                <span className="text-[10px] font-black text-ford-blue block leading-tight truncate">
+                                  {item.label}
+                                </span>
+                                <span className="text-[8.5px] font-medium text-slate-400 block truncate">
+                                  {item.sub}
+                                </span>
+                              </div>
                             </div>
-                            <span className="text-[9.5px] font-bold text-slate-600 block truncate">
-                              {item.label}
-                            </span>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
 
-                    {/* 2. Detail Akurasi & Skor Visi AI */}
-                    <div className="space-y-1.5 pt-1">
-                      <p className="text-[10.5px] font-extrabold text-slate-700 flex items-center gap-1.5">
+                    {/* 2. Detail Akurasi & Skor Visi AI (Clean 2x2 Stat Grid) */}
+                    <div className="space-y-2 pt-1">
+                      <p className="text-[11px] font-black text-ford-blue flex items-center gap-1.5">
                         <Cpu className="w-3.5 h-3.5 text-[#0FA89B]" />
-                        <span>Metrik Akurasi &amp; Ekstraksi Visi AI</span>
+                        <span>Metrik &amp; Indeks Ekstraksi AI</span>
                       </p>
 
-                      <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-2 text-[10.5px]">
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-500 font-medium">Akurasi Model Edge AI</span>
-                          <span className="font-extrabold text-emerald-600">
+                      <div className="grid grid-cols-2 gap-2 text-[10.5px]">
+                        {/* Stat 1: Engine Accuracy */}
+                        <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                          <span className="text-[9.5px] text-slate-400 font-medium block">Akurasi Model Edge AI</span>
+                          <span className="font-extrabold text-emerald-600 text-[11px] block">
                             {syncedRecord?.azureVisionMetrics?.confidenceScore
-                              ? `${(syncedRecord.azureVisionMetrics.confidenceScore * (syncedRecord.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}% (Presisi Visi AI)`
-                              : "95.2% (Azure Vision Presisi)"}
+                              ? `${(syncedRecord.azureVisionMetrics.confidenceScore * (syncedRecord.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}% (Presisi)`
+                              : "95.2% (Visi Presisi)"}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-500 font-medium">SCIN Vitality (Wajah)</span>
-                          <span className="font-bold text-slate-800">
+
+                        {/* Stat 2: Facial Vitality */}
+                        <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                          <span className="text-[9.5px] text-slate-400 font-medium block">SCIN Vitality (Wajah)</span>
+                          <span className="font-bold text-ford-blue text-[11px] block">
                             {syncedRecord?.azureVisionMetrics?.facialVitalityScore !== undefined
                               ? `${syncedRecord.azureVisionMetrics.facialVitalityScore} (Segar)`
                               : "0.88 (Vital & Segar)"}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-500 font-medium">Indeks Pucat (Konjungtiva Mata)</span>
-                          <span className="font-bold text-slate-800">
-                            {syncedRecord?.azureVisionMetrics?.eyeConjunctivaStatus
-                              ? `${syncedRecord.azureVisionMetrics.eyeConjunctivaStatus}`
-                              : "Merah Muda Normal"}
+
+                        {/* Stat 3: Conjunctiva Pallor */}
+                        <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                          <span className="text-[9.5px] text-slate-400 font-medium block">Konjungtiva Mata</span>
+                          <span className="font-bold text-ford-blue text-[11px] block truncate">
+                            {syncedRecord?.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-500 font-medium">Elastisitas Turgor Kulit (Tangan)</span>
-                          <span className="font-bold text-slate-800">
-                            {syncedRecord?.azureVisionMetrics?.skinTurgorStatus
-                              ? `${syncedRecord.azureVisionMetrics.skinTurgorStatus}`
-                              : "Elastis / Normal"}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-500 font-medium">Refill Kapiler / CRT (Kuku)</span>
-                          <span className="font-bold text-slate-800">
-                            {syncedRecord?.azureVisionMetrics?.nailbedStatus
-                              ? `${syncedRecord.azureVisionMetrics.nailbedStatus}`
-                              : "Merah Muda Sehat (<2 dtk)"}
+
+                        {/* Stat 4: CRT Nailbed */}
+                        <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                          <span className="text-[9.5px] text-slate-400 font-medium block">Kapiler Kuku (CRT)</span>
+                          <span className="font-bold text-ford-blue text-[11px] block truncate">
+                            {syncedRecord?.azureVisionMetrics?.nailbedStatus || "Merah Muda Sehat (<2d)"}
                           </span>
                         </div>
                       </div>
                     </div>
 
                     {/* 3. Hasil Akhir Analisis Klinis & Anamnesis */}
-                    <div className="space-y-1.5 pt-1">
-                      <p className="text-[10.5px] font-extrabold text-slate-700 flex items-center gap-1.5">
+                    <div className="space-y-2 pt-1">
+                      <p className="text-[11px] font-black text-ford-blue flex items-center gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-[#0FA89B]" />
-                        <span>Hasil Akhir Analisis &amp; Anamnesis</span>
+                        <span>Hasil Akhir Analisis &amp; Anamnesis Ortu</span>
                       </p>
 
-                      <div className="p-3 rounded-2xl bg-teal-50/60 border border-teal-100/80 space-y-1.5 text-[10.5px]">
+                      <div className="p-3 rounded-2xl bg-teal-50/70 border border-teal-100/90 space-y-2 text-[10.5px]">
                         <div className="flex items-center justify-between">
                           <span className="text-slate-600 font-medium">Status Profil Fisik</span>
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[9.5px]">
+                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-black text-[9.5px] border border-emerald-200/80">
                             Risiko Rendah / Gizi Baik
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-slate-600 font-medium">Kecamatan Domisili</span>
-                          <span className="font-bold text-slate-800">Kec. {citizenUser?.district || "Kebomas"}</span>
+                          <span className="text-slate-600 font-medium">Domisili &amp; Usia AKG</span>
+                          <span className="font-bold text-ford-blue">
+                            Kec. {citizenUser?.district || "Kebomas"} • {citizenUser?.age || 9} Thn
+                          </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-600 font-medium">Usia Target AKG</span>
-                          <span className="font-bold text-slate-800">{citizenUser?.age || 9} Tahun (Standar Kemenkes)</span>
-                        </div>
-                        <div className="flex items-center justify-between pt-1 border-t border-teal-100 text-slate-600">
-                          <span>Anamnesis Ortu</span>
-                          <span className="font-bold text-slate-800">
-                            Nafsu Makan: {answersMap[0] || "Lahap"} • Fisik: {answersMap[1] || "Aktif"}
+                        <div className="pt-1.5 border-t border-teal-200/60 flex items-center justify-between text-slate-600">
+                          <span className="font-medium">Jawaban Kuesioner</span>
+                          <span className="font-extrabold text-ford-blue">
+                            Makan: {answersMap[0] || "Lahap"} • Fisik: {answersMap[1] || "Aktif"}
                           </span>
                         </div>
                       </div>
