@@ -340,6 +340,60 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
+      {/* 2.5 KARTU HASIL SKRINING TERAKHIR ANAK                          */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <div className="bg-gradient-to-r from-teal-900 via-[#131C38] to-[#090D18] text-white rounded-3xl p-4.5 shadow-md space-y-3 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-28 h-28 bg-[#79D7D2]/10 rounded-bl-full pointer-events-none" />
+
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold text-[#79D7D2] uppercase tracking-wider flex items-center gap-1.5">
+            <HeartPulse className="w-3.5 h-3.5 text-[#79D7D2]" />
+            <span>Hasil Skrining Terakhir Anak</span>
+          </span>
+          <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[9.5px] font-bold border border-emerald-800">
+            ● Terverifikasi AI
+          </span>
+        </div>
+
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <h3 className="text-[14px] font-black text-white leading-tight">
+              Risiko Rendah / Gizi Baik
+            </h3>
+            <p className="text-[11px] text-slate-300 font-medium mt-0.5">
+              Target: Kec. {citizenUser?.district || "Kebomas"} ({citizenUser?.age || 9} Tahun)
+            </p>
+          </div>
+          <div className="text-right shrink-0">
+            <span className="text-[10px] text-slate-400 font-mono block">94.8% Akurasi</span>
+            <span className="text-[11px] font-bold text-[#79D7D2]">Sesi Aktif</span>
+          </div>
+        </div>
+
+        <div className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/10 text-[11px] text-slate-200 flex items-center justify-between">
+          <div className="flex items-center gap-2 truncate">
+            <Sparkles className="w-3.5 h-3.5 text-teal-300 shrink-0" />
+            <span className="truncate font-semibold">
+              Rekomendasi RAG: Nasi Semur Daging Sapi Lokal &amp; Sop Wortel
+            </span>
+          </div>
+          <span className="text-[10px] font-mono text-teal-200 font-bold shrink-0">690 kkal</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic();
+            setActiveTab("screening");
+          }}
+          className="w-full py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 active:scale-[0.98] text-white text-[11.5px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border border-white/10"
+        >
+          <span>Buka / Mulai Skrining AI Baru</span>
+          <ChevronRight className="w-3.5 h-3.5 text-teal-300" />
+        </button>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
       {/* 3. TIGA KARTU MENU UTAMA (QUICK ACTION CARDS)                  */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <div className="grid grid-cols-3 gap-2.5">

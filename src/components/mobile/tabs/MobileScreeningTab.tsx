@@ -23,6 +23,8 @@ import {
   Focus,
   CheckCircle2,
   Cpu,
+  X,
+  Maximize2,
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -200,6 +202,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [menuType, setMenuType] = useState<"ayam" | "bandeng">("ayam");
   const [syncedRecord, setSyncedRecord] = useState<CompleteBiometricScanRecord | null>(null);
   const [showDetailedReport, setShowDetailedReport] = useState(false);
+  const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string } | null>(null);
 
   // Step 4: QR Code Scanner Timer / Verification Simulation
   const [isQrVerifying, setIsQrVerifying] = useState(false);
@@ -1139,9 +1142,24 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                           },
                         ].map((item) => (
                           <div key={item.id} className="space-y-1 text-center">
-                            <div className="w-full aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center">
+                            <div
+                              onClick={() => {
+                                if (item.img) {
+                                  if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                                  setPreviewPhoto({ url: item.img, title: `Foto ${item.label}` });
+                                }
+                              }}
+                              className={`w-full aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${
+                                item.img ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""
+                              }`}
+                            >
                               {item.img ? (
-                                <img src={item.img} alt={item.label} className="w-full h-full object-cover" />
+                                <>
+                                  <img src={item.img} alt={item.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                    <Maximize2 className="w-3.5 h-3.5 text-white" />
+                                  </div>
+                                </>
                               ) : (
                                 <span className="text-xl">{item.fallbackIcon}</span>
                               )}
@@ -1497,6 +1515,49 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
         </div>
       )}
+      {/* ═══ FULLSCREEN PHOTO PREVIEW LIGHTBOX MODAL ═══ */}
+      <AnimatePresence>
+        {previewPhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-4"
+          >
+            <div className="w-full flex items-center justify-between pt-2 px-2 text-white">
+              <div className="flex items-center gap-2">
+                <Scan className="w-4 h-4 text-[#79D7D2]" />
+                <h4 className="text-[14px] font-bold tracking-tight">{previewPhoto.title}</h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewPhoto(null)}
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 w-full max-w-sm flex items-center justify-center p-2 relative">
+              <motion.img
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                src={previewPhoto.url}
+                alt={previewPhoto.title}
+                className="max-h-[75vh] w-auto max-w-full object-contain rounded-2xl border border-white/20 shadow-2xl"
+              />
+            </div>
+
+            <div className="pb-6 text-center">
+              <span className="text-[11px] text-slate-400 font-mono">
+                Ekstraksi Visi Biometrik G-Scan • Pemkab Gresik 2026
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Page>
   );
 };
