@@ -287,203 +287,125 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       )}
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 2. CARD UTAMA: MENU MBG HARI INI                               */}
+      {/* 2. LAYANAN & FITUR UTAMA (4 CARDS GRID)                        */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl p-4.5 shadow-xs space-y-3.5">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-            Menu Makan Siang Hari Ini
-          </span>
-          <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
-            ● Porsi Tersedia
-          </span>
-        </div>
-
-        <div>
-          <h2 className="text-[17px] font-black text-slate-800 tracking-tight leading-tight">
-            Nasi Ayam Kari &amp; Sayur
+      <div className="space-y-3 pt-1">
+        <div className="flex items-center justify-between px-0.5">
+          <h2 className="text-[12px] font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#0FA89B]" />
+            <span>Layanan &amp; Fitur Utama</span>
           </h2>
-          <p className="text-[11.5px] text-slate-500 font-medium mt-0.5">
-            Dilengkapi sayur segar &amp; buah pisang untuk energi belajar.
-          </p>
-        </div>
-
-        {/* 3 Badges Gizi Ringkas */}
-        <div className="grid grid-cols-3 gap-2 pt-0.5">
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl py-2 px-1 text-center">
-            <p className="text-[13px] font-black text-slate-800">680</p>
-            <p className="text-[9.5px] text-slate-400 font-bold">Kalori (kkal)</p>
-          </div>
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl py-2 px-1 text-center">
-            <p className="text-[13px] font-black text-emerald-600">31g</p>
-            <p className="text-[9.5px] text-slate-400 font-bold">Protein</p>
-          </div>
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl py-2 px-1 text-center">
-            <p className="text-[13px] font-black text-amber-600">6mg</p>
-            <p className="text-[9.5px] text-slate-400 font-bold">Zat Besi</p>
-          </div>
-        </div>
-
-        {/* Tombol Klaim */}
-        <button
-          type="button"
-          onClick={() => {
-            triggerHaptic();
-            setActiveTab("screening");
-          }}
-          className="w-full py-3 rounded-2xl bg-[#0FA89B] hover:bg-[#0D8B80] active:scale-[0.98] text-white text-[12.5px] font-black flex items-center justify-center gap-2 shadow-sm cursor-pointer transition-all"
-        >
-          <QrCode className="w-4 h-4" />
-          <span>Ambil Porsi Makan Siang (QR)</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 2.5 KARTU HASIL SKRINING TERAKHIR ANAK                          */}
-      {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="bg-gradient-to-r from-teal-900 via-[#131C38] to-[#090D18] text-white rounded-3xl p-4.5 shadow-md space-y-3 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-28 h-28 bg-[#79D7D2]/10 rounded-bl-full pointer-events-none" />
-
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold text-[#79D7D2] uppercase tracking-wider flex items-center gap-1.5">
-            <HeartPulse className="w-3.5 h-3.5 text-[#79D7D2]" />
-            <span>Hasil Skrining Terakhir Anak</span>
-          </span>
-          <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[9.5px] font-bold border border-emerald-800">
-            ● Terverifikasi AI
+          <span className="text-[10px] font-extrabold text-[#0FA89B] bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
+            4 Menu Pilihan
           </span>
         </div>
 
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <h3 className="text-[14px] font-black text-white leading-tight">
-              Risiko Rendah / Gizi Baik
-            </h3>
-            <p className="text-[11px] text-slate-300 font-medium mt-0.5">
-              Target: Kec. {citizenUser?.district || "Kebomas"} ({citizenUser?.age || 9} Tahun)
-            </p>
-          </div>
-          <div className="text-right shrink-0">
-            <span className="text-[10px] text-slate-300 font-bold block">Visi AI Presisi</span>
-            <span className="text-[11px] font-bold text-[#79D7D2]">Sesi Aktif</span>
-          </div>
-        </div>
-
-        <div className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/10 text-[11px] text-slate-200 flex items-center justify-between">
-          <div className="flex items-center gap-2 truncate">
-            <Sparkles className="w-3.5 h-3.5 text-teal-300 shrink-0" />
-            <span className="truncate font-semibold">
-              Rekomendasi RAG: Nasi Semur Daging Sapi Lokal &amp; Sop Wortel
-            </span>
-          </div>
-          <span className="text-[10px] font-mono text-teal-200 font-bold shrink-0">690 kkal</span>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => {
-            triggerHaptic();
-            setActiveTab("screening");
-          }}
-          className="w-full py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 active:scale-[0.98] text-white text-[11.5px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border border-white/10"
-        >
-          <span>Buka / Mulai Skrining AI Baru</span>
-          <ChevronRight className="w-3.5 h-3.5 text-teal-300" />
-        </button>
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 3. TIGA KARTU MENU UTAMA (QUICK ACTION CARDS)                  */}
-      {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-3 gap-2.5">
-        {[
-          {
-            label: "Klaim Porsi",
-            desc: "Kode QR",
-            icon: QrCode,
-            color: "text-[#0FA89B]",
-            bg: "bg-[#0FA89B]/10",
-            border: "border-[#0FA89B]/20",
-            action: () => {
-              triggerHaptic();
-              setActiveTab("screening");
-            },
-          },
-          {
-            label: "Riwayat",
-            desc: "Porsi MBG",
-            icon: History,
-            color: "text-[#0284C7]",
-            bg: "bg-[#0284C7]/10",
-            border: "border-[#0284C7]/20",
-            action: () => {
+        <div className="grid grid-cols-2 gap-3">
+          {/* Card 1: Riwayat Analisis */}
+          <button
+            type="button"
+            onClick={() => {
               triggerHaptic();
               setShowHistoryModal(true);
-            },
-          },
-          {
-            label: "Lapor Menu",
-            desc: "Evaluasi",
-            icon: MessageSquare,
-            color: "text-[#F59E0B]",
-            bg: "bg-[#F59E0B]/10",
-            border: "border-[#F59E0B]/20",
-            action: () => {
+            }}
+            className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+              <History className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
+                Riwayat Analisis
+              </h3>
+              <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
+                Hasil skrining biometrik &amp; rekomendasi RAG
+              </p>
+            </div>
+            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-[#0FA89B]">
+              <span>Lihat Rekam</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
+          </button>
+
+          {/* Card 2: Pusat Aduan */}
+          <button
+            type="button"
+            onClick={() => {
               triggerHaptic();
               setShowFeedbackModal(true);
-            },
-          },
-        ].map((btn, idx) => {
-          const Icon = btn.icon;
-          return (
-            <button
-              key={idx}
-              type="button"
-              onClick={btn.action}
-              className="bg-white border border-slate-200/80 rounded-2xl p-3 flex flex-col items-center justify-center gap-1 shadow-2xs hover:shadow-xs active:scale-[0.96] transition-all cursor-pointer text-center"
-            >
-              <div className={`w-10 h-10 rounded-xl ${btn.bg} ${btn.border} border flex items-center justify-center ${btn.color}`}>
-                <Icon className="w-5 h-5 stroke-[2]" />
-              </div>
-              <p className="text-[11.5px] font-black text-slate-800 leading-tight mt-0.5">
-                {btn.label}
+            }}
+            className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+              <MessageSquare className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
+                Pusat Aduan
+              </h3>
+              <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
+                Layanan pengaduan gizi &amp; evaluasi porsi MBG
               </p>
-              <p className="text-[9.5px] font-semibold text-slate-400 leading-none">
-                {btn.desc}
+            </div>
+            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-amber-600">
+              <span>Kirim Laporan</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
+          </button>
+
+          {/* Card 3: Bantuan AI */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              setShowChatModal(true);
+            }}
+            className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-600 border border-sky-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+              <Bot className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
+                Bantuan AI
+              </h3>
+              <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
+                dr. Gizi AI, konsultasi nutrisi &amp; FAQ layanan
               </p>
-            </button>
-          );
-        })}
-      </div>
+            </div>
+            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-sky-600">
+              <span>Tanya dr. Gizi</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
+          </button>
 
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 4. KARTU STATUS KESEHATAN ANAK                                 */}
-      {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="bg-white border border-slate-200/80 rounded-3xl p-4 shadow-2xs space-y-2.5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <HeartPulse className="w-4 h-4 text-[#0FA89B]" />
-            <h3 className="text-[12.5px] font-black text-slate-800">Status Kesehatan Anak</h3>
-          </div>
-          <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-bold border border-emerald-200">
-            Normal &amp; Sehat
-          </span>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2 pt-0.5">
-          <div className="bg-slate-50 rounded-xl p-2 text-center border border-slate-100">
-            <p className="text-[9.5px] text-slate-400 font-bold">Mata (Hb)</p>
-            <p className="text-[11.5px] font-black text-slate-700 mt-0.5">Segar</p>
-          </div>
-          <div className="bg-slate-50 rounded-xl p-2 text-center border border-slate-100">
-            <p className="text-[9.5px] text-slate-400 font-bold">Kuku (Fe)</p>
-            <p className="text-[11.5px] font-black text-slate-700 mt-0.5">Merah Muda</p>
-          </div>
-          <div className="bg-slate-50 rounded-xl p-2 text-center border border-slate-100">
-            <p className="text-[9.5px] text-slate-400 font-bold">Turgor</p>
-            <p className="text-[11.5px] font-black text-slate-700 mt-0.5">Elastis</p>
-          </div>
+          {/* Card 4: Katalog Nutrisi MBG */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              if (NUTRITION_ARTICLES.length > 0) {
+                setSelectedArticle(NUTRITION_ARTICLES[0]);
+              }
+            }}
+            className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+              <BookOpen className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
+                Katalog Nutrisi MBG
+              </h3>
+              <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
+                Edukasi gizi seimbang &amp; bahan pangan lokal
+              </p>
+            </div>
+            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-emerald-600">
+              <span>Baca Panduan</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
+          </button>
         </div>
       </div>
 
