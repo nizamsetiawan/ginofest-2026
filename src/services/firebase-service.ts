@@ -556,6 +556,30 @@ export async function addNotification(notif: Omit<FirestoreNotification, "id" | 
   }
 }
 
+function sanitizeNotificationFields(title: string = "", description: string = "") {
+  let cleanTitle = (title || "")
+    .replace(/Dr\.\s*Hendra\s*Pratama/gi, "Nizam Setiawan")
+    .replace(/\(2026-8\)/g, "Agustus 2026")
+    .replace(/2026-8/g, "Agustus 2026")
+    .replace(/AI\s*Gemini\s*(&|\+|dan)?\s*RAG/gi, "")
+    .replace(/Dapur\s*SPPG\s*/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  let cleanDesc = (description || "")
+    .replace(/Dr\.\s*Hendra\s*Pratama/gi, "Nizam Setiawan")
+    .replace(/menu rekomendasi AI Gemini & RAG Dapur SPPG/gi, "Menu rekomendasi makanan bergizi seimbang")
+    .replace(/menu rekomendasi AI Gemini dan RAG/gi, "Menu rekomendasi makanan bergizi seimbang")
+    .replace(/AI Gemini & RAG Dapur SPPG/gi, "Tim Nutrisi SPPG")
+    .replace(/AI Gemini/gi, "")
+    .replace(/RAG/gi, "")
+    .replace(/Dapur SPPG/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  return { title: cleanTitle, description: cleanDesc };
+}
+
 export async function fetchNotifications() {
   try {
     const colRef = collection(db, "gscan_notifications");
@@ -563,11 +587,12 @@ export async function fetchNotifications() {
     if (!snap.empty) {
       const items = snap.docs.map(d => {
         const data = d.data() as any;
-        const desc = (data.description || "").replace(/Dr\.\s*Hendra\s*Pratama/gi, "Nizam Setiawan");
+        const { title, description } = sanitizeNotificationFields(data.title, data.description);
         return {
           id: d.id,
           ...data,
-          description: desc,
+          title,
+          description,
         } as FirestoreNotification;
       });
       items.sort((a: any, b: any) => {
@@ -604,11 +629,12 @@ export function subscribeUserNotifications(
           const readByList: string[] = Array.isArray(data.readBy) ? data.readBy : [];
           const isReadForUser = data.isRead === true || (cleanEmail ? readByList.includes(cleanEmail) : false);
 
-          const desc = (data.description || "").replace(/Dr\.\s*Hendra\s*Pratama/gi, "Nizam Setiawan");
+          const { title, description } = sanitizeNotificationFields(data.title, data.description);
           items.push({
             id: d.id,
             ...data,
-            description: desc,
+            title,
+            description,
             isRead: isReadForUser,
           } as FirestoreNotification);
         }

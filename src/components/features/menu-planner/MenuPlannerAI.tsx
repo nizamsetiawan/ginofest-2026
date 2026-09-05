@@ -503,10 +503,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               availableGeneratedRecipes: data.availableGeneratedRecipes,
             });
 
-            // Broadcast real-time MBG menu notification to citizens in Firestore
+            const periodText = selectedPeriod === "2026-8" ? "Agustus 2026" : selectedPeriod;
             await addNotification({
-              title: `Rencana Menu MBG (${selectedPeriod}) Siap`,
-              description: `Menu rekomendasi AI Gemini & RAG Dapur SPPG Kec. ${targetDistrictId} telah diterbitkan dan disinkronkan ke cloud.`,
+              title: `Rencana Menu MBG ${periodText} Siap`,
+              description: `Menu rekomendasi makanan bergizi seimbang untuk wilayah Kec. ${targetDistrictId} telah resmi diterbitkan dan disinkronkan ke cloud.`,
               category: "mbg",
               userEmail: "all",
             });
