@@ -208,8 +208,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   // Step 4: QR Code Scanner Timer / Verification Simulation
   const [isQrVerifying, setIsQrVerifying] = useState(false);
 
-  // Step 5: Auto-Close Countdown Timer (15s)
+  // Step 5: Auto-Close Countdown Timer (15s) & Scan Timestamp
   const [autoCloseTimer, setAutoCloseTimer] = useState(15);
+  const [scanSuccessTime, setScanSuccessTime] = useState<string>("");
 
   // ─── CLAIM PAYLOAD (encode real claim data into QR) ───
   // Generated once when user reaches step 3/4; stable per session
@@ -222,6 +223,17 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   // 15-Second Auto-Close Countdown for Step 5 (Scan Sukses)
   useEffect(() => {
     if (screeningStep === 5) {
+      const now = new Date();
+      const formatted = now.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }) + ", " + now.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }) + " WIB";
+      setScanSuccessTime(formatted);
       setAutoCloseTimer(15);
       const interval = setInterval(() => {
         setAutoCloseTimer((prev) => {
@@ -1496,6 +1508,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <p className="text-[11px] text-slate-500 font-medium mt-1 max-w-xs mx-auto leading-snug">
                 Data porsi makan &amp; pemenuhan nutrisi telah diverifikasi. Selamat menikmati!
               </p>
+              {/* Scan Timestamp Pill */}
+              <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0FA89B]/10 border border-[#0FA89B]/25 text-[#0FA89B] text-[10.5px] font-mono font-bold shadow-xs">
+                <span>🕒 Waktu Pindai: {scanSuccessTime || "5 Sep 2026, 21:56:00 WIB"}</span>
+              </div>
             </div>
 
             {/* POLISHED CHARACTER VECTOR GRAPHIC */}
@@ -1546,6 +1562,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <div className="flex items-center justify-between text-[10.5px]">
                   <span className="font-black text-slate-800">{citizenUser?.name || "Oscar Ryanda Putra"}</span>
                   <span className="text-slate-400 font-medium">Kec. {citizenUser?.district || "Kebomas"}</span>
+                </div>
+                <div className="flex items-center justify-between text-[10px] pt-1 text-slate-500 font-medium border-t border-slate-100">
+                  <span>Waktu Terverifikasi:</span>
+                  <span className="font-mono font-bold text-[#0FA89B]">{scanSuccessTime || "5 Sep 2026, 21:56:00 WIB"}</span>
                 </div>
               </div>
 
