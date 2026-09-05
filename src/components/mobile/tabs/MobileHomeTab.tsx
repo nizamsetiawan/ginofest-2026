@@ -25,7 +25,8 @@ import {
   AlertCircle,
   Trash2,
   CheckCheck,
-  ArrowLeft
+  ArrowLeft,
+  SlidersHorizontal
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -166,6 +167,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [activeNotifFilter, setActiveNotifFilter] = useState<"semua" | "mbg" | "screening" | "system">("semua");
   const [selectedNotifDetail, setSelectedNotifDetail] = useState<FirestoreNotification | null>(null);
   const [showDeleteAllConfirmModal, setShowDeleteAllConfirmModal] = useState(false);
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
 
   useEffect(() => {
     const email = citizenUser?.email || "nizam@gmail.com";
@@ -790,14 +792,15 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             transition={{ type: "spring", damping: 25, stiffness: 280 }}
             className="fixed inset-0 z-[100] bg-white h-screen w-screen flex flex-col overflow-hidden"
           >
-            {/* 1. TOP NAVBAR / HEADER (BACK ICON & TITLE SIDE BY SIDE) */}
-            <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0">
-              <div className="flex items-center gap-3">
+            {/* 1. TOP NAVBAR / HEADER (BACK ICON & TITLE SIDE BY SIDE + ACTION ICONS) */}
+            <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0 relative">
+              <div className="flex items-center gap-3 min-w-0">
                 <button
                   type="button"
                   onClick={() => {
                     triggerHaptic();
                     setShowNotificationModal(false);
+                    setShowFilterMenu(false);
                   }}
                   className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
                   title="Kembali"
@@ -805,12 +808,37 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   <ArrowLeft className="w-5 h-5 text-slate-700 stroke-[2.5]" />
                 </button>
 
-                <h2 className="text-[16px] font-black text-slate-800 tracking-tight">
-                  Pemberitahuan
-                </h2>
+                <div className="min-w-0">
+                  <h2 className="text-[16px] font-black text-slate-800 tracking-tight leading-tight truncate">
+                    Pemberitahuan
+                  </h2>
+                  {activeNotifFilter !== "semua" && (
+                    <p className="text-[9.5px] font-bold text-[#0FA89B] uppercase tracking-wider">
+                      Filter: {activeNotifFilter}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
+                {/* FILTER ICON BUTTON */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic();
+                    setShowFilterMenu(!showFilterMenu);
+                  }}
+                  className={`w-8.5 h-8.5 rounded-full flex items-center justify-center transition-colors cursor-pointer shrink-0 relative ${
+                    activeNotifFilter !== "semua"
+                      ? "bg-[#0FA89B] text-white shadow-2xs"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Filter Kategori"
+                >
+                  <SlidersHorizontal className="w-4 h-4 stroke-[2.2]" />
+                </button>
+
+                {/* MARK ALL READ ICON BUTTON */}
                 {unreadNotifCount > 0 && (
                   <button
                     type="button"
@@ -818,14 +846,14 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       triggerHaptic();
                       markAllNotificationsRead(citizenUser?.email || "nizam@gmail.com");
                     }}
-                    className="text-[11px] font-extrabold text-[#0FA89B] hover:underline flex items-center gap-1 cursor-pointer bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/80"
+                    className="w-8.5 h-8.5 rounded-full bg-teal-50 hover:bg-teal-100 text-[#0FA89B] flex items-center justify-center transition-colors cursor-pointer shrink-0"
                     title="Tandai Semua Dibaca"
                   >
-                    <CheckCheck className="w-3.5 h-3.5" />
-                    <span>Dibaca</span>
+                    <CheckCheck className="w-4 h-4 stroke-[2.2]" />
                   </button>
                 )}
 
+                {/* DELETE ALL ICON BUTTON */}
                 {notifications.length > 0 && (
                   <button
                     type="button"
@@ -840,35 +868,51 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   </button>
                 )}
               </div>
-            </div>
 
-            {/* 2. CATEGORY PILL FILTER TABS */}
-            <div className="bg-white border-b border-slate-100 px-4 py-2.5 flex items-center gap-2 overflow-x-auto shrink-0 scrollbar-none">
-              {[
-                { id: "semua", label: "Semua", count: notifications.length },
-                { id: "mbg", label: "MBG", count: mbgCount },
-                { id: "screening", label: "Skrining", count: screeningCount },
-                { id: "system", label: "Sistem", count: systemCount },
-              ].map((tab) => {
-                const isActive = activeNotifFilter === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic();
-                      setActiveNotifFilter(tab.id as any);
-                    }}
-                    className={`px-3.5 py-1.5 rounded-full text-[11px] font-black transition-all shrink-0 cursor-pointer ${
-                      isActive
-                        ? "bg-[#0FA89B] text-white shadow-2xs"
-                        : "bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50"
-                    }`}
+              {/* FILTER POPOVER DROPDOWN MENU */}
+              <AnimatePresence>
+                {showFilterMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                    className="bg-white border border-slate-200 rounded-2xl p-2 shadow-xl absolute top-14 right-4 z-30 w-52 space-y-1"
                   >
-                    {tab.label} ({tab.count})
-                  </button>
-                );
-              })}
+                    <p className="text-[10px] font-black text-slate-400 px-3 py-1 uppercase tracking-wider">
+                      Pilih Kategori Filter
+                    </p>
+                    {[
+                      { id: "semua", label: "Semua Notifikasi", count: notifications.length },
+                      { id: "mbg", label: "MBG (Makan Bergizi)", count: mbgCount },
+                      { id: "screening", label: "Skrining Biometrik", count: screeningCount },
+                      { id: "system", label: "Sistem & Warga", count: systemCount },
+                    ].map((tab) => {
+                      const isActive = activeNotifFilter === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          onClick={() => {
+                            triggerHaptic();
+                            setActiveNotifFilter(tab.id as any);
+                            setShowFilterMenu(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold transition-all flex items-center justify-between cursor-pointer ${
+                            isActive
+                              ? "bg-[#0FA89B]/10 text-[#0FA89B]"
+                              : "text-slate-700 hover:bg-slate-50"
+                          }`}
+                        >
+                          <span>{tab.label}</span>
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                            {tab.count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* 3. ULTRA-CLEAN COMPACT NOTIFICATION LIST (SWIPE TO DELETE) */}
