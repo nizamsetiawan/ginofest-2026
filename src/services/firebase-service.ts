@@ -528,7 +528,7 @@ export interface FirestoreNotification {
   id: string;
   title: string;
   description: string;
-  category: "master" | "generate" | "screening" | "system" | "settings" | "user" | "mbg";
+  category: "master" | "generate" | "screening" | "system" | "settings" | "user" | "mbg" | "complaint" | "claim";
   isRead: boolean;
   userEmail?: string;
   readBy?: string[];
@@ -1074,6 +1074,18 @@ export async function saveComplaintToFirestore(complaint: Omit<ComplaintRecord, 
       timestamp: serverTimestamp(),
       createdAtIso: new Date().toISOString(),
     });
+
+    const targetEmail = (complaint.senderContact && complaint.senderContact.includes("@")) 
+      ? complaint.senderContact.trim().toLowerCase() 
+      : "";
+
+    await addNotification({
+      title: `Laporan Pengaduan #${autoTicketId} Dikirim`,
+      description: `Pengaduan Anda (${complaint.category || "MBG"}) telah diterima oleh Tim SPPG Pemkab Gresik dan sedang diproses.`,
+      category: "complaint",
+      userEmail: targetEmail || "all",
+    });
+
     return { success: true, docId: docRef.id, ticketId: autoTicketId };
   } catch (error: any) {
     console.error("Gagal simpan komplain:", error);
@@ -1184,7 +1196,38 @@ export async function updateComplaintStatusInFirestore(
 ): Promise<{ success: boolean }> {
   try {
     const docRef = doc(db, "gscan_complaints", complaintId);
-    await setDoc(docRef, { status, ...(responseNotes ? { responseNotes } : {}) }, { merge: true });
+    let existingData: any = null;
+    try {
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        existingData = snap.data();
+      }
+    } catch {}
+
+    await setDoc(docRef, { status, ...(responseNotes ? { responseNotes } : {}), updatedAtIso: new Date().toISOString() }, { merge: true });
+
+    if (existingData) {
+      const ticketId = existingData.ticketId || complaintId.slice(0, 8);
+      const targetEmail = (existingData.senderContact && existingData.senderContact.includes("@"))
+        ? existingData.senderContact.trim().toLowerCase()
+        : "";
+
+      const statusMap = {
+        baru: "DITERIMA",
+        proses: "SEDANG DIPROSES",
+        selesai: "SELESAI (DITINDAKLANJUTI)",
+      };
+      const statusText = statusMap[status] || "DIPERBARUI";
+      const notesText = responseNotes ? ` Catatan Petugas: "${responseNotes}"` : "";
+
+      await addNotification({
+        title: `Tanggapan Pengaduan #${ticketId}`,
+        description: `Status aduan Anda kini: ${statusText}.${notesText}`,
+        category: "complaint",
+        userEmail: targetEmail || "all",
+      });
+    }
+
     return { success: true };
   } catch (error: any) {
     console.error("Gagal update status komplain:", error);
@@ -1220,6 +1263,15 @@ export async function recordQrClaimToFirestore(claim: Omit<QrClaimRecord, "id">)
       timestamp: serverTimestamp(),
       verifiedAtIso: claim.verifiedAtIso || new Date().toISOString(),
     });
+
+    const targetEmail = claim.beneficiaryEmail ? claim.beneficiaryEmail.trim().toLowerCase() : "";
+    await addNotification({
+      title: `Verifikasi Penyerahan Porsi MBG Sukses`,
+      description: `Klaim Porsi #${claim.claimId} (${claim.menuName}) telah berhasil diverifikasi oleh ${claim.verifiedBy || "Staf SPPG Pemkab Gresik"}. Selamat menikmati!`,
+      category: "mbg",
+      userEmail: targetEmail || "all",
+    });
+
     return { success: true, docId: docRef.id };
   } catch (err: any) {
     console.error("Gagal mencatat klaim QR:", err);
