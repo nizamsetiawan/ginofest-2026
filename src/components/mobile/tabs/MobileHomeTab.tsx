@@ -138,16 +138,18 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [previewHistoryPhoto, setPreviewHistoryPhoto] = useState<{ url: string; title: string } | null>(null);
 
   useEffect(() => {
-    if (showHistoryModal) {
-      setIsLoadingUserScans(true);
-      fetchUserScansAndClaimsFromFirestore(citizenUser?.email, citizenUser?.name).then((res) => {
-        if (res.success) {
-          setUserScansHistory(res.data);
-        }
-        setIsLoadingUserScans(false);
-      });
-    }
+    setIsLoadingUserScans(true);
+    fetchUserScansAndClaimsFromFirestore(citizenUser?.email, citizenUser?.name).then((res) => {
+      if (res.success) {
+        setUserScansHistory(res.data);
+      }
+      setIsLoadingUserScans(false);
+    });
   }, [showHistoryModal, citizenUser?.email, citizenUser?.name]);
+
+  const unclaimedCount = userScansHistory.filter(
+    (item) => item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS" || (item.status !== "CLAIMED" && item.status !== "EXPIRED")
+  ).length;
   const [showChatModal, setShowChatModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
@@ -446,7 +448,19 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             }}
             className="w-full bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-4.5 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer space-y-3 group relative overflow-hidden"
           >
-            <div className="flex items-center gap-3 min-w-0">
+            {/* Top Right Unclaimed Count Badge */}
+            {unclaimedCount > 0 ? (
+              <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[10px] font-extrabold flex items-center gap-1 shadow-2xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>{unclaimedCount} Tersedia</span>
+              </div>
+            ) : (
+              <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200/70 text-slate-500 text-[10px] font-bold">
+                <span>0 Tersedia</span>
+              </div>
+            )}
+
+            <div className="flex items-center gap-3 min-w-0 pr-20">
               <div className="w-11 h-11 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                 <History className="w-5.5 h-5.5 stroke-[2.2]" />
               </div>
