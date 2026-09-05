@@ -51,6 +51,23 @@ interface MobileHomeTabProps {
   setActiveTab: (tab: MobileTab) => void;
 }
 
+const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
+  "Pencegahan Stunting": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+  "Deteksi Dini AI": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80",
+  "Pedoman Nutrisi": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+  "Pangan Lokal": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
+  "Kesehatan Ibu & Anak": "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=800&q=80",
+  "Edukasi Nutrisi": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80",
+  "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80",
+};
+
+const getArticleImage = (article: ArticleRecord): string => {
+  if (article.imageUrl && article.imageUrl.trim().length > 0) {
+    return article.imageUrl;
+  }
+  return CATEGORY_FALLBACK_IMAGES[article.category] || CATEGORY_FALLBACK_IMAGES["default"];
+};
+
 // ─── DUMMY DATA: RIWAYAT KLAIM ───
 const CLAIM_HISTORY = [
   {
@@ -767,16 +784,20 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       </div>
                     </div>
 
-                    {article.imageUrl && (
-                      <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-100 my-1 border border-slate-100">
-                        <img
-                          src={article.imageUrl}
-                          alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                        />
-                      </div>
-                    )}
+                    <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-100 my-1 border border-slate-100">
+                      <img
+                        src={getArticleImage(article)}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        onError={(e) => {
+                          const fallback = CATEGORY_FALLBACK_IMAGES[article.category] || CATEGORY_FALLBACK_IMAGES["default"];
+                          if (e.currentTarget.src !== fallback) {
+                            e.currentTarget.src = fallback;
+                          }
+                        }}
+                      />
+                    </div>
 
                     <h3 className="text-[13.5px] font-black text-slate-800 leading-snug group-hover:text-[#0FA89B] transition-colors">
                       {article.title}
@@ -834,15 +855,19 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
               {/* Article Content */}
               <div className="p-5 overflow-y-auto space-y-3.5">
-                {selectedArticle.imageUrl && (
-                  <div className="w-full h-44 sm:h-48 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 shadow-2xs">
-                    <img
-                      src={selectedArticle.imageUrl}
-                      alt={selectedArticle.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
+                <div className="w-full h-44 sm:h-48 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 shadow-2xs">
+                  <img
+                    src={getArticleImage(selectedArticle)}
+                    alt={selectedArticle.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const fallback = CATEGORY_FALLBACK_IMAGES[selectedArticle.category] || CATEGORY_FALLBACK_IMAGES["default"];
+                      if (e.currentTarget.src !== fallback) {
+                        e.currentTarget.src = fallback;
+                      }
+                    }}
+                  />
+                </div>
 
                 <h3 className="text-[16px] font-black text-slate-800 leading-snug">
                   {selectedArticle.title}

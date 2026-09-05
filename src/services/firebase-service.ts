@@ -1860,6 +1860,17 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
             // Save to Firestore permanently so SERP API isn't called again!
             const docRef = doc(db, "gscan_articles", d.id);
             await setDoc(docRef, { imageUrl: serpUrl }, { merge: true }).catch(() => {});
+          } else {
+            // Assign high-qualityUnsplash fallback based on category
+            const categoryFallbacks: Record<string, string> = {
+              "Pencegahan Stunting": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+              "Deteksi Dini AI": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80",
+              "Pedoman Nutrisi": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+              "Pangan Lokal": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
+              "Kesehatan Ibu & Anak": "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=800&q=80",
+              "Edukasi Nutrisi": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80",
+            };
+            art.imageUrl = categoryFallbacks[art.category] || "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80";
           }
         }
         return art;
