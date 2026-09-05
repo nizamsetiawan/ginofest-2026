@@ -74,6 +74,7 @@ export const ScreeningView: React.FC = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [autoConfirmCount, setAutoConfirmCount] = useState<number | null>(null);
 
   // Real camera stream & hardware power-saving state
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -309,6 +310,30 @@ export const ScreeningView: React.FC = () => {
     setIsLoadingHistory(false);
   };
 
+  // Auto-confirm 5-second countdown timer effect
+  useEffect(() => {
+    if (decodedData && !verificationSuccess && !isVerifying) {
+      setAutoConfirmCount(5);
+    } else {
+      setAutoConfirmCount(null);
+    }
+  }, [decodedData, verificationSuccess, isVerifying]);
+
+  useEffect(() => {
+    if (autoConfirmCount === null) return;
+    if (autoConfirmCount <= 0) {
+      setAutoConfirmCount(null);
+      handleConfirmVerification();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setAutoConfirmCount((prev) => (prev !== null && prev > 0 ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [autoConfirmCount]);
+
   const handleConfirmVerification = async () => {
     if (!decodedData) return;
     setIsVerifying(true);
@@ -385,6 +410,7 @@ export const ScreeningView: React.FC = () => {
     setDecodedData(null);
     setVerificationSuccess(false);
     setErrorMessage("");
+    setAutoConfirmCount(null);
   };
 
   // Filter for Biometric Scans History (Tab 2)
@@ -615,11 +641,6 @@ export const ScreeningView: React.FC = () => {
                       Rincian Dokumen Verifikasi Klaim MBG
                     </h3>
                   </div>
-
-                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-bold self-start sm:self-auto">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>QR Valid &amp; Terverifikasi Cloud</span>
-                  </div>
                 </div>
 
                 <div className="p-6 space-y-6">
@@ -655,10 +676,6 @@ export const ScreeningView: React.FC = () => {
                           <Mail className="w-3.5 h-3.5 text-ford-blue shrink-0" />
                           <span>{decodedData.beneficiary?.email || "-"}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-3.5 h-3.5 text-ford-blue shrink-0" />
-                          <span>{decodedData.beneficiary?.phone || "-"}</span>
-                        </div>
                       </div>
                     </div>
 
@@ -688,8 +705,8 @@ export const ScreeningView: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Timestamp & Expiry Info */}
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[11px] text-slate-600 font-medium">
+                  {/* Timestamp Info */}
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-[11px] text-slate-600 font-medium">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-ford-blue" />
                       <span>
@@ -701,31 +718,42 @@ export const ScreeningView: React.FC = () => {
                         </strong>
                       </span>
                     </div>
-
-                    <div className="flex items-center gap-1.5 text-ford-blue font-bold">
-                      <ShieldCheck className="w-4 h-4 text-light-sea-green" />
-                      <span>Berlaku s/d 6 Jam Sejak Diterbitkan</span>
-                    </div>
                   </div>
 
-                  {/* Action Button */}
+                  {/* Action Button & Auto-Confirm Progress */}
                   {!verificationSuccess ? (
-                    <button
-                      onClick={handleConfirmVerification}
-                      disabled={isVerifying}
-                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#35CBC3] to-light-sea-green hover:from-[#22B5AC] hover:to-light-sea-green text-ford-blue font-black text-[14px] flex items-center justify-center gap-2.5 shadow-md transition-all cursor-pointer disabled:opacity-50"
-                    >
-                      {isVerifying ? (
-                        <RefreshCw className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <CheckCircle2 className="w-5 h-5 text-ford-blue" />
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => {
+                          setAutoConfirmCount(null);
+                          handleConfirmVerification();
+                        }}
+                        disabled={isVerifying}
+                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#35CBC3] to-light-sea-green hover:from-[#22B5AC] hover:to-light-sea-green text-ford-blue font-black text-[14px] flex items-center justify-center gap-2.5 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                      >
+                        {isVerifying ? (
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <CheckCircle2 className="w-5 h-5 text-ford-blue" />
+                        )}
+                        <span>
+                          {isVerifying
+                            ? "Mencatat Verifikasi..."
+                            : autoConfirmCount !== null
+                            ? `Konfirmasi Otomatis dalam ${autoConfirmCount}s (Klik untuk Langsung)`
+                            : "Konfirmasi Verifikasi & Catat Penyerahan Porsi MBG"}
+                        </span>
+                      </button>
+
+                      {autoConfirmCount !== null && !isVerifying && (
+                        <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                          <div
+                            className="bg-[#0FA89B] h-full transition-all duration-1000 ease-linear"
+                            style={{ width: `${(autoConfirmCount / 5) * 100}%` }}
+                          />
+                        </div>
                       )}
-                      <span>
-                        {isVerifying
-                          ? "Mencatat Verifikasi Firestore & Azure..."
-                          : "Konfirmasi Verifikasi & Catat Penyerahan Porsi MBG"}
-                      </span>
-                    </button>
+                    </div>
                   ) : (
                     <div className="flex items-center justify-center gap-3">
                       <button
