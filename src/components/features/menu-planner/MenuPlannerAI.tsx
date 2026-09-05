@@ -29,7 +29,8 @@ import {
   saveMenuPlanToFirestore, 
   fetchMenuPlanFromFirestore, 
   deleteMenuPlanFromFirestore,
-  fetchDistrictsFromFirestore
+  fetchDistrictsFromFirestore,
+  addNotification
 } from "@/services/firebase-service";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -500,6 +501,14 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               budgetSummary: computedBudget,
               logisticsBOM: computedBOM,
               availableGeneratedRecipes: data.availableGeneratedRecipes,
+            });
+
+            // Broadcast real-time MBG menu notification to citizens in Firestore
+            await addNotification({
+              title: `Rencana Menu MBG (${selectedPeriod}) Siap`,
+              description: `Menu rekomendasi AI Gemini & RAG Dapur SPPG Kec. ${targetDistrictId} telah diterbitkan dan disinkronkan ke cloud.`,
+              category: "mbg",
+              userEmail: "all",
             });
           }
         }
