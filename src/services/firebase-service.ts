@@ -1059,7 +1059,7 @@ export async function updateCitizenDistrictInFirestore(email: string, district: 
 
 export async function updateCitizenProfileInFirestore(
   email: string,
-  updates: { district?: string; age?: number }
+  updates: { district?: string; age?: number; photoURL?: string }
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const colRef = collection(db, "kcal_masyarakat");

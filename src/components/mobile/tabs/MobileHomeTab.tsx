@@ -292,9 +292,17 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       {/* ══════════════════════════════════════════════════════════════ */}
       <div className="flex items-center justify-between pt-0.5 px-0.5 relative z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0FA89B] to-[#24E0D1] text-[#050D18] flex items-center justify-center font-black text-sm shadow-xs border border-white">
-            {userInitial}
-          </div>
+          {citizenUser?.photoURL ? (
+            <img
+              src={citizenUser.photoURL}
+              alt={userName}
+              className="w-10 h-10 rounded-2xl object-cover shadow-xs border border-white select-none"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-2xl bg-[#0FA89B] bg-gradient-to-tr from-[#0FA89B] to-[#24E0D1] text-[#050D18] flex items-center justify-center font-black text-sm shadow-xs border border-white">
+              {userInitial}
+            </div>
+          )}
           <div>
             <p className="text-[11px] font-semibold text-slate-400 leading-none">
               {getTimeGreeting()},

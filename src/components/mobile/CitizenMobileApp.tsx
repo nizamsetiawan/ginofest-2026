@@ -511,15 +511,17 @@ export const CitizenMobileApp: React.FC = () => {
     await handleUpdateProfile({ district: newDistrict });
   };
 
-  const handleUpdateProfile = async (updates: { district?: string; age?: number }) => {
+  const handleUpdateProfile = async (updates: { district?: string; age?: number; photoURL?: string }) => {
     if (!citizenUser) return;
     const updatedUser: CitizenUser = {
       ...citizenUser,
       ...(updates.district ? { district: updates.district } : {}),
       ...(updates.age !== undefined ? { age: updates.age } : {}),
+      ...(updates.photoURL !== undefined ? { photoURL: updates.photoURL } : {}),
     };
     setCitizenUser(updatedUser);
     if (typeof window !== "undefined") {
+      localStorage.setItem("kcal_active_citizen_user", JSON.stringify(updatedUser));
       localStorage.setItem("gscan_citizen_session", JSON.stringify(updatedUser));
     }
     if (citizenUser.email) {

@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   ShieldCheck,
   LogOut,
@@ -11,7 +9,9 @@ import {
   Calendar,
   RefreshCw,
   ChevronRight,
-  X
+  X,
+  Camera,
+  Loader2
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,7 +24,7 @@ interface MobileProfileTabProps {
   setActiveTab: (tab: MobileTab) => void;
   onLogout: () => void;
   onUpdateDistrict?: (district: string) => Promise<void>;
-  onUpdateProfile?: (updates: { district?: string; age?: number }) => Promise<void>;
+  onUpdateProfile?: (updates: { district?: string; age?: number; photoURL?: string }) => Promise<void>;
 }
 
 export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
@@ -38,12 +38,15 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
   const currentDistrict = citizenUser?.district || "Kebomas";
   const currentAge = citizenUser?.age || 9;
   const userInitial = userName.charAt(0).toUpperCase();
+  const userPhoto = citizenUser?.photoURL;
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedDistrict, setSelectedDistrict] = useState(currentDistrict);
   const [selectedAge, setSelectedAge] = useState<number>(currentAge);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const triggerHaptic = () => {
     if (typeof navigator !== "undefined" && navigator.vibrate) {
@@ -65,8 +68,75 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
     setTimeout(() => setSaveSuccess(false), 2500);
   };
 
+  const handleAvatarClick = () => {
+    triggerHaptic();
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    triggerHaptic();
+    setIsUploadingPhoto(true);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const img = new Image();
+        img.onload = async () => {
+          // Compress image using canvas to 250x250 pixels
+          const canvas = document.createElement("canvas");
+          const size = 250;
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+
+          if (ctx) {
+            let srcX = 0;
+            let srcY = 0;
+            let srcWidth = img.width;
+            let srcHeight = img.height;
+
+            if (img.width > img.height) {
+              srcWidth = img.height;
+              srcX = (img.width - img.height) / 2;
+            } else {
+              srcHeight = img.width;
+              srcY = (img.height - img.width) / 2;
+            }
+
+            ctx.drawImage(img, srcX, srcY, srcWidth, srcHeight, 0, 0, size, size);
+            const base64DataUrl = canvas.toDataURL("image/jpeg", 0.85);
+
+            if (onUpdateProfile) {
+              await onUpdateProfile({ photoURL: base64DataUrl });
+            }
+          }
+          setIsUploadingPhoto(false);
+          setSaveSuccess(true);
+          setTimeout(() => setSaveSuccess(false), 2500);
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("Error processing profile picture:", err);
+      setIsUploadingPhoto(false);
+    }
+  };
+
   return (
     <Page className="p-4 space-y-4 font-sans select-none bg-[#F8FAFC] min-h-full pb-28 relative overflow-hidden">
+      {/* Hidden file input for photo upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
       {/* Dynamic Animated Spectrum & Glow Background */}
       <AuthSpectrumBackground />
 
@@ -102,11 +172,31 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#79D7D2]/15 to-transparent rounded-bl-full pointer-events-none" />
 
         <div className="flex items-center gap-4 relative z-10">
-          <div className="relative shrink-0">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0FA89B] via-[#23B5A8] to-[#79D7D2] text-white flex items-center justify-center font-black text-xl leading-none shadow-md border-2 border-white select-none">
-              {userInitial}
-            </div>
-            <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white ring-1 ring-emerald-200" />
+          {/* Avatar with Camera Badge */}
+          <div className="relative shrink-0 cursor-pointer group" onClick={handleAvatarClick} title="Ganti Foto Profil">
+            {userPhoto ? (
+              <img
+                src={userPhoto}
+                alt={userName}
+                className="w-16 h-16 rounded-2xl object-cover shadow-md border-2 border-white select-none"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0FA89B] via-[#23B5A8] to-[#79D7D2] text-white flex items-center justify-center font-black text-2xl leading-none shadow-md border-2 border-white select-none">
+                {userInitial}
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#0FA89B] text-white flex items-center justify-center border-2 border-white shadow-xs group-hover:scale-110 transition-transform cursor-pointer"
+              title="Ganti Foto Profil"
+            >
+              {isUploadingPhoto ? (
+                <Loader2 className="w-3 h-3 animate-spin" />
+              ) : (
+                <Camera className="w-3 h-3 stroke-[2.2]" />
+              )}
+            </button>
           </div>
 
           <div className="min-w-0 flex-1 space-y-0.5">

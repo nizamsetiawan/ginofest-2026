@@ -20,15 +20,12 @@ import {
   addNotification,
 } from "@/services/firebase-service";
 
+import { CitizenUser } from "./types";
+
 interface CitizenHelpModalProps {
   isOpen: boolean;
   onClose: () => void;
-  citizenUser?: {
-    name?: string;
-    email?: string;
-    district?: string;
-    age?: number;
-  } | null;
+  citizenUser?: CitizenUser | null;
   triggerHaptic?: () => void;
 }
 
@@ -782,9 +779,17 @@ PERTANYAAN WARGA: "${userQuery}"`;
                         {msg.text}
                       </div>
 
-                      <div className="w-9 h-9 rounded-full bg-[#1E2B45] text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-xs mt-0.5">
-                        <User className="w-5 h-5 stroke-[2.2]" />
-                      </div>
+                      {citizenUser?.photoURL ? (
+                        <img
+                          src={citizenUser.photoURL}
+                          alt={citizenUser.name || "User Avatar"}
+                          className="w-9 h-9 rounded-full object-cover shrink-0 shadow-xs mt-0.5 border-2 border-white select-none"
+                        />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-[#1E2B45] text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-xs mt-0.5">
+                          <User className="w-5 h-5 stroke-[2.2]" />
+                        </div>
+                      )}
                     </>
                   )}
                 </motion.div>
