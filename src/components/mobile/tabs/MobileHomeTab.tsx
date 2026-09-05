@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Search,
   Bell,
@@ -22,12 +22,23 @@ import {
   Flame,
   User,
   ThumbsUp,
-  AlertCircle
+  AlertCircle,
+  Trash2,
+  CheckCheck
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CitizenUser, AtmosphereState, MobileTab } from "../types";
 import { AuthSpectrumBackground } from "../auth/AuthSpectrumBackground";
+import {
+  subscribeUserNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  deleteNotification,
+  seedInitialUserNotifications,
+  addNotification,
+  FirestoreNotification,
+} from "@/services/firebase-service";
 
 interface MobileHomeTabProps {
   citizenUser: CitizenUser | null;
@@ -148,6 +159,28 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [feedbackText, setFeedbackText] = useState("");
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
+  // ─── FIRESTORE REALTIME NOTIFICATIONS ───
+  const [notifications, setNotifications] = useState<FirestoreNotification[]>([]);
+  const [isLoadingNotifs, setIsLoadingNotifs] = useState(true);
+
+  useEffect(() => {
+    const email = citizenUser?.email || "nizam@gmail.com";
+    const district = citizenUser?.district || "Kebomas";
+
+    // Seed default welcome notifications if new user / empty DB
+    seedInitialUserNotifications(email, district);
+
+    // Subscribe to Firestore notifications stream
+    const unsubscribe = subscribeUserNotifications(email, (data) => {
+      setNotifications(data);
+      setIsLoadingNotifs(false);
+    });
+
+    return () => unsubscribe();
+  }, [citizenUser?.email, citizenUser?.district]);
+
+  const unreadNotifCount = notifications.filter((n) => !n.isRead).length;
+
   const getTimeGreeting = () => {
     const hour = new Date().getHours();
     if (hour >= 4 && hour < 11) return "Selamat Pagi";
@@ -205,10 +238,19 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
     }, 900);
   };
 
-  const handleSubmitFeedback = (e: React.FormEvent) => {
+  const handleSubmitFeedback = async (e: React.FormEvent) => {
     e.preventDefault();
     triggerHaptic();
     setFeedbackSubmitted(true);
+
+    // Save notification for citizen user in Firestore
+    await addNotification({
+      title: `Masukan (${feedbackCategory}) Terkirim`,
+      description: `Aduan Anda tentang ${feedbackCategory.toLowerCase()} menu MBG telah diterima Posko SPPG Kec. ${userDistrict}.`,
+      category: "system",
+      userEmail: citizenUser?.email || "nizam@gmail.com",
+    });
+
     setTimeout(() => {
       setFeedbackSubmitted(false);
       setShowFeedbackModal(false);
@@ -252,7 +294,11 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
           title="Notifikasi"
         >
           <Bell className="w-4 h-4 text-slate-600 stroke-[1.8]" />
-          <span className="w-2 h-2 rounded-full bg-[#0FA89B] absolute top-2 right-2 border border-white" />
+          {unreadNotifCount > 0 && (
+            <span className="min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center absolute -top-1 -right-1 border-2 border-white shadow-xs animate-pulse">
+              {unreadNotifCount > 9 ? "9+" : unreadNotifCount}
+            </span>
+          )}
         </button>
       </div>
 
@@ -717,7 +763,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* ═══ MODAL 5: NOTIFIKASI APP ═══                               */}
+      {/* ═══ MODAL 5: NOTIFIKASI APP (REALTIME FIRESTORE SYNC) ═══     */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {showNotificationModal && (
@@ -726,27 +772,121 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl overflow-hidden"
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[82vh] flex flex-col shadow-2xl overflow-hidden"
             >
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h3 className="text-[14px] font-black text-slate-800">Pemberitahuan</h3>
-                <button
-                  type="button"
-                  onClick={() => setShowNotificationModal(false)}
-                  className="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold cursor-pointer"
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="p-4 space-y-2.5 overflow-y-auto">
-                <div className="p-3 rounded-2xl bg-[#0FA89B]/5 border border-[#0FA89B]/15 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-[#0FA89B]">Menu MBG Hari Ini</span>
-                    <span className="text-[9px] text-slate-400">10.00 WIB</span>
-                  </div>
-                  <p className="text-[11.5px] font-black text-slate-800">Nasi Ayam Kari &amp; Sayur Siap Didistribusikan</p>
-                  <p className="text-[10.5px] text-slate-500">Porsi MBG telah diverifikasi oleh Dapur SPPG Kecamatan.</p>
+              {/* Header */}
+              <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-[14px] font-black text-slate-800">Pemberitahuan</h3>
+                  {unreadNotifCount > 0 && (
+                    <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold border border-rose-200">
+                      {unreadNotifCount} Baru
+                    </span>
+                  )}
                 </div>
+
+                <div className="flex items-center gap-2.5">
+                  {unreadNotifCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic();
+                        markAllNotificationsRead(citizenUser?.email || "nizam@gmail.com");
+                      }}
+                      className="text-[10.5px] font-bold text-[#0FA89B] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <CheckCheck className="w-3.5 h-3.5" />
+                      Dibaca Semua
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setShowNotificationModal(false)}
+                    className="w-7 h-7 rounded-full bg-slate-200/70 text-slate-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-slate-300/70 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* Notification List */}
+              <div className="p-4 space-y-2.5 overflow-y-auto max-h-[62vh]">
+                {isLoadingNotifs ? (
+                  <div className="py-8 text-center text-slate-400 text-xs font-medium space-y-2">
+                    <div className="w-5 h-5 border-2 border-[#0FA89B] border-t-transparent rounded-full animate-spin mx-auto" />
+                    <p>Menghubungkan ke Database Firestore...</p>
+                  </div>
+                ) : notifications.length === 0 ? (
+                  <div className="py-10 text-center space-y-2">
+                    <Bell className="w-8 h-8 text-slate-300 mx-auto" />
+                    <p className="text-xs font-bold text-slate-600">Belum ada notifikasi</p>
+                    <p className="text-[11px] text-slate-400">Pemberitahuan resmi dan status gizi akan tampil di sini.</p>
+                  </div>
+                ) : (
+                  notifications.map((notif) => (
+                    <div
+                      key={notif.id}
+                      onClick={() => {
+                        if (!notif.isRead) {
+                          markNotificationRead(notif.id, citizenUser?.email || "nizam@gmail.com");
+                        }
+                      }}
+                      className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative space-y-1.5 ${
+                        notif.isRead
+                          ? "bg-slate-50/70 border-slate-200/80 opacity-80"
+                          : "bg-white border-[#0FA89B]/35 shadow-xs hover:border-[#0FA89B]"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          {!notif.isRead && (
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#0FA89B] shrink-0" />
+                          )}
+                          <span
+                            className={`text-[9.5px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                              notif.category === "mbg"
+                                ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                : notif.category === "screening"
+                                ? "bg-teal-50 text-teal-700 border border-teal-200"
+                                : "bg-sky-50 text-sky-700 border border-sky-200"
+                            }`}
+                          >
+                            {notif.category || "sistem"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[9.5px] text-slate-400 font-medium">
+                            {notif.createdAtIso
+                              ? new Date(notif.createdAtIso).toLocaleTimeString("id-ID", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }) + " WIB"
+                              : "Baru saja"}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              triggerHaptic();
+                              deleteNotification(notif.id);
+                            }}
+                            className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer"
+                            title="Hapus Notifikasi"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <p className="text-[12px] font-black text-slate-800 leading-snug">
+                        {notif.title}
+                      </p>
+                      <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                        {notif.description}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
             </motion.div>
           </div>

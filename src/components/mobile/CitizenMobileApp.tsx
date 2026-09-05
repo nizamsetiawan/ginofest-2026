@@ -1095,7 +1095,7 @@ export const CitizenMobileApp: React.FC = () => {
 
                         {/* Floating Mini AI Badge */}
                         <span className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-brand-orange text-white text-[8px] font-black tracking-wider shadow-sm border border-white uppercase">
-                          AI
+                          RAG
                         </span>
                       </div>
                     </button>
@@ -1114,14 +1114,14 @@ export const CitizenMobileApp: React.FC = () => {
                     >
                       <Home
                         className={`w-6 h-6 transition-all duration-200 ${activeTab === "home"
-                            ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
-                            : "text-[#B1B5C7]"
+                          ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
+                          : "text-[#B1B5C7]"
                           }`}
                       />
                       <span
                         className={`text-[11px] tracking-tight transition-colors duration-200 ${activeTab === "home"
-                            ? "font-bold text-[#79D7D2]"
-                            : "font-medium text-[#B1B5C7]"
+                          ? "font-bold text-[#79D7D2]"
+                          : "font-medium text-[#B1B5C7]"
                           }`}
                       >
                         Beranda
@@ -1150,14 +1150,14 @@ export const CitizenMobileApp: React.FC = () => {
                     >
                       <User
                         className={`w-6 h-6 transition-all duration-200 ${activeTab === "profile"
-                            ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
-                            : "text-[#B1B5C7]"
+                          ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
+                          : "text-[#B1B5C7]"
                           }`}
                       />
                       <span
                         className={`text-[11px] tracking-tight transition-colors duration-200 ${activeTab === "profile"
-                            ? "font-bold text-[#79D7D2]"
-                            : "font-medium text-[#B1B5C7]"
+                          ? "font-bold text-[#79D7D2]"
+                          : "font-medium text-[#B1B5C7]"
                           }`}
                       >
                         Profil

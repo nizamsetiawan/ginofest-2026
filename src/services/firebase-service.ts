@@ -15,6 +15,7 @@ import {
   orderBy,
   onSnapshot,
   serverTimestamp,
+  arrayUnion,
   type QuerySnapshot,
   type DocumentData
 } from "firebase/firestore";
@@ -527,18 +528,22 @@ export interface FirestoreNotification {
   id: string;
   title: string;
   description: string;
-  category: "master" | "generate" | "screening" | "system" | "settings";
+  category: "master" | "generate" | "screening" | "system" | "settings" | "user" | "mbg";
   isRead: boolean;
+  userEmail?: string;
+  readBy?: string[];
   createdAt?: any;
   createdAtIso?: string;
 }
 
-export async function addNotification(notif: Omit<FirestoreNotification, "id" | "isRead" | "createdAt" | "createdAtIso">) {
+export async function addNotification(notif: Omit<FirestoreNotification, "id" | "isRead" | "createdAt" | "createdAtIso"> & { userEmail?: string }) {
   try {
-    const docId = `notif_${Date.now()}`;
+    const docId = `notif_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     const docRef = doc(db, "gscan_notifications", docId);
     await setDoc(docRef, {
       id: docId,
+      userEmail: notif.userEmail || "all",
+      readBy: [],
       ...notif,
       isRead: false,
       createdAt: serverTimestamp(),
@@ -579,21 +584,84 @@ export async function fetchNotifications() {
   }
 }
 
-export async function markNotificationRead(docId: string) {
+export function subscribeUserNotifications(
+  userEmail: string,
+  onUpdate: (notifs: FirestoreNotification[]) => void
+) {
+  try {
+    const colRef = collection(db, "gscan_notifications");
+    const unsubscribe = onSnapshot(colRef, (snap) => {
+      const items: FirestoreNotification[] = [];
+      const cleanEmail = (userEmail || "").trim().toLowerCase();
+
+      snap.forEach((d) => {
+        const data = d.data() as any;
+        const targetEmail = (data.userEmail || "").trim().toLowerCase();
+        
+        const isMatch = !targetEmail || targetEmail === "all" || targetEmail === cleanEmail;
+        if (isMatch) {
+          const readByList: string[] = Array.isArray(data.readBy) ? data.readBy : [];
+          const isReadForUser = data.isRead === true || (cleanEmail ? readByList.includes(cleanEmail) : false);
+
+          const desc = (data.description || "").replace(/Dr\.\s*Hendra\s*Pratama/gi, "Nizam Setiawan");
+          items.push({
+            id: d.id,
+            ...data,
+            description: desc,
+            isRead: isReadForUser,
+          } as FirestoreNotification);
+        }
+      });
+
+      items.sort((a, b) => (b.createdAtIso || "").localeCompare(a.createdAtIso || ""));
+      onUpdate(items);
+    }, (err) => {
+      console.warn("Firestore notification snapshot error:", err);
+    });
+
+    return unsubscribe;
+  } catch (err) {
+    console.warn("Gagal init subscribeUserNotifications:", err);
+    return () => {};
+  }
+}
+
+export async function markNotificationRead(docId: string, userEmail?: string) {
   try {
     const docRef = doc(db, "gscan_notifications", docId);
-    await setDoc(docRef, { isRead: true }, { merge: true });
+    if (userEmail) {
+      await setDoc(docRef, { 
+        isRead: true, 
+        readBy: arrayUnion(userEmail.trim().toLowerCase()) 
+      }, { merge: true });
+    } else {
+      await setDoc(docRef, { isRead: true }, { merge: true });
+    }
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
 }
 
-export async function markAllNotificationsRead() {
+export async function markAllNotificationsRead(userEmail?: string) {
   try {
     const colRef = collection(db, "gscan_notifications");
     const snap = await getDocs(colRef);
-    await Promise.all(snap.docs.map(d => setDoc(d.ref, { isRead: true }, { merge: true })));
+    const cleanEmail = (userEmail || "").trim().toLowerCase();
+    
+    await Promise.all(
+      snap.docs.map((d) => {
+        const data = d.data() as any;
+        const targetEmail = (data.userEmail || "").trim().toLowerCase();
+        if (!targetEmail || targetEmail === "all" || targetEmail === cleanEmail) {
+          if (cleanEmail) {
+            return setDoc(d.ref, { isRead: true, readBy: arrayUnion(cleanEmail) }, { merge: true });
+          }
+          return setDoc(d.ref, { isRead: true }, { merge: true });
+        }
+        return Promise.resolve();
+      })
+    );
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -607,6 +675,41 @@ export async function deleteNotification(docId: string) {
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
+  }
+}
+
+export async function seedInitialUserNotifications(userEmail: string, districtName: string = "Kebomas") {
+  try {
+    if (!userEmail) return;
+    const cleanEmail = userEmail.trim().toLowerCase();
+    const colRef = collection(db, "gscan_notifications");
+    const q = query(colRef, where("userEmail", "==", cleanEmail));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      await addNotification({
+        title: "Selamat Datang di NuSantap Mobile",
+        description: `Akun warga Anda di Kec. ${districtName} telah terhubung dengan sistem cloud Posyandu & Dapur MBG.`,
+        category: "system",
+        userEmail: cleanEmail,
+      });
+
+      await addNotification({
+        title: "Menu MBG Hari Ini Siap",
+        description: `Dapur SPPG Kec. ${districtName} telah menyediakan paket makanan bergizi berstandar TKPI & SISKAPERBAPO.`,
+        category: "mbg",
+        userEmail: cleanEmail,
+      });
+
+      await addNotification({
+        title: "Skrining Biometrik & RAG Aktif",
+        description: "Lakukan pemindaian foto makanan atau antropometri balita untuk mendapatkan rekomendasi gizi presisi berbasis AI Gemini.",
+        category: "screening",
+        userEmail: cleanEmail,
+      });
+    }
+  } catch (err) {
+    console.warn("Gagal seedInitialUserNotifications:", err);
   }
 }
 
