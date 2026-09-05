@@ -41,6 +41,7 @@ import {
   addNotification,
   FirestoreNotification,
 } from "@/services/firebase-service";
+import { CitizenHelpModal } from "../CitizenHelpModal";
 
 interface MobileHomeTabProps {
   citizenUser: CitizenUser | null;
@@ -514,108 +515,14 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* ═══ MODAL 2: CHAT BOT ASISTEN GIZI AI ═══                      */}
+      {/* ═══ MODAL 2: CHAT BOT ASISTEN GIZI AI & PUSAT BANTUAN WARGA ══ */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <AnimatePresence>
-        {showChatModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md h-[88vh] flex flex-col shadow-2xl overflow-hidden"
-            >
-              {/* Chat Header */}
-              <div className="px-4 py-3.5 bg-gradient-to-r from-[#0D1B2A] to-[#1E293B] text-white flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#6D28D9] flex items-center justify-center shadow-md">
-                    <Bot className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-[13.5px] font-black leading-tight">Bantuan &amp; FAQ Layanan</h3>
-                    <p className="text-[10px] text-[#79D7D2] font-semibold">Panduan &amp; Informasi Aplikasi Kcal</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowChatModal(false)}
-                  className="w-7 h-7 rounded-full bg-white/10 text-white/80 flex items-center justify-center text-xs font-bold cursor-pointer"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Chat Message Stream */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
-                {chatMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex items-start gap-2 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                  >
-                    {msg.sender === "bot" && (
-                      <div className="w-7 h-7 rounded-xl bg-[#8B5CF6] text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
-                        <Bot className="w-3.5 h-3.5" />
-                      </div>
-                    )}
-                    <div
-                      className={`max-w-[78%] p-3 rounded-2xl text-[12px] leading-relaxed ${
-                        msg.sender === "user"
-                          ? "bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-bold rounded-tr-xs"
-                          : "bg-white border border-slate-200/80 text-slate-800 font-medium rounded-tl-xs shadow-xs"
-                      }`}
-                    >
-                      {msg.text}
-                    </div>
-                  </div>
-                ))}
-
-                {isBotTyping && (
-                  <div className="flex items-center gap-2 text-slate-400 text-[11px] font-medium italic">
-                    <Bot className="w-4 h-4 text-[#0284C7] animate-bounce" />
-                    <span>Menyiapkan informasi bantuan...</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Quick Prompt Suggestions */}
-              <div className="px-3 pt-2 pb-1 bg-white border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-                {BOT_QUICK_PROMPTS.map((prompt, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => handleSendChat(prompt)}
-                    className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-semibold whitespace-nowrap cursor-pointer transition-colors"
-                  >
-                    {prompt}
-                  </button>
-                ))}
-              </div>
-
-              {/* Input Area */}
-              <div className="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
-                <input
-                  type="text"
-                  placeholder="Ketik pertanyaan gizi anak..."
-                  value={inputChat}
-                  onChange={(e) => setInputChat(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSendChat();
-                  }}
-                  className="flex-1 px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-2xl text-[12px] font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#8B5CF6]"
-                />
-                <motion.button
-                  whileTap={{ scale: 0.92 }}
-                  type="button"
-                  onClick={() => handleSendChat()}
-                  className="w-10 h-10 rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#6D28D9] text-white flex items-center justify-center cursor-pointer shadow-md flex-shrink-0"
-                >
-                  <Send className="w-4 h-4" />
-                </motion.button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <CitizenHelpModal
+        isOpen={showChatModal}
+        onClose={() => setShowChatModal(false)}
+        citizenUser={citizenUser}
+        triggerHaptic={triggerHaptic}
+      />
 
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* ═══ MODAL 3: FORM LAPOR FEEDBACK MBG ═══                       */}
