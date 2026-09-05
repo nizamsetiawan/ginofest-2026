@@ -680,38 +680,8 @@ export async function deleteNotification(docId: string) {
 }
 
 export async function seedInitialUserNotifications(userEmail: string, districtName: string = "Kebomas") {
-  try {
-    if (!userEmail) return;
-    const cleanEmail = userEmail.trim().toLowerCase();
-    const colRef = collection(db, "gscan_notifications");
-    const q = query(colRef, where("userEmail", "==", cleanEmail));
-    const snap = await getDocs(q);
-
-    if (snap.empty) {
-      await addNotification({
-        title: "Selamat Datang di NuSantap Mobile",
-        description: `Akun warga Anda di Kec. ${districtName} telah terhubung dengan sistem cloud Posyandu & Dapur MBG.`,
-        category: "system",
-        userEmail: cleanEmail,
-      });
-
-      await addNotification({
-        title: "Menu MBG Hari Ini Siap",
-        description: `Dapur SPPG Kec. ${districtName} telah menyediakan paket makanan bergizi berstandar TKPI & SISKAPERBAPO.`,
-        category: "mbg",
-        userEmail: cleanEmail,
-      });
-
-      await addNotification({
-        title: "Skrining Biometrik & RAG Aktif",
-        description: "Lakukan pemindaian foto makanan atau antropometri balita untuk mendapatkan rekomendasi gizi presisi berbasis AI Gemini.",
-        category: "screening",
-        userEmail: cleanEmail,
-      });
-    }
-  } catch (err) {
-    console.warn("Gagal seedInitialUserNotifications:", err);
-  }
+  // Disabled auto-seeding so notifications inbox is 100% event-driven from real actions
+  return;
 }
 
 // -------------------------------------------------------------

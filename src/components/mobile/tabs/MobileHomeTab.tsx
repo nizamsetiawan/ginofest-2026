@@ -1082,11 +1082,6 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 <p className="text-[12px] text-slate-600 leading-relaxed font-medium">
                   {selectedNotifDetail.description}
                 </p>
-
-                <div className="pt-2 flex items-center justify-between text-[10px] text-slate-400 font-semibold border-t border-slate-200/60">
-                  <span>ID: {selectedNotifDetail.id}</span>
-                  <span className="text-[#0FA89B] font-bold">● Terverifikasi Firestore Cloud</span>
-                </div>
               </div>
             </div>
           </motion.div>
