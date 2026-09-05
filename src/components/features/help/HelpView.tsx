@@ -274,26 +274,23 @@ export const HelpView: React.FC<HelpViewProps> = ({ onOpenChat }) => {
       }
 
       const systemPrompt = `Anda adalah "K-Bot", asisten pemandu resmi aplikasi Kcal Dashboard MBG (Makan Bergizi Gratis & Penanganan Stunting) GinoFest 2026 Pemerintah Kabupaten Gresik.
-Gaya Komunikasi:
-- Luwes, ramah, santun, dan natural layaknya rekan kerja yang mengerti sistem dengan baik.
-- Jika pengguna menyapa (misal: "halo", "hai", "selamat pagi", "apa kabar"), jawab sapaannya dengan hangat dan tanyakan apa yang ingin mereka ketahui atau bantu di sistem Kcal.
-- Jika pengguna ingin menyampaikan keluhan atau komplain, arahkan mereka untuk mengetik perintah /komplain agar muncul formulir pengaduan yang otomatis tersimpan dan diteruskan ke kontak pengelola.
-- Jawab pertanyaan secara langsung, to-the-point, mengalir rapi, dan mudah dipahami.
-- Hindari penggunaan icon/emoji yang berlebihan pada daftar fitur. Cukup gunakan penomoran bersih jika merincikan langkah.
-- Selalu sebut diri Anda sebagai "K-Bot".
 
-KONTEKS SISTEM KCAL:
-1. Hasil Scan: Analitik prevalensi stunting & sasaran balita di 18 kecamatan Gresik.
-2. Generate Menu MBG: Perencana menu otomatis mingguan & tahunan (siklus 5/6 hari, pagu Rp 15.000/porsi) berbasis komoditas pangan lokal, menghasilkan Laporan Kebutuhan Bahan Pokok (Excel BOM).
-3. Basis Data RAG: Repositori 5 dataset master (Komoditas, Harga Pasar SISKAPERBAPO, Menu Standar, Nilai Gizi TKPI 2019, Data Wilayah), upload Excel, kalibrasi harga otomatis, proteksi PIN 8 digit.
-4. Peta Prevalensi: Peta interaktif zonasi risiko stunting (Hijau <10%, Kuning 10-20%, Merah >20%).
-5. Scan QR Code: Penapisan fisik antropometri balita & kalkulasi Z-Score WHO untuk rekomendasi gizi lokal.
-6. Notifikasi: Log aktivitas real-time tersinkronisasi ke Cloud Firestore.
-7. Pengaturan: Konfigurasi hari kerja, PIN 8 digit, integrasi API, dan profil admin wilayah.
+BATASAN CAKUPAN SISTEM (STRICT SCOPE):
+Anda HANYA boleh menjawab pertanyaan yang berkaitan dengan:
+1. Program Makan Bergizi Gratis (MBG), Perencana Menu AI, Pagu Rp 15.000, Laporan Kebutuhan Bahan Pokok (Excel BOM).
+2. Penanganan & pencegahan Stunting, Z-Score WHO, Antropometri Balita, Peta Prevalensi 18 Kecamatan.
+3. Basis Data RAG 5 Dataset Master (Komoditas, Harga Pasar, Menu Standar, Nilai Gizi, Data Wilayah), PIN 8 Digit.
+4. Penggunaan fitur sistem Kcal / GSCAN (Notifikasi Firestore, Pengaturan, Log Audit, Layanan Pengaduan /komplain, Lacak Aduan /track).
+5. Layanan kesehatan, Posyandu, Puskesmas, dan Helpdesk Dinas Kesehatan Kabupaten Gresik.
+6. Sapaan ramah dari pengguna (seperti "halo", "hai", "selamat pagi").
 
-PERTANYAAN PENGGUNA: "${userQuery}"
+ATURAN PENTING & OUT-OF-SCOPE GUARDRAIL:
+- Jika pertanyaan MASUK DALAM CAKUPAN: Berikan jawaban yang terfokus, ramah, dan profesional.
+- Jika pertanyaan DILUAR CAKUPAN SISTEM (misal tentang politik, olahraga, kuis, hiburan, gosip, film, koding/pemrograman umum, matematika umum, atau topik di luar gizi/stunting/MBG/sistem Kcal):
+  WAJIB HANYA mengembalikan kalimat berikut secara persis tanpa tambahan kata lain:
+  "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem GSCAN. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga."
 
-Berikan jawaban yang luwes dan ramah.`;
+PERTANYAAN PENGGUNA: "${userQuery}"`;
 
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
       const response = await fetch(geminiUrl, {
@@ -302,8 +299,8 @@ Berikan jawaban yang luwes dan ramah.`;
         body: JSON.stringify({
           contents: [{ parts: [{ text: systemPrompt }] }],
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1000,
+            temperature: 0.2,
+            maxOutputTokens: 600,
           },
         }),
       });
@@ -322,6 +319,10 @@ Berikan jawaban yang luwes dan ramah.`;
 
       if (lower.includes("komplain") || lower.includes("keluhan") || lower.includes("lapor") || lower.includes("masalah")) {
         return "Jika Anda menemukan kendala atau ingin menyampaikan keluhan terkait sistem, silakan ketik perintah /komplain di kolom chat bawah. Anda dapat menuliskan detail kendala dan pesan akan langsung tercatat di sistem serta diteruskan ke kontak pengelola.";
+      }
+
+      if (lower.includes("stunting") || lower.includes("gizi") || lower.includes("mbg") || lower.includes("menu")) {
+        return "Program Kcal MBG dan Penanganan Stunting memadukan perencana menu AI berbasis komoditas pangan lokal dengan penapisan fisik anak. Gunakan menu sidebar untuk melihat fitur selengkapnya!";
       }
 
       if (lower === "halo" || lower === "hai" || lower === "hei" || lower === "hi" || lower.startsWith("halo") || lower.startsWith("hai")) {
@@ -356,7 +357,7 @@ Berikan jawaban yang luwes dan ramah.`;
         return `${match.answer}\n\nTip: Anda juga bisa mengetik "/" untuk melihat daftar seluruh topik panduan.`;
       }
 
-      return `Untuk sistem Kcal Dashboard MBG, terdapat beberapa modul utama:\n\n1. Hasil Scan: Analitik data stunting 18 kecamatan.\n2. Generate Menu: Perencana menu otomatis dan laporan Excel BOM.\n3. Basis Data RAG: 5 dataset master pangan dan harga pasar.\n4. Peta Prevalensi: Pemetaan zonasi risiko stunting.\n5. Scan QR Code: Penapisan tumbuh kembang balita dan Z-Score WHO.\n6. Notifikasi: Log aktivitas sistem tersinkronisasi realtime.\n7. Pengaturan: Konfigurasi siklus hari kerja, PIN, dan integrasi.\n\nKetik "/" di kolom bawah jika Anda ingin melihat panduan langkah demi langkah yang lebih detail.`;
+      return "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem GSCAN. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga.";
     }
   };
 

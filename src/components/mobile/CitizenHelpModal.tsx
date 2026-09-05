@@ -210,19 +210,24 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
         throw new Error("No Gemini API Key");
       }
 
-      const systemPrompt = `Anda adalah "K-Bot", asisten AI resmi Layanan Nutrisi Kcal, Skrining Biometrik, & Program Makan Bergizi Gratis (MBG) Kecamatan ${citizenUser?.district || "Kebomas"}, Kabupaten Gresik.
-Tugas Anda: Menjawab pertanyaan dari warga/orang tua siswa mengenai stunting, gizi anak, skrining biometrik, makanan bergizi, atau penggunaan aplikasi GSCAN/Kcal.
+      const systemPrompt = `Anda adalah "K-Bot", asisten AI resmi pemandu Layanan Nutrisi Kcal, Skrining Biometrik, dan Program Makan Bergizi Gratis (MBG) Kecamatan ${citizenUser?.district || "Kebomas"}, Kabupaten Gresik.
 
-Instruksi Penting:
-1. Berikan jawaban yang **singkat, jelas, ramah, sederhana, dan mudah dipahami** oleh warga awam/orang tua.
-2. Jangan menggunakan penjelasan medis/teknis yang terlalu rumit. Gunakan bahasa Indonesia yang santun dan informatif.
-3. Jika pertanyaan tentang stunting (misal: "apa yang kamu ketahui tentang stunting"), jelaskan stunting secara simpel: bahwa stunting adalah kondisi anak lebih pendek dari standar usianya akibat kurang gizi kronis, serta berikan poin pencegahannya (gizi seimbang, telur, ikan bandeng/kupang lokal, daun kelor, imunisasi, & penimbangan rutin).
-4. Jika pengguna menyapa (misal: "halo", "hai"), sapa kembali dengan hangat.
-5. Jika pengguna ingin lapor komplain, ingatkan ketik /komplain.
+BATASAN CAKUPAN SISTEM (STRICT SCOPE):
+Anda HANYA boleh menjawab pertanyaan yang berkaitan dengan:
+1. Program Makan Bergizi Gratis (MBG), komposisi menu 5 Bintang, gizi anak sekolah & balita, kecukupan AKG.
+2. Penanganan & pencegahan Stunting, pengukuran Z-Score WHO, antropometri balita.
+3. Skrining Biometrik Wajah & Telapak Tangan pada aplikasi GSCAN.
+4. Penggunaan fitur aplikasi GSCAN / Kcal (Notifikasi, Profil, Fitur Lapor Pengaduan Warga /komplain, Lacak Aduan /track).
+5. Layanan kesehatan warga, Posyandu, Puskesmas, dan bantuan helpdesk Dinkes Gresik.
+6. Sapaan ramah dari warga (seperti "halo", "hai", "selamat pagi", "apa kabar").
 
-PERTANYAAN WARGA: "${userQuery}"
+ATURAN PENTING & OUT-OF-SCOPE GUARDRAIL:
+- Jika pertanyaan TERFOKUS pada topik di atas: Berikan jawaban yang **singkat, simpel, ramah, dan mudah dipahami** oleh warga/orang tua (maksimal 2-3 paragraf ringkas). Jika pengguna menanyakan tentang stunting (misal: "apa yang kamu ketahui tentang stunting"), jelaskan pengertian stunting secara sederhana serta poin pencegahannya.
+- Jika pertanyaan DILUAR CAKUPAN SISTEM (misal: tentang politik, olahraga, kuis, hiburan, gosip, film, koding/pemrograman umum, matematika umum, atau topik di luar nutrisi/stunting/MBG/GSCAN):
+  WAJIB HANYA mengembalikan kalimat berikut secara persis tanpa tambahan kata lain:
+  "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem GSCAN. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga."
 
-Berikan jawaban simpel dan ramah (maksimal 2-3 paragraf ringkas).`;
+PERTANYAAN WARGA: "${userQuery}"`;
 
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
       const response = await fetch(geminiUrl, {
@@ -231,8 +236,8 @@ Berikan jawaban simpel dan ramah (maksimal 2-3 paragraf ringkas).`;
         body: JSON.stringify({
           contents: [{ parts: [{ text: systemPrompt }] }],
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 600,
+            temperature: 0.2,
+            maxOutputTokens: 500,
           },
         }),
       });
@@ -253,8 +258,8 @@ Berikan jawaban simpel dan ramah (maksimal 2-3 paragraf ringkas).`;
         body: JSON.stringify({
           contents: [{ parts: [{ text: systemPrompt }] }],
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 600,
+            temperature: 0.2,
+            maxOutputTokens: 500,
           },
         }),
       });
@@ -274,10 +279,13 @@ Berikan jawaban simpel dan ramah (maksimal 2-3 paragraf ringkas).`;
       if (lower.includes("stunting")) {
         return "Stunting adalah kondisi tumbuh kembang anak yang terhambat akibat kekurangan gizi kronis dalam waktu lama, sehingga tinggi badan anak lebih pendek dari usianya.\n\nPencegahan Utama:\n1. Asupan gizi seimbang (lauk protein hewani seperti ikan bandeng, telur, kupang lokal).\n2. Rutin menimbang BB & TB anak.\n3. Akses air bersih & sanitasi lingkungan yang sehat.";
       }
-      if (lower.includes("gizi") || lower.includes("makanan") || lower.includes("nutrisi")) {
+      if (lower.includes("gizi") || lower.includes("makanan") || lower.includes("nutrisi") || lower.includes("mbg")) {
         return "Kebutuhan gizi anak terdiri dari 5 komponen utama (5 Bintang): Karbohidrat, Protein Hewani, Nabati, Sayur, dan Buah. Asupan nutrisi lokal yang kaya zat besi Fe & protein hewani efektif menjaga kesehatan dan mendukung prestasi belajar siswa.";
       }
-      return `Terima kasih atas pertanyaan Anda mengenai "${userQuery}". Asisten AI Kcal siap membantu memberikan informasi seputar kesehatan dan gizi anak di Kecamatan ${citizenUser?.district || "Kebomas"}. Ketik "/" untuk melihat pilihan topik bantuan!`;
+      if (lower.includes("halo") || lower.includes("hai") || lower.includes("selamat")) {
+        return "Halo! Selamat datang di Pusat Bantuan Warga Kcal. Ada yang bisa saya bantu terkait layanan gizi, skrining biometrik, atau MBG hari ini?";
+      }
+      return "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem GSCAN. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga.";
     }
   };
 
