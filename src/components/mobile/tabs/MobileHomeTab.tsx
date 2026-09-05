@@ -1190,53 +1190,21 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* ═══ SUB-PAGE: DETAIL PEMBERITAHUAN (FULL SCREEN z-[110]) ═══   */}
       {/* ══════════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* ═══ MODAL: DETAIL PEMBERITAHUAN (BOTTOM SHEET MODAL) ═══        */}
+      {/* ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {selectedNotifDetail && (
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 280 }}
-            className="fixed inset-0 z-[110] bg-white h-screen w-screen flex flex-col overflow-hidden"
-          >
-            {/* 1. TOP HEADER (ICON ONLY BACK & TITLE SIDE BY SIDE) */}
-            <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0">
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic();
-                    setSelectedNotifDetail(null);
-                  }}
-                  className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
-                  title="Kembali"
-                >
-                  <ArrowLeft className="w-5 h-5 text-slate-700 stroke-[2.5]" />
-                </button>
-
-                <h2 className="text-[16px] font-black text-slate-800 tracking-tight">
-                  Detail Pemberitahuan
-                </h2>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic();
-                  deleteNotification(selectedNotifDetail.id);
-                  setSelectedNotifDetail(null);
-                }}
-                className="w-8.5 h-8.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
-                title="Hapus Notifikasi"
-              >
-                <Trash2 className="w-4 h-4 stroke-[2]" />
-              </button>
-            </div>
-
-            {/* 2. DETAIL CONTENT CARD */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 max-w-md mx-auto w-full pb-24 bg-white">
-              <div className="p-4 rounded-3xl border border-slate-200/90 bg-slate-50/50 space-y-3">
-                <div className="flex items-center justify-between gap-2">
+          <div className="fixed inset-0 z-[115] bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[88vh] flex flex-col shadow-2xl overflow-hidden"
+            >
+              {/* Header */}
+              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center gap-2 min-w-0">
                   <span
                     className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider ${
                       selectedNotifDetail.category === "mbg"
@@ -1248,8 +1216,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   >
                     {selectedNotifDetail.category || "sistem"}
                   </span>
-
-                  <span className="text-[10px] text-slate-400 font-bold">
+                  <span className="text-[10px] text-slate-400 font-bold truncate">
                     {selectedNotifDetail.createdAtIso
                       ? new Date(selectedNotifDetail.createdAtIso).toLocaleString("id-ID", {
                           day: "numeric",
@@ -1262,18 +1229,52 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   </span>
                 </div>
 
-                <h3 className="text-[15px] font-black text-slate-800 leading-snug">
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic();
+                      deleteNotification(selectedNotifDetail.id);
+                      setSelectedNotifDetail(null);
+                    }}
+                    className="w-7 h-7 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs font-bold cursor-pointer transition-colors"
+                    title="Hapus Notifikasi"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedNotifDetail(null)}
+                    className="w-7 h-7 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-600 flex items-center justify-center text-xs font-bold cursor-pointer transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* Detail Content */}
+              <div className="p-5 overflow-y-auto space-y-3.5">
+                <h3 className="text-[16px] font-black text-slate-800 leading-snug">
                   {selectedNotifDetail.title}
                 </h3>
 
-                <div className="h-px bg-slate-200/80 w-full" />
-
-                <p className="text-[12px] text-slate-600 leading-relaxed font-medium">
+                <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-[12.5px] text-slate-700 leading-relaxed font-medium whitespace-pre-line">
                   {selectedNotifDetail.description}
-                </p>
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedNotifDetail(null)}
+                    className="px-4 py-2 rounded-xl bg-[#0FA89B] text-white font-bold text-xs hover:bg-[#0E978C] cursor-pointer transition-all shadow-2xs"
+                  >
+                    Tutup
+                  </button>
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
