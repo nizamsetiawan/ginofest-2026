@@ -853,65 +853,65 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     </p>
                   </div>
                 )}
-              </div>
 
-              {/* Recommended Menu & Nutrition */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
-                    Rekomendasi Menu Gizi AI
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
-                    {selectedDetailScan.recommendedMenu?.akgPercentage || 50}% AKG
-                  </span>
-                </div>
-                <h4 className="text-[14px] font-black text-slate-800">
-                  {selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening"}
-                </h4>
-                <div className="grid grid-cols-3 gap-2 text-center pt-1">
-                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                    <span className="text-[9px] font-bold text-slate-400 block">KALORI</span>
-                    <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.calories || 680} kkal</span>
+                {/* Recommended Menu & Nutrition */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
+                      Rekomendasi Menu Gizi AI
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
+                      {selectedDetailScan.recommendedMenu?.akgPercentage || 50}% AKG
+                    </span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                    <span className="text-[9px] font-bold text-slate-400 block">PROTEIN</span>
-                    <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.proteinGram || 31} g</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                    <span className="text-[9px] font-bold text-slate-400 block">ZAT BESI</span>
-                    <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.ironMg || 6} mg</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 4 Biometric Azure Photo Thumbnails */}
-              <div className="space-y-2">
-                <span className="text-[11px] font-extrabold text-slate-600 block">Bukti Foto Biometrik Azure</span>
-                <div className="grid grid-cols-4 gap-2">
-                  {[
-                    { label: "Wajah", url: selectedDetailScan.photos?.faceBase64 || selectedDetailScan.blobUrls?.faceBlobUrl, icon: "" },
-                    { label: "Mata", url: selectedDetailScan.photos?.eyeBase64 || selectedDetailScan.blobUrls?.eyeBlobUrl, icon: "" },
-                    { label: "Tangan", url: selectedDetailScan.photos?.handBase64 || selectedDetailScan.blobUrls?.handBlobUrl, icon: "" },
-                    { label: "Kuku", url: selectedDetailScan.photos?.nailBase64 || selectedDetailScan.blobUrls?.nailBlobUrl, icon: "" },
-                  ].map((p, i) => (
-                    <div key={i} className="space-y-1 text-center">
-                      <div
-                        onClick={() => {
-                          if (p.url) {
-                            setPreviewHistoryPhoto({ url: p.url, title: `Foto ${p.label} Biometrik` });
-                          }
-                        }}
-                        className={`w-full aspect-square rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${p.url ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""}`}
-                      >
-                        {p.url ? (
-                          <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                        ) : (
-                          <span className="text-base">{p.icon}</span>
-                        )}
-                      </div>
-                      <span className="text-[9px] font-bold text-slate-600 block">{p.label}</span>
+                  <h4 className="text-[14px] font-black text-slate-800">
+                    {selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening"}
+                  </h4>
+                  <div className="grid grid-cols-3 gap-2 text-center pt-1">
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[9px] font-bold text-slate-400 block">KALORI</span>
+                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.calories || 680} kkal</span>
                     </div>
-                  ))}
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[9px] font-bold text-slate-400 block">PROTEIN</span>
+                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.proteinGram || 31} g</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[9px] font-bold text-slate-400 block">ZAT BESI</span>
+                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.ironMg || 6} mg</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4 Biometric Azure Photo Thumbnails */}
+                <div className="space-y-2">
+                  <span className="text-[11px] font-extrabold text-slate-600 block">Bukti Foto Biometrik Azure</span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { label: "Wajah", url: selectedDetailScan.photos?.faceBase64 || selectedDetailScan.blobUrls?.faceBlobUrl, icon: "" },
+                      { label: "Mata", url: selectedDetailScan.photos?.eyeBase64 || selectedDetailScan.blobUrls?.eyeBlobUrl, icon: "" },
+                      { label: "Tangan", url: selectedDetailScan.photos?.handBase64 || selectedDetailScan.blobUrls?.handBlobUrl, icon: "" },
+                      { label: "Kuku", url: selectedDetailScan.photos?.nailBase64 || selectedDetailScan.blobUrls?.nailBlobUrl, icon: "" },
+                    ].map((p, i) => (
+                      <div key={i} className="space-y-1 text-center">
+                        <div
+                          onClick={() => {
+                            if (p.url) {
+                              setPreviewHistoryPhoto({ url: p.url, title: `Foto ${p.label} Biometrik` });
+                            }
+                          }}
+                          className={`w-full aspect-square rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${p.url ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""}`}
+                        >
+                          {p.url ? (
+                            <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                          ) : (
+                            <span className="text-xs font-bold text-slate-400">{p.label}</span>
+                          )}
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-600 block">{p.label}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
