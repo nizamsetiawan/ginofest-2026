@@ -1010,6 +1010,7 @@ export async function clearHelpChatHistory() {
 // -------------------------------------------------------------
 export interface ComplaintRecord {
   id?: string;
+  ticketId?: string;
   senderName: string;
   senderContact?: string;
   category: string;
@@ -1024,13 +1025,15 @@ export interface ComplaintRecord {
 export async function saveComplaintToFirestore(complaint: Omit<ComplaintRecord, "id">) {
   try {
     const colRef = collection(db, "gscan_complaints");
+    const autoTicketId = complaint.ticketId || `ADUAN-${Date.now().toString().slice(-4)}`;
     const docRef = await addDoc(colRef, {
       ...complaint,
+      ticketId: autoTicketId,
       status: complaint.status || "baru",
       timestamp: serverTimestamp(),
       createdAtIso: new Date().toISOString(),
     });
-    return { success: true, docId: docRef.id };
+    return { success: true, docId: docRef.id, ticketId: autoTicketId };
   } catch (error: any) {
     console.error("Gagal simpan komplain:", error);
     return { success: false, error: error.message };

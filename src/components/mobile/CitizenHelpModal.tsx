@@ -63,6 +63,10 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
   // Conversational Complaint Flow State
   const [isAwaitingComplaint, setIsAwaitingComplaint] = useState(false);
 
+  // Conversational Track Flow State
+  const [isAwaitingTrackSelection, setIsAwaitingTrackSelection] = useState(false);
+  const [userTrackedComplaints, setUserTrackedComplaints] = useState<ComplaintRecord[]>([]);
+
   // Form Pengaduan Warga Modal State
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
   const [complaintName, setComplaintName] = useState(citizenUser?.name || "Warga Kebomas");
@@ -107,7 +111,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
         command: "/track",
         category: "Layanan Pengaduan",
         question: "Pantau Status Pengaduan Saya (Realtime)",
-        answer: "Buka panel pelacakan status tiket aduan yang telah Anda kirimkan ke sistem.",
+        answer: "Pilih tiket aduan Anda di percakapan untuk melihat perkembangan status & tanggapan tim SPPG.",
       },
     ];
 
@@ -168,12 +172,80 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
   // Start Conversational Complaint Prompt
   const startComplaintFlow = () => {
     handleHaptic();
+    setIsAwaitingTrackSelection(false);
     setIsAwaitingComplaint(true);
     const botMsg: ChatMsg = {
       id: `bot_complaint_prompt_${Date.now()}`,
       sender: "bot",
       text: `📝 Silakan jelaskan keluhan atau masukan Anda secara langsung di percakapan ini.\n\nTuliskan rincian kendala yang Anda alami (seperti porsi makanan, rasa, ketepatan waktu, atau kendala skrining).\n\n*Nama (${citizenUser?.name || "Warga Kebomas"}), email (${citizenUser?.email || "nizam@gmail.com"}), dan kecamatan (${citizenUser?.district || "Kebomas"}) Anda akan otomatis dilampirkan ke tiket aduan ini.*`,
     };
+    setMessages((prev) => [...prev, botMsg]);
+    saveHelpChatMessage({ sender: "bot", text: botMsg.text });
+  };
+
+  // Start Conversational Track Flow
+  const handleConversationalTrackFlow = async () => {
+    handleHaptic();
+    setIsAwaitingComplaint(false);
+    setIsAwaitingTrackSelection(true);
+    setIsTyping(true);
+
+    const userEmail = (citizenUser?.email || "nizam@gmail.com").toLowerCase();
+    const userName = (citizenUser?.name || "warga").toLowerCase();
+
+    const res = await fetchComplaintsFromFirestore();
+    let userComplaints: ComplaintRecord[] = [];
+
+    if (res.success && res.data) {
+      userComplaints = res.data.filter(
+        (c) =>
+          (c.senderContact || "").toLowerCase() === userEmail ||
+          (c.senderName || "").toLowerCase().includes(userName)
+      );
+      if (userComplaints.length === 0 && res.data.length > 0) {
+        userComplaints = res.data.slice(0, 5);
+      }
+    }
+
+    setUserTrackedComplaints(userComplaints);
+    setIsTyping(false);
+
+    if (userComplaints.length === 0) {
+      const emptyBotMsg: ChatMsg = {
+        id: `bot_track_empty_${Date.now()}`,
+        sender: "bot",
+        text: `🔍 **Daftar Tiket Pengaduan Anda**\n\nBelum ada tiket pengaduan yang terdaftar atas email (${userEmail}).\n\n💡 Ketik "/komplain" untuk membuat laporan pengaduan baru secara langsung di percakapan ini.`,
+      };
+      setMessages((prev) => [...prev, emptyBotMsg]);
+      saveHelpChatMessage({ sender: "bot", text: emptyBotMsg.text });
+      setIsAwaitingTrackSelection(false);
+      return;
+    }
+
+    let listText = `🔍 **Daftar Tiket Pengaduan Anda (Kec. ${citizenUser?.district || "Kebomas"}):**\n\n`;
+    userComplaints.forEach((item, idx) => {
+      const numberEmojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
+      const emoji = numberEmojis[idx] || `${idx + 1}.`;
+      const ticketCode = item.ticketId || (item.id ? `ADUAN-${item.id.slice(-4).toUpperCase()}` : `ADUAN-${idx + 1}`);
+      const statusLabel =
+        item.status === "selesai"
+          ? "🟢 SELESAI"
+          : item.status === "proses"
+          ? "🟡 DIPROSES SPPG"
+          : "🔵 BARU";
+      const snippet = item.message.length > 45 ? item.message.substring(0, 45) + "..." : item.message;
+
+      listText += `${emoji} **[${ticketCode}]** - ${item.category}\n   • Aduan: "${snippet}"\n   • Status: ${statusLabel}\n\n`;
+    });
+
+    listText += `------------------------------------\nSilakan **ketik nomor urut (misal: 1, 2)** atau **Kode Tiket (misal: ADUAN-...)** di percakapan ini untuk melihat detail perkembangan & tanggapan resmi dari SPPG.`;
+
+    const botMsg: ChatMsg = {
+      id: `bot_track_list_${Date.now()}`,
+      sender: "bot",
+      text: listText,
+    };
+
     setMessages((prev) => [...prev, botMsg]);
     saveHelpChatMessage({ sender: "bot", text: botMsg.text });
   };
@@ -190,7 +262,14 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     }
 
     if (qa.command === "/track") {
-      handleOpenTrackModal();
+      const userMsg: ChatMsg = {
+        id: `user_${Date.now()}`,
+        sender: "user",
+        text: "/track",
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      saveHelpChatMessage({ sender: "user", text: "/track" });
+      handleConversationalTrackFlow();
       return;
     }
 
@@ -326,9 +405,15 @@ PERTANYAAN WARGA: "${userQuery}"`;
       return;
     }
 
-    if (query === "/track") {
-      setIsAwaitingComplaint(false);
-      handleOpenTrackModal();
+    if (query === "/track" || query === "/lacak") {
+      const userMsg: ChatMsg = {
+        id: `user_${Date.now()}`,
+        sender: "user",
+        text: query,
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      saveHelpChatMessage({ sender: "user", text: query });
+      handleConversationalTrackFlow();
       return;
     }
 
@@ -367,11 +452,11 @@ PERTANYAAN WARGA: "${userQuery}"`;
           userEmail: userEmail,
         });
 
-        const ticketId = `ADUAN-${Date.now().toString().slice(-4)}`;
+        const createdTicketId = res.ticketId || `ADUAN-${Date.now().toString().slice(-4)}`;
         const confirmBotMsg: ChatMsg = {
           id: `bot_complaint_done_${Date.now()}`,
           sender: "bot",
-          text: `✅ Pengaduan Anda berhasil dikirim dan dibuatkan tiket resmi!\n\n📋 No. Tiket: ${ticketId}\n👤 Pelapor: ${userName} (Kec. ${userDistrict})\n💬 Detail Aduan: "${query}"\n\nLaporan ini otomatis tersimpan di Firestore dan diteruskan ke Tim SPPG & Dinkes. Ketik "/track" untuk memantau status tindak lanjut secara realtime.`,
+          text: `✅ Pengaduan Anda berhasil dikirim dan dibuatkan tiket resmi!\n\n📋 No. Tiket: ${createdTicketId}\n👤 Pelapor: ${userName} (Kec. ${userDistrict})\n💬 Detail Aduan: "${query}"\n\nLaporan ini otomatis tersimpan di Firestore dan diteruskan ke Tim SPPG & Dinkes. Ketik "/track" untuk memantau status tindak lanjut secara realtime.`,
         };
 
         setMessages((prev) => [...prev, confirmBotMsg]);
@@ -387,6 +472,69 @@ PERTANYAAN WARGA: "${userQuery}"`;
 
       setIsTyping(false);
       return;
+    }
+
+    // Handle Conversational Track Selection directly from chat input
+    if (isAwaitingTrackSelection && !query.startsWith("/")) {
+      const cleanInput = query.trim().toLowerCase();
+      let matchedComplaint: ComplaintRecord | undefined;
+      let matchedTicketCode = "";
+
+      const parsedNum = parseInt(cleanInput, 10);
+      if (!isNaN(parsedNum) && parsedNum >= 1 && parsedNum <= userTrackedComplaints.length) {
+        matchedComplaint = userTrackedComplaints[parsedNum - 1];
+        matchedTicketCode =
+          matchedComplaint.ticketId ||
+          (matchedComplaint.id ? `ADUAN-${matchedComplaint.id.slice(-4).toUpperCase()}` : `ADUAN-${parsedNum}`);
+      }
+
+      if (!matchedComplaint) {
+        matchedComplaint = userTrackedComplaints.find((c, idx) => {
+          const tId = (c.ticketId || "").toLowerCase();
+          const docId = (c.id || "").toLowerCase();
+          return (
+            tId.includes(cleanInput) ||
+            docId.includes(cleanInput) ||
+            `aduan-${idx + 1}` === cleanInput
+          );
+        });
+        if (matchedComplaint) {
+          matchedTicketCode =
+            matchedComplaint.ticketId ||
+            (matchedComplaint.id ? `ADUAN-${matchedComplaint.id.slice(-4).toUpperCase()}` : "ADUAN-TIKET");
+        }
+      }
+
+      if (matchedComplaint) {
+        setIsAwaitingTrackSelection(false);
+        const statusBadge =
+          matchedComplaint.status === "selesai"
+            ? "🟢 SELESAI"
+            : matchedComplaint.status === "proses"
+            ? "🟡 DIPROSES SPPG"
+            : "🔵 BARU (MENUNGGU VERIFIKASI)";
+
+        const createdDate = matchedComplaint.createdAtIso
+          ? new Date(matchedComplaint.createdAtIso).toLocaleString("id-ID", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })
+          : "Baru saja";
+
+        const detailBotMsg: ChatMsg = {
+          id: `bot_track_detail_${Date.now()}`,
+          sender: "bot",
+          text: `📋 **Detail Status Tiket: ${matchedTicketCode}**\n\n• **Pelapor**: ${matchedComplaint.senderName}\n• **Kecamatan**: ${matchedComplaint.district || citizenUser?.district || "Kebomas"}\n• **Kategori**: ${matchedComplaint.category}\n• **Status Tiket**: ${statusBadge}\n• **Rincian Aduan**: "${matchedComplaint.message}"\n• **Tanggal Dilaporkan**: ${createdDate}\n\n💬 **Tanggapan Resmi Tim SPPG / Dinkes**:\n${
+            matchedComplaint.responseNotes
+              ? `"${matchedComplaint.responseNotes}"`
+              : "⏱️ Laporan Anda telah tersimpan di sistem dan sedang dalam proses verifikasi tim verifikator SPPG Kebomas."
+          }\n\n------------------------------------\n💡 Ketik "/track" untuk memantau tiket lain, atau "/komplain" untuk membuat laporan baru.`,
+        };
+
+        setMessages((prev) => [...prev, detailBotMsg]);
+        saveHelpChatMessage({ sender: "bot", text: detailBotMsg.text });
+        return;
+      }
     }
 
     setIsTyping(true);
@@ -552,7 +700,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
             {/* TRACK BUTTON */}
             <button
               type="button"
-              onClick={handleOpenTrackModal}
+              onClick={() => handleSendMessage("/track")}
               className="px-2.5 py-1.5 rounded-full bg-teal-50 hover:bg-teal-100 text-[#0FA89B] border border-teal-200/80 text-[11px] font-extrabold flex items-center gap-1.5 cursor-pointer transition-colors"
               title="Lacak Aduan"
             >
