@@ -7,7 +7,7 @@ import {
   updateDoc,
   onSnapshot,
 } from "firebase/firestore";
-import { app, db } from "./firebase-service";
+import { app, db, addNotification } from "./firebase-service";
 import { KcalUser } from "@/types/auth";
 
 const SESSION_STORAGE_KEY = "kcal_active_user_session";
@@ -413,7 +413,16 @@ export async function sendAdminPasswordResetEmail(email: string): Promise<{ succ
   try {
     const { getAuth, sendPasswordResetEmail } = await import("firebase/auth");
     const auth = getAuth(app);
-    await sendPasswordResetEmail(auth, email.trim().toLowerCase());
+    const cleanEmail = email.trim().toLowerCase();
+    await sendPasswordResetEmail(auth, cleanEmail);
+
+    await addNotification({
+      title: "Permintaan Lupa Kata Sandi Terkirim",
+      description: `Tautan reset kata sandi resmi telah dikirim ke email (${cleanEmail}).`,
+      category: "system",
+      userEmail: cleanEmail,
+    });
+
     return { success: true };
   } catch (err: any) {
     console.error("Firebase sendPasswordResetEmail error:", err);
@@ -450,6 +459,15 @@ export async function updateUserPin(
         isPinConfigured: true,
         ...(newPassword ? { password: newPassword } : {}),
       });
+
+      if (current.email) {
+        await addNotification({
+          title: "Sandi & PIN Keamanan Diperbarui",
+          description: `PIN bypass / kata sandi keamanan akun (${current.email}) telah berhasil diperbarui.`,
+          category: "system",
+          userEmail: current.email.trim().toLowerCase(),
+        });
+      }
     }
 
     return { success: true };

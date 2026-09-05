@@ -1108,6 +1108,26 @@ export async function updateCitizenProfileInFirestore(
       { merge: true }
     );
 
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (updates.age !== undefined) {
+      await addNotification({
+        title: "Usia Target Anak Diperbarui",
+        description: `Usia target anak telah diubah menjadi ${updates.age} Tahun. Rekomendasi kebutuhan gizi AKG MBG disesuaikan secara otomatis.`,
+        category: "system",
+        userEmail: cleanEmail,
+      });
+    }
+
+    if (updates.district !== undefined || updates.photoURL !== undefined) {
+      await addNotification({
+        title: "Profil Akun Diperbarui",
+        description: `Informasi profil akun (${cleanEmail}) telah berhasil diperbarui dan disinkronkan.`,
+        category: "system",
+        userEmail: cleanEmail,
+      });
+    }
+
     return { success: true };
   } catch (err: any) {
     console.error("Gagal update profil warga:", err);
@@ -1544,6 +1564,13 @@ export async function resetCitizenPasswordInFirestore(
       password: newPassword,
       updatedAtIso: new Date().toISOString(),
     }, { merge: true });
+
+    await addNotification({
+      title: "Permintaan Lupa Kata Sandi Berhasil",
+      description: `Kata sandi akun Anda (${cleanEmail}) telah berhasil diperbarui dan disinkronkan ke sistem keamanan.`,
+      category: "system",
+      userEmail: cleanEmail,
+    });
 
     return { success: true };
   } catch (err: any) {
