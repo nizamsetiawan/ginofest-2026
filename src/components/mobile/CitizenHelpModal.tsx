@@ -179,7 +179,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     const botMsg: ChatMsg = {
       id: `bot_complaint_prompt_${Date.now()}`,
       sender: "bot",
-      text: `📝 Silakan jelaskan keluhan atau masukan Anda secara langsung di percakapan ini.\n\nTuliskan rincian kendala yang Anda alami (seperti porsi makanan, rasa, ketepatan waktu, atau kendala skrining).\n\n*Nama (${citizenUser?.name || "Warga Kebomas"}), email (${currentEmail}), dan kecamatan (${citizenUser?.district || "Kebomas"}) Anda akan otomatis dilampirkan ke tiket aduan ini.*`,
+      text: `Silakan jelaskan keluhan atau masukan Anda secara langsung di percakapan ini.\n\nTuliskan rincian kendala yang Anda alami (seperti porsi makanan, rasa, ketepatan waktu, atau kendala skrining).\n\n*Nama (${citizenUser?.name || "Warga Kebomas"}), email (${currentEmail}), dan kecamatan (${citizenUser?.district || "Kebomas"}) Anda akan otomatis dilampirkan ke tiket aduan ini.*`,
     };
     setMessages((prev) => [...prev, botMsg]);
     saveHelpChatMessage({ sender: "bot", text: botMsg.text }, currentEmail);
@@ -215,7 +215,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
       const emptyBotMsg: ChatMsg = {
         id: `bot_track_empty_${Date.now()}`,
         sender: "bot",
-        text: `🔍 **Daftar Tiket Pengaduan Anda**\n\nBelum ada tiket pengaduan yang terdaftar atas email (${currentEmail}).\n\n💡 Ketik "/komplain" untuk membuat laporan pengaduan baru secara langsung di percakapan ini.`,
+        text: `Daftar Tiket Pengaduan Anda\n\nBelum ada tiket pengaduan yang terdaftar atas email (${currentEmail}).\n\nKetik "/komplain" untuk membuat laporan pengaduan baru secara langsung di percakapan ini.`,
       };
       setMessages((prev) => [...prev, emptyBotMsg]);
       saveHelpChatMessage({ sender: "bot", text: emptyBotMsg.text }, currentEmail);
@@ -223,23 +223,21 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
       return;
     }
 
-    let listText = `🔍 **Daftar Tiket Pengaduan Anda (Kec. ${citizenUser?.district || "Kebomas"}):**\n\n`;
+    let listText = `Daftar Tiket Pengaduan Anda (Kec. ${citizenUser?.district || "Kebomas"}):\n\n`;
     userComplaints.forEach((item, idx) => {
-      const numberEmojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
-      const emoji = numberEmojis[idx] || `${idx + 1}.`;
       const ticketCode = item.ticketId || (item.id ? `ADUAN-${item.id.slice(-4).toUpperCase()}` : `ADUAN-${idx + 1}`);
       const statusLabel =
         item.status === "selesai"
-          ? "🟢 SELESAI"
+          ? "SELESAI"
           : item.status === "proses"
-            ? "🟡 DIPROSES SPPG"
-            : "🔵 BARU";
+            ? "DIPROSES SPPG"
+            : "BARU";
       const snippet = item.message.length > 45 ? item.message.substring(0, 45) + "..." : item.message;
 
-      listText += `${emoji} **[${ticketCode}]** - ${item.category}\n   • Aduan: "${snippet}"\n   • Status: ${statusLabel}\n\n`;
+      listText += `${idx + 1}. [${ticketCode}] - ${item.category}\n   • Aduan: "${snippet}"\n   • Status: ${statusLabel}\n\n`;
     });
 
-    listText += `------------------------------------\nSilakan **ketik nomor urut (misal: 1, 2)** atau **Kode Tiket (misal: ADUAN-...)** di percakapan ini untuk melihat detail perkembangan & tanggapan resmi dari SPPG.`;
+    listText += `------------------------------------\nSilakan ketik nomor urut (misal: 1, 2) atau Kode Tiket (misal: ADUAN-...) di percakapan ini untuk melihat detail perkembangan & tanggapan resmi dari SPPG.`;
 
     const botMsg: ChatMsg = {
       id: `bot_track_list_${Date.now()}`,
@@ -308,6 +306,9 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
 
       const systemPrompt = `Anda adalah "K-Bot", asisten AI resmi pemandu Layanan Nutrisi Kcal, Skrining Biometrik, dan Program Makan Bergizi Gratis (MBG) Kecamatan ${citizenUser?.district || "Kebomas"}, Kabupaten Gresik.
 
+ATURAN UTAMA TANPA EMOJI:
+DILARANG keras menggunakan emoji, emoticon, atau simbol dekoratif apapun dalam seluruh jawaban Anda. Gunakan hanya teks polos bahasa Indonesia yang rapi, profesional, dan ramah.
+
 BATASAN CAKUPAN SISTEM (STRICT SCOPE):
 Anda HANYA boleh menjawab pertanyaan yang berkaitan dengan:
 1. Program Makan Bergizi Gratis (MBG), komposisi menu 5 Bintang, gizi anak sekolah & balita, kecukupan AKG.
@@ -318,7 +319,7 @@ Anda HANYA boleh menjawab pertanyaan yang berkaitan dengan:
 6. Sapaan ramah dari warga (seperti "halo", "hai", "selamat pagi", "apa kabar").
 
 ATURAN PENTING & OUT-OF-SCOPE GUARDRAIL:
-- Jika pertanyaan TERFOKUS pada topik di atas: Berikan jawaban yang **singkat, simpel, ramah, dan mudah dipahami** oleh warga/orang tua (maksimal 2-3 paragraf ringkas). Jika pengguna menanyakan tentang stunting (misal: "apa yang kamu ketahui tentang stunting"), jelaskan pengertian stunting secara sederhana serta poin pencegahannya.
+- Jika pertanyaan TERFOKUS pada topik di atas: Berikan jawaban yang singkat, simpel, ramah, dan mudah dipahami oleh warga/orang tua (maksimal 2-3 paragraf ringkas). Jika pengguna menanyakan tentang stunting (misal: "apa yang kamu ketahui tentang stunting"), jelaskan pengertian stunting secara sederhana serta poin pencegahannya.
 - Jika pertanyaan DILUAR CAKUPAN SISTEM (misal: tentang politik, olahraga, kuis, hiburan, gosip, film, koding/pemrograman umum, matematika umum, atau topik di luar nutrisi/stunting/MBG/Kcal):
   WAJIB HANYA mengembalikan kalimat berikut secara persis tanpa tambahan kata lain:
   "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem Kcal. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga."
@@ -342,7 +343,8 @@ PERTANYAAN WARGA: "${userQuery}"`;
         const data = await response.json();
         const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (replyText && replyText.trim()) {
-          return replyText.trim();
+          const cleanText = replyText.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '');
+          return cleanText.trim();
         }
       }
 
@@ -364,7 +366,8 @@ PERTANYAAN WARGA: "${userQuery}"`;
         const data2 = await resp2.json();
         const replyText2 = data2?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (replyText2 && replyText2.trim()) {
-          return replyText2.trim();
+          const cleanText2 = replyText2.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '');
+          return cleanText2.trim();
         }
       }
 
@@ -456,7 +459,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
         const confirmBotMsg: ChatMsg = {
           id: `bot_complaint_done_${Date.now()}`,
           sender: "bot",
-          text: `✅ Pengaduan Anda berhasil dikirim dan dibuatkan tiket resmi!\n\n📋 No. Tiket: ${createdTicketId}\n👤 Pelapor: ${userName} (Kec. ${userDistrict})\n💬 Detail Aduan: "${query}"\n\nLaporan ini otomatis tersimpan di Firestore dan diteruskan ke Tim SPPG & Dinkes. Ketik "/track" untuk memantau status tindak lanjut secara realtime.`,
+          text: `Pengaduan Anda berhasil dikirim dan dibuatkan tiket resmi.\n\nNo. Tiket: ${createdTicketId}\nPelapor: ${userName} (Kec. ${userDistrict})\nDetail Aduan: "${query}"\n\nLaporan ini otomatis tersimpan di Firestore dan diteruskan ke Tim SPPG & Dinkes. Ketik "/track" untuk memantau status tindak lanjut secara realtime.`,
         };
 
         setMessages((prev) => [...prev, confirmBotMsg]);
@@ -465,7 +468,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
         const errorBotMsg: ChatMsg = {
           id: `bot_complaint_err_${Date.now()}`,
           sender: "bot",
-          text: "❌ Gagal menyimpan pengaduan. Silakan coba lagi.",
+          text: "Gagal menyimpan pengaduan. Silakan coba lagi.",
         };
         setMessages((prev) => [...prev, errorBotMsg]);
       }
@@ -509,10 +512,10 @@ PERTANYAAN WARGA: "${userQuery}"`;
         setIsAwaitingTrackSelection(false);
         const statusBadge =
           matchedComplaint.status === "selesai"
-            ? "🟢 SELESAI"
+            ? "SELESAI"
             : matchedComplaint.status === "proses"
-              ? "🟡 DIPROSES SPPG"
-              : "🔵 BARU (MENUNGGU VERIFIKASI)";
+              ? "DIPROSES SPPG"
+              : "BARU (MENUNGGU VERIFIKASI)";
 
         const createdDate = matchedComplaint.createdAtIso
           ? new Date(matchedComplaint.createdAtIso).toLocaleString("id-ID", {
@@ -524,10 +527,10 @@ PERTANYAAN WARGA: "${userQuery}"`;
         const detailBotMsg: ChatMsg = {
           id: `bot_track_detail_${Date.now()}`,
           sender: "bot",
-          text: `📋 **Detail Status Tiket: ${matchedTicketCode}**\n\n• **Pelapor**: ${matchedComplaint.senderName}\n• **Kecamatan**: ${matchedComplaint.district || citizenUser?.district || "Kebomas"}\n• **Kategori**: ${matchedComplaint.category}\n• **Status Tiket**: ${statusBadge}\n• **Rincian Aduan**: "${matchedComplaint.message}"\n• **Tanggal Dilaporkan**: ${createdDate}\n\n💬 **Tanggapan Resmi Tim SPPG / Dinkes**:\n${matchedComplaint.responseNotes
+          text: `Detail Status Tiket: ${matchedTicketCode}\n\n• Pelapor: ${matchedComplaint.senderName}\n• Kecamatan: ${matchedComplaint.district || citizenUser?.district || "Kebomas"}\n• Kategori: ${matchedComplaint.category}\n• Status Tiket: ${statusBadge}\n• Rincian Aduan: "${matchedComplaint.message}"\n• Tanggal Dilaporkan: ${createdDate}\n\nTanggapan Resmi Tim SPPG / Dinkes:\n${matchedComplaint.responseNotes
               ? `"${matchedComplaint.responseNotes}"`
-              : "⏱️ Laporan Anda telah tersimpan di sistem dan sedang dalam proses verifikasi tim verifikator SPPG Kebomas."
-            }\n\n------------------------------------\n💡 Ketik "/track" untuk memantau tiket lain, atau "/komplain" untuk membuat laporan baru.`,
+              : "Laporan Anda telah tersimpan di sistem dan sedang dalam proses verifikasi tim verifikator SPPG Kebomas."
+            }\n\n------------------------------------\nKetik "/track" untuk memantau tiket lain, atau "/komplain" untuk membuat laporan baru.`,
         };
 
         setMessages((prev) => [...prev, detailBotMsg]);
@@ -719,9 +722,8 @@ PERTANYAAN WARGA: "${userQuery}"`;
 
                       <div className="max-w-[88%] sm:max-w-[80%] bg-white border border-slate-200/90 p-4 sm:p-5 rounded-2xl sm:rounded-3xl text-[13px] leading-relaxed text-slate-800 shadow-2xs whitespace-pre-line font-medium space-y-1.5">
                         {msg.isAiGenerated && (
-                          <div className="flex items-center gap-1.5 text-[11px] font-black text-[#3ECFBE] mb-2 pb-1 border-b border-slate-100">
-                            <Sparkles className="w-3.5 h-3.5" />
-                            <span>Jawaban dari K-Bot</span>
+                          <div className="text-[11px] font-black text-[#3ECFBE] mb-2 pb-1 border-b border-slate-100">
+                            Jawaban dari K-Bot
                           </div>
                         )}
                         <div>{msg.text}</div>
