@@ -759,6 +759,17 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       </div>
                     </div>
 
+                    {article.imageUrl && (
+                      <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-100 my-1 border border-slate-100">
+                        <img
+                          src={article.imageUrl}
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+
                     <h3 className="text-[13.5px] font-black text-slate-800 leading-snug group-hover:text-[#0FA89B] transition-colors">
                       {article.title}
                     </h3>
@@ -815,6 +826,16 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
               {/* Article Content */}
               <div className="p-5 overflow-y-auto space-y-3.5">
+                {selectedArticle.imageUrl && (
+                  <div className="w-full h-44 sm:h-48 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 shadow-2xs">
+                    <img
+                      src={selectedArticle.imageUrl}
+                      alt={selectedArticle.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
                 <h3 className="text-[16px] font-black text-slate-800 leading-snug">
                   {selectedArticle.title}
                 </h3>

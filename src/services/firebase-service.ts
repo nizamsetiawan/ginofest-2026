@@ -1567,6 +1567,7 @@ export interface ArticleRecord {
   publishedDate: string;
   summary: string;
   content: string;
+  imageUrl?: string;
   createdAtIso?: string;
 }
 
@@ -1580,6 +1581,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-09-01",
     summary: "Asupan asam amino esensial dari daging ayam, telur, dan ikan lokal sangat krusial dalam memicu hormon pertumbuhan tinggi badan anak.",
     content: "Berdasarkan standar BGN 2026 dan Kemenkes RI, satu porsi MBG wajib mengandung minimal 25-30 gram protein hewani murni untuk menunjang tumbuh kembang optimal anak di usia sekolah dasar. Protein hewani mengandung profil asam amino esensial lengkap yang langsung digunakan oleh epifisis tulang balita dan anak untuk menambah tinggi badan serta mencegah risiko stunting secara signifikan.",
+    imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Deteksi Dini AI",
@@ -1590,6 +1592,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-30",
     summary: "Kelopak mata pucat dan waktu pengisian kapiler kuku lebih dari 2 detik adalah indikasi awal kekurangan zat besi yang perlu penanganan cepat.",
     content: "Fitur pemindaian biometrik Kcal menganalisis spektrum warna konjungtiva dan capillary refill time kuku untuk merekomendasikan tambahan zat besi pada menu MBG anak Anda. Deteksi dini hemoglobin berbasis citra mata dan kuku membantu posyandu dan puskesmas memberikan intervensi harian tanpa prosedur invasif.",
+    imageUrl: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Pedoman Nutrisi",
@@ -1600,6 +1603,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-28",
     summary: "Proporsi 1/3 makanan pokok, 1/3 sayuran, 1/6 lauk pauk, dan 1/6 buah-buahan untuk menjaga imunitas dan konsentrasi belajar.",
     content: "Setiap bento tray MBG dirancang mengikuti kaidah gizi seimbang dengan gramatur yang telah ditimbang tepat oleh ahli gizi SPPG. Keseimbangan karbohidrat kompleks dari beras lokal, sayuran kaya serat, buah segar, dan protein hewani menjamin kecukupan gizi harian anak saat menuntut ilmu.",
+    imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Pangan Lokal",
@@ -1610,6 +1614,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-25",
     summary: "Kandungan Omega-3, DHA, dan Zinc pada komoditas perikanan lokal sangat efektif mendukung perkembangan kognitif balita.",
     content: "Ikan bandeng segar dan komoditas kerang lokal memiliki kadar Omega-3 EPA dan DHA yang sebanding dengan ikan laut dalam. Mengonsumsi olahan ikan bandeng tanpa duri minimal 3 kali seminggu meningkatkan kemampuan daya ingat, fokus belajar, serta kekebalan tubuh balita dari infeksi.",
+    imageUrl: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Kesehatan Ibu & Anak",
@@ -1620,6 +1625,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-22",
     summary: "Periode emas sejak dalam kandungan hingga usia 2 tahun menentukan kualitas fisik dan kecerdasan anak di masa depan.",
     content: "Nutrisi ibu hamil dan ibu menyusui sangat mempengaruhi pertumbuhan organ vital balita. Pemberian ASI Eksklusif selama 6 bulan dilanjutkan MPASI kaya protein hewani menjadi kunci utama menutup celah risiko stunting di seluruh wilayah Indonesia.",
+    imageUrl: "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Edukasi Nutrisi",
@@ -1630,6 +1636,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-20",
     summary: "Mengonsumsi buah jeruk, pepaya, atau jambu biji bersamaan dengan lauk hewani meningkatkan penyerapan zat besi hingga 300 persen.",
     content: "Zat besi tipe non-heme dari tumbuh-tumbuhan sulit diserap oleh usus halus. Kombinasi buah lokal kaya Vitamin C pada menu Makan Bergizi Gratis (MBG) mempercepat pembentukan hemoglobin, sehingga anak terhindar dari anemia dan badan lemas di kelas.",
+    imageUrl: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Kesehatan Lingkungan",
@@ -1640,6 +1647,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-18",
     summary: "Infeksi usus akibat air terkontaminasi dan cacingan menghambat penyerapan nutrisi makanan pada tumbuh kembang balita.",
     content: "Nutrisi tinggi tidak akan terserap optimal jika anak sering mengalami diare atau cacingan. Penerapan Perilaku Hidup Bersih dan Sehat (PHBS), mencuci tangan dengan sabun sebelum makan, dan akses jamban sehat merupakan pilar pendukung program pencegahan stunting.",
+    imageUrl: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Pola Asuh Orang Tua",
@@ -1650,6 +1658,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-15",
     summary: "Strategi menyajikan variasi tekstur dan bentuk makanan menarik agar anak antusias menikmati sayur dan ikan.",
     content: "Sikap menolak makanan sehat sering dialami balita usia 2-5 tahun. Pembuatan nugget ikan organik, sup bola daging sayur, dan penyajian tray berwarna cerah pada program MBG membantu membentuk kebiasaan makan sehat tanpa paksaan.",
+    imageUrl: "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Pengukuran Biometrik",
@@ -1660,6 +1669,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-12",
     summary: "Pahami perbedaan Z-Score TB/U Stunted, BB/TB Wasted, dan BB/U Underweight untuk evaluasi gizi di Posyandu.",
     content: "Grafik Z-Score WHO digunakan oleh tenaga kesehatan untuk mendeteksi deviasi standar pertumbuhan anak. Skor Z di bawah -2 SD menandakan kondisi pendek stunted yang membutuhkan pendampingan nutrisi harian intensif.",
+    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Pangan Lokal",
@@ -1670,6 +1680,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-10",
     summary: "Satu butir telur sehari menyediakan kolin, lutein, dan protein kualitas tinggi yang mudah dicerna oleh tubuh anak.",
     content: "Telur merupakan salah satu sumber protein hewani paling ekonomis dengan nilai biologis tertinggi. Kolin dalam kuning telur mendukung pembentukan membran sel otak dan sintesis neurotransmitter untuk daya tangkap siswa.",
+    imageUrl: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Kesehatan Pencernaan",
@@ -1680,6 +1691,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-08",
     summary: "Mikrobioma usus yang seimbang memperkuat benteng imunitas dan mengoptimalkan ekstraksi vitamin dari makanan.",
     content: "Saluran cerna yang sehat merupakan kunci penyerapan zat gizi. Pengenalan olahan fermentasi lokal seperti tempeh, yogurt, dan pisang segar mendukung populasi Lactobacillus di usus anak untuk mencegah infeksi pencernaan.",
+    imageUrl: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Gaya Hidup Anak",
@@ -1690,6 +1702,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-05",
     summary: "Hormon pertumbuhan dilepaskan secara maksimal saat anak tidur nyenyak pada fase deep sleep malam hari.",
     content: "Selain nutrisi, istirahat cukup selama 9-10 jam setiap malam sangat penting bagi anak usia sekolah dasar. Kurang tidur akibat paparan layar gadget menurunkan sekresi Growth Hormone yang menghambat pertambahan tinggi badan.",
+    imageUrl: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Edukasi Nutrisi",
@@ -1700,6 +1713,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-03",
     summary: "Kekurangan cairan 2 persen dapat menurunkan konsentrasi dan daya tangkap siswa dalam menerima pelajaran.",
     content: "Anak usia sekolah membutuhkan minimal 1,5 - 2 liter air putih per hari. Penyediaan botol minum sehat yang diisi air matang mendampingi bento tray MBG menjaga stamina dan fungsi ginjal anak tetap prima.",
+    imageUrl: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Inovasi Layanan",
@@ -1710,6 +1724,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-01",
     summary: "Integrasi data biometrik dan sistem verifikasi QR Code memastikan distribusi MBG tepat sasaran dan terpantau realtime.",
     content: "Aplikasi Kcal menghubungkan Posyandu, Puskesmas, dan Dapur SPPG dalam satu ekosistem digital. Data skrining biometrik membantu tim verifikator memastikan balita berisiko stunting langsung mendapatkan porsi nutrisi tambahan secara terukur.",
+    imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Keamanan Pangan",
@@ -1720,8 +1735,28 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-07-28",
     summary: "Penerapan standar ISO & HACCP pada pengolahan, pengemasan, dan pengiriman makanan bergizi gratis ke sekolah.",
     content: "Dapur Satuan Pelayanan Pemenuhan Gizi (SPPG) menerapkan uji sterilisasi alat, pemeriksaan suhu makanan saat didistribusikan, dan sampel arsip gizi harian untuk menjamin 100 persen keamanan dan kesegaran hidangan bagi seluruh siswa.",
+    imageUrl: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80",
   },
 ];
+
+export async function fetchArticleImageFromSerpApi(title: string): Promise<string> {
+  try {
+    const apiKey = process.env.SERPAPI_API_KEY || "09cbbde336c59c4a96cfedf9316748e14b546aaa77b39df09680f872e97aeefb";
+    const searchQuery = encodeURIComponent(title + " gizi nutrisi makanan");
+    const searchUrl = `https://serpapi.com/search.json?engine=google_images&q=${searchQuery}&gl=id&hl=id&api_key=${apiKey}`;
+    const response = await fetch(searchUrl);
+    if (response.ok) {
+      const data = await response.json();
+      const images = data.images_results || [];
+      if (images.length > 0) {
+        return images[0].thumbnail || images[0].original || "";
+      }
+    }
+  } catch (err) {
+    console.warn("[SerpApi Article Image] Search error for title:", title, err);
+  }
+  return "";
+}
 
 export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; data: ArticleRecord[] }> {
   try {
@@ -1729,12 +1764,12 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
     const snap = await getDocs(colRef);
 
     if (snap.empty || snap.docs.length < 15) {
-      console.log("Seeding 15 dummy articles into Firestore gscan_articles...");
+      console.log("Seeding 15 articles into Firestore gscan_articles...");
       const seeded: ArticleRecord[] = [];
       for (const art of DEFAULT_15_ARTICLES) {
         const docId = `art_${Math.random().toString(36).substring(2, 8)}_${Date.now()}`;
         const docRef = doc(db, "gscan_articles", docId);
-        const artData = {
+        const artData: ArticleRecord = {
           ...art,
           id: docId,
           createdAtIso: new Date().toISOString(),
@@ -1745,7 +1780,23 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
       return { success: true, data: seeded };
     }
 
-    const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ArticleRecord));
+    // Map existing docs and auto-fetch missing SERP API images + persist to Firestore
+    const data = await Promise.all(
+      snap.docs.map(async (d) => {
+        const art = { id: d.id, ...d.data() } as ArticleRecord;
+        if (!art.imageUrl) {
+          const serpUrl = await fetchArticleImageFromSerpApi(art.title);
+          if (serpUrl) {
+            art.imageUrl = serpUrl;
+            // Save to Firestore permanently so SERP API isn't called again!
+            const docRef = doc(db, "gscan_articles", d.id);
+            await setDoc(docRef, { imageUrl: serpUrl }, { merge: true }).catch(() => {});
+          }
+        }
+        return art;
+      })
+    );
+
     return { success: true, data };
   } catch (err: any) {
     console.warn("Gagal load gscan_articles dari Firestore, fallback ke default list:", err);
