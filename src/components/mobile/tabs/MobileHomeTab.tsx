@@ -877,6 +877,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                         alt={article.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
+                        referrerPolicy="no-referrer"
                         onError={(e) => {
                           const fallback = CATEGORY_FALLBACK_IMAGES[article.category] || CATEGORY_FALLBACK_IMAGES["default"];
                           if (e.currentTarget.src !== fallback) {
@@ -947,6 +948,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     src={getArticleImage(selectedArticle)}
                     alt={selectedArticle.title}
                     className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
                     onError={(e) => {
                       const fallback = CATEGORY_FALLBACK_IMAGES[selectedArticle.category] || CATEGORY_FALLBACK_IMAGES["default"];
                       if (e.currentTarget.src !== fallback) {
