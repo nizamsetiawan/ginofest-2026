@@ -60,6 +60,9 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
   const [filteredCommands, setFilteredCommands] = useState<HelpQA[]>([]);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
 
+  // Conversational Complaint Flow State
+  const [isAwaitingComplaint, setIsAwaitingComplaint] = useState(false);
+
   // Form Pengaduan Warga Modal State
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
   const [complaintName, setComplaintName] = useState(citizenUser?.name || "Warga Kebomas");
@@ -97,7 +100,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
         command: "/komplain",
         category: "Layanan Pengaduan",
         question: "Kirim Pengaduan & Keluhan Warga",
-        answer: "Buka formulir pengaduan untuk menyampaikan kendala kualitas MBG atau layanan.",
+        answer: "Tuliskan keluhan atau kendala Anda secara langsung di percakapan untuk dibuatkan tiket aduan resmi.",
       },
       {
         id: "citizen_cmd_track",
@@ -162,6 +165,19 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     }
   };
 
+  // Start Conversational Complaint Prompt
+  const startComplaintFlow = () => {
+    handleHaptic();
+    setIsAwaitingComplaint(true);
+    const botMsg: ChatMsg = {
+      id: `bot_complaint_prompt_${Date.now()}`,
+      sender: "bot",
+      text: `📝 Silakan jelaskan keluhan atau masukan Anda secara langsung di percakapan ini.\n\nTuliskan rincian kendala yang Anda alami (seperti porsi makanan, rasa, ketepatan waktu, atau kendala skrining).\n\n*Nama (${citizenUser?.name || "Warga Kebomas"}), email (${citizenUser?.email || "nizam@gmail.com"}), dan kecamatan (${citizenUser?.district || "Kebomas"}) Anda akan otomatis dilampirkan ke tiket aduan ini.*`,
+    };
+    setMessages((prev) => [...prev, botMsg]);
+    saveHelpChatMessage({ sender: "bot", text: botMsg.text });
+  };
+
   // Execute Command Selection
   const handleSelectCommand = async (qa: HelpQA) => {
     handleHaptic();
@@ -169,7 +185,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     setInputText("");
 
     if (qa.command === "/komplain") {
-      setIsComplaintModalOpen(true);
+      startComplaintFlow();
       return;
     }
 
@@ -298,11 +314,20 @@ PERTANYAAN WARGA: "${userQuery}"`;
     setInputText("");
     setShowCommands(false);
 
-    if (query === "/komplain") {
-      setIsComplaintModalOpen(true);
+    if (query === "/komplain" || query === "/lapor") {
+      const userMsg: ChatMsg = {
+        id: `user_${Date.now()}`,
+        sender: "user",
+        text: query,
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      saveHelpChatMessage({ sender: "user", text: query });
+      startComplaintFlow();
       return;
     }
+
     if (query === "/track") {
+      setIsAwaitingComplaint(false);
       handleOpenTrackModal();
       return;
     }
@@ -315,6 +340,54 @@ PERTANYAAN WARGA: "${userQuery}"`;
 
     setMessages((prev) => [...prev, userMsg]);
     saveHelpChatMessage({ sender: "user", text: query });
+
+    // Handle Active Complaint Input directly from chat
+    if (isAwaitingComplaint && !query.startsWith("/")) {
+      setIsAwaitingComplaint(false);
+      setIsTyping(true);
+
+      const userEmail = citizenUser?.email || "nizam@gmail.com";
+      const userName = citizenUser?.name || "Warga Kebomas";
+      const userDistrict = citizenUser?.district || "Kebomas";
+
+      const res = await saveComplaintToFirestore({
+        senderName: userName,
+        senderContact: userEmail,
+        category: "Pengaduan Warga (Chat)",
+        message: query,
+        district: userDistrict,
+        status: "baru",
+      });
+
+      if (res.success) {
+        await addNotification({
+          title: `Pengaduan Warga (${userName})`,
+          description: `Pengaduan dari ${userName} (Kec. ${userDistrict}): "${query.substring(0, 80)}..."`,
+          category: "user",
+          userEmail: userEmail,
+        });
+
+        const ticketId = `ADUAN-${Date.now().toString().slice(-4)}`;
+        const confirmBotMsg: ChatMsg = {
+          id: `bot_complaint_done_${Date.now()}`,
+          sender: "bot",
+          text: `✅ Pengaduan Anda berhasil dikirim dan dibuatkan tiket resmi!\n\n📋 No. Tiket: ${ticketId}\n👤 Pelapor: ${userName} (Kec. ${userDistrict})\n💬 Detail Aduan: "${query}"\n\nLaporan ini otomatis tersimpan di Firestore dan diteruskan ke Tim SPPG & Dinkes. Ketik "/track" untuk memantau status tindak lanjut secara realtime.`,
+        };
+
+        setMessages((prev) => [...prev, confirmBotMsg]);
+        saveHelpChatMessage({ sender: "bot", text: confirmBotMsg.text });
+      } else {
+        const errorBotMsg: ChatMsg = {
+          id: `bot_complaint_err_${Date.now()}`,
+          sender: "bot",
+          text: "❌ Gagal menyimpan pengaduan. Silakan coba lagi.",
+        };
+        setMessages((prev) => [...prev, errorBotMsg]);
+      }
+
+      setIsTyping(false);
+      return;
+    }
 
     setIsTyping(true);
 
@@ -468,10 +541,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
             {/* COMPLAINT BUTTON */}
             <button
               type="button"
-              onClick={() => {
-                handleHaptic();
-                setIsComplaintModalOpen(true);
-              }}
+              onClick={startComplaintFlow}
               className="px-2.5 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200/80 text-[11px] font-extrabold flex items-center gap-1.5 cursor-pointer transition-colors"
               title="Kirim Pengaduan"
             >
