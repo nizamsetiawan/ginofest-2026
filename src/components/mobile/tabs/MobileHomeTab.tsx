@@ -134,6 +134,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [isLoadingArticles, setIsLoadingArticles] = useState(true);
   const [articleCategoryFilter, setArticleCategoryFilter] = useState<string>("Semua");
   const [articleSearchQuery, setArticleSearchQuery] = useState<string>("");
+  const [showArticleFilterMenu, setShowArticleFilterMenu] = useState(false);
 
   // ─── CHATBOT STATE ───
   const [chatMessages, setChatMessages] = useState(BOT_INITIAL_MESSAGES);
@@ -188,14 +189,29 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
     loadArticles();
   }, []);
 
-  const articleCategories = [
-    "Semua",
-    "Pencegahan Stunting",
-    "Deteksi Dini AI",
-    "Pedoman Nutrisi",
-    "Keamanan Pangan MBG",
-    "Kesehatan Ibu & Anak",
-  ];
+  const articleCategories = React.useMemo(() => {
+    const defaultCats = [
+      "Semua",
+      "Pencegahan Stunting",
+      "Deteksi Dini AI",
+      "Pedoman Nutrisi",
+      "Pangan Lokal",
+      "Kesehatan Ibu & Anak",
+      "Edukasi Nutrisi",
+    ];
+    const loadedCats = Array.from(new Set(articles.map((a) => a.category))).filter(Boolean);
+    return Array.from(new Set([...defaultCats, ...loadedCats]));
+  }, [articles]);
+
+  const articleCategoryCounts = React.useMemo(() => {
+    const counts: Record<string, number> = { Semua: articles.length };
+    articles.forEach((a) => {
+      if (a.category) {
+        counts[a.category] = (counts[a.category] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [articles]);
 
   const filteredArticles = articles.filter((art) => {
     const matchCategory =
@@ -679,33 +695,96 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             className="fixed inset-0 z-[105] bg-slate-50 h-screen w-screen flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0">
-              <div className="flex items-center gap-3">
+            <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0 relative">
+              <div className="flex items-center gap-3 min-w-0">
                 <button
                   type="button"
                   onClick={() => {
                     triggerHaptic();
                     setShowArticleListModal(false);
+                    setShowArticleFilterMenu(false);
                   }}
                   className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
                   title="Kembali"
                 >
                   <ArrowLeft className="w-5 h-5 text-slate-700 stroke-[2.5]" />
                 </button>
-                <div>
-                  <h2 className="text-[16px] font-black text-slate-800 tracking-tight leading-tight">
+                <div className="min-w-0">
+                  <h2 className="text-[16px] font-black text-slate-800 tracking-tight leading-tight truncate">
                     Artikel &amp; Edukasi Gizi
                   </h2>
-                  <p className="text-[10.5px] text-slate-500 font-medium">
-                    15 Panduan Nutrisi &amp; Pencegahan Stunting (BGN 2026)
+                  <p className="text-[10.5px] text-slate-500 font-medium truncate">
+                    Panduan Nutrisi &amp; Pencegahan Stunting (BGN 2026)
                   </p>
                 </div>
               </div>
+
+              {/* FILTER ICON BUTTON (MATCHING NOTIFICATION FILTER STYLE) */}
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic();
+                    setShowArticleFilterMenu(!showArticleFilterMenu);
+                  }}
+                  className={`w-8.5 h-8.5 rounded-full flex items-center justify-center transition-colors cursor-pointer shrink-0 relative ${
+                    articleCategoryFilter !== "Semua"
+                      ? "bg-[#0FA89B]/10 text-[#0FA89B] border border-[#0FA89B]/30"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Filter Kategori"
+                >
+                  <SlidersHorizontal className="w-4 h-4 stroke-[2.2]" />
+                  {articleCategoryFilter !== "Semua" && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#0FA89B] absolute -top-0.5 -right-0.5 border-2 border-white" />
+                  )}
+                </button>
+              </div>
+
+              {/* FILTER POPOVER DROPDOWN MENU */}
+              <AnimatePresence>
+                {showArticleFilterMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                    className="bg-white border border-slate-200 rounded-2xl p-2 shadow-xl absolute top-14 right-4 z-30 w-60 space-y-1 max-h-80 overflow-y-auto"
+                  >
+                    <p className="text-[10px] font-black text-slate-400 px-3 py-1 uppercase tracking-wider">
+                      Pilih Kategori Artikel
+                    </p>
+                    {articleCategories.map((cat) => {
+                      const isActive = articleCategoryFilter === cat;
+                      const count = articleCategoryCounts[cat] || 0;
+                      return (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => {
+                            triggerHaptic();
+                            setArticleCategoryFilter(cat);
+                            setShowArticleFilterMenu(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold transition-all flex items-center justify-between cursor-pointer ${
+                            isActive
+                              ? "bg-[#0FA89B]/10 text-[#0FA89B]"
+                              : "text-slate-700 hover:bg-slate-50"
+                          }`}
+                        >
+                          <span className="truncate pr-2">{cat}</span>
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Search & Category Filter bar */}
-            <div className="bg-white p-3.5 border-b border-slate-200/60 space-y-2.5 shrink-0">
-              {/* Search input */}
+            {/* Search Input & Active Filter Status */}
+            <div className="bg-white p-3.5 border-b border-slate-200/60 space-y-2 shrink-0">
               <div className="relative">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -726,29 +805,37 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 )}
               </div>
 
-              {/* Category Filter Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-                {articleCategories.map((cat) => {
-                  const isActive = articleCategoryFilter === cat;
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => {
-                        triggerHaptic();
-                        setArticleCategoryFilter(cat);
-                      }}
-                      className={`px-3 py-1 rounded-full text-[10.5px] font-bold shrink-0 transition-all cursor-pointer ${
-                        isActive
-                          ? "bg-[#0FA89B] text-white shadow-2xs"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  );
-                })}
-              </div>
+              {/* Active Filter Chips Status Bar */}
+              {(articleCategoryFilter !== "Semua" || articleSearchQuery) && (
+                <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 pt-0.5 px-0.5">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="text-[10.5px] text-slate-400 font-medium">Filter:</span>
+                    {articleCategoryFilter !== "Semua" && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#0FA89B]/10 text-[#0FA89B] font-bold text-[10.5px] truncate flex items-center gap-1">
+                        {articleCategoryFilter}
+                        <button
+                          type="button"
+                          onClick={() => setArticleCategoryFilter("Semua")}
+                          className="hover:text-rose-600 cursor-pointer font-extrabold"
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setArticleCategoryFilter("Semua");
+                      setArticleSearchQuery("");
+                    }}
+                    className="text-[10.5px] font-bold text-rose-500 hover:text-rose-600 cursor-pointer shrink-0"
+                  >
+                    Reset Filter
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Articles List */}
