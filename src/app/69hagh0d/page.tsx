@@ -26,7 +26,10 @@ import {
   HelpCircle,
   Scan,
   Layers,
-  FileCode
+  FileCode,
+  Briefcase,
+  Activity,
+  Image as ImageIcon
 } from "lucide-react";
 import Link from "next/link";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -46,12 +49,16 @@ export default function SecretDiagnosticsPage() {
   const [isRefreshed, setIsRefreshed] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
 
+  // Categorized Menu Navigation State
+  const [mainCategory, setMainCategory] = useState<"CLINICAL" | "NUTRITION" | "MANAGEMENT" | "DEVELOPER">("CLINICAL");
+  const [activeSubTab, setActiveSubTab] = useState<string>("scans");
+
   // Search & Collection Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [selectedCollection, setSelectedCollection] = useState<
     "ALL" | "biometric_scans_history" | "kcal_masyarakat" | "mbg_menu_plans" | "gscan_notifications" | "gscan_complaints" | "gscan_settings" | "gscan_help_qa"
-  >("ALL");
+  >("biometric_scans_history");
 
   const [viewMode, setViewMode] = useState<"MASTER" | "PHOTOS" | "METRICS" | "RAW_JSON">("MASTER");
 
@@ -437,16 +444,241 @@ export default function SecretDiagnosticsPage() {
           </div>
         </div>
 
-        {/* ─── COLLECTION SWITCHER TABS (NO EMOJIS, PURE ICONS) ─── */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-xs space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-[12px] font-black text-ford-blue flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#0FA89B]" />
-              <span>PILEH KOLEKSI DATABASE (7 COLLECTIONS ACTIVE):</span>
-            </span>
+        {/* ─── CATEGORIZED NAVIGATION & SUB-MENU TABS ─── */}
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-xs space-y-4">
+          
+          {/* 1. Main Category Tabs Grid (4 Categories) */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+            {[
+              {
+                id: "CLINICAL" as const,
+                title: "Telemetri & Skrining Klinis",
+                subTitle: "Hasil Biometrik, Foto & AI Metrics",
+                icon: Scan,
+                defaultSubTab: "scans",
+                badge: `${totalScansCount} Scans`,
+              },
+              {
+                id: "NUTRITION" as const,
+                title: "Program Nutrisi & Warga",
+                subTitle: "Profil Masyarakat & Menu MBG",
+                icon: Utensils,
+                defaultSubTab: "users",
+                badge: `${totalUsersCount + totalMenusCount} Data`,
+              },
+              {
+                id: "MANAGEMENT" as const,
+                title: "Management Platform",
+                subTitle: "Aduan, Notifikasi, QA & Settings",
+                icon: Briefcase,
+                defaultSubTab: "notifs",
+                badge: `${totalNotifsCount + totalComplaintsCount + totalSettingsCount + totalQACount} Logs`,
+              },
+              {
+                id: "DEVELOPER" as const,
+                title: "Developer & Raw Data",
+                subTitle: "Master Integrated & JSON Explorer",
+                icon: FileCode,
+                defaultSubTab: "master",
+                badge: `${totalAllDocs} Items`,
+              },
+            ].map((cat) => {
+              const CatIcon = cat.icon;
+              const isSelected = mainCategory === cat.id;
 
-            {/* View Mode Switcher */}
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200/80">
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => {
+                    setMainCategory(cat.id);
+                    if (cat.id === "CLINICAL") {
+                      setActiveSubTab("scans");
+                      setSelectedCollection("biometric_scans_history");
+                      setViewMode("MASTER");
+                    } else if (cat.id === "NUTRITION") {
+                      setActiveSubTab("users");
+                      setSelectedCollection("kcal_masyarakat");
+                      setViewMode("MASTER");
+                    } else if (cat.id === "MANAGEMENT") {
+                      setActiveSubTab("notifs");
+                      setSelectedCollection("gscan_notifications");
+                      setViewMode("MASTER");
+                    } else if (cat.id === "DEVELOPER") {
+                      setActiveSubTab("master");
+                      setSelectedCollection("ALL");
+                      setViewMode("MASTER");
+                    }
+                  }}
+                  className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-2 ${
+                    isSelected
+                      ? "bg-gradient-to-br from-teal-50/90 to-emerald-50/50 border-[#0FA89B] shadow-sm ring-2 ring-[#0FA89B]/20"
+                      : "bg-slate-50/70 hover:bg-slate-100/80 border-slate-200/80 text-slate-700"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? "bg-[#0FA89B] text-white" : "bg-white text-slate-500 border border-slate-200"}`}>
+                      <CatIcon className="w-4 h-4" />
+                    </div>
+                    <span className={`text-[9.5px] font-extrabold px-2 py-0.5 rounded-full border ${isSelected ? "bg-[#0FA89B]/15 text-[#0FA89B] border-[#0FA89B]/30" : "bg-slate-200/60 text-slate-500 border-slate-300/60"}`}>
+                      {cat.badge}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className={`text-[12.5px] font-black leading-snug ${isSelected ? "text-[#0FA89B]" : "text-ford-blue"}`}>
+                      {cat.title}
+                    </h4>
+                    <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5">
+                      {cat.subTitle}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 2. Sub-Menu Pills Bar (Per Active Category) */}
+          <div className="pt-2 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[11px] font-bold text-slate-400 mr-1 uppercase tracking-wider font-mono">
+                SUB-MENU:
+              </span>
+
+              {/* CLINICAL SUB-TABS */}
+              {mainCategory === "CLINICAL" && (
+                <>
+                  {[
+                    { id: "scans", label: `Hasil Skrining Biometrik (${totalScansCount})`, icon: Scan, collection: "biometric_scans_history", view: "MASTER" },
+                    { id: "photos", label: `Galeri Foto Azure (${totalScansCount * 4})`, icon: ImageIcon, collection: "biometric_scans_history", view: "PHOTOS" },
+                    { id: "metrics", label: `Metrik & Performa AI`, icon: Activity, collection: "biometric_scans_history", view: "METRICS" },
+                  ].map((sub) => {
+                    const SubIcon = sub.icon;
+                    const isSubActive = activeSubTab === sub.id;
+                    return (
+                      <button
+                        key={sub.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveSubTab(sub.id);
+                          setSelectedCollection(sub.collection as any);
+                          setViewMode(sub.view as any);
+                        }}
+                        className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer flex items-center gap-2 border ${
+                          isSubActive
+                            ? "bg-[#0FA89B] text-white border-[#0FA89B] shadow-2xs"
+                            : "bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200"
+                        }`}
+                      >
+                        <SubIcon className="w-3.5 h-3.5" />
+                        <span>{sub.label}</span>
+                      </button>
+                    );
+                  })}
+                </>
+              )}
+
+              {/* NUTRITION SUB-TABS */}
+              {mainCategory === "NUTRITION" && (
+                <>
+                  {[
+                    { id: "users", label: `Pengguna & Profil Warga (${totalUsersCount})`, icon: Users, collection: "kcal_masyarakat", view: "MASTER" },
+                    { id: "menus", label: `Rencana Menu & Pagu MBG (${totalMenusCount})`, icon: Utensils, collection: "mbg_menu_plans", view: "MASTER" },
+                  ].map((sub) => {
+                    const SubIcon = sub.icon;
+                    const isSubActive = activeSubTab === sub.id;
+                    return (
+                      <button
+                        key={sub.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveSubTab(sub.id);
+                          setSelectedCollection(sub.collection as any);
+                          setViewMode(sub.view as any);
+                        }}
+                        className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer flex items-center gap-2 border ${
+                          isSubActive
+                            ? "bg-[#0FA89B] text-white border-[#0FA89B] shadow-2xs"
+                            : "bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200"
+                        }`}
+                      >
+                        <SubIcon className="w-3.5 h-3.5" />
+                        <span>{sub.label}</span>
+                      </button>
+                    );
+                  })}
+                </>
+              )}
+
+              {/* MANAGEMENT SUB-TABS */}
+              {mainCategory === "MANAGEMENT" && (
+                <>
+                  {[
+                    { id: "notifs", label: `Log Notifikasi (${totalNotifsCount})`, icon: Bell, collection: "gscan_notifications", view: "MASTER" },
+                    { id: "complaints", label: `Pusat Aduan Warga (${totalComplaintsCount})`, icon: MessageSquare, collection: "gscan_complaints", view: "MASTER" },
+                    { id: "qa", label: `Basis MedQA FAQ (${totalQACount})`, icon: HelpCircle, collection: "gscan_help_qa", view: "MASTER" },
+                    { id: "settings", label: `Konfigurasi & Param AI (${totalSettingsCount})`, icon: Settings, collection: "gscan_settings", view: "MASTER" },
+                  ].map((sub) => {
+                    const SubIcon = sub.icon;
+                    const isSubActive = activeSubTab === sub.id;
+                    return (
+                      <button
+                        key={sub.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveSubTab(sub.id);
+                          setSelectedCollection(sub.collection as any);
+                          setViewMode(sub.view as any);
+                        }}
+                        className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer flex items-center gap-2 border ${
+                          isSubActive
+                            ? "bg-[#0FA89B] text-white border-[#0FA89B] shadow-2xs"
+                            : "bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200"
+                        }`}
+                      >
+                        <SubIcon className="w-3.5 h-3.5" />
+                        <span>{sub.label}</span>
+                      </button>
+                    );
+                  })}
+                </>
+              )}
+
+              {/* DEVELOPER SUB-TABS */}
+              {mainCategory === "DEVELOPER" && (
+                <>
+                  {[
+                    { id: "master", label: `Tabel Integrated Master (${totalAllDocs})`, icon: BarChart3, collection: "ALL", view: "MASTER" },
+                    { id: "raw_json", label: `Raw JSON Explorer`, icon: FileCode, collection: "ALL", view: "RAW_JSON" },
+                  ].map((sub) => {
+                    const SubIcon = sub.icon;
+                    const isSubActive = activeSubTab === sub.id;
+                    return (
+                      <button
+                        key={sub.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveSubTab(sub.id);
+                          setSelectedCollection(sub.collection as any);
+                          setViewMode(sub.view as any);
+                        }}
+                        className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer flex items-center gap-2 border ${
+                          isSubActive
+                            ? "bg-[#0FA89B] text-white border-[#0FA89B] shadow-2xs"
+                            : "bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200"
+                        }`}
+                      >
+                        <SubIcon className="w-3.5 h-3.5" />
+                        <span>{sub.label}</span>
+                      </button>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+
+            {/* Quick View Mode Switcher */}
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/80 shrink-0">
               {[
                 { id: "MASTER", label: "MASTER TABLE" },
                 { id: "PHOTOS", label: "FOTO AZURE" },
@@ -457,7 +689,7 @@ export default function SecretDiagnosticsPage() {
                   key={t.id}
                   type="button"
                   onClick={() => setViewMode(t.id as any)}
-                  className={`px-3 py-1 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                     viewMode === t.id
                       ? "bg-white text-ford-blue shadow-2xs border border-slate-200/70"
                       : "text-slate-500 hover:text-slate-800"
@@ -467,38 +699,6 @@ export default function SecretDiagnosticsPage() {
                 </button>
               ))}
             </div>
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap pt-1">
-            {[
-              { id: "ALL", label: `SEMUA KOLEKSI (${totalAllDocs})`, icon: BarChart3 },
-              { id: "biometric_scans_history", label: `biometric_scans_history (${totalScansCount})`, icon: Scan },
-              { id: "kcal_masyarakat", label: `kcal_masyarakat (${totalUsersCount})`, icon: Users },
-              { id: "mbg_menu_plans", label: `mbg_menu_plans (${totalMenusCount})`, icon: Utensils },
-              { id: "gscan_notifications", label: `gscan_notifications (${totalNotifsCount})`, icon: Bell },
-              { id: "gscan_complaints", label: `gscan_complaints (${totalComplaintsCount})`, icon: MessageSquare },
-              { id: "gscan_settings", label: `gscan_settings (${totalSettingsCount})`, icon: Settings },
-              { id: "gscan_help_qa", label: `gscan_help_qa (${totalQACount})`, icon: HelpCircle },
-            ].map((colTab) => {
-              const IconComp = colTab.icon;
-              const isSelected = selectedCollection === colTab.id;
-
-              return (
-                <button
-                  key={colTab.id}
-                  type="button"
-                  onClick={() => setSelectedCollection(colTab.id as any)}
-                  className={`px-3.5 py-2 rounded-2xl text-[11.5px] font-bold transition-all cursor-pointer flex items-center gap-2 border ${
-                    isSelected
-                      ? "bg-[#0FA89B] text-white border-[#0FA89B] shadow-xs"
-                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80"
-                  }`}
-                >
-                  <IconComp className={`w-3.5 h-3.5 ${isSelected ? "text-white" : "text-[#0FA89B]"}`} />
-                  <span>{colTab.label}</span>
-                </button>
-              );
-            })}
           </div>
         </div>
 
