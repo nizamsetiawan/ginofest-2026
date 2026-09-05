@@ -1319,6 +1319,30 @@ export async function fetchQrClaimsFromFirestore(): Promise<{ success: boolean; 
   }
 }
 
+export function subscribeQrClaims(onUpdate: (claims: QrClaimRecord[]) => void) {
+  try {
+    const colRef = collection(db, "gscan_qr_claims");
+    const unsubscribe = onSnapshot(
+      colRef,
+      (snap) => {
+        const items: QrClaimRecord[] = [];
+        snap.forEach((docSnap) => {
+          items.push({ id: docSnap.id, ...docSnap.data() } as QrClaimRecord);
+        });
+        items.sort((a, b) => (b.verifiedAtIso || "").localeCompare(a.verifiedAtIso || ""));
+        onUpdate(items);
+      },
+      (err) => {
+        console.warn("Firestore QR claims snapshot error:", err);
+      }
+    );
+    return unsubscribe;
+  } catch (err) {
+    console.warn("Gagal init subscribeQrClaims:", err);
+    return () => {};
+  }
+}
+
 // -------------------------------------------------------------
 // 13C. BIOMETRIC SCANS HISTORY (Collection: biometric_scans_history)
 // -------------------------------------------------------------
@@ -1335,6 +1359,34 @@ export async function fetchBiometricScansFromFirestore(): Promise<{ success: boo
   } catch (err: any) {
     console.error("Gagal mengambil data biometric_scans_history:", err);
     return { success: false, data: [] };
+  }
+}
+
+export function subscribeBiometricScans(onUpdate: (scans: any[]) => void) {
+  try {
+    const colRef = collection(db, "biometric_scans_history");
+    const unsubscribe = onSnapshot(
+      colRef,
+      (snap) => {
+        const items: any[] = [];
+        snap.forEach((docSnap) => {
+          items.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        items.sort((a, b) => {
+          const tA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const tB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return tB - tA;
+        });
+        onUpdate(items);
+      },
+      (err) => {
+        console.warn("Firestore biometric scans snapshot error:", err);
+      }
+    );
+    return unsubscribe;
+  } catch (err) {
+    console.warn("Gagal init subscribeBiometricScans:", err);
+    return () => {};
   }
 }
 
@@ -1365,6 +1417,49 @@ export async function fetchUserScansAndClaimsFromFirestore(userEmail?: string, u
   } catch (err: any) {
     console.error("Gagal mengambil riwayat scan pengguna:", err);
     return { success: false, data: [] };
+  }
+}
+
+export function subscribeUserScansAndClaims(
+  userEmail: string | undefined,
+  userName: string | undefined,
+  onUpdate: (scans: any[]) => void
+) {
+  try {
+    const colRef = collection(db, "biometric_scans_history");
+    const unsubscribe = onSnapshot(
+      colRef,
+      (snap) => {
+        const results: any[] = [];
+        const cleanEmail = userEmail ? userEmail.trim().toLowerCase() : "";
+        const cleanName = userName ? userName.trim().toLowerCase() : "";
+
+        snap.forEach((docSnap) => {
+          const d = docSnap.data();
+          const matchEmail = cleanEmail && d.userEmail && d.userEmail.toLowerCase() === cleanEmail;
+          const matchName = cleanName && d.userName && d.userName.toLowerCase() === cleanName;
+
+          if (matchEmail || matchName || (!cleanEmail && !cleanName)) {
+            results.push({ id: docSnap.id, ...d });
+          }
+        });
+
+        results.sort((a, b) => {
+          const tA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const tB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return tB - tA;
+        });
+
+        onUpdate(results);
+      },
+      (err) => {
+        console.warn("Firestore user scans snapshot error:", err);
+      }
+    );
+    return unsubscribe;
+  } catch (err) {
+    console.warn("Gagal init subscribeUserScansAndClaims:", err);
+    return () => {};
   }
 }
 

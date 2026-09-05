@@ -40,6 +40,7 @@ import { CitizenUser, AtmosphereState, MobileTab } from "../types";
 import { AuthSpectrumBackground } from "../auth/AuthSpectrumBackground";
 import {
   subscribeUserNotifications,
+  subscribeUserScansAndClaims,
   markNotificationRead,
   markAllNotificationsRead,
   deleteNotification,
@@ -160,27 +161,27 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
   useEffect(() => {
     setIsLoadingUserScans(true);
-    fetchUserScansAndClaimsFromFirestore(citizenUser?.email, citizenUser?.name).then((res) => {
-      if (res.success && res.data) {
-        setUserScansHistory(res.data);
+    const unsubscribe = subscribeUserScansAndClaims(citizenUser?.email, citizenUser?.name, (scans) => {
+      setUserScansHistory(scans);
 
-        // Auto-emit notification for expired barcodes if not claimed
-        res.data.forEach((scan: any) => {
-          if (scan.status !== "CLAIMED" && checkIsExpired(scan) && citizenUser?.email) {
-            const claimId = scan.claimId || scan.scanId || scan.id;
-            const menuTitle = scan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal";
-            addNotification({
-              title: "Kode Barcode MBG Kadaluarsa",
-              description: `Masa berlaku Barcode Klaim #${claimId} (${menuTitle}) telah berakhir (melebihi 24 jam). Silakan lakukan skrining biometrik gizi ulang.`,
-              category: "mbg",
-              userEmail: citizenUser.email.trim().toLowerCase(),
-            }).catch(() => null);
-          }
-        });
-      }
+      // Auto-emit notification for expired barcodes if not claimed
+      scans.forEach((scan: any) => {
+        if (scan.status !== "CLAIMED" && checkIsExpired(scan) && citizenUser?.email) {
+          const claimId = scan.claimId || scan.scanId || scan.id;
+          const menuTitle = scan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal";
+          addNotification({
+            title: "Kode Barcode MBG Kadaluarsa",
+            description: `Masa berlaku Barcode Klaim #${claimId} (${menuTitle}) telah berakhir (melebihi 24 jam). Silakan lakukan skrining biometrik gizi ulang.`,
+            category: "mbg",
+            userEmail: citizenUser.email.trim().toLowerCase(),
+          }).catch(() => null);
+        }
+      });
       setIsLoadingUserScans(false);
     });
-  }, [showHistoryModal, citizenUser?.email, citizenUser?.name]);
+
+    return () => unsubscribe();
+  }, [citizenUser?.email, citizenUser?.name]);
 
   const unclaimedCount = userScansHistory.filter(
     (item) => item.status !== "CLAIMED" && !checkIsExpired(item)
@@ -504,13 +505,13 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   Riwayat Analisis
                 </h3>
                 <p className="text-[11px] text-slate-500 font-medium leading-tight mt-1">
-                  Rekam Skrining Biometrik &amp; Rekomendasi RAG
+                  Rekam Skrining Biometrik
                 </p>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/90 text-[11px] font-bold text-[#0FA89B]">
-              <span>Lihat Rekam Skrining &amp; Rekomendasi RAG</span>
+              <span>Lihat Rekam Skrining</span>
               <ChevronRight className="w-4 h-4 text-[#0FA89B] group-hover:translate-x-0.5 transition-transform" />
             </div>
           </button>
@@ -652,9 +653,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       <div
                         key={item.id || item.scanId}
                         onClick={() => setSelectedDetailScan(item)}
-                        className={`p-3.5 rounded-2xl bg-white border shadow-xs hover:border-[#0FA89B]/60 transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99] ${
-                          isExpired ? "border-amber-200 bg-amber-50/30" : "border-slate-200/90"
-                        }`}
+                        className={`p-3.5 rounded-2xl bg-white border shadow-xs hover:border-[#0FA89B]/60 transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99] ${isExpired ? "border-amber-200 bg-amber-50/30" : "border-slate-200/90"
+                          }`}
                       >
                         {/* Left Content Column (Article Style) */}
                         <div className="min-w-0 flex-1 space-y-1 text-left">
@@ -694,14 +694,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                         </div>
 
                         {/* Right Column: Barcode / QR Code Preview Thumbnail (Article Style) */}
-                        <div className={`shrink-0 flex flex-col items-center justify-center p-2 rounded-xl border group-hover:scale-105 transition-transform ${
-                          isExpired 
-                            ? "bg-amber-100/50 border-amber-200" 
+                        <div className={`shrink-0 flex flex-col items-center justify-center p-2 rounded-xl border group-hover:scale-105 transition-transform ${isExpired
+                            ? "bg-amber-100/50 border-amber-200"
                             : "bg-gradient-to-br from-teal-50 to-emerald-50 border-teal-100/80"
-                        }`}>
-                          <div className={`w-12 h-12 bg-white rounded-lg p-1 border shadow-2xs flex items-center justify-center relative ${
-                            isExpired ? "border-amber-300 opacity-50 grayscale" : "border-teal-200"
                           }`}>
+                          <div className={`w-12 h-12 bg-white rounded-lg p-1 border shadow-2xs flex items-center justify-center relative ${isExpired ? "border-amber-300 opacity-50 grayscale" : "border-teal-200"
+                            }`}>
                             <QRCodeSVG
                               value={qrPayloadStr}
                               size={40}
@@ -716,9 +714,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                               }}
                             />
                           </div>
-                          <span className={`text-[8.5px] font-black mt-1 tracking-tight ${
-                            isExpired ? "text-amber-800" : "text-[#0FA89B]"
-                          }`}>
+                          <span className={`text-[8.5px] font-black mt-1 tracking-tight ${isExpired ? "text-amber-800" : "text-[#0FA89B]"
+                            }`}>
                             {isExpired ? "KADALUARSA" : "QR KLAIM"}
                           </span>
                         </div>
@@ -790,7 +787,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     <span className="text-[11px] font-extrabold text-amber-800 uppercase tracking-wider block">
                       Kode QR Klaim MBG (Kadaluarsa)
                     </span>
-                    
+
                     <div className="inline-block p-3.5 bg-white rounded-2xl border border-amber-300 shadow-md relative opacity-40 grayscale">
                       <QRCodeSVG
                         value={JSON.stringify({
@@ -837,7 +834,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     <span className="text-[11px] font-extrabold text-[#0FA89B] uppercase tracking-wider block">
                       Kode Barcode / QR Code Klaim MBG
                     </span>
-                    
+
                     <div className="inline-block p-3.5 bg-white rounded-2xl border border-teal-200 shadow-md">
                       <QRCodeSVG
                         value={JSON.stringify({
@@ -1037,8 +1034,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           type="button"
                           onClick={() => setFeedbackCategory(cat)}
                           className={`py-2 px-3 rounded-xl border text-[11px] font-bold transition-all cursor-pointer ${feedbackCategory === cat
-                              ? "bg-[#0FA89B]/10 border-[#0FA89B] text-[#0FA89B]"
-                              : "bg-slate-50 border-slate-200 text-slate-600"
+                            ? "bg-[#0FA89B]/10 border-[#0FA89B] text-[#0FA89B]"
+                            : "bg-slate-50 border-slate-200 text-slate-600"
                             }`}
                         >
                           {cat}
@@ -1060,8 +1057,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                         >
                           <Star
                             className={`w-7 h-7 ${star <= feedbackRating
-                                ? "fill-amber-400 text-amber-400"
-                                : "text-slate-200"
+                              ? "fill-amber-400 text-amber-400"
+                              : "text-slate-200"
                               }`}
                           />
                         </button>
@@ -1143,8 +1140,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     setShowArticleFilterMenu(!showArticleFilterMenu);
                   }}
                   className={`w-8.5 h-8.5 rounded-full flex items-center justify-center transition-colors cursor-pointer shrink-0 relative ${articleCategoryFilter !== "Semua"
-                      ? "bg-[#0FA89B]/10 text-[#0FA89B] border border-[#0FA89B]/30"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                    ? "bg-[#0FA89B]/10 text-[#0FA89B] border border-[#0FA89B]/30"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
                     }`}
                   title="Filter Kategori"
                 >
@@ -1180,8 +1177,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                             setShowArticleFilterMenu(false);
                           }}
                           className={`w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold transition-all flex items-center justify-between cursor-pointer ${isActive
-                              ? "bg-[#0FA89B]/10 text-[#0FA89B]"
-                              : "text-slate-700 hover:bg-slate-50"
+                            ? "bg-[#0FA89B]/10 text-[#0FA89B]"
+                            : "text-slate-700 hover:bg-slate-50"
                             }`}
                         >
                           <span className="truncate pr-2">{cat}</span>
@@ -1500,8 +1497,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                             setShowFilterMenu(false);
                           }}
                           className={`w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold transition-all flex items-center justify-between cursor-pointer ${isActive
-                              ? "bg-[#0FA89B]/10 text-[#0FA89B]"
-                              : "text-slate-700 hover:bg-slate-50"
+                            ? "bg-[#0FA89B]/10 text-[#0FA89B]"
+                            : "text-slate-700 hover:bg-slate-50"
                             }`}
                         >
                           <span>{tab.label}</span>
@@ -1552,8 +1549,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       setSelectedNotifDetail(notif);
                     }}
                     className={`p-3 rounded-2xl border transition-colors cursor-pointer relative space-y-1 select-none touch-pan-y ${notif.isRead
-                        ? "bg-white border-slate-150 opacity-75 hover:bg-slate-50/60"
-                        : "bg-teal-50/20 border-[#0FA89B]/30 shadow-2xs hover:border-[#0FA89B]"
+                      ? "bg-white border-slate-150 opacity-75 hover:bg-slate-50/60"
+                      : "bg-teal-50/20 border-[#0FA89B]/30 shadow-2xs hover:border-[#0FA89B]"
                       }`}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -1563,10 +1560,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                         )}
                         <span
                           className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${notif.category === "mbg"
-                              ? "bg-amber-100/70 text-amber-800"
-                              : notif.category === "screening"
-                                ? "bg-teal-100/70 text-teal-800"
-                                : "bg-slate-100 text-slate-700"
+                            ? "bg-amber-100/70 text-amber-800"
+                            : notif.category === "screening"
+                              ? "bg-teal-100/70 text-teal-800"
+                              : "bg-slate-100 text-slate-700"
                             }`}
                         >
                           {notif.category || "sistem"}
@@ -1617,10 +1614,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 <div className="flex items-center gap-2 min-w-0">
                   <span
                     className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider ${selectedNotifDetail.category === "mbg"
-                        ? "bg-amber-100 text-amber-800"
-                        : selectedNotifDetail.category === "screening"
-                          ? "bg-teal-100 text-teal-800"
-                          : "bg-slate-200 text-slate-700"
+                      ? "bg-amber-100 text-amber-800"
+                      : selectedNotifDetail.category === "screening"
+                        ? "bg-teal-100 text-teal-800"
+                        : "bg-slate-200 text-slate-700"
                       }`}
                   >
                     {selectedNotifDetail.category || "sistem"}

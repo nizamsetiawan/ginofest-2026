@@ -33,6 +33,8 @@ import {
   recordQrClaimToFirestore,
   fetchQrClaimsFromFirestore,
   fetchBiometricScansFromFirestore,
+  subscribeQrClaims,
+  subscribeBiometricScans,
   getCitizenByEmailFromFirestore,
   addNotification,
   QrClaimRecord,
@@ -284,13 +286,26 @@ export const ScreeningView: React.FC = () => {
     };
   }, [activeTab, decodedData, handleProcessPayload]);
 
+  // Realtime subscriptions for Biometric Scans & QR Claims History
   useEffect(() => {
-    if (activeTab === "biometric") {
-      loadBiometricScans();
-    } else if (activeTab === "history") {
-      loadHistory();
-    }
-  }, [activeTab]);
+    setIsLoadingBiometric(true);
+    setIsLoadingHistory(true);
+
+    const unsubBiometric = subscribeBiometricScans((scans) => {
+      setBiometricList(scans);
+      setIsLoadingBiometric(false);
+    });
+
+    const unsubHistory = subscribeQrClaims((claims) => {
+      setHistoryList(claims);
+      setIsLoadingHistory(false);
+    });
+
+    return () => {
+      unsubBiometric();
+      unsubHistory();
+    };
+  }, []);
 
   const loadBiometricScans = async () => {
     setIsLoadingBiometric(true);
