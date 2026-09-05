@@ -503,27 +503,32 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               availableGeneratedRecipes: data.availableGeneratedRecipes,
             });
 
-            const periodText = selectedPeriod === "2026-8" ? "Agustus 2026" : selectedPeriod;
             await addNotification({
-              title: `Rencana Menu MBG ${periodText} Siap`,
-              description: `Menu rekomendasi makanan bergizi seimbang untuk wilayah Kec. ${targetDistrictId} telah resmi diterbitkan.`,
+              title: `Rencana Menu MBG ${currentPeriodInfo.label} Siap`,
+              description: `Menu rekomendasi makanan bergizi seimbang untuk wilayah Kec. ${currentDistrictInfo.name} telah resmi diterbitkan.`,
               category: "mbg",
               userEmail: "all",
             });
+
+            setGenerationStep(5);
+            await new Promise((r) => setTimeout(r, 400));
+
+            setIsGenerating(false);
+            setGenerationStep(0);
+            setSelectedRecipeToast(`Rancangan Menu MBG (${currentPeriodInfo.label} • ${includeSaturday ? "6 Hari" : "5 Hari"}) berhasil disimpan ke Firestore!`);
+            setTimeout(() => setSelectedRecipeToast(null), 3500);
+            return;
           }
         }
       }
-    } catch (e) {
+      throw new Error("Gagal menggenerasi menu dari AI server.");
+    } catch (e: any) {
       console.warn("Fetch error:", e);
+      setIsGenerating(false);
+      setGenerationStep(0);
+      setSelectedRecipeToast(`Gagal menggenerasi menu: ${e?.message || "Terjadi kesalahan koneksi"}`);
+      setTimeout(() => setSelectedRecipeToast(null), 3500);
     }
-
-    setGenerationStep(5);
-    await new Promise((r) => setTimeout(r, 400));
-
-    setIsGenerating(false);
-    setGenerationStep(0);
-    setSelectedRecipeToast(`Rancangan Menu MBG (${currentPeriodInfo.label} • ${includeSaturday ? "6 Hari" : "5 Hari"}) berhasil disimpan ke Firestore!`);
-    setTimeout(() => setSelectedRecipeToast(null), 3500);
   };
 
   // Delete & Reset Menu Plan from Firestore
