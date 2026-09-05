@@ -921,17 +921,6 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   </div>
                 </div>
               </div>
-
-              {/* Modal Footer Action */}
-              <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-end">
-                <button
-                  type="button"
-                  onClick={() => setSelectedDetailScan(null)}
-                  className="px-5 py-2.5 rounded-xl bg-[#0FA89B] text-white font-bold text-[12px] shadow-sm hover:bg-[#0c877c] cursor-pointer transition-colors"
-                >
-                  Selesai &amp; Tutup
-                </button>
-              </div>
             </motion.div>
           </div>
         )}

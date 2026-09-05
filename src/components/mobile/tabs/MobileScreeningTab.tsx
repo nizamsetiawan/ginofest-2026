@@ -1454,7 +1454,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
           </div>
 
-          {/* ─── STICKY BOTTOM BUTTON "SELESAI" ─── */}
+          {/* ─── STICKY BOTTOM FOR DEMO SIMULATION ─── */}
           <div className="flex-shrink-0 relative">
             <div className="h-4 bg-gradient-to-b from-transparent to-white pointer-events-none" />
             <div className="bg-white border-t border-slate-100 px-5 pb-6 pt-2.5 space-y-2 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
@@ -1467,18 +1467,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10.5px] cursor-pointer disabled:opacity-60 transition-colors"
               >
                 {isQrVerifying ? "Memproses Verifikasi..." : "⚡ Simulasikan Pindai Staf (Pindah ke Sukses)"}
-              </motion.button>
-
-              {/* Primary Sticky Finish / Return Home Button */}
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={() => {
-                  if (onBackToHome) onBackToHome();
-                }}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[13px] tracking-wide shadow-md cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <span>Selesai &amp; Kembali ke Beranda Utama</span>
               </motion.button>
             </div>
           </div>
