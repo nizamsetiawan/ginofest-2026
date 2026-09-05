@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   QrCode,
   ScanLine,
   CheckCircle2,
   AlertTriangle,
-  Sparkles,
   User,
   Utensils,
   Clock,
@@ -14,7 +13,6 @@ import {
   RefreshCw,
   Search,
   Check,
-  Zap,
   Mail,
   Phone,
   Flame,
@@ -22,6 +20,7 @@ import {
   History,
   CameraOff,
 } from "lucide-react";
+import jsQR from "jsqr";
 import {
   recordQrClaimToFirestore,
   fetchQrClaimsFromFirestore,
@@ -59,138 +58,32 @@ interface DecodedPayload {
   status?: string;
 }
 
-// Preset Demo Payloads for 1-Click Fast Verification Testing
-const DEMO_PAYLOADS = [
-  {
-    title: "Klaim Warga Kebomas — Nasi Ayam Kari",
-    payload: JSON.stringify({
-      claimId: `MBG-${Date.now()}-AK882`,
-      type: "MBG_FOOD_CLAIM",
-      version: "1.0",
-      issuedAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(),
-      beneficiary: {
-        name: "Nizam Setiawan",
-        email: "nizamsetiawan15@gmail.com",
-        phone: "0812-3456-7890",
-        district: "Kebomas",
-      },
-      menu: {
-        id: "menu_ayam_kari",
-        name: "Nasi Ayam Kari & Sayur Bening (Tinggi Protein & Zat Besi)",
-        kalori: 680,
-        porsi: "1x Makan Siang",
-        program: "Makan Bergizi Gratis",
-      },
-      program: {
-        name: "Ginofest 2026",
-        issuer: "SPPG Kemenkes RI - Dinkes Gresik",
-        year: 2026,
-      },
-      status: "VALID",
-    }),
-  },
-  {
-    title: "Klaim Warga Manyar — Nasi Bandeng Bakar Madu",
-    payload: JSON.stringify({
-      claimId: `MBG-${Date.now()}-BD994`,
-      type: "MBG_FOOD_CLAIM",
-      version: "1.0",
-      issuedAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(),
-      beneficiary: {
-        name: "Siti Rahmawati",
-        email: "siti.rahmawati@gmail.com",
-        phone: "0857-9876-5432",
-        district: "Manyar",
-      },
-      menu: {
-        id: "menu_bandeng_bakar",
-        name: "Nasi Bandeng Bakar Madu & Tumis Kangkung (Kaya Omega-3)",
-        kalori: 720,
-        porsi: "1x Makan Siang",
-        program: "Makan Bergizi Gratis",
-      },
-      program: {
-        name: "Ginofest 2026",
-        issuer: "SPPG Kemenkes RI - Dinkes Gresik",
-        year: 2026,
-      },
-      status: "VALID",
-    }),
-  },
-];
-
 export const ScreeningView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"scan" | "history">("scan");
-  const [isScanning, setIsScanning] = useState(false);
   const [decodedData, setDecodedData] = useState<DecodedPayload | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   
-  // Real camera stream state
+  // Real camera stream & auto scan state
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasCameraAccess, setHasCameraAccess] = useState<boolean | null>(null);
+  const [cameraErrorMsg, setCameraErrorMsg] = useState("");
+  const isScanningRef = useRef(false);
 
   // History state
   const [historyList, setHistoryList] = useState<QrClaimRecord[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
 
-  // Start web camera on mount when in scan tab
-  useEffect(() => {
-    let stream: MediaStream | null = null;
-
-    if (activeTab === "scan" && !decodedData) {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices
-          .getUserMedia({ video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } } })
-          .then((mediaStream) => {
-            stream = mediaStream;
-            setHasCameraAccess(true);
-            if (videoRef.current) {
-              videoRef.current.srcObject = mediaStream;
-            }
-          })
-          .catch((err) => {
-            console.warn("Camera access warning:", err);
-            setHasCameraAccess(false);
-          });
-      } else {
-        setHasCameraAccess(false);
-      }
-    }
-
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [activeTab, decodedData]);
-
-  useEffect(() => {
-    if (activeTab === "history") {
-      loadHistory();
-    }
-  }, [activeTab]);
-
-  const loadHistory = async () => {
-    setIsLoadingHistory(true);
-    const res = await fetchQrClaimsFromFirestore();
-    if (res.success) {
-      setHistoryList(res.data);
-    }
-    setIsLoadingHistory(false);
-  };
-
-  const handleProcessPayload = async (rawString: string) => {
+  const handleProcessPayload = useCallback(async (rawString: string) => {
     setErrorMessage("");
     setVerificationSuccess(false);
     try {
       const parsed = JSON.parse(rawString.trim()) as DecodedPayload;
       if (!parsed.claimId || !parsed.beneficiary) {
-        setErrorMessage("Format payload QR Code tidak valid untuk program MBG.");
+        setErrorMessage("Format QR Code tidak teridentifikasi sebagai payload MBG.");
         return;
       }
 
@@ -208,18 +101,127 @@ export const ScreeningView: React.FC = () => {
 
       setDecodedData(parsed);
     } catch (e) {
-      setErrorMessage("Teks/QR tidak dapat diurai. Pastikan format JSON QR Code MBG valid.");
+      setErrorMessage("Format teks QR Code tidak dapat diurai. Pastikan QR Code MBG terstruktur valid.");
     }
-  };
+  }, []);
 
-  const handleTriggerScan = (presetPayload?: string) => {
-    setIsScanning(true);
-    setErrorMessage("");
-    setTimeout(async () => {
-      setIsScanning(false);
-      const targetPayload = presetPayload || DEMO_PAYLOADS[0].payload;
-      await handleProcessPayload(targetPayload);
-    }, 1500);
+  // Request camera permission and start video feed automatically
+  const startCamera = useCallback(async () => {
+    setCameraErrorMsg("");
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setHasCameraAccess(false);
+      setCameraErrorMsg("Browser ini tidak mendukung pengaksesan kamera web.");
+      return;
+    }
+
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+      });
+      setHasCameraAccess(true);
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+      }
+    } catch (err: any) {
+      console.warn("Camera permission error:", err);
+      setHasCameraAccess(false);
+      setCameraErrorMsg(err.message || "Akses kamera belum diizinkan oleh browser.");
+    }
+  }, []);
+
+  // Auto camera initialization when entering tab
+  useEffect(() => {
+    if (activeTab === "scan" && !decodedData) {
+      startCamera();
+    }
+
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [activeTab, decodedData, startCamera]);
+
+  // CONTINUOUS AUTOMATIC QR SCANNER LOOP (NO CLICK NEEDED)
+  useEffect(() => {
+    let animId: number;
+    const scanFrame = async () => {
+      if (activeTab === "scan" && !decodedData && videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
+        const video = videoRef.current;
+
+        // 1. Try Native BarcodeDetector if available in browser
+        if (typeof window !== "undefined" && "BarcodeDetector" in window) {
+          try {
+            const detector = new (window as any).BarcodeDetector({ formats: ["qr_code"] });
+            const codes = await detector.detect(video);
+            if (codes && codes.length > 0 && codes[0].rawValue) {
+              if (!isScanningRef.current) {
+                isScanningRef.current = true;
+                await handleProcessPayload(codes[0].rawValue);
+                isScanningRef.current = false;
+                return;
+              }
+            }
+          } catch (e) {
+            // Fallback to jsQR below
+          }
+        }
+
+        // 2. jsQR Canvas Processing Fallback
+        if (!canvasRef.current) {
+          canvasRef.current = document.createElement("canvas");
+        }
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+        if (ctx && video.videoWidth > 0 && video.videoHeight > 0) {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+          });
+
+          if (code && code.data) {
+            if (!isScanningRef.current) {
+              isScanningRef.current = true;
+              await handleProcessPayload(code.data);
+              isScanningRef.current = false;
+              return;
+            }
+          }
+        }
+      }
+
+      if (activeTab === "scan" && !decodedData) {
+        animId = requestAnimationFrame(scanFrame);
+      }
+    };
+
+    if (activeTab === "scan" && !decodedData) {
+      animId = requestAnimationFrame(scanFrame);
+    }
+
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+    };
+  }, [activeTab, decodedData, handleProcessPayload]);
+
+  useEffect(() => {
+    if (activeTab === "history") {
+      loadHistory();
+    }
+  }, [activeTab]);
+
+  const loadHistory = async () => {
+    setIsLoadingHistory(true);
+    const res = await fetchQrClaimsFromFirestore();
+    if (res.success) {
+      setHistoryList(res.data);
+    }
+    setIsLoadingHistory(false);
   };
 
   const handleConfirmVerification = async () => {
@@ -239,7 +241,7 @@ export const ScreeningView: React.FC = () => {
       porsi: decodedData.menu?.porsi || "1x Makan Siang",
       programName: decodedData.program?.name || "Ginofest 2026",
       verifiedAtIso: new Date().toISOString(),
-      verifiedBy: "Staf SPPG Pemkab Gresik",
+      verifiedBy: "Staf Pemkab Gresik",
       status: "VERIFIED",
     };
 
@@ -261,12 +263,24 @@ export const ScreeningView: React.FC = () => {
       console.warn("Azure Blob backup dual-write handled:", azureErr);
     }
 
-    // 3. Send Notification to Citizen in Firestore
+    // 3. Dynamic Notification Title & Description (Context Aware according to time & menu)
     if (decodedData.beneficiary?.email) {
+      const currentHour = new Date().getHours();
+      let mealLabel = "Makan Siang";
+      if (currentHour < 11) {
+        mealLabel = "Sarapan Pagi";
+      } else if (currentHour >= 15) {
+        mealLabel = "Paket Gizi Malam";
+      }
+
+      const menuTitle = decodedData.menu?.name || "Menu MBG";
+      const dynamicTitle = `Verifikasi Klaim ${mealLabel} (${menuTitle.substring(0, 35)})`;
+      const dynamicDesc = `Porsi ${menuTitle} (${decodedData.menu?.kalori || 680} kcal) atas nama ${decodedData.beneficiary.name || "Warga"} telah diverifikasi & diserahkan oleh staf Pemkab Gresik pada ${new Date().toLocaleTimeString("id-ID")}.`;
+
       try {
         await addNotification({
-          title: "Klaim Makan Siang MBG Diverifikasi",
-          description: `Porsi ${decodedData.menu?.name || "Makan Siang MBG"} telah diverifikasi & diserahkan oleh staf SPPG Kemenkes RI.`,
+          title: dynamicTitle,
+          description: dynamicDesc,
           userEmail: decodedData.beneficiary.email,
           category: "mbg",
         });
@@ -305,16 +319,11 @@ export const ScreeningView: React.FC = () => {
               <QrCode className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
-                  Pusat Pemindaian & Verifikasi QR Code MBG
-                </h1>
-                <span className="text-[10px] bg-green-02/20 text-ford-blue border border-green-02/40 px-2.5 py-0.5 rounded-full font-bold">
-                  SPPG Kemenkes RI
-                </span>
-              </div>
+              <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
+                Scan QR Code Klaim MBG
+              </h1>
               <p className="text-[12px] text-[#64748b]">
-                Pemindaian kamera live & validasi penerimaan porsi Makan Bergizi Gratis warga Kabupaten Gresik
+                Pemindaian kamera otomatis & validasi penyerahan porsi Makan Bergizi Gratis warga Kabupaten Gresik
               </p>
             </div>
           </div>
@@ -347,14 +356,14 @@ export const ScreeningView: React.FC = () => {
         </div>
       </div>
 
-      {/* ─── TAB 1: PEMINDAIAN QR KAMERA FULL VIEW ─── */}
+      {/* ─── TAB 1: PEMINDAIAN QR KAMERA FULL CONTAINER ─── */}
       {activeTab === "scan" && (
         <div className="space-y-6">
           {!decodedData ? (
-            <div className="max-w-3xl mx-auto space-y-6">
+            <div className="w-full space-y-6">
               {/* FULL CAMERA SCANNER VIEWPORT */}
-              <div className="relative w-full aspect-[4/3] rounded-3xl bg-slate-950 overflow-hidden shadow-2xl border-4 border-ford-blue flex items-center justify-center">
-                {/* Live Video Feed or Fallback Grid Background */}
+              <div className="relative w-full h-[520px] rounded-3xl bg-slate-950 overflow-hidden shadow-2xl border-4 border-ford-blue flex items-center justify-center">
+                {/* Live Video Feed */}
                 <video
                   ref={videoRef}
                   autoPlay
@@ -365,56 +374,58 @@ export const ScreeningView: React.FC = () => {
                   }`}
                 />
 
-                {!hasCameraAccess && (
-                  <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-[#131C38] to-slate-950 flex flex-col items-center justify-center p-6 text-center">
-                    <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-3">
-                      <CameraOff className="w-8 h-8 text-slate-400" />
+                {/* Permission Request Fallback */}
+                {hasCameraAccess === false && (
+                  <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-[#131C38] to-slate-950 flex flex-col items-center justify-center p-6 text-center z-10 space-y-3">
+                    <div className="w-16 h-16 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center">
+                      <CameraOff className="w-8 h-8" />
                     </div>
-                    <p className="text-[13px] font-bold text-slate-200">
-                      Kamera Web Siap Dipindai
+                    <h3 className="text-[16px] font-bold text-white">
+                      Membutuhkan Izin Kamera Browser
+                    </h3>
+                    <p className="text-[12px] text-slate-300 max-w-md leading-relaxed">
+                      {cameraErrorMsg || "Aplikasi memerlukan izin akses kamera web untuk memindai QR Code secara otomatis."}
                     </p>
-                    <p className="text-[11px] text-slate-400 max-w-xs mt-1">
-                      Arahkan QR Code Warga ke tengah layar atau gunakan tombol simulasi pemindaian di bawah.
-                    </p>
+                    <button
+                      onClick={startCamera}
+                      className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#35CBC3] to-light-sea-green text-ford-blue font-bold text-[13px] shadow-lg transition-all cursor-pointer hover:opacity-90"
+                    >
+                      Izinkan Akses Kamera
+                    </button>
                   </div>
                 )}
 
-                {/* Dark Vignette Overlay for Focus */}
-                <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
+                {/* Dark Vignette Overlay for Target Focus */}
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] pointer-events-none"></div>
 
                 {/* CENTERED SQUARE TARGET BOX FOR BARCODE */}
-                <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-3xl border-2 border-white/20 flex items-center justify-center shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] overflow-hidden">
+                <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-3xl border-2 border-white/20 flex items-center justify-center shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] overflow-hidden pointer-events-none z-10">
                   {/* Glowing Corner Brackets */}
-                  <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-02 rounded-tl-xl"></div>
-                  <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-02 rounded-tr-xl"></div>
-                  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-02 rounded-bl-xl"></div>
-                  <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-02 rounded-br-xl"></div>
+                  <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-green-02 rounded-tl-2xl"></div>
+                  <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-green-02 rounded-tr-2xl"></div>
+                  <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-green-02 rounded-bl-2xl"></div>
+                  <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-green-02 rounded-br-2xl"></div>
 
                   {/* Animated Laser Scanning Line */}
-                  <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-green-02 to-transparent shadow-[0_0_15px_#23B5A8] animate-bounce top-1/2"></div>
+                  <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-green-02 to-transparent shadow-[0_0_20px_#23B5A8] animate-bounce top-1/2"></div>
 
                   {/* Center Watermark QR Icon */}
-                  <QrCode className={`w-20 h-20 text-green-02/70 ${isScanning ? "animate-pulse scale-110" : ""}`} />
+                  <QrCode className="w-24 h-24 text-green-02/60 animate-pulse" />
                 </div>
 
-                {/* Target Instruction Pill */}
-                <div className="absolute top-4 inset-x-0 flex justify-center">
-                  <span className="px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white font-bold text-[11px] border border-white/20 shadow-md flex items-center gap-2">
-                    <ScanLine className="w-3.5 h-3.5 text-green-02 animate-pulse" />
-                    <span>Posisikan Barcode / QR Code Tepat di Dalam Kotak</span>
+                {/* Target Instruction Pill Banner */}
+                <div className="absolute top-5 inset-x-0 flex justify-center z-10">
+                  <span className="px-5 py-2 rounded-full bg-black/70 backdrop-blur-md text-white font-bold text-[12px] border border-white/20 shadow-xl flex items-center gap-2.5">
+                    <ScanLine className="w-4 h-4 text-green-02 animate-spin" />
+                    <span>Arahkan Barcode / QR Code Warga Tepat di Dalam Kotak</span>
                   </span>
                 </div>
 
-                {/* Bottom Camera Action Controls inside Viewport */}
-                <div className="absolute bottom-4 inset-x-4 flex justify-center">
-                  <button
-                    onClick={() => handleTriggerScan()}
-                    disabled={isScanning}
-                    className="w-full max-w-sm py-3.5 rounded-2xl bg-gradient-to-r from-[#35CBC3] to-light-sea-green hover:from-[#22B5AC] hover:to-light-sea-green text-ford-blue font-black text-[13.5px] flex items-center justify-center gap-2.5 shadow-xl transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    <ScanLine className={`w-5 h-5 text-ford-blue ${isScanning ? "animate-spin" : ""}`} />
-                    <span>{isScanning ? "Memindai AI Payload..." : "Pindai & Dekode QR Code"}</span>
-                  </button>
+                {/* Bottom Auto Scan Badge */}
+                <div className="absolute bottom-5 inset-x-0 flex justify-center z-10">
+                  <span className="px-4 py-1.5 rounded-full bg-ford-blue/90 text-green-02 font-mono font-bold text-[11px] border border-green-02/40 shadow-lg">
+                    ● Sistem Memindai Otomatis (Auto Scan Active)
+                  </span>
                 </div>
               </div>
 
@@ -424,37 +435,6 @@ export const ScreeningView: React.FC = () => {
                   <span>{errorMessage}</span>
                 </div>
               )}
-
-              {/* FAST DEMO SIMULATION BUTTONS BELOW CAMERA */}
-              <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3">
-                <div className="flex items-center gap-2 text-ford-blue font-bold text-[12px]">
-                  <Zap className="w-4 h-4 text-green-02" />
-                  <span>Uji Simulasi Pindai Instan (Demo 1-Click Warga):</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {DEMO_PAYLOADS.map((item, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleTriggerScan(item.payload)}
-                      disabled={isScanning}
-                      className="p-3.5 rounded-2xl border border-slate-200 hover:border-light-sea-green bg-slate-50/80 hover:bg-emerald-50/50 transition-all cursor-pointer text-left flex items-center justify-between group"
-                    >
-                      <div className="space-y-0.5">
-                        <h4 className="font-bold text-[12.5px] text-ford-blue group-hover:text-light-sea-green transition-colors">
-                          {item.title}
-                        </h4>
-                        <p className="text-[10px] text-slate-500 font-mono">
-                          Payload MBG Valid • Sync Firestore & Azure
-                        </p>
-                      </div>
-                      <span className="px-2.5 py-1 rounded-xl bg-ford-blue text-white group-hover:bg-light-sea-green group-hover:text-ford-blue text-[10px] font-bold transition-all shadow-2xs">
-                        Pindai
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
           ) : (
             /* ─── DECODED QR RESULT DISPLAY ─── */
@@ -480,7 +460,7 @@ export const ScreeningView: React.FC = () => {
                         BERHASIL DIVERIFIKASI & DIDISTRIBUSIKAN!
                       </h3>
                       <p className="text-[12px] text-emerald-800 font-medium mt-0.5">
-                        Porsi MBG telah dicatat atas nama <strong>{decodedData.beneficiary?.name}</strong>. Data tersinkron ke Firestore & Azure Blob.
+                        Porsi MBG telah dicatat atas nama <strong>{decodedData.beneficiary?.name}</strong>. Notifikasi otomatis & audit Azure tersimpan.
                       </p>
                     </div>
                   </div>
@@ -578,10 +558,6 @@ export const ScreeningView: React.FC = () => {
                           </span>
                         </div>
                       </div>
-
-                      <p className="text-[10.5px] text-slate-500 font-medium">
-                        Diterbitkan oleh: <strong>{decodedData.program?.issuer || "SPPG Kemenkes RI"}</strong>
-                      </p>
                     </div>
                   </div>
 
@@ -707,13 +683,13 @@ export const ScreeningView: React.FC = () => {
                         </span>
                       </div>
 
-                      <p className="text-[12px] text-slate-600 font-medium mt-1">
+                      <p className="text-[12px] text-[#2C3968] font-medium mt-1">
                         {item.menuName} ({item.calories || 680} kcal)
                       </p>
 
                       <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1 font-mono">
                         <span>Waktu Verifikasi: {new Date(item.verifiedAtIso).toLocaleString("id-ID")}</span>
-                        <span>• Staf: {item.verifiedBy || "SPPG Pemkab Gresik"}</span>
+                        <span>• Staf: {item.verifiedBy || "Pemkab Gresik"}</span>
                       </div>
                     </div>
                   </div>
