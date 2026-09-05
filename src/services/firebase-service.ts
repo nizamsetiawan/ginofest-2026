@@ -1303,6 +1303,7 @@ export async function loginCitizenFromFirestore(
       email: userData.email,
       phone: userData.phone,
       district: userData.district || cleanDistrict || "Kebomas",
+      photoURL: userData.photoURL || "",
     };
 
     const logId = `ses_warga_${Date.now()}`;
