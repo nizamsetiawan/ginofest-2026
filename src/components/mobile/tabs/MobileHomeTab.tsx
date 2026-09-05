@@ -311,29 +311,34 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               triggerHaptic();
               setShowHistoryModal(true);
             }}
-            className="w-full bg-white border border-slate-200/90 rounded-3xl p-4.5 text-left shadow-xs hover:shadow-md active:scale-[0.99] transition-all cursor-pointer flex items-center justify-between gap-4 group relative overflow-hidden"
+            className="w-full bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-4.5 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer space-y-3 group relative overflow-hidden"
           >
-            <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-12 h-12 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-                <History className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-11 h-11 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <History className="w-5.5 h-5.5 stroke-[2.2]" />
+                </div>
+                <div className="min-w-0">
                   <h3 className="text-[14.5px] font-black text-slate-800 tracking-tight leading-tight">
                     Riwayat Analisis
                   </h3>
-                  <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-extrabold border border-emerald-200 shrink-0">
-                    Terverifikasi
-                  </span>
+                  <p className="text-[11px] text-slate-500 font-medium leading-tight mt-1">
+                    Rekam Skrining Biometrik &amp; Rekomendasi RAG
+                  </p>
                 </div>
-                <p className="text-[11px] text-slate-500 font-medium leading-relaxed mt-0.5 truncate">
-                  Rekam skrining biometrik &amp; rekomendasi menu RAG nutrisi
-                </p>
               </div>
+
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-extrabold border border-emerald-200/80 shrink-0">
+                Terverifikasi
+              </span>
             </div>
 
-            <div className="w-8 h-8 rounded-xl bg-slate-50 group-hover:bg-teal-50 text-slate-400 group-hover:text-[#0FA89B] flex items-center justify-center shrink-0 transition-colors border border-slate-100">
-              <ChevronRight className="w-4 h-4" />
+            <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/90 text-[11px] font-extrabold text-[#0FA89B]">
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#0FA89B]" />
+                <span>Lihat Rekam Skrining &amp; Menu RAG</span>
+              </span>
+              <ChevronRight className="w-4 h-4 text-[#0FA89B] group-hover:translate-x-0.5 transition-transform" />
             </div>
           </button>
 
