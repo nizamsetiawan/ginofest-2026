@@ -445,12 +445,11 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
         {/* 2. TOP QUICK PROMPTS CHIPS BAR */}
         <div className="bg-slate-50 border-b border-slate-200/60 px-3.5 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
           {[
-            { label: "🍱 Menu MBG Hari Ini", cmd: "/mbg" },
-            { label: "🩺 Skrining Biometrik", cmd: "/skrining" },
-            { label: "👶 Gizi Balita & WHO", cmd: "/balita" },
             { label: "📢 Kirim Pengaduan", cmd: "/komplain" },
             { label: "🔍 Lacak Status Aduan", cmd: "/track" },
-            { label: "📍 Posyandu Kebomas", cmd: "/posyandu" },
+            { label: "🩺 Skrining Biometrik", cmd: "/skrining" },
+            { label: "📞 Dukungan Helpdesk", cmd: "/kontak" },
+            { label: "💡 Topik Sering Ditanyakan", cmd: "/faq" },
           ].map((prompt, i) => (
             <button
               key={i}

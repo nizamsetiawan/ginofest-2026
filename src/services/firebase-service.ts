@@ -875,10 +875,7 @@ export const INITIAL_HELP_QA_SEED: Omit<HelpQA, "id">[] = [
   // 4. Pengaduan & Layanan Warga
   { command: "/komplain", question: "Kirim keluhan, masukan, atau kendala sistem", answer: "Silakan ketikkan keluhan atau kendala Anda. Laporan akan otomatis tersimpan ke Cloud Firestore dan diteruskan langsung ke pengelola SPPG & Dinkes.", category: "Layanan Pengaduan" },
   { command: "/track", question: "Pantau Status Pengaduan Saya (Realtime)", answer: "Buka panel pelacakan status tiket aduan yang telah Anda kirimkan ke sistem untuk melihat perkembangan tindak lanjut SPPG Kebomas.", category: "Layanan Pengaduan" },
-  { command: "/mbg", question: "Bagaimana cara melihat menu & jadwal MBG hari ini?", answer: "Di beranda aplikasi Kcal Warga, Anda dapat langsung melihat kartu 'Menu MBG Hari Ini' yang menampilkan foto masakan, komposisi 5 Bintang (Karbo, Protein Hewani, Nabati, Sayur, Buah), kalori per porsi, serta status Dapur SPPG penyedia.", category: "Masyarakat" },
   { command: "/skrining", question: "Bagaimana cara melakukan Skrining Biometrik Wajah & Telapak Tangan?", answer: "1. Masuk ke tab 'Skrining' di menu bawah.\n2. Posisikan wajah anak / siswa di dalam lingkaran panduan hingga terdeteksi 100%.\n3. Posisikan telapak tangan kanan anak.\n4. Sistem AI Azure Vision & Gemini akan menganalisis indikator kecukupan nutrisi dan Z-Score WHO secara otomatis.", category: "Masyarakat" },
-  { command: "/balita", question: "Bagaimana cara mengecek status gizi balita & rekomendasi nutrisi Kcal?", answer: "Pada hasil Skrining Biometrik, sistem akan menampilkan grafik Z-Score WHO (Tinggi Badan menurut Umur) beserta status Gizi Baik, Berisiko Stunting, atau Stunting. Rincian kebutuhan AKG harian (Kalori, Protein, Fe, Kalsium) dan rekomendasi bahan pangan lokal akan disajikan otomatis.", category: "Masyarakat" },
-  { command: "/posyandu", question: "Bagaimana cara melihat jadwal & lokasi Posyandu terdekat?", answer: "Buka tab 'Profil' atau 'Skrining' → lihat rujukan Posyandu terdekat di kecamatan Anda (seperti Posyandu Kebomas, Randuagung, Sukomulyo). Informasi kontak bidan desa dan jadwal penimbangan rutin akan ditampilkan.", category: "Masyarakat" },
 
   // 5. Sistem & Pengaturan
   { command: "/notif", question: "Bagaimana cara kerja Pusat Notifikasi?", answer: "Setiap aktivitas (upload master data, generate menu, update settings, skrining anak) otomatis dicatat ke Cloud Firestore (koleksi gscan_notifications). Klik notifikasi untuk melihat rincian tanggal, jam, dan admin eksekutor.", category: "Sistem" },
@@ -889,7 +886,7 @@ export const INITIAL_HELP_QA_SEED: Omit<HelpQA, "id">[] = [
   { command: "/device", question: "Informasi perangkat apa yang dideteksi oleh sistem?", answer: "Sistem mendeteksi: jenis browser, sistem operasi, resolusi layar (DPR), bahasa browser, timezone (WIB), jumlah inti CPU (cores), kapasitas RAM memori perangkat, status koneksi internet, dan User Agent.", category: "Sistem" },
   { command: "/bantuan", question: "Bagaimana cara bertanya ke Asisten AI Gemini di sini?", answer: "Ketik langsung pertanyaan apa saja di kolom chat bawah (tanpa tanda '/'). Asisten AI Gemini akan menjelaskan seluruh fitur, tata cara penggunaan, kalkulasi gizi, maupun kebijakan program MBG di Kabupaten Gresik.", category: "Asisten AI" },
   { command: "/kontak", question: "Kontak helpdesk dan dukungan teknis Kcal", answer: "Dinas Kesehatan Kabupaten Gresik — Tim Teknis Inovasi MBG & Stunting (GinoFest 2026)\n• Alamat: Jl. Dr. Wahidin Sudirohusodo No. 245, Gresik\n• Email: takathasan82@gmail.com\n• Layanan: Senin – Jumat (08:00 – 16:00 WIB)", category: "Dukungan" },
-  { command: "/faq", question: "Daftar topik bantuan yang sering ditanyakan", answer: "Gunakan perintah cepat berikut:\n• /mbg - Menu MBG Hari Ini\n• /skrining - Skrining Biometrik\n• /balita - Gizi Balita & Z-Score WHO\n• /komplain - Kirim Pengaduan Warga\n• /track - Lacak Status Aduan\n• /posyandu - Lokasi & Jadwal Posyandu\n• /kontak - Layanan Helpdesk Dinkes", category: "Bantuan" },
+  { command: "/faq", question: "Daftar topik bantuan yang sering ditanyakan", answer: "Gunakan perintah cepat berikut:\n• /skrining - Skrining Biometrik\n• /komplain - Kirim Pengaduan Warga\n• /track - Lacak Status Aduan\n• /kontak - Layanan Helpdesk Dinkes", category: "Bantuan" },
 ];
 
 export async function seedHelpQA(items: Omit<HelpQA, "id">[]) {
@@ -908,6 +905,14 @@ export async function seedHelpQA(items: Omit<HelpQA, "id">[]) {
 
 export async function fetchHelpQA() {
   try {
+    // Purge removed commands from Cloud Firestore
+    const unusedCmdIds = [
+      "cmd_mbg", "cmd_balita", "cmd_posyandu",
+      "cmd_mbg_warga", "cmd_skrining_warga", "cmd_balita_warga",
+      "cmd_lapor_warga", "cmd_track_warga", "cmd_posyandu_warga"
+    ];
+    await Promise.all(unusedCmdIds.map((cmdId) => deleteDoc(doc(db, "gscan_help_qa", cmdId)).catch(() => {})));
+
     const colRef = collection(db, "gscan_help_qa");
     let snap = await getDocs(colRef);
 
