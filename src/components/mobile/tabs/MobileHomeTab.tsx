@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import {
   Search,
   Bell,
@@ -133,6 +134,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [userScansHistory, setUserScansHistory] = useState<any[]>([]);
   const [isLoadingUserScans, setIsLoadingUserScans] = useState(false);
+  const [selectedDetailScan, setSelectedDetailScan] = useState<any | null>(null);
   const [previewHistoryPhoto, setPreviewHistoryPhoto] = useState<{ url: string; title: string } | null>(null);
 
   useEffect(() => {
@@ -582,102 +584,210 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   userScansHistory.map((item) => {
                     const isClaimed = item.status === "CLAIMED";
                     const isValid = item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS";
-                    const photos = item.photos || {};
-                    const blobUrls = item.blobUrls || {};
+                    const claimCode = item.claimId || item.scanId || item.id;
+                    const menuTitle = item.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening";
 
-                    const faceImg = photos.faceBase64 || blobUrls.faceBlobUrl;
-                    const eyeImg = photos.eyeBase64 || blobUrls.eyeBlobUrl;
-                    const handImg = photos.handBase64 || blobUrls.handBlobUrl;
-                    const nailImg = photos.nailBase64 || blobUrls.nailBlobUrl;
+                    const qrPayloadStr = JSON.stringify({
+                      claimId: claimCode,
+                      beneficiary: { name: userName, email: citizenUser?.email || "-", district: userDistrict },
+                      menu: { name: menuTitle }
+                    });
 
                     return (
                       <div
                         key={item.id || item.scanId}
-                        className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-3 text-left hover:border-slate-300 transition-all"
+                        onClick={() => setSelectedDetailScan(item)}
+                        className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:border-[#0FA89B]/60 transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99]"
                       >
-                        {/* Status Header */}
-                        <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
-                          <span className="text-[10.5px] font-mono font-bold text-[#0FA89B] truncate">
-                            ID: {item.claimId || item.scanId || item.id}
-                          </span>
-                          {isValid && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9.5px] font-black border border-emerald-300 shrink-0">
-                              Tersedia
-                            </span>
-                          )}
-                          {isClaimed && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[9.5px] font-black border border-blue-300 shrink-0">
-                              Sudah Diambil
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Recommended Menu */}
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-[13px] font-black text-slate-800 leading-snug">
-                              {item.recommendedMenu?.menuTitle || "Nasi Ayam Kari &amp; Sayur Bening"}
-                            </h4>
-                            <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] border border-teal-200 shrink-0">
-                              {item.recommendedMenu?.akgPercentage || 50}% AKG
+                        {/* Left Content Column (Article Style) */}
+                        <div className="min-w-0 flex-1 space-y-1 text-left">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {isValid && (
+                              <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-black border border-emerald-200">
+                                Tersedia
+                              </span>
+                            )}
+                            {isClaimed && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[9.5px] font-black border border-blue-200">
+                                Sudah Diambil
+                              </span>
+                            )}
+                            <span className="text-[9.5px] font-mono font-bold text-slate-400 truncate">
+                              ID: {claimCode}
                             </span>
                           </div>
+
+                          <h4 className="text-[13px] font-extrabold text-slate-800 leading-snug group-hover:text-[#0FA89B] transition-colors line-clamp-1">
+                            {menuTitle}
+                          </h4>
+
                           <p className="text-[10.5px] text-slate-500 font-medium">
-                            {item.recommendedMenu?.calories || 680} kkal • {item.recommendedMenu?.portionDesc || "1x Makan Siang"}
+                            {item.recommendedMenu?.calories || 680} kkal • {item.recommendedMenu?.akgPercentage || 50}% AKG
                           </p>
-                        </div>
 
-                        {/* 4 Biometric Photo Thumbnails */}
-                        <div className="space-y-1 pt-0.5">
-                          <span className="text-[9.5px] font-extrabold text-slate-500 flex items-center gap-1">
-                            <Scan className="w-3 h-3 text-[#0FA89B]" />
-                            <span>Bukti Foto Biometrik Azure</span>
-                          </span>
-                          <div className="grid grid-cols-4 gap-1.5">
-                            {[
-                              { label: "Wajah", url: faceImg, icon: "👤" },
-                              { label: "Mata", url: eyeImg, icon: "👁️" },
-                              { label: "Tangan", url: handImg, icon: "✋" },
-                              { label: "Kuku", url: nailImg, icon: "💅" },
-                            ].map((p, i) => (
-                              <div key={i} className="space-y-0.5 text-center">
-                                <div
-                                  onClick={() => {
-                                    if (p.url) {
-                                      setPreviewHistoryPhoto({ url: p.url, title: `Foto ${p.label} Biometrik` });
-                                    }
-                                  }}
-                                  className={`w-full aspect-square rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${p.url ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""
-                                    }`}
-                                >
-                                  {p.url ? (
-                                    <>
-                                      <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <Maximize2 className="w-3 h-3 text-white" />
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <span className="text-sm">{p.icon}</span>
-                                  )}
-                                </div>
-                                <span className="text-[8px] font-bold text-slate-500 block truncate">{p.label}</span>
-                              </div>
-                            ))}
+                          <div className="pt-0.5 flex items-center justify-between text-[9.5px] text-slate-400 font-medium">
+                            <span>🕒 {item.createdAt ? new Date(item.createdAt).toLocaleDateString("id-ID") : "Terbaru"}</span>
+                            <span className="text-[#0FA89B] font-extrabold">Lihat Detail &amp; Barcode →</span>
                           </div>
                         </div>
 
-                        {/* Timestamp &amp; Clinical Metrics Footer */}
-                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[9.5px] text-slate-400 font-medium">
-                          <span>🕒 {item.createdAt ? new Date(item.createdAt).toLocaleString("id-ID") : "Terbaru"}</span>
-                          <span className="font-bold text-[#0FA89B]">
-                            {item.azureVisionMetrics?.confidenceScore ? `${(item.azureVisionMetrics.confidenceScore * (item.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}% Akurasi` : "Visi AI Presisi"}
-                          </span>
+                        {/* Right Column: Barcode / QR Code Preview Thumbnail (Article Style) */}
+                        <div className="shrink-0 flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-100/80 group-hover:scale-105 transition-transform">
+                          <div className="w-12 h-12 bg-white rounded-lg p-1 border border-teal-200 shadow-2xs flex items-center justify-center">
+                            <QRCodeSVG
+                              value={qrPayloadStr}
+                              size={40}
+                              level="L"
+                            />
+                          </div>
+                          <span className="text-[8.5px] font-black text-[#0FA89B] mt-1 tracking-tight">QR KLAIM</span>
                         </div>
                       </div>
                     );
                   })
                 )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══ FULL DETAIL & BARCODE MODAL ON CLICK ═══ */}
+      <AnimatePresence>
+        {selectedDetailScan && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans animate-in fade-in duration-200">
+            <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-left"
+            >
+              {/* Modal Header */}
+              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h3 className="text-[14.5px] font-black text-slate-800 leading-tight">Detail Skrining &amp; Barcode Klaim</h3>
+                  <p className="text-[10px] font-mono text-[#0FA89B] font-bold">
+                    ID: {selectedDetailScan.claimId || selectedDetailScan.scanId || selectedDetailScan.id}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedDetailScan(null)}
+                  className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center text-xs font-bold cursor-pointer transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-4">
+                {/* Status Banner */}
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                  <span className="text-[11px] font-bold text-slate-600">Status Penyerahan MBG:</span>
+                  {selectedDetailScan.status === "CLAIMED" ? (
+                    <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-[10.5px] font-black border border-blue-300">
+                      Sudah Diambil
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10.5px] font-black border border-emerald-300">
+                      Tersedia (Belum Diambil)
+                    </span>
+                  )}
+                </div>
+
+                {/* Hero Scannable Barcode / QR Code Card */}
+                <div className="p-5 rounded-3xl bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-teal-500/10 border border-teal-200 text-center space-y-3 relative overflow-hidden">
+                  <span className="text-[11px] font-extrabold text-[#0FA89B] uppercase tracking-wider block">
+                    Kode Barcode / QR Code Klaim MBG
+                  </span>
+                  
+                  <div className="inline-block p-3.5 bg-white rounded-2xl border border-teal-200 shadow-md">
+                    <QRCodeSVG
+                      value={JSON.stringify({
+                        claimId: selectedDetailScan.claimId || selectedDetailScan.scanId || selectedDetailScan.id,
+                        beneficiary: { name: userName, email: citizenUser?.email || "-", district: userDistrict },
+                        menu: { name: selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal" }
+                      })}
+                      size={175}
+                      level="M"
+                    />
+                  </div>
+
+                  <p className="text-[11px] text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
+                    Tunjukkan kode QR ini kepada Petugas SPPG Kec. {userDistrict} untuk validasi penyerahan porsi makanan.
+                  </p>
+                </div>
+
+                {/* Recommended Menu & Nutrition */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
+                      Rekomendasi Menu Gizi AI
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
+                      {selectedDetailScan.recommendedMenu?.akgPercentage || 50}% AKG
+                    </span>
+                  </div>
+                  <h4 className="text-[14px] font-black text-slate-800">
+                    {selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening"}
+                  </h4>
+                  <div className="grid grid-cols-3 gap-2 text-center pt-1">
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[9px] font-bold text-slate-400 block">KALORI</span>
+                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.calories || 680} kkal</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[9px] font-bold text-slate-400 block">PROTEIN</span>
+                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.proteinGram || 31} g</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[9px] font-bold text-slate-400 block">ZAT BESI</span>
+                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.ironMg || 6} mg</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4 Biometric Azure Photo Thumbnails */}
+                <div className="space-y-2">
+                  <span className="text-[11px] font-extrabold text-slate-600 block">Bukti Foto Biometrik Azure</span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { label: "Wajah", url: selectedDetailScan.photos?.faceBase64 || selectedDetailScan.blobUrls?.faceBlobUrl, icon: "👤" },
+                      { label: "Mata", url: selectedDetailScan.photos?.eyeBase64 || selectedDetailScan.blobUrls?.eyeBlobUrl, icon: "👁️" },
+                      { label: "Tangan", url: selectedDetailScan.photos?.handBase64 || selectedDetailScan.blobUrls?.handBlobUrl, icon: "✋" },
+                      { label: "Kuku", url: selectedDetailScan.photos?.nailBase64 || selectedDetailScan.blobUrls?.nailBlobUrl, icon: "💅" },
+                    ].map((p, i) => (
+                      <div key={i} className="space-y-1 text-center">
+                        <div
+                          onClick={() => {
+                            if (p.url) {
+                              setPreviewHistoryPhoto({ url: p.url, title: `Foto ${p.label} Biometrik` });
+                            }
+                          }}
+                          className={`w-full aspect-square rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${p.url ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""}`}
+                        >
+                          {p.url ? (
+                            <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                          ) : (
+                            <span className="text-base">{p.icon}</span>
+                          )}
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-600 block">{p.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer Action */}
+              <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-end">
+                <button
+                  type="button"
+                  onClick={() => setSelectedDetailScan(null)}
+                  className="px-5 py-2.5 rounded-xl bg-[#0FA89B] text-white font-bold text-[12px] shadow-sm hover:bg-[#0c877c] cursor-pointer transition-colors"
+                >
+                  Selesai &amp; Tutup
+                </button>
               </div>
             </motion.div>
           </div>
