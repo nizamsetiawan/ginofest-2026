@@ -10,6 +10,7 @@ import {
 import {
   fetchHelpQA,
   HelpQA,
+  fetchSettings,
   fetchHelpChatHistory,
   saveHelpChatMessage,
   clearHelpChatHistory,
@@ -194,6 +195,92 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     saveHelpChatMessage({ sender: "bot", text: botMsg.text });
   };
 
+  // Call Gemini AI Assistant for freeform user questions
+  const askGeminiAiAssistant = async (userQuery: string): Promise<string> => {
+    try {
+      let apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
+      if (!apiKey) {
+        const settingsRes = await fetchSettings();
+        if (settingsRes.success && settingsRes.data?.geminiApiKey) {
+          apiKey = settingsRes.data.geminiApiKey;
+        }
+      }
+
+      if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY") {
+        throw new Error("No Gemini API Key");
+      }
+
+      const systemPrompt = `Anda adalah "K-Bot", asisten AI resmi Layanan Nutrisi Kcal, Skrining Biometrik, & Program Makan Bergizi Gratis (MBG) Kecamatan ${citizenUser?.district || "Kebomas"}, Kabupaten Gresik.
+Tugas Anda: Menjawab pertanyaan dari warga/orang tua siswa mengenai stunting, gizi anak, skrining biometrik, makanan bergizi, atau penggunaan aplikasi GSCAN/Kcal.
+
+Instruksi Penting:
+1. Berikan jawaban yang **singkat, jelas, ramah, sederhana, dan mudah dipahami** oleh warga awam/orang tua.
+2. Jangan menggunakan penjelasan medis/teknis yang terlalu rumit. Gunakan bahasa Indonesia yang santun dan informatif.
+3. Jika pertanyaan tentang stunting (misal: "apa yang kamu ketahui tentang stunting"), jelaskan stunting secara simpel: bahwa stunting adalah kondisi anak lebih pendek dari standar usianya akibat kurang gizi kronis, serta berikan poin pencegahannya (gizi seimbang, telur, ikan bandeng/kupang lokal, daun kelor, imunisasi, & penimbangan rutin).
+4. Jika pengguna menyapa (misal: "halo", "hai"), sapa kembali dengan hangat.
+5. Jika pengguna ingin lapor komplain, ingatkan ketik /komplain.
+
+PERTANYAAN WARGA: "${userQuery}"
+
+Berikan jawaban simpel dan ramah (maksimal 2-3 paragraf ringkas).`;
+
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const response = await fetch(geminiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: systemPrompt }] }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 600,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (replyText && replyText.trim()) {
+          return replyText.trim();
+        }
+      }
+
+      // Fallback endpoint
+      const gemini2Url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+      const resp2 = await fetch(gemini2Url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: systemPrompt }] }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 600,
+          },
+        }),
+      });
+
+      if (resp2.ok) {
+        const data2 = await resp2.json();
+        const replyText2 = data2?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (replyText2 && replyText2.trim()) {
+          return replyText2.trim();
+        }
+      }
+
+      throw new Error("Empty Gemini response");
+    } catch (err) {
+      console.warn("Gemini API call fallback:", err);
+      const lower = userQuery.toLowerCase();
+      if (lower.includes("stunting")) {
+        return "Stunting adalah kondisi tumbuh kembang anak yang terhambat akibat kekurangan gizi kronis dalam waktu lama, sehingga tinggi badan anak lebih pendek dari usianya.\n\nPencegahan Utama:\n1. Asupan gizi seimbang (lauk protein hewani seperti ikan bandeng, telur, kupang lokal).\n2. Rutin menimbang BB & TB anak.\n3. Akses air bersih & sanitasi lingkungan yang sehat.";
+      }
+      if (lower.includes("gizi") || lower.includes("makanan") || lower.includes("nutrisi")) {
+        return "Kebutuhan gizi anak terdiri dari 5 komponen utama (5 Bintang): Karbohidrat, Protein Hewani, Nabati, Sayur, dan Buah. Asupan nutrisi lokal yang kaya zat besi Fe & protein hewani efektif menjaga kesehatan dan mendukung prestasi belajar siswa.";
+      }
+      return `Terima kasih atas pertanyaan Anda mengenai "${userQuery}". Asisten AI Kcal siap membantu memberikan informasi seputar kesehatan dan gizi anak di Kecamatan ${citizenUser?.district || "Kebomas"}. Ketik "/" untuk melihat pilihan topik bantuan!`;
+    }
+  };
+
   // Send Custom Freeform Message or AI Response
   const handleSendMessage = async (textToSend?: string) => {
     const query = (textToSend || inputText).trim();
@@ -245,51 +332,19 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
       return;
     }
 
-    // Keyword Search Fallback
-    const partialMatch = qaData.find(
-      (q) =>
-        queryLower.includes(q.command.replace("/", "")) ||
-        queryLower.includes(q.category.toLowerCase()) ||
-        q.question.toLowerCase().includes(queryLower)
-    );
+    // Call Gemini AI for freeform prompt
+    const aiAnswer = await askGeminiAiAssistant(query);
 
-    if (partialMatch) {
-      setTimeout(() => {
-        const botMsg: ChatMsg = {
-          id: `bot_${Date.now()}`,
-          sender: "bot",
-          text: `[Topik: ${partialMatch.category}]\n${partialMatch.answer}`,
-        };
-        setMessages((prev) => [...prev, botMsg]);
-        saveHelpChatMessage({ sender: "bot", text: botMsg.text });
-        setIsTyping(false);
-      }, 600);
-      return;
-    }
+    const botMsg: ChatMsg = {
+      id: `bot_${Date.now()}`,
+      sender: "bot",
+      text: aiAnswer,
+      isAiGenerated: true,
+    };
 
-    // Freeform Intelligent Answer Fallback
-    setTimeout(() => {
-      let botAnswer = "";
-      if (queryLower.includes("mbg") || queryLower.includes("makanan") || queryLower.includes("menu")) {
-        botAnswer = `Menu MBG (Makan Bergizi Gratis) Kecamatan ${citizenUser?.district || "Kebomas"} dirancang khusus memenuhi standar 5 Bintang gizi anak sekolah & balita (Karbohidrat, Protein Hewani, Nabati, Sayur, Buah). Anda dapat mengecek status Dapur SPPG penyedia di halaman beranda.`;
-      } else if (queryLower.includes("skrining") || queryLower.includes("biometrik") || queryLower.includes("scan")) {
-        botAnswer = "Skrining Biometrik Kcal memanfaatkan kamera AI Azure Vision & Gemini untuk mengukur kecukupan gizi anak dari telapak tangan & ekspresi wajah. Pastikan pencahayaan cukup dan wajah anak pas di tengah lingkaran panduan.";
-      } else if (queryLower.includes("stunting") || queryLower.includes("zscore") || queryLower.includes("gizi")) {
-        botAnswer = "Penilaian status stunting mengacu pada baku Z-Score WHO (Tinggi Badan menurut Umur). Jika Z-Score < -2 SD, anak diprioritaskan menerima intervensi pangan kaya zat besi Fe & protein hewani lokal.";
-      } else {
-        botAnswer = `Terima kasih atas pertanyaan Anda mengenai "${query}". Informasi selengkapnya mengenai layanan Kcal Kecamatan ${citizenUser?.district || "Kebomas"} telah dicatat. Gunakan perintah "/" untuk memilih topik bantuan cepat atau ketik "/komplain" untuk menyampaikan masukan.`;
-      }
-
-      const botMsg: ChatMsg = {
-        id: `bot_${Date.now()}`,
-        sender: "bot",
-        text: botAnswer,
-        isAiGenerated: true,
-      };
-      setMessages((prev) => [...prev, botMsg]);
-      saveHelpChatMessage({ sender: "bot", text: botMsg.text, isAiGenerated: true });
-      setIsTyping(false);
-    }, 800);
+    setMessages((prev) => [...prev, botMsg]);
+    saveHelpChatMessage({ sender: "bot", text: botMsg.text, isAiGenerated: true });
+    setIsTyping(false);
   };
 
   // Submit Form Pengaduan to Firestore
