@@ -1861,7 +1861,7 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
             const docRef = doc(db, "gscan_articles", d.id);
             await setDoc(docRef, { imageUrl: serpUrl }, { merge: true }).catch(() => {});
           } else {
-            // Assign high-qualityUnsplash fallback based on category
+            // Assign high-quality Unsplash fallback based on category
             const categoryFallbacks: Record<string, string> = {
               "Pencegahan Stunting": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
               "Deteksi Dini AI": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80",
@@ -1871,6 +1871,8 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
               "Edukasi Nutrisi": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80",
             };
             art.imageUrl = categoryFallbacks[art.category] || "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80";
+            const docRef = doc(db, "gscan_articles", d.id);
+            await setDoc(docRef, { imageUrl: art.imageUrl }, { merge: true }).catch(() => {});
           }
         }
         return art;
