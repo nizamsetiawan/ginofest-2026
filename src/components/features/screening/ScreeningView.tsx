@@ -299,7 +299,7 @@ export const ScreeningView: React.FC = () => {
       porsi: decodedData.menu?.porsi || "1x Makan Siang",
       programName: decodedData.program?.name || "Ginofest 2026",
       verifiedAtIso: new Date().toISOString(),
-      verifiedBy: "Staf Pemkab Gresik",
+      verifiedBy: `Staf SPPG Kec. ${decodedData.beneficiary?.district || "Kebomas"}`,
       status: "VERIFIED",
     };
 

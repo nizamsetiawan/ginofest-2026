@@ -562,7 +562,7 @@ function sanitizeNotificationFields(title: string = "", description: string = ""
     .replace(/\(2026-8\)/g, "Agustus 2026")
     .replace(/2026-8/g, "Agustus 2026")
     .replace(/AI\s*Gemini\s*(&|\+|dan)?\s*RAG/gi, "")
-    .replace(/Dapur\s*SPPG\s*/gi, "")
+    .replace(/SPPG Pemkab Gresik/gi, "SPPG Kecamatan")
     .replace(/\s{2,}/g, " ")
     .trim();
 
@@ -571,9 +571,11 @@ function sanitizeNotificationFields(title: string = "", description: string = ""
     .replace(/menu rekomendasi AI Gemini & RAG Dapur SPPG/gi, "Menu rekomendasi makanan bergizi seimbang")
     .replace(/menu rekomendasi AI Gemini dan RAG/gi, "Menu rekomendasi makanan bergizi seimbang")
     .replace(/AI Gemini & RAG Dapur SPPG/gi, "Tim Nutrisi SPPG")
+    .replace(/Tim SPPG Pemkab Gresik/gi, "Tim SPPG Kecamatan")
+    .replace(/Staf SPPG Pemkab Gresik/gi, "Staf SPPG Kecamatan")
+    .replace(/SPPG Pemkab Gresik/gi, "SPPG Kecamatan")
     .replace(/AI Gemini/gi, "")
     .replace(/RAG/gi, "")
-    .replace(/Dapur SPPG/gi, "")
     .replace(/\s{2,}/g, " ")
     .trim();
 
@@ -1078,10 +1080,12 @@ export async function saveComplaintToFirestore(complaint: Omit<ComplaintRecord, 
     const targetEmail = (complaint.senderContact && complaint.senderContact.includes("@")) 
       ? complaint.senderContact.trim().toLowerCase() 
       : "";
+    const districtName = complaint.district ? complaint.district : "Kebomas";
+    const sppgLabel = `SPPG Kec. ${districtName}`;
 
     await addNotification({
       title: `Laporan Pengaduan #${autoTicketId} Dikirim`,
-      description: `Pengaduan Anda (${complaint.category || "MBG"}) telah diterima oleh Tim SPPG Pemkab Gresik dan sedang diproses.`,
+      description: `Pengaduan Anda (${complaint.category || "MBG"}) telah diterima oleh Tim ${sppgLabel} dan sedang diproses.`,
       category: "complaint",
       userEmail: targetEmail || "all",
     });
@@ -1211,6 +1215,8 @@ export async function updateComplaintStatusInFirestore(
       const targetEmail = (existingData.senderContact && existingData.senderContact.includes("@"))
         ? existingData.senderContact.trim().toLowerCase()
         : "";
+      const districtName = existingData.district || "Kebomas";
+      const sppgLabel = `SPPG Kec. ${districtName}`;
 
       const statusMap = {
         baru: "DITERIMA",
@@ -1218,11 +1224,11 @@ export async function updateComplaintStatusInFirestore(
         selesai: "SELESAI (DITINDAKLANJUTI)",
       };
       const statusText = statusMap[status] || "DIPERBARUI";
-      const notesText = responseNotes ? ` Catatan Petugas: "${responseNotes}"` : "";
+      const notesText = responseNotes ? ` Catatan ${sppgLabel}: "${responseNotes}"` : "";
 
       await addNotification({
         title: `Tanggapan Pengaduan #${ticketId}`,
-        description: `Status aduan Anda kini: ${statusText}.${notesText}`,
+        description: `Status aduan Anda kini: ${statusText} oleh Tim ${sppgLabel}.${notesText}`,
         category: "complaint",
         userEmail: targetEmail || "all",
       });
@@ -1264,10 +1270,13 @@ export async function recordQrClaimToFirestore(claim: Omit<QrClaimRecord, "id">)
       verifiedAtIso: claim.verifiedAtIso || new Date().toISOString(),
     });
 
+    const districtName = claim.district || "Kebomas";
+    const verifierLabel = claim.verifiedBy || `Staf SPPG Kec. ${districtName}`;
+
     const targetEmail = claim.beneficiaryEmail ? claim.beneficiaryEmail.trim().toLowerCase() : "";
     await addNotification({
       title: `Verifikasi Penyerahan Porsi MBG Sukses`,
-      description: `Klaim Porsi #${claim.claimId} (${claim.menuName}) telah berhasil diverifikasi oleh ${claim.verifiedBy || "Staf SPPG Pemkab Gresik"}. Selamat menikmati!`,
+      description: `Klaim Porsi #${claim.claimId} (${claim.menuName}) telah berhasil diverifikasi oleh ${verifierLabel}. Selamat menikmati!`,
       category: "mbg",
       userEmail: targetEmail || "all",
     });
