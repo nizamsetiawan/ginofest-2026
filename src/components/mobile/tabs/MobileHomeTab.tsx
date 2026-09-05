@@ -24,7 +24,8 @@ import {
   ThumbsUp,
   AlertCircle,
   Trash2,
-  CheckCheck
+  CheckCheck,
+  ArrowLeft
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -763,133 +764,162 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* ═══ MODAL 5: NOTIFIKASI APP (REALTIME FIRESTORE SYNC) ═══     */}
+      {/* ═══ FULL SCREEN PAGE: NOTIFIKASI APP (REALTIME FIRESTORE) ═══  */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {showNotificationModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[82vh] flex flex-col shadow-2xl overflow-hidden"
-            >
-              {/* Header */}
-              <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-[14px] font-black text-slate-800">Pemberitahuan</h3>
-                  {unreadNotifCount > 0 && (
-                    <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold border border-rose-200">
-                      {unreadNotifCount} Baru
-                    </span>
-                  )}
-                </div>
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 280 }}
+            className="fixed inset-0 z-50 bg-[#F8FAFC] flex flex-col h-full w-full overflow-hidden"
+          >
+            {/* Ambient Background Spectrum */}
+            <AuthSpectrumBackground />
 
-                <div className="flex items-center gap-2.5">
-                  {unreadNotifCount > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        triggerHaptic();
-                        markAllNotificationsRead(citizenUser?.email || "nizam@gmail.com");
-                      }}
-                      className="text-[10.5px] font-bold text-[#0FA89B] hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <CheckCheck className="w-3.5 h-3.5" />
-                      Dibaca Semua
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setShowNotificationModal(false)}
-                    className="w-7 h-7 rounded-full bg-slate-200/70 text-slate-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-slate-300/70 transition-colors"
-                  >
-                    ✕
-                  </button>
-                </div>
+            {/* 1. TOP NAVBAR / HEADER */}
+            <div className="bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic();
+                  setShowNotificationModal(false);
+                }}
+                className="flex items-center gap-1.5 text-slate-700 hover:text-slate-900 font-extrabold text-[13px] active:scale-95 transition-all cursor-pointer bg-slate-100/80 hover:bg-slate-200/80 px-3 py-1.5 rounded-full"
+              >
+                <ArrowLeft className="w-4 h-4 text-slate-700 stroke-[2.5]" />
+                <span>Kembali</span>
+              </button>
+
+              <div className="text-center min-w-0 px-2">
+                <h2 className="text-[15px] font-black text-slate-800 tracking-tight leading-tight">
+                  Pemberitahuan
+                </h2>
+                <p className="text-[10px] text-slate-500 font-bold truncate">
+                  Kec. {userDistrict}
+                </p>
               </div>
 
-              {/* Notification List */}
-              <div className="p-4 space-y-2.5 overflow-y-auto max-h-[62vh]">
-                {isLoadingNotifs ? (
-                  <div className="py-8 text-center text-slate-400 text-xs font-medium space-y-2">
-                    <div className="w-5 h-5 border-2 border-[#0FA89B] border-t-transparent rounded-full animate-spin mx-auto" />
-                    <p>Menghubungkan ke Database Firestore...</p>
+              <div className="flex items-center justify-end min-w-[70px]">
+                {unreadNotifCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic();
+                      markAllNotificationsRead(citizenUser?.email || "nizam@gmail.com");
+                    }}
+                    className="text-[11px] font-extrabold text-[#0FA89B] hover:text-[#0c877c] flex items-center gap-1 cursor-pointer bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/80"
+                  >
+                    <CheckCheck className="w-3.5 h-3.5" />
+                    <span>Dibaca</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* 2. SUB-HEADER BANNER */}
+            <div className="bg-slate-100/70 border-b border-slate-200/60 px-4 py-2.5 flex items-center justify-between text-[11px] font-bold text-slate-600">
+              <div className="flex items-center gap-2">
+                <Bell className="w-4 h-4 text-[#0FA89B]" />
+                <span>Kotak Masuk Notifikasi</span>
+              </div>
+              <span className="bg-white px-2.5 py-0.5 rounded-full border border-slate-200 text-[10px] text-slate-500 font-black">
+                {notifications.length} Pesan ({unreadNotifCount} Baru)
+              </span>
+            </div>
+
+            {/* 3. FULL SCROLLABLE NOTIFICATION LIST */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 max-w-md mx-auto w-full pb-24 relative z-10">
+              {isLoadingNotifs ? (
+                <div className="py-16 text-center text-slate-400 text-xs font-medium space-y-3">
+                  <div className="w-6 h-6 border-2 border-[#0FA89B] border-t-transparent rounded-full animate-spin mx-auto" />
+                  <p className="font-bold">Menghubungkan ke Database Firestore...</p>
+                </div>
+              ) : notifications.length === 0 ? (
+                <div className="py-20 text-center space-y-3 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                    <Bell className="w-6 h-6 stroke-[1.8]" />
                   </div>
-                ) : notifications.length === 0 ? (
-                  <div className="py-10 text-center space-y-2">
-                    <Bell className="w-8 h-8 text-slate-300 mx-auto" />
-                    <p className="text-xs font-bold text-slate-600">Belum ada notifikasi</p>
-                    <p className="text-[11px] text-slate-400">Pemberitahuan resmi dan status gizi akan tampil di sini.</p>
+                  <div>
+                    <h3 className="text-sm font-black text-slate-800">Belum Ada Notifikasi</h3>
+                    <p className="text-[11.5px] text-slate-500 font-medium mt-1">
+                      Pemberitahuan resmi dapur SPPG, pembaruan menu MBG, dan status skrining gizi anak akan otomatis tersimpan di sini.
+                    </p>
                   </div>
-                ) : (
-                  notifications.map((notif) => (
-                    <div
-                      key={notif.id}
-                      onClick={() => {
-                        if (!notif.isRead) {
-                          markNotificationRead(notif.id, citizenUser?.email || "nizam@gmail.com");
-                        }
-                      }}
-                      className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative space-y-1.5 ${
-                        notif.isRead
-                          ? "bg-slate-50/70 border-slate-200/80 opacity-80"
-                          : "bg-white border-[#0FA89B]/35 shadow-xs hover:border-[#0FA89B]"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          {!notif.isRead && (
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#0FA89B] shrink-0" />
-                          )}
-                          <span
-                            className={`text-[9.5px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                              notif.category === "mbg"
-                                ? "bg-amber-50 text-amber-700 border border-amber-200"
-                                : notif.category === "screening"
-                                ? "bg-teal-50 text-teal-700 border border-teal-200"
-                                : "bg-sky-50 text-sky-700 border border-sky-200"
-                            }`}
-                          >
-                            {notif.category || "sistem"}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-[9.5px] text-slate-400 font-medium">
-                            {notif.createdAtIso
-                              ? new Date(notif.createdAtIso).toLocaleTimeString("id-ID", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }) + " WIB"
-                              : "Baru saja"}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              triggerHaptic();
-                              deleteNotification(notif.id);
-                            }}
-                            className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer"
-                            title="Hapus Notifikasi"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
+                </div>
+              ) : (
+                notifications.map((notif) => (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    key={notif.id}
+                    onClick={() => {
+                      if (!notif.isRead) {
+                        markNotificationRead(notif.id, citizenUser?.email || "nizam@gmail.com");
+                      }
+                    }}
+                    className={`p-4 rounded-3xl border transition-all cursor-pointer relative space-y-2 shadow-2xs ${
+                      notif.isRead
+                        ? "bg-white/80 border-slate-200/90 opacity-85"
+                        : "bg-white border-[#0FA89B]/40 shadow-sm hover:border-[#0FA89B] ring-1 ring-[#0FA89B]/20"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {!notif.isRead && (
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#0FA89B] shrink-0 animate-pulse" />
+                        )}
+                        <span
+                          className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+                            notif.category === "mbg"
+                              ? "bg-amber-50 text-amber-800 border border-amber-200/80"
+                              : notif.category === "screening"
+                              ? "bg-teal-50 text-teal-800 border border-teal-200/80"
+                              : "bg-sky-50 text-sky-800 border border-sky-200/80"
+                          }`}
+                        >
+                          {notif.category || "sistem"}
+                        </span>
                       </div>
 
-                      <p className="text-[12px] font-black text-slate-800 leading-snug">
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] text-slate-400 font-bold">
+                          {notif.createdAtIso
+                            ? new Date(notif.createdAtIso).toLocaleTimeString("id-ID", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }) + " WIB"
+                            : "Baru saja"}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            triggerHaptic();
+                            deleteNotification(notif.id);
+                          }}
+                          className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
+                          title="Hapus Notifikasi"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-[13px] font-black text-slate-800 leading-snug">
                         {notif.title}
-                      </p>
-                      <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                      </h4>
+                      <p className="text-[11.5px] text-slate-600 leading-relaxed font-medium mt-1">
                         {notif.description}
                       </p>
                     </div>
-                  ))
-                )}
-              </div>
-            </motion.div>
-          </div>
+                  </motion.div>
+                ))
+              )}
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </Page>
