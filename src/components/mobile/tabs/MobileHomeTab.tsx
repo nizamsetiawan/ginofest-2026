@@ -294,11 +294,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       {/* ══════════════════════════════════════════════════════════════ */}
       <div className="space-y-3 pt-1 relative z-10">
         <div className="flex items-center justify-between px-0.5">
-          <h2 className="text-[12px] font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#0FA89B]" />
-            <span>Layanan &amp; Fitur Utama</span>
+          <h2 className="text-[12px] font-black text-slate-800 uppercase tracking-wider">
+            Layanan &amp; Fitur Utama
           </h2>
-          <span className="text-[10px] font-extrabold text-[#0FA89B] bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-100">
+          <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
             3 Menu Pilihan
           </span>
         </div>
@@ -333,11 +332,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               </span>
             </div>
 
-            <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/90 text-[11px] font-extrabold text-[#0FA89B]">
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#0FA89B]" />
-                <span>Lihat Rekam Skrining &amp; Menu RAG</span>
-              </span>
+            <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/90 text-[11px] font-bold text-[#0FA89B]">
+              <span>Lihat Rekam Skrining &amp; Rekomendasi RAG</span>
               <ChevronRight className="w-4 h-4 text-[#0FA89B] group-hover:translate-x-0.5 transition-transform" />
             </div>
           </button>

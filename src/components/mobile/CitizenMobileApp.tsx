@@ -192,7 +192,7 @@ export const CitizenMobileApp: React.FC = () => {
       if (savedTab) {
         setActiveTab(savedTab);
       }
-    } catch {}
+    } catch { }
   }, []);
 
   // Sync state changes to storage
@@ -312,7 +312,7 @@ export const CitizenMobileApp: React.FC = () => {
         localStorage.removeItem("kcal_active_citizen_user");
         localStorage.removeItem("kcal_citizen_session_id");
         sessionStorage.removeItem("kcal_citizen_screen");
-      } catch {}
+      } catch { }
       setCitizenUser(null);
       setSessionRevokedModal(true);
     });
@@ -367,7 +367,7 @@ export const CitizenMobileApp: React.FC = () => {
           ...p,
           notification: perm === "granted" ? "granted" : "denied"
         }));
-      } catch {}
+      } catch { }
     }
 
     localStorage.setItem("kcal_permissions_dialog_handled", "true");
@@ -397,7 +397,7 @@ export const CitizenMobileApp: React.FC = () => {
           setRememberMe(true);
         }
       }
-    } catch {}
+    } catch { }
     setCitizenUser(null);
     setCurrentScreen("login");
   };
@@ -456,7 +456,7 @@ export const CitizenMobileApp: React.FC = () => {
         } else {
           localStorage.removeItem("kcal_citizen_remembered_credentials");
         }
-      } catch {}
+      } catch { }
       setCurrentScreen("main");
     } else {
       const errMsg = res.error || "Gagal masuk. Silakan periksa kembali email dan kata sandi Anda.";
@@ -610,7 +610,7 @@ export const CitizenMobileApp: React.FC = () => {
             rememberMe: true,
           }));
         }
-      } catch {}
+      } catch { }
 
       setTimeout(() => {
         setResetSuccessMsg("");
@@ -676,7 +676,7 @@ export const CitizenMobileApp: React.FC = () => {
       setPullY(45);
 
       if (typeof navigator !== "undefined" && navigator.vibrate) {
-        try { navigator.vibrate(20); } catch {}
+        try { navigator.vibrate(20); } catch { }
       }
 
       try {
@@ -695,7 +695,7 @@ export const CitizenMobileApp: React.FC = () => {
             sessionStorage.setItem("kcal_client_build_id", data.buildId);
           }
         }
-      } catch {}
+      } catch { }
 
       await new Promise((resolve) => setTimeout(resolve, 400));
       setIsPullRefreshing(false);
@@ -804,374 +804,370 @@ export const CitizenMobileApp: React.FC = () => {
           </div>
           <div className="space-y-1">
             <h3 className="text-[17px] font-bold text-white">Memperbarui Aplikasi Kcal...</h3>
-            <p className="text-[12px] text-blue-gray">Sinkronisasi versi terbaru dari server Pemkab Gresik</p>
+            <p className="text-[12px] text-blue-gray">Sinkronisasi versi terbaru dari server</p>
           </div>
         </div>
       )}
 
       {/* ═══ SMARTPHONE SCREEN SHELL FRAME (LOCKED FULL VIEWPORT ON MOBILE) ═══ */}
-      <div 
+      <div
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         className="w-full h-full sm:h-[840px] sm:max-h-[92vh] sm:max-w-[400px] bg-white sm:rounded-[36px] shadow-2xl flex flex-col justify-between overflow-hidden relative border-0 sm:border-[7px] sm:border-slate-800 select-none touch-pan-y"
       >
         <KonstaApp theme={konstaTheme} safeAreas={false} className="w-full max-w-full h-full flex flex-col justify-between overflow-hidden relative">
-        {/* Dynamic Floating Transparent Pull-to-Refresh Pill Overlay (Never pushes layout) */}
-        {pullY > 0 && (
-          <div
-            style={{
-              transform: `translate(-50%, ${Math.min(pullY * 0.75, 42)}px)`,
-              opacity: Math.min(pullY / 25, 1),
-            }}
-            className="absolute top-1 left-1/2 z-50 pointer-events-none transition-all duration-75 ease-out"
-          >
-            <div className="px-3.5 py-1.5 rounded-full bg-slate-900/75 backdrop-blur-xl border border-white/20 text-white shadow-2xl flex items-center gap-2 text-[11px] font-bold">
-              <RefreshCw
-                className={`w-3.5 h-3.5 text-green-02 ${isPullRefreshing ? "animate-spin" : ""}`}
-                style={{
-                  transform: isPullRefreshing ? undefined : `rotate(${pullY * 6}deg)`,
-                }}
-              />
-              <span className="tracking-tight text-slate-100">
-                {isPullRefreshing
-                  ? "Memperbarui..."
-                  : pullY >= 45
-                  ? "Lepas untuk Segarkan"
-                  : "Tarik untuk Segarkan"}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* ═══ SCREEN ROUTER WITH FRAMER MOTION TRANSITIONS ═══ */}
-        <AnimatePresence mode="wait" initial={false}>
-          {/* 1. SPLASH SCREEN */}
-          {currentScreen === "splash" && (
-            <motion.div
-              key="splash"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.04 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="h-full w-full"
+          {/* Dynamic Floating Transparent Pull-to-Refresh Pill Overlay (Never pushes layout) */}
+          {pullY > 0 && (
+            <div
+              style={{
+                transform: `translate(-50%, ${Math.min(pullY * 0.75, 42)}px)`,
+                opacity: Math.min(pullY / 25, 1),
+              }}
+              className="absolute top-1 left-1/2 z-50 pointer-events-none transition-all duration-75 ease-out"
             >
-              <MobileSplashScreen
-                onContinue={() => setCurrentScreen("onboarding")}
-              />
-            </motion.div>
-          )}
-
-          {/* 2. ONBOARDING SCREEN */}
-          {currentScreen === "onboarding" && (
-            <motion.div
-              key="onboarding"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="h-full w-full"
-            >
-              <MobileOnboardingScreen
-                onSkip={() => setCurrentScreen("login")}
-                onFinish={() => setCurrentScreen("login")}
-              />
-            </motion.div>
-          )}
-
-          {/* 3. LOGIN SCREEN */}
-          {currentScreen === "login" && (
-            <motion.div
-              key="login"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="h-full w-full"
-            >
-              <MobileLoginScreen
-                loginIdentifier={loginIdentifier}
-                setLoginIdentifier={setLoginIdentifier}
-                loginPassword={loginPassword}
-                setLoginPassword={setLoginPassword}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                rememberMe={rememberMe}
-                setRememberMe={setRememberMe}
-                agreePrivacy={agreePrivacy}
-                setAgreePrivacy={setAgreePrivacy}
-                fieldErrors={fieldErrors}
-                setFieldErrors={setFieldErrors}
-                isSubmittingAuth={isSubmittingAuth}
-                authError={authError}
-                authSuccessSnackbar={authSuccessSnackbar}
-                isStandalone={isStandalone}
-                onInstallPWA={handleInstallPWA}
-                onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
-                onLogin={handleLogin}
-                onNavigateToRegister={() => {
-                  setAuthError("");
-                  setFieldErrors({});
-                  setCurrentScreen("register");
-                }}
-                onNavigateToForgotPassword={() => {
-                  setAuthError("");
-                  setFieldErrors({});
-                  setResetErrorMsg("");
-                  setResetSuccessMsg("");
-                  setForgotStep(1);
-                  setCurrentScreen("forgot_password");
-                }}
-              />
-            </motion.div>
-          )}
-
-          {/* 4. REGISTER SCREEN */}
-          {currentScreen === "register" && (
-            <motion.div
-              key="register"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="h-full w-full"
-            >
-              <MobileRegisterScreen
-                regFullName={regFullName}
-                setRegFullName={setRegFullName}
-                regEmail={regEmail}
-                setRegEmail={setRegEmail}
-                regDistrict={regDistrict}
-                setRegDistrict={setRegDistrict}
-                regAge={regAge}
-                setRegAge={setRegAge}
-                regPassword={regPassword}
-                setRegPassword={setRegPassword}
-                showRegPassword={showRegPassword}
-                setShowRegPassword={setShowRegPassword}
-                fieldErrors={fieldErrors}
-                setFieldErrors={setFieldErrors}
-                authError={authError}
-                setAuthError={setAuthError}
-                isSubmittingAuth={isSubmittingAuth}
-                onRegister={handleRegister}
-                onNavigateToLogin={() => {
-                  setAuthError("");
-                  setFieldErrors({});
-                  setCurrentScreen("login");
-                }}
-              />
-            </motion.div>
-          )}
-
-          {/* 5. FORGOT PASSWORD SCREEN */}
-          {currentScreen === "forgot_password" && (
-            <motion.div
-              key="forgot_password"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="h-full w-full"
-            >
-              <MobileForgotPasswordScreen
-                forgotStep={forgotStep}
-                setForgotStep={setForgotStep}
-                forgotEmail={forgotEmail}
-                setForgotEmail={setForgotEmail}
-                inputOtp={inputOtp}
-                setInputOtp={setInputOtp}
-                otpResendCountdown={otpResendCountdown}
-                forgotNewPassword={forgotNewPassword}
-                setForgotNewPassword={setForgotNewPassword}
-                forgotConfirmPassword={forgotConfirmPassword}
-                setForgotConfirmPassword={setForgotConfirmPassword}
-                showForgotPass={showForgotPass}
-                setShowForgotPass={setShowForgotPass}
-                showForgotConfirmPass={showForgotConfirmPass}
-                setShowForgotConfirmPass={setShowForgotConfirmPass}
-                isResettingPassword={isResettingPassword}
-                resetSuccessMsg={resetSuccessMsg}
-                setResetSuccessMsg={setResetSuccessMsg}
-                resetErrorMsg={resetErrorMsg}
-                setResetErrorMsg={setResetErrorMsg}
-                simulatedEmailNotification={simulatedEmailNotification}
-                setSimulatedEmailNotification={setSimulatedEmailNotification}
-                onSendOtp={handleSendOtp}
-                onVerifyOtp={handleVerifyOtp}
-                onSaveNewPassword={handleSaveNewPassword}
-                onNavigateToLogin={() => {
-                  setResetErrorMsg("");
-                  setResetSuccessMsg("");
-                  setCurrentScreen("login");
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ═══ 6. MAIN LOGGED-IN PORTAL ═══ */}
-        {currentScreen === "main" && (
-          <div className="flex-1 min-h-0 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
-            {/* Main Tab Views with Konsta Page handling scroll & padding with Motion transition */}
-            <main
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              className="flex-1 font-sans no-scrollbar w-full max-w-full overflow-hidden touch-pan-y min-h-0 p-0 m-0 h-full relative"
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {activeTab === "home" && (
-                  <motion.div
-                    key="home"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={{ duration: 0.18, ease: "easeInOut" }}
-                    className="h-full w-full"
-                  >
-                    <MobileHomeTab
-                      citizenUser={citizenUser}
-                      atmosphere={atmosphere}
-                      setActiveTab={setActiveTab}
-                    />
-                  </motion.div>
-                )}
-
-                {activeTab === "screening" && (
-                  <motion.div
-                    key="screening"
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 15 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                    className="h-full w-full"
-                  >
-                    <MobileScreeningTab
-                      citizenUser={citizenUser}
-                      onBackToHome={() => setActiveTab("home")}
-                    />
-                  </motion.div>
-                )}
-
-                {activeTab === "profile" && (
-                  <motion.div
-                    key="profile"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.18, ease: "easeInOut" }}
-                    className="h-full w-full"
-                  >
-                    <MobileProfileTab
-                      citizenUser={citizenUser}
-                      setActiveTab={setActiveTab}
-                      onLogout={handleCitizenLogout}
-                      onUpdateDistrict={handleUpdateDistrict}
-                      onUpdateProfile={handleUpdateProfile}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </main>
-
-            {/* ═══ CLEAN 3-TAB NAVIGATION BAR (MATCHING examplebottom.svg - UNCLIPPED FLOATING HUB) ═══ */}
-            {activeTab !== "screening" && (
-              <div className="left-0 bottom-0 fixed z-40 w-full select-none">
-                {/* Center Floating Button Layer (Super Prominent 64px AI Hub) */}
-                <div className="absolute left-1/2 -top-8 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto">
-                  <button
-                    type="button"
-                    onClick={handleOpenScreeningWithPermission}
-                    className="relative group cursor-pointer active:scale-90 transition-transform duration-200"
-                    title="Mulai Analisis Biometrik AI"
-                  >
-                    {/* Breathing Outer Radiant Glow */}
-                    <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-[#24E0D1] via-[#79D7D2] to-[#0FA89B] opacity-50 blur-md group-hover:opacity-85 transition-opacity animate-pulse" />
-
-                    {/* Circular Floating 64px Mega Hub */}
-                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-tr from-[#0FA89B] via-[#24E0D1] to-[#A3EDE7] text-ford-blue flex items-center justify-center shadow-[0_10px_30px_rgba(15,168,155,0.5)] border-[4px] border-white">
-                      <Activity className="w-8 h-8 stroke-[2.8] text-ford-blue drop-shadow-xs" />
-
-                      {/* Floating Mini AI Badge */}
-                      <span className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-brand-orange text-white text-[8px] font-black tracking-wider shadow-sm border border-white uppercase">
-                        AI
-                      </span>
-                    </div>
-                  </button>
-                </div>
-
-                {/* Main White Elevated Bar */}
-                <div className="bg-white/98 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.05)] pt-2 pb-safe-nav flex items-center justify-around relative px-4 min-h-[62px]">
-                  {/* 1. Beranda */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                      setActiveTab("home");
-                    }}
-                    className="flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all cursor-pointer"
-                  >
-                    <Home
-                      className={`w-6 h-6 transition-all duration-200 ${
-                        activeTab === "home"
-                          ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
-                          : "text-[#B1B5C7]"
-                      }`}
-                    />
-                    <span
-                      className={`text-[11px] tracking-tight transition-colors duration-200 ${
-                        activeTab === "home"
-                          ? "font-bold text-[#79D7D2]"
-                          : "font-medium text-[#B1B5C7]"
-                      }`}
-                    >
-                      Beranda
-                    </span>
-                  </button>
-
-                  {/* 2. Analisis Center Spacer & Bold Label */}
-                  <button
-                    type="button"
-                    onClick={handleOpenScreeningWithPermission}
-                    className="flex flex-col items-center justify-center w-20 pt-8 transition-all cursor-pointer"
-                  >
-                    <span className="text-[11.5px] font-black text-[#0FA89B] tracking-tight drop-shadow-2xs">
-                      Analisis AI
-                    </span>
-                  </button>
-
-                  {/* 3. Profil */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                      setActiveTab("profile");
-                    }}
-                    className="flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all cursor-pointer"
-                  >
-                    <User
-                      className={`w-6 h-6 transition-all duration-200 ${
-                        activeTab === "profile"
-                          ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
-                          : "text-[#B1B5C7]"
-                      }`}
-                    />
-                    <span
-                      className={`text-[11px] tracking-tight transition-colors duration-200 ${
-                        activeTab === "profile"
-                          ? "font-bold text-[#79D7D2]"
-                          : "font-medium text-[#B1B5C7]"
-                      }`}
-                    >
-                      Profil
-                    </span>
-                  </button>
-                </div>
+              <div className="px-3.5 py-1.5 rounded-full bg-slate-900/75 backdrop-blur-xl border border-white/20 text-white shadow-2xl flex items-center gap-2 text-[11px] font-bold">
+                <RefreshCw
+                  className={`w-3.5 h-3.5 text-green-02 ${isPullRefreshing ? "animate-spin" : ""}`}
+                  style={{
+                    transform: isPullRefreshing ? undefined : `rotate(${pullY * 6}deg)`,
+                  }}
+                />
+                <span className="tracking-tight text-slate-100">
+                  {isPullRefreshing
+                    ? "Memperbarui..."
+                    : pullY >= 45
+                      ? "Lepas untuk Segarkan"
+                      : "Tarik untuk Segarkan"}
+                </span>
               </div>
+            </div>
+          )}
+
+          {/* ═══ SCREEN ROUTER WITH FRAMER MOTION TRANSITIONS ═══ */}
+          <AnimatePresence mode="wait" initial={false}>
+            {/* 1. SPLASH SCREEN */}
+            {currentScreen === "splash" && (
+              <motion.div
+                key="splash"
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.04 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="h-full w-full"
+              >
+                <MobileSplashScreen
+                  onContinue={() => setCurrentScreen("onboarding")}
+                />
+              </motion.div>
             )}
-          </div>
-        )}
+
+            {/* 2. ONBOARDING SCREEN */}
+            {currentScreen === "onboarding" && (
+              <motion.div
+                key="onboarding"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="h-full w-full"
+              >
+                <MobileOnboardingScreen
+                  onSkip={() => setCurrentScreen("login")}
+                  onFinish={() => setCurrentScreen("login")}
+                />
+              </motion.div>
+            )}
+
+            {/* 3. LOGIN SCREEN */}
+            {currentScreen === "login" && (
+              <motion.div
+                key="login"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="h-full w-full"
+              >
+                <MobileLoginScreen
+                  loginIdentifier={loginIdentifier}
+                  setLoginIdentifier={setLoginIdentifier}
+                  loginPassword={loginPassword}
+                  setLoginPassword={setLoginPassword}
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                  rememberMe={rememberMe}
+                  setRememberMe={setRememberMe}
+                  agreePrivacy={agreePrivacy}
+                  setAgreePrivacy={setAgreePrivacy}
+                  fieldErrors={fieldErrors}
+                  setFieldErrors={setFieldErrors}
+                  isSubmittingAuth={isSubmittingAuth}
+                  authError={authError}
+                  authSuccessSnackbar={authSuccessSnackbar}
+                  isStandalone={isStandalone}
+                  onInstallPWA={handleInstallPWA}
+                  onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
+                  onLogin={handleLogin}
+                  onNavigateToRegister={() => {
+                    setAuthError("");
+                    setFieldErrors({});
+                    setCurrentScreen("register");
+                  }}
+                  onNavigateToForgotPassword={() => {
+                    setAuthError("");
+                    setFieldErrors({});
+                    setResetErrorMsg("");
+                    setResetSuccessMsg("");
+                    setForgotStep(1);
+                    setCurrentScreen("forgot_password");
+                  }}
+                />
+              </motion.div>
+            )}
+
+            {/* 4. REGISTER SCREEN */}
+            {currentScreen === "register" && (
+              <motion.div
+                key="register"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="h-full w-full"
+              >
+                <MobileRegisterScreen
+                  regFullName={regFullName}
+                  setRegFullName={setRegFullName}
+                  regEmail={regEmail}
+                  setRegEmail={setRegEmail}
+                  regDistrict={regDistrict}
+                  setRegDistrict={setRegDistrict}
+                  regAge={regAge}
+                  setRegAge={setRegAge}
+                  regPassword={regPassword}
+                  setRegPassword={setRegPassword}
+                  showRegPassword={showRegPassword}
+                  setShowRegPassword={setShowRegPassword}
+                  fieldErrors={fieldErrors}
+                  setFieldErrors={setFieldErrors}
+                  authError={authError}
+                  setAuthError={setAuthError}
+                  isSubmittingAuth={isSubmittingAuth}
+                  onRegister={handleRegister}
+                  onNavigateToLogin={() => {
+                    setAuthError("");
+                    setFieldErrors({});
+                    setCurrentScreen("login");
+                  }}
+                />
+              </motion.div>
+            )}
+
+            {/* 5. FORGOT PASSWORD SCREEN */}
+            {currentScreen === "forgot_password" && (
+              <motion.div
+                key="forgot_password"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="h-full w-full"
+              >
+                <MobileForgotPasswordScreen
+                  forgotStep={forgotStep}
+                  setForgotStep={setForgotStep}
+                  forgotEmail={forgotEmail}
+                  setForgotEmail={setForgotEmail}
+                  inputOtp={inputOtp}
+                  setInputOtp={setInputOtp}
+                  otpResendCountdown={otpResendCountdown}
+                  forgotNewPassword={forgotNewPassword}
+                  setForgotNewPassword={setForgotNewPassword}
+                  forgotConfirmPassword={forgotConfirmPassword}
+                  setForgotConfirmPassword={setForgotConfirmPassword}
+                  showForgotPass={showForgotPass}
+                  setShowForgotPass={setShowForgotPass}
+                  showForgotConfirmPass={showForgotConfirmPass}
+                  setShowForgotConfirmPass={setShowForgotConfirmPass}
+                  isResettingPassword={isResettingPassword}
+                  resetSuccessMsg={resetSuccessMsg}
+                  setResetSuccessMsg={setResetSuccessMsg}
+                  resetErrorMsg={resetErrorMsg}
+                  setResetErrorMsg={setResetErrorMsg}
+                  simulatedEmailNotification={simulatedEmailNotification}
+                  setSimulatedEmailNotification={setSimulatedEmailNotification}
+                  onSendOtp={handleSendOtp}
+                  onVerifyOtp={handleVerifyOtp}
+                  onSaveNewPassword={handleSaveNewPassword}
+                  onNavigateToLogin={() => {
+                    setResetErrorMsg("");
+                    setResetSuccessMsg("");
+                    setCurrentScreen("login");
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* ═══ 6. MAIN LOGGED-IN PORTAL ═══ */}
+          {currentScreen === "main" && (
+            <div className="flex-1 min-h-0 flex flex-col bg-[#F8FAFC] h-full w-full overflow-hidden relative font-sans">
+              {/* Main Tab Views with Konsta Page handling scroll & padding with Motion transition */}
+              <main
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className="flex-1 font-sans no-scrollbar w-full max-w-full overflow-hidden touch-pan-y min-h-0 p-0 m-0 h-full relative"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {activeTab === "home" && (
+                    <motion.div
+                      key="home"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 10 }}
+                      transition={{ duration: 0.18, ease: "easeInOut" }}
+                      className="h-full w-full"
+                    >
+                      <MobileHomeTab
+                        citizenUser={citizenUser}
+                        atmosphere={atmosphere}
+                        setActiveTab={setActiveTab}
+                      />
+                    </motion.div>
+                  )}
+
+                  {activeTab === "screening" && (
+                    <motion.div
+                      key="screening"
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 15 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="h-full w-full"
+                    >
+                      <MobileScreeningTab
+                        citizenUser={citizenUser}
+                        onBackToHome={() => setActiveTab("home")}
+                      />
+                    </motion.div>
+                  )}
+
+                  {activeTab === "profile" && (
+                    <motion.div
+                      key="profile"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ duration: 0.18, ease: "easeInOut" }}
+                      className="h-full w-full"
+                    >
+                      <MobileProfileTab
+                        citizenUser={citizenUser}
+                        setActiveTab={setActiveTab}
+                        onLogout={handleCitizenLogout}
+                        onUpdateDistrict={handleUpdateDistrict}
+                        onUpdateProfile={handleUpdateProfile}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </main>
+
+              {/* ═══ CLEAN 3-TAB NAVIGATION BAR (MATCHING examplebottom.svg - UNCLIPPED FLOATING HUB) ═══ */}
+              {activeTab !== "screening" && (
+                <div className="left-0 bottom-0 fixed z-40 w-full select-none">
+                  {/* Center Floating Button Layer (Super Prominent 64px AI Hub) */}
+                  <div className="absolute left-1/2 -top-8 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto">
+                    <button
+                      type="button"
+                      onClick={handleOpenScreeningWithPermission}
+                      className="relative group cursor-pointer active:scale-90 transition-transform duration-200"
+                      title="Mulai Analisis Biometrik AI"
+                    >
+                      {/* Breathing Outer Radiant Glow */}
+                      <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-[#24E0D1] via-[#79D7D2] to-[#0FA89B] opacity-50 blur-md group-hover:opacity-85 transition-opacity animate-pulse" />
+
+                      {/* Circular Floating 64px Mega Hub */}
+                      <div className="relative w-16 h-16 rounded-full bg-gradient-to-tr from-[#0FA89B] via-[#24E0D1] to-[#A3EDE7] text-ford-blue flex items-center justify-center shadow-[0_10px_30px_rgba(15,168,155,0.5)] border-[4px] border-white">
+                        <Activity className="w-8 h-8 stroke-[2.8] text-ford-blue drop-shadow-xs" />
+
+                        {/* Floating Mini AI Badge */}
+                        <span className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-brand-orange text-white text-[8px] font-black tracking-wider shadow-sm border border-white uppercase">
+                          AI
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Main White Elevated Bar */}
+                  <div className="bg-white/98 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.05)] pt-2 pb-safe-nav flex items-center justify-around relative px-4 min-h-[62px]">
+                    {/* 1. Beranda */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                        setActiveTab("home");
+                      }}
+                      className="flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all cursor-pointer"
+                    >
+                      <Home
+                        className={`w-6 h-6 transition-all duration-200 ${activeTab === "home"
+                            ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
+                            : "text-[#B1B5C7]"
+                          }`}
+                      />
+                      <span
+                        className={`text-[11px] tracking-tight transition-colors duration-200 ${activeTab === "home"
+                            ? "font-bold text-[#79D7D2]"
+                            : "font-medium text-[#B1B5C7]"
+                          }`}
+                      >
+                        Beranda
+                      </span>
+                    </button>
+
+                    {/* 2. Analisis Center Spacer & Bold Label */}
+                    <button
+                      type="button"
+                      onClick={handleOpenScreeningWithPermission}
+                      className="flex flex-col items-center justify-center w-20 pt-8 transition-all cursor-pointer"
+                    >
+                      <span className="text-[11.5px] font-black text-[#0FA89B] tracking-tight drop-shadow-2xs">
+                        Analisis AI
+                      </span>
+                    </button>
+
+                    {/* 3. Profil */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                        setActiveTab("profile");
+                      }}
+                      className="flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all cursor-pointer"
+                    >
+                      <User
+                        className={`w-6 h-6 transition-all duration-200 ${activeTab === "profile"
+                            ? "text-[#79D7D2] drop-shadow-[0_2px_8px_rgba(121,215,210,0.45)] scale-105"
+                            : "text-[#B1B5C7]"
+                          }`}
+                      />
+                      <span
+                        className={`text-[11px] tracking-tight transition-colors duration-200 ${activeTab === "profile"
+                            ? "font-bold text-[#79D7D2]"
+                            : "font-medium text-[#B1B5C7]"
+                          }`}
+                      >
+                        Profil
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </KonstaApp>
       </div>
     </div>
