@@ -582,8 +582,13 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden font-sans"
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md h-[93vh] sm:h-auto max-h-[93vh] sm:max-h-[90vh] flex flex-col shadow-2xl overflow-hidden font-sans"
             >
+              {/* Top Mobile Drag Handle Pill */}
+              <div className="w-full flex justify-center pt-2.5 pb-1 sm:hidden shrink-0">
+                <div className="w-12 h-1 bg-slate-200 rounded-full" />
+              </div>
+
               {/* Header */}
               <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -735,8 +740,13 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-left"
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md h-[93vh] sm:h-auto max-h-[93vh] sm:max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-left"
             >
+              {/* Top Mobile Drag Handle Pill */}
+              <div className="w-full flex justify-center pt-2.5 pb-1 sm:hidden shrink-0">
+                <div className="w-12 h-1 bg-slate-200 rounded-full" />
+              </div>
+
               {/* Modal Header */}
               <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                 <div>
