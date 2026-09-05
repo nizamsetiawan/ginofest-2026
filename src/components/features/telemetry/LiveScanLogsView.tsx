@@ -245,20 +245,20 @@ export const LiveScanLogsView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5 font-mono select-none pb-12 bg-[#090D18] text-slate-100 p-4 sm:p-6 rounded-3xl border border-[#35CBC3]/30 shadow-[0_0_50px_rgba(53,203,195,0.08)]">
+    <div className="space-y-5 font-mono select-none pb-12 bg-white text-slate-800 p-4 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xs">
       {/* ═══ 1. LIVE CONSOLE TERMINAL HEADER ═══ */}
-      <div className="bg-[#131C38] p-4 sm:p-5 rounded-2xl border border-[#1E2950] shadow-inner space-y-4">
+      <div className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-4">
         {/* Terminal Title Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <Terminal className="w-5 h-5 text-[#35CBC3] animate-pulse" />
-              <h1 className="text-sm font-black tracking-wider text-[#35CBC3] uppercase">
+              <Terminal className="w-5 h-5 text-[#0FA89B] animate-pulse" />
+              <h1 className="text-sm font-black tracking-wider text-ford-blue uppercase">
                 KCAL REALTIME AI LOG CONSOLE
               </h1>
             </div>
-            <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/40 flex items-center gap-1.5 font-mono">
-              <Radio className="w-3 h-3 text-emerald-400 animate-ping" />
+            <span className="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-extrabold border border-emerald-200 flex items-center gap-1.5 font-mono">
+              <Radio className="w-3 h-3 text-emerald-600 animate-ping" />
               LIVE STREAM ACTIVE
             </span>
           </div>
@@ -267,10 +267,10 @@ export const LiveScanLogsView: React.FC = () => {
             <button
               type="button"
               onClick={() => window.open("/pemerintah/console", "_blank")}
-              className="px-3.5 py-1.5 rounded-xl bg-purple-950/60 hover:bg-purple-900 text-purple-300 border border-purple-500/50 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]"
-              title="Buka Console Terminal IDE di Tab Baru"
+              className="px-3.5 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100/80 text-purple-700 border border-purple-200 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-2xs"
+              title="Buka Console Terminal IDE versi Gelap di Tab Baru"
             >
-              <ExternalLink className="w-3.5 h-3.5 text-purple-400" />
+              <ExternalLink className="w-3.5 h-3.5 text-purple-600" />
               <span>FULL CONSOLE (TAB BARU) ↗</span>
             </button>
 
@@ -278,10 +278,10 @@ export const LiveScanLogsView: React.FC = () => {
               type="button"
               disabled={isClearing || (scans.length === 0 && !systemCheckLog)}
               onClick={handleClearDatabase}
-              className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40 font-mono text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all disabled:opacity-40"
+              className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100/80 text-rose-700 border border-rose-200 font-mono text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all disabled:opacity-40"
               title="Kosongkan seluruh log konsol Firestore"
             >
-              <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
               <span>{isClearing ? "CLEARING..." : "CLEAR CONSOLE"}</span>
             </button>
 
@@ -289,10 +289,10 @@ export const LiveScanLogsView: React.FC = () => {
               type="button"
               disabled={isCheckingServices}
               onClick={handleRunSystemDiagnostics}
-              className="px-3.5 py-1.5 rounded-xl bg-[#1E2950] hover:bg-[#2C3968] text-[#35CBC3] border border-[#35CBC3]/50 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-[0_0_15px_rgba(53,203,195,0.2)] disabled:opacity-50"
+              className="px-3.5 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100/80 text-[#0FA89B] border border-teal-200 font-mono text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-2xs disabled:opacity-50"
               title="Periksa status konektivitas Firebase DB, Azure Storage & Azure OpenAI"
             >
-              <Activity className="w-3.5 h-3.5 text-[#35CBC3]" />
+              <Activity className="w-3.5 h-3.5 text-[#0FA89B]" />
               <span>{isCheckingServices ? "CHECKING..." : "CHECK SERVICES"}</span>
             </button>
           </div>
@@ -301,8 +301,8 @@ export const LiveScanLogsView: React.FC = () => {
 
       {/* System Health Diagnostics 1-Line Status Log */}
       {systemCheckLog && (
-        <div className="p-2.5 rounded-lg bg-[#131C38] border border-[#35CBC3]/50 text-white font-mono text-[11px] leading-relaxed my-1 animate-in fade-in">
-          <span className="text-white font-mono">{systemCheckLog}</span>
+        <div className="p-2.5 rounded-xl bg-teal-50/90 border border-teal-200 text-ford-blue font-mono text-[11px] leading-relaxed my-1 animate-in fade-in shadow-2xs">
+          <span className="font-mono font-semibold">{systemCheckLog}</span>
         </div>
       )}
 
@@ -311,8 +311,8 @@ export const LiveScanLogsView: React.FC = () => {
         {/* Left Column: Live Terminal Stream Feed (5 cols) */}
         <div className="lg:col-span-5 space-y-3">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-xs font-bold text-[#35CBC3] uppercase tracking-wider flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-[#35CBC3]" />
+            <h2 className="text-xs font-black text-ford-blue uppercase tracking-wider flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-[#0FA89B]" />
               <span>LOG EXECUTION STREAM</span>
             </h2>
             <span className="text-[10.5px] text-slate-400 font-mono">
@@ -321,10 +321,10 @@ export const LiveScanLogsView: React.FC = () => {
           </div>
 
           {scans.length === 0 ? (
-            <div className="bg-[#131C38] rounded-2xl p-8 text-center border border-[#1E2950] space-y-3 font-mono">
-              <RefreshCw className="w-7 h-7 text-[#35CBC3] animate-spin mx-auto" />
-              <p className="text-xs font-bold text-slate-300">LISTENING FOR INCOMING BIOMETRIC FRAMES...</p>
-              <p className="text-[10px] text-slate-500">Perform scan on mobile device or click + EXECUTE TEST SCAN.</p>
+            <div className="bg-slate-50 rounded-2xl p-8 text-center border border-slate-200 space-y-3 font-mono">
+              <RefreshCw className="w-7 h-7 text-[#0FA89B] animate-spin mx-auto" />
+              <p className="text-xs font-bold text-slate-700">LISTENING FOR INCOMING BIOMETRIC FRAMES...</p>
+              <p className="text-[10px] text-slate-400">Perform scan on mobile device or click + EXECUTE TEST SCAN.</p>
             </div>
           ) : (
             <div className="space-y-2 max-h-[720px] overflow-y-auto pr-1">
@@ -332,7 +332,6 @@ export const LiveScanLogsView: React.FC = () => {
                 const isSelected = selectedScan?.scanId === scan.scanId;
                 const actualConfidence = scan.azureVisionMetrics?.confidenceScore;
                 const formattedConfidence = formatConfidence(actualConfidence);
-                const actualMenu = scan.recommendedMenu?.menuTitle;
 
                 return (
                   <motion.div
@@ -342,46 +341,46 @@ export const LiveScanLogsView: React.FC = () => {
                     onClick={() => setSelectedScan(scan)}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer font-mono space-y-2 ${
                       isSelected
-                        ? "bg-[#131C38] border-[#35CBC3] shadow-[0_0_15px_rgba(53,203,195,0.2)] ring-1 ring-[#35CBC3]/50"
-                        : "bg-[#090D18] border-[#1E2950] hover:border-[#35CBC3]/60"
+                        ? "bg-teal-50/80 border-[#0FA89B] shadow-2xs text-ford-blue ring-1 ring-[#0FA89B]/40"
+                        : "bg-slate-50 border-slate-200/80 hover:border-[#0FA89B]/50 hover:bg-slate-100/80 text-slate-700"
                     }`}
                   >
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="px-2 py-0.5 rounded bg-[#090D18] text-[#35CBC3] font-bold border border-[#1E2950]">
+                      <span className="px-2 py-0.5 rounded bg-white text-[#0FA89B] font-extrabold border border-teal-100 shadow-2xs">
                         {scan.scanId}
                       </span>
-                      <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-[#35CBC3]" />
+                      <span className="text-[10px] text-slate-400 flex items-center gap-1 font-medium">
+                        <Clock className="w-3 h-3 text-[#0FA89B]" />
                         {formatActualTime(scan.createdAt)}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between text-xs pt-0.5">
                       <div>
-                        <h3 className="font-bold text-white tracking-tight">
+                        <h3 className="font-extrabold text-ford-blue tracking-tight">
                           {scan.userName}
                         </h3>
-                        <p className="text-[10.5px] text-slate-400 flex items-center gap-1 mt-0.5">
-                          <MapPin className="w-3 h-3 text-[#35CBC3]" />
+                        <p className="text-[10.5px] text-slate-400 font-medium flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3 text-[#0FA89B]" />
                           Kec. {scan.userDistrict}
                         </p>
                       </div>
 
                       <div className="text-right">
                         {scan.status === "SCANNING_IN_PROGRESS" ? (
-                          <span className="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40 text-[10px] font-bold block animate-pulse">
+                          <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-bold block animate-pulse">
                             [STREAMING FRAME: {scan.lastCapturedStep || "PROC"}]
                           </span>
                         ) : scan.status === "CANCELLED" ? (
-                          <span className="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40 text-[10px] font-bold block">
+                          <span className="px-2 py-0.5 rounded bg-rose-100 text-rose-800 border border-rose-200 text-[10px] font-bold block">
                             [ABORTED]
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold inline-flex items-center gap-1 font-mono">
+                          <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-extrabold inline-flex items-center gap-1 font-mono">
                             [VALID: {formattedConfidence}]
                           </span>
                         )}
-                        <span className="text-[10px] font-bold text-[#35CBC3] block mt-1 max-w-[150px] truncate">
+                        <span className="text-[10px] font-bold text-[#0FA89B] block mt-1 max-w-[150px] truncate">
                           {scan.status === "SCANNING_IN_PROGRESS" ? "Processing Frames..." : scan.status === "CANCELLED" ? "Aborted" : scan.recommendedMenu?.menuTitle || "Menu RAG Sesuai Klinis"}
                         </span>
                       </div>
@@ -396,42 +395,42 @@ export const LiveScanLogsView: React.FC = () => {
         {/* Right Column: Console Inspector Panel & Biometric Evidence (7 cols) */}
         <div className="lg:col-span-7 space-y-3">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-xs font-bold text-[#35CBC3] uppercase tracking-wider flex items-center gap-2">
-              <Code className="w-4 h-4 text-[#35CBC3]" />
+            <h2 className="text-xs font-black text-ford-blue uppercase tracking-wider flex items-center gap-2">
+              <Code className="w-4 h-4 text-[#0FA89B]" />
               <span>CONSOLE INSPECTOR &amp; BIOMETRIC MATRIX</span>
             </h2>
             {selectedScan && (
-              <span className="text-[11px] font-mono text-[#35CBC3] bg-[#131C38] px-2.5 py-0.5 rounded border border-[#1E2950]">
+              <span className="text-[11px] font-mono text-[#0FA89B] bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200 font-bold">
                 {selectedScan.scanId}
               </span>
             )}
           </div>
 
           {!selectedScan ? (
-            <div className="bg-[#131C38] rounded-2xl p-12 text-center border border-[#1E2950] space-y-2">
-              <p className="text-xs font-bold text-slate-400">Select a log node stream on the left to inspect raw telemetry.</p>
+            <div className="bg-slate-50/70 rounded-2xl p-12 text-center border border-slate-200 space-y-2">
+              <p className="text-xs font-bold text-slate-500">Pilih salah satu node log di sebelah kiri untuk melihat rincian telemetri.</p>
             </div>
           ) : (
-            <div className="bg-[#131C38] rounded-2xl p-5 border border-[#1E2950] shadow-xl space-y-5">
+            <div className="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/90 shadow-xs space-y-5">
               {/* Beneficiary Node Header */}
-              <div className="p-4 rounded-xl bg-[#090D18] border border-[#1E2950] flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-[#1E2950] text-[#35CBC3] flex items-center justify-center font-black text-base border border-[#35CBC3]/40 shadow-md">
+                  <div className="w-11 h-11 rounded-xl bg-teal-50 text-[#0FA89B] flex items-center justify-center font-black text-base border border-teal-200/80 shadow-2xs">
                     {selectedScan.userName.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white leading-tight">
+                    <h3 className="text-sm font-black text-ford-blue leading-tight">
                       {selectedScan.userName}
                     </h3>
-                    <p className="text-[11px] text-[#35CBC3] mt-0.5">
-                      Kec. <strong>{selectedScan.userDistrict}</strong> • {selectedScan.userAge || 9} YO • {selectedScan.userEmail || "Registered"}
+                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      Kec. <strong className="text-ford-blue">{selectedScan.userDistrict}</strong> • {selectedScan.userAge || 9} Thn • {selectedScan.userEmail || "Terdaftar"}
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[10px] font-bold px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                     {selectedScan.status === "SCANNING_IN_PROGRESS" ? "SCANNING FRAME" : selectedScan.status === "CANCELLED" ? "ABORTED" : "STATUS: VALID"}
                   </span>
                 </div>
@@ -440,11 +439,11 @@ export const LiveScanLogsView: React.FC = () => {
               {/* ═══ 📸 BUKTI-BUKTI FOTO BIOMETRIK ═══ */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <Camera className="w-3.5 h-3.5 text-cyan-400" />
+                  <h4 className="text-[10.5px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                    <Camera className="w-3.5 h-3.5 text-[#0FA89B]" />
                     <span>BIOMETRIC EVIDENCE MATRIX ({selectedScan.scanId})</span>
                   </h4>
-                  <span className="text-[9.5px] text-slate-500 font-mono">
+                  <span className="text-[9.5px] text-slate-400 font-mono font-medium">
                     PROVIDER: {selectedScan.blobUrls?.storageProvider || "AZURE_BLOB_STORAGE"}
                   </span>
                 </div>
@@ -470,8 +469,8 @@ export const LiveScanLogsView: React.FC = () => {
                     return (
                       <>
                         {/* Photo 1: Wajah */}
-                        <div className="bg-[#131C38] border border-[#1E2950] rounded-xl p-2 space-y-1.5 text-center">
-                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
+                        <div className="bg-white border border-slate-200 rounded-xl p-2 space-y-1.5 text-center shadow-2xs">
+                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center border border-slate-200/80">
                             {isFaceValid ? (
                               <img
                                 src={faceSrc}
@@ -484,27 +483,27 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
-                                <span className="text-[10px] font-bold text-slate-200">Profil Wajah</span>
-                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 1/4</span>
+                              <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center p-2 text-center rounded-lg">
+                                <span className="text-[10px] font-bold text-slate-700">Profil Wajah</span>
+                                <span className="text-[8px] text-[#0FA89B] font-mono bg-teal-50 px-1.5 py-0.5 rounded mt-1 border border-teal-100 font-bold">FRAME 1/4</span>
                               </div>
                             )}
                             {isFaceValid && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Profil Wajah", url: faceSrc })}
-                                className="absolute bottom-1 right-1 p-1 rounded bg-black/70 text-white hover:bg-black cursor-pointer"
+                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer shadow-xs"
                               >
                                 <Maximize2 className="w-3 h-3" />
                               </button>
                             )}
                           </div>
-                          <span className="text-[10px] font-bold text-slate-300 block font-mono">1. Face Profile</span>
+                          <span className="text-[10px] font-bold text-slate-700 block font-mono">1. Face Profile</span>
                         </div>
 
                         {/* Photo 2: Mata Konjungtiva */}
-                        <div className="bg-[#131C38] border border-[#1E2950] rounded-xl p-2 space-y-1.5 text-center">
-                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
+                        <div className="bg-white border border-slate-200 rounded-xl p-2 space-y-1.5 text-center shadow-2xs">
+                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center border border-slate-200/80">
                             {isEyeValid ? (
                               <img
                                 src={eyeSrc}
@@ -517,27 +516,27 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
-                                <span className="text-[10px] font-bold text-slate-200">Konjungtiva</span>
-                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 2/4</span>
+                              <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center p-2 text-center rounded-lg">
+                                <span className="text-[10px] font-bold text-slate-700">Konjungtiva</span>
+                                <span className="text-[8px] text-[#0FA89B] font-mono bg-teal-50 px-1.5 py-0.5 rounded mt-1 border border-teal-100 font-bold">FRAME 2/4</span>
                               </div>
                             )}
                             {isEyeValid && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Konjungtiva Sklera", url: eyeSrc })}
-                                className="absolute bottom-1 right-1 p-1 rounded bg-black/70 text-white hover:bg-black cursor-pointer"
+                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer shadow-xs"
                               >
                                 <Maximize2 className="w-3 h-3" />
                               </button>
                             )}
                           </div>
-                          <span className="text-[10px] font-bold text-slate-300 block font-mono">2. Conjunctiva</span>
+                          <span className="text-[10px] font-bold text-slate-700 block font-mono">2. Conjunctiva</span>
                         </div>
 
                         {/* Photo 3: Tangan Turgor */}
-                        <div className="bg-[#131C38] border border-[#1E2950] rounded-xl p-2 space-y-1.5 text-center">
-                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
+                        <div className="bg-white border border-slate-200 rounded-xl p-2 space-y-1.5 text-center shadow-2xs">
+                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center border border-slate-200/80">
                             {isHandValid ? (
                               <img
                                 src={handSrc}
@@ -550,27 +549,27 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
-                                <span className="text-[10px] font-bold text-slate-200">Turgor Tangan</span>
-                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 3/4</span>
+                              <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center p-2 text-center rounded-lg">
+                                <span className="text-[10px] font-bold text-slate-700">Turgor Tangan</span>
+                                <span className="text-[8px] text-[#0FA89B] font-mono bg-teal-50 px-1.5 py-0.5 rounded mt-1 border border-teal-100 font-bold">FRAME 3/4</span>
                               </div>
                             )}
                             {isHandValid && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Telapak Tangan & Turgor", url: handSrc })}
-                                className="absolute bottom-1 right-1 p-1 rounded bg-black/70 text-white hover:bg-black cursor-pointer"
+                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer shadow-xs"
                               >
                                 <Maximize2 className="w-3 h-3" />
                               </button>
                             )}
                           </div>
-                          <span className="text-[10px] font-bold text-slate-300 block font-mono">3. Skin Turgor</span>
+                          <span className="text-[10px] font-bold text-slate-700 block font-mono">3. Skin Turgor</span>
                         </div>
 
                         {/* Photo 4: Kuku Capillary */}
-                        <div className="bg-[#131C38] border border-[#1E2950] rounded-xl p-2 space-y-1.5 text-center">
-                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
+                        <div className="bg-white border border-slate-200 rounded-xl p-2 space-y-1.5 text-center shadow-2xs">
+                          <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center border border-slate-200/80">
                             {isNailValid ? (
                               <img
                                 src={nailSrc}
@@ -583,22 +582,22 @@ export const LiveScanLogsView: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-[#090D18] flex flex-col items-center justify-center p-2 text-center border border-[#1E2950] rounded-lg">
-                                <span className="text-[10px] font-bold text-slate-200">CRT Kuku</span>
-                                <span className="text-[8px] text-[#35CBC3] font-mono bg-[#131C38] px-1.5 py-0.5 rounded mt-1 border border-[#1E2950]">FRAME 4/4</span>
+                              <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center p-2 text-center rounded-lg">
+                                <span className="text-[10px] font-bold text-slate-700">CRT Kuku</span>
+                                <span className="text-[8px] text-[#0FA89B] font-mono bg-teal-50 px-1.5 py-0.5 rounded mt-1 border border-teal-100 font-bold">FRAME 4/4</span>
                               </div>
                             )}
                             {isNailValid && (
                               <button
                                 type="button"
                                 onClick={() => setActivePhotoModal({ title: "Foto Bantalan Kuku (CRT)", url: nailSrc })}
-                                className="absolute bottom-1 right-1 p-1 rounded bg-black/70 text-white hover:bg-black cursor-pointer"
+                                className="absolute bottom-1 right-1 p-1 rounded-md bg-black/60 text-white hover:bg-black cursor-pointer shadow-xs"
                               >
                                 <Maximize2 className="w-3 h-3" />
                               </button>
                             )}
                           </div>
-                          <span className="text-[10px] font-bold text-slate-300 block font-mono">4. Nail CRT</span>
+                          <span className="text-[10px] font-bold text-slate-700 block font-mono">4. Nail CRT</span>
                         </div>
                       </>
                     );
@@ -608,42 +607,42 @@ export const LiveScanLogsView: React.FC = () => {
 
               {/* 1. Clinical Telemetry Indicators */}
               <div className="space-y-2">
-                <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">
+                <h4 className="text-[10.5px] font-extrabold text-slate-600 uppercase tracking-wider">
                   1. MODEL A VISION CLINICAL METRICS
                 </h4>
 
                 <div className="grid grid-cols-3 gap-2.5 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-[#0B132B] border border-cyan-900/60 space-y-1">
-                    <span className="text-slate-400 text-[10px] block">MATA KONJUNGTIVA</span>
-                    <span className="font-bold text-cyan-300 block">
+                  <div className="p-3 rounded-xl bg-white border border-slate-200 space-y-1 shadow-2xs">
+                    <span className="text-slate-400 text-[10px] block font-bold">MATA KONJUNGTIVA</span>
+                    <span className="font-bold text-[#0FA89B] block">
                       {selectedScan.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda Normal"}
                     </span>
                     {selectedScan.azureVisionMetrics?.eyePallorScore !== undefined && (
-                      <span className="text-[9.5px] text-emerald-400 font-mono block">
+                      <span className="text-[9.5px] text-emerald-700 font-bold block">
                         Pallor: {selectedScan.azureVisionMetrics.eyePallorScore}
                       </span>
                     )}
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#0B132B] border border-cyan-900/60 space-y-1">
-                    <span className="text-slate-400 text-[10px] block">CRT BANTALAN KUKU</span>
-                    <span className="font-bold text-cyan-300 block">
+                  <div className="p-3 rounded-xl bg-white border border-slate-200 space-y-1 shadow-2xs">
+                    <span className="text-slate-400 text-[10px] block font-bold">CRT BANTALAN KUKU</span>
+                    <span className="font-bold text-[#0FA89B] block">
                       {selectedScan.azureVisionMetrics?.nailbedStatus || "Merah Muda Sehat"}
                     </span>
                     {selectedScan.azureVisionMetrics?.nailCapillaryScore !== undefined && (
-                      <span className="text-[9.5px] text-emerald-400 font-mono block">
+                      <span className="text-[9.5px] text-emerald-700 font-bold block">
                         Capillary: {selectedScan.azureVisionMetrics.nailCapillaryScore}
                       </span>
                     )}
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#0B132B] border border-cyan-900/60 space-y-1">
-                    <span className="text-slate-400 text-[10px] block">TURGOR EPIDERMAL</span>
-                    <span className="font-bold text-cyan-300 block">
+                  <div className="p-3 rounded-xl bg-white border border-slate-200 space-y-1 shadow-2xs">
+                    <span className="text-slate-400 text-[10px] block font-bold">TURGOR EPIDERMAL</span>
+                    <span className="font-bold text-[#0FA89B] block">
                       {selectedScan.azureVisionMetrics?.skinTurgorStatus || "Elastis / Normal"}
                     </span>
                     {selectedScan.azureVisionMetrics?.skinTurgorScore !== undefined && (
-                      <span className="text-[9.5px] text-emerald-400 font-mono block">
+                      <span className="text-[9.5px] text-emerald-700 font-bold block">
                         Turgor: {selectedScan.azureVisionMetrics.skinTurgorScore}
                       </span>
                     )}
@@ -654,59 +653,59 @@ export const LiveScanLogsView: React.FC = () => {
               {/* 2. Menu Recommendation MBG */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">
+                  <h4 className="text-[10.5px] font-extrabold text-slate-600 uppercase tracking-wider">
                     2. MODEL B LLM REASONING &amp; GROUNDED MENU
                   </h4>
-                  <span className="text-[10px] font-bold text-purple-300 bg-purple-950 px-2 py-0.5 rounded border border-purple-800/60 font-mono">
+                  <span className="text-[10px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full border border-purple-200 font-mono">
                     CONFIDENCE: {formatConfidence(selectedScan.azureVisionMetrics?.confidenceScore)}
                   </span>
                 </div>
 
                 {selectedScan.status === "SCANNING_IN_PROGRESS" ? (
-                  <div className="p-3.5 rounded-xl bg-[#0B132B] border border-amber-800/60 space-y-1.5 font-mono">
-                    <div className="flex items-center justify-between text-amber-400 font-bold text-xs">
+                  <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 space-y-1.5 font-mono">
+                    <div className="flex items-center justify-between text-amber-800 font-bold text-xs">
                       <span className="flex items-center gap-1.5">
-                        <Utensils className="w-4 h-4 text-amber-400 animate-spin" />
+                        <Utensils className="w-4 h-4 text-amber-600 animate-spin" />
                         ANALYSIS IN PROGRESS
                       </span>
-                      <span className="text-[10px] text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-800 animate-pulse">
+                      <span className="text-[10px] text-amber-800 bg-amber-200 px-2 py-0.5 rounded-full border border-amber-300 animate-pulse">
                         STREAMING
                       </span>
                     </div>
-                    <p className="text-[10.5px] text-slate-400">
+                    <p className="text-[10.5px] text-slate-600">
                       Mengumpulkan frame biometrik &amp; jawaban kuesioner MedQA untuk kalkulasi menu RAG...
                     </p>
                   </div>
                 ) : (
-                  <div className="p-3.5 rounded-xl bg-[#0B132B] border border-emerald-800/60 space-y-3 font-mono">
+                  <div className="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200 space-y-3 font-mono shadow-2xs">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-emerald-300 flex items-center gap-2">
-                        <Utensils className="w-4 h-4 text-emerald-400" />
+                      <span className="text-xs font-black text-ford-blue flex items-center gap-2">
+                        <Utensils className="w-4 h-4 text-emerald-600" />
                         {selectedScan.recommendedMenu?.menuTitle || "Menu RAG Sesuai Klinis"}
                       </span>
                       {selectedScan.recommendedMenu?.calories !== undefined && (
-                        <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-600/60">
+                        <span className="text-[10.5px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                           {selectedScan.recommendedMenu.calories} kkal
                         </span>
                       )}
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 text-[10.5px]">
-                      <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
-                        <span className="text-slate-400 block text-[9px]">PROTEIN HEME</span>
-                        <span className="font-bold text-slate-100">
+                      <div className="bg-white p-2 rounded-xl border border-emerald-200/80 text-center shadow-2xs">
+                        <span className="text-slate-500 block text-[9px] font-bold">PROTEIN HEME</span>
+                        <span className="font-extrabold text-ford-blue">
                           {selectedScan.recommendedMenu?.proteinGram !== undefined ? `${selectedScan.recommendedMenu.proteinGram}g` : "-"}
                         </span>
                       </div>
-                      <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
-                        <span className="text-slate-400 block text-[9px]">ZAT BESI (Fe)</span>
-                        <span className="font-bold text-slate-100">
+                      <div className="bg-white p-2 rounded-xl border border-emerald-200/80 text-center shadow-2xs">
+                        <span className="text-slate-500 block text-[9px] font-bold">ZAT BESI (Fe)</span>
+                        <span className="font-extrabold text-ford-blue">
                           {selectedScan.recommendedMenu?.ironMg !== undefined ? `${selectedScan.recommendedMenu.ironMg}mg` : "-"}
                         </span>
                       </div>
-                      <div className="bg-[#070D1E] p-2 rounded border border-emerald-900/60 text-center">
-                        <span className="text-slate-400 block text-[9px]">PEMENUHAN AKG</span>
-                        <span className="font-bold text-emerald-400">
+                      <div className="bg-white p-2 rounded-xl border border-emerald-200/80 text-center shadow-2xs">
+                        <span className="text-slate-500 block text-[9px] font-bold">PEMENUHAN AKG</span>
+                        <span className="font-extrabold text-emerald-700">
                           {selectedScan.recommendedMenu?.akgPercentage !== undefined ? `${selectedScan.recommendedMenu.akgPercentage}%` : "-"}
                         </span>
                       </div>
@@ -714,7 +713,7 @@ export const LiveScanLogsView: React.FC = () => {
 
                     {/* Questionnaire Context */}
                     {selectedScan.questionnaireAnswers && (
-                      <div className="pt-2 text-[10px] text-emerald-200/90 font-mono space-y-0.5 border-t border-emerald-900/60">
+                      <div className="pt-2 text-[10px] text-slate-700 font-mono space-y-0.5 border-t border-emerald-200/80">
                         <p>• <strong>KUESIONER ALERGI:</strong> {selectedScan.questionnaireAnswers.alergi}</p>
                         <p>• <strong>NAFSU MAKAN:</strong> {selectedScan.questionnaireAnswers.nafsuMakan} | <strong>AKTIVITAS:</strong> {selectedScan.questionnaireAnswers.aktivitasFisik}</p>
                       </div>
@@ -725,12 +724,12 @@ export const LiveScanLogsView: React.FC = () => {
 
               {/* 3. RAW REALTIME EXECUTION CONSOLE FEED */}
               <div className="space-y-1.5 pt-1">
-                <h4 className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                <h4 className="text-[10.5px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center justify-between">
                   <span>3. REALTIME PIPELINE STREAM LOGS</span>
-                  <span className="text-[9.5px] text-[#35CBC3] font-mono">CLAIM ID: {selectedScan.claimId}</span>
+                  <span className="text-[9.5px] text-[#0FA89B] font-mono font-bold">CLAIM ID: {selectedScan.claimId}</span>
                 </h4>
 
-                <div className="p-3.5 rounded-xl bg-[#030712] text-slate-100 font-mono text-[10.5px] space-y-1.5 max-h-56 overflow-y-auto border border-[#1E2950] leading-relaxed shadow-inner">
+                <div className="p-3.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-[10.5px] space-y-1.5 max-h-56 overflow-y-auto border border-slate-800 leading-relaxed shadow-inner">
                   <p className="text-slate-300">
                     <span className="text-[#35CBC3] font-bold">[{formatActualTime(selectedScan.createdAt)}]</span> <span className="text-emerald-400 font-bold">[INFO] [FRAME_STREAM]</span> <span className="text-white">Session {selectedScan.scanId} from Node {selectedScan.userDistrict} (User: {selectedScan.userName})</span>
                   </p>
@@ -772,22 +771,22 @@ export const LiveScanLogsView: React.FC = () => {
 
       {/* ═══ PHOTO LIGHTBOX MODAL ═══ */}
       {activePhotoModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#070D1E] rounded-2xl p-4 max-w-lg w-full space-y-3 text-left border border-cyan-500/50 shadow-2xl font-mono">
-            <div className="flex items-center justify-between text-white border-b border-cyan-900 pb-2">
-              <h4 className="text-xs font-bold text-cyan-300 flex items-center gap-2">
-                <Camera className="w-4 h-4 text-cyan-400" />
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-4 max-w-lg w-full space-y-3 text-left border border-slate-200 shadow-2xl font-mono">
+            <div className="flex items-center justify-between text-ford-blue border-b border-slate-100 pb-2">
+              <h4 className="text-xs font-black text-ford-blue flex items-center gap-2">
+                <Camera className="w-4 h-4 text-[#0FA89B]" />
                 <span>{activePhotoModal.title}</span>
               </h4>
               <button
                 type="button"
                 onClick={() => setActivePhotoModal(null)}
-                className="w-7 h-7 rounded-lg bg-cyan-950 text-cyan-300 hover:text-white flex items-center justify-center text-xs font-bold cursor-pointer border border-cyan-800"
+                className="w-7 h-7 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center text-xs font-bold cursor-pointer transition-colors"
               >
                 ✕
               </button>
             </div>
-            <div className="rounded-xl overflow-hidden bg-black flex items-center justify-center max-h-[70vh] border border-cyan-900/60">
+            <div className="rounded-2xl overflow-hidden bg-slate-100 flex items-center justify-center max-h-[70vh] border border-slate-200">
               <img src={activePhotoModal.url} alt={activePhotoModal.title} className="max-w-full max-h-[65vh] object-contain" />
             </div>
           </div>
@@ -795,19 +794,19 @@ export const LiveScanLogsView: React.FC = () => {
       )}
       {/* ═══ CLEAR CONSOLE CONFIRMATION DIALOG MODAL ═══ */}
       {showClearConfirmModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0B132B] rounded-2xl p-6 max-w-sm w-full space-y-4 text-left border border-rose-500/50 shadow-2xl font-mono animate-in zoom-in-95">
-            <div className="flex items-center gap-3 text-rose-400">
-              <div className="w-10 h-10 rounded-xl bg-rose-950/80 border border-rose-800/80 flex items-center justify-center shrink-0">
-                <Trash2 className="w-5 h-5 text-rose-400" />
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 text-left border border-slate-200 shadow-2xl font-mono animate-in zoom-in-95">
+            <div className="flex items-center gap-3 text-rose-600">
+              <div className="w-10 h-10 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5 text-rose-600" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white">Konfirmasi Kosongkan Konsol</h3>
+                <h3 className="text-sm font-black text-ford-blue">Konfirmasi Kosongkan Konsol</h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">Tindakan ini tidak dapat dibatalkan.</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed border-t border-b border-rose-950/80 py-3">
+            <p className="text-xs text-slate-600 leading-relaxed border-t border-b border-slate-100 py-3">
               Apakah Anda yakin ingin menghapus seluruh riwayat log telemetry dan bukti foto biometrik dari database Firestore?
             </p>
 
@@ -815,14 +814,14 @@ export const LiveScanLogsView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowClearConfirmModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-mono text-xs border border-slate-700 cursor-pointer transition-colors"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-xs font-bold border border-slate-200 cursor-pointer transition-colors"
               >
                 Batal
               </button>
               <button
                 type="button"
                 onClick={handleConfirmClear}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold font-mono text-xs cursor-pointer shadow-[0_0_15px_rgba(244,63,94,0.3)] transition-all"
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold font-mono text-xs cursor-pointer shadow-xs transition-all"
               >
                 Ya, Kosongkan
               </button>
