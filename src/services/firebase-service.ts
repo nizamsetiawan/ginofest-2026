@@ -1661,7 +1661,7 @@ export const DEFAULT_15_ARTICLES: Omit<ArticleRecord, "id">[] = [
     publishedDate: "2026-08-30",
     summary: "Kelopak mata pucat dan waktu pengisian kapiler kuku lebih dari 2 detik adalah indikasi awal kekurangan zat besi yang perlu penanganan cepat.",
     content: "Fitur pemindaian biometrik Kcal menganalisis spektrum warna konjungtiva dan capillary refill time kuku untuk merekomendasikan tambahan zat besi pada menu MBG anak Anda. Deteksi dini hemoglobin berbasis citra mata dan kuku membantu posyandu dan puskesmas memberikan intervensi harian tanpa prosedur invasif.",
-    imageUrl: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
   },
   {
     category: "Pedoman Nutrisi",
