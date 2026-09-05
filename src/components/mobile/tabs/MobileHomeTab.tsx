@@ -110,7 +110,7 @@ const BOT_INITIAL_MESSAGES = [
   {
     id: 1,
     sender: "bot",
-    text: "Halo! Saya dr. Gizi AI 🤖. Ada yang ingin Anda tanyakan mengenai kebutuhan nutrisi anak, menu MBG hari ini, atau alergi makanan?",
+    text: "Halo! Selamat datang di Pusat Bantuan & FAQ Layanan Kcal. Ada yang ingin Anda tanyakan mengenai layanan nutrisi, panduan skrining, atau penggunaan aplikasi?",
   },
 ];
 
@@ -287,7 +287,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       )}
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 2. LAYANAN & FITUR UTAMA (4 CARDS GRID)                        */}
+      {/* 2. LAYANAN & FITUR UTAMA (3 CARDS LAYOUT)                      */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <div className="space-y-3 pt-1">
         <div className="flex items-center justify-between px-0.5">
@@ -295,117 +295,101 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             <Sparkles className="w-3.5 h-3.5 text-[#0FA89B]" />
             <span>Layanan &amp; Fitur Utama</span>
           </h2>
-          <span className="text-[10px] font-extrabold text-[#0FA89B] bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
-            4 Menu Pilihan
+          <span className="text-[10px] font-extrabold text-[#0FA89B] bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-100">
+            3 Menu Pilihan
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          {/* Card 1: Riwayat Analisis */}
+        <div className="space-y-3">
+          {/* Menu 1 (Card Panjang / Full Width): Riwayat Analisis */}
           <button
             type="button"
             onClick={() => {
               triggerHaptic();
               setShowHistoryModal(true);
             }}
-            className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+            className="w-full bg-white border border-slate-200/90 rounded-3xl p-4.5 text-left shadow-xs hover:shadow-md active:scale-[0.99] transition-all cursor-pointer flex items-center justify-between gap-4 group relative overflow-hidden"
           >
-            <div className="w-10 h-10 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
-              <History className="w-5 h-5 stroke-[2.2]" />
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-12 h-12 rounded-2xl bg-teal-50 text-[#0FA89B] border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                <History className="w-6 h-6 stroke-[2.2]" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-[14.5px] font-black text-slate-800 tracking-tight leading-tight">
+                    Riwayat Analisis
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-extrabold border border-emerald-200 shrink-0">
+                    Terverifikasi
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 font-medium leading-relaxed mt-0.5 truncate">
+                  Rekam skrining biometrik &amp; rekomendasi menu RAG nutrisi
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
-                Riwayat Analisis
-              </h3>
-              <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
-                Hasil skrining biometrik &amp; rekomendasi RAG
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-[#0FA89B]">
-              <span>Lihat Rekam</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+
+            <div className="w-8 h-8 rounded-xl bg-slate-50 group-hover:bg-teal-50 text-slate-400 group-hover:text-[#0FA89B] flex items-center justify-center shrink-0 transition-colors border border-slate-100">
+              <ChevronRight className="w-4 h-4" />
             </div>
           </button>
 
-          {/* Card 2: Pusat Aduan */}
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic();
-              setShowFeedbackModal(true);
-            }}
-            className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
-          >
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
-              <MessageSquare className="w-5 h-5 stroke-[2.2]" />
-            </div>
-            <div>
-              <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
-                Pusat Aduan
-              </h3>
-              <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
-                Layanan pengaduan gizi &amp; evaluasi porsi MBG
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-amber-600">
-              <span>Kirim Laporan</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </div>
-          </button>
+          {/* Underneath Menu 1: Grid 2 Kolom (Menu 2 & Menu 3) */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Menu 2: Bantuan & FAQ Layanan */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic();
+                setShowChatModal(true);
+              }}
+              className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-sky-50 text-[#0284C7] border border-sky-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+                <Bot className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <div>
+                <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
+                  Bantuan &amp; FAQ
+                </h3>
+                <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
+                  Panduan penggunaan &amp; FAQ layanan Kcal
+                </p>
+              </div>
+              <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-[#0284C7]">
+                <span>Buka Bantuan</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </div>
+            </button>
 
-          {/* Card 3: Bantuan AI */}
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic();
-              setShowChatModal(true);
-            }}
-            className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
-          >
-            <div className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-600 border border-sky-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
-              <Bot className="w-5 h-5 stroke-[2.2]" />
-            </div>
-            <div>
-              <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
-                Bantuan AI
-              </h3>
-              <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
-                dr. Gizi AI, konsultasi nutrisi &amp; FAQ layanan
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-sky-600">
-              <span>Tanya dr. Gizi</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </div>
-          </button>
-
-          {/* Card 4: Katalog Nutrisi MBG */}
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic();
-              if (NUTRITION_ARTICLES.length > 0) {
-                setSelectedArticle(NUTRITION_ARTICLES[0]);
-              }
-            }}
-            className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
-          >
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
-              <BookOpen className="w-5 h-5 stroke-[2.2]" />
-            </div>
-            <div>
-              <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
-                Katalog Nutrisi MBG
-              </h3>
-              <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
-                Edukasi gizi seimbang &amp; bahan pangan lokal
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-emerald-600">
-              <span>Baca Panduan</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </div>
-          </button>
+            {/* Menu 3: Artikel & Edukasi Gizi */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic();
+                if (NUTRITION_ARTICLES.length > 0) {
+                  setSelectedArticle(NUTRITION_ARTICLES[0]);
+                }
+              }}
+              className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-[#059669] border border-emerald-200/80 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+                <BookOpen className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <div>
+                <h3 className="text-[13.5px] font-black text-slate-800 tracking-tight leading-tight">
+                  Artikel &amp; Edukasi
+                </h3>
+                <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-1">
+                  Edukasi gizi seimbang &amp; pangan lokal
+                </p>
+              </div>
+              <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[10.5px] font-bold text-[#059669]">
+                <span>Baca Artikel</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </div>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -486,8 +470,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     <Bot className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-[13.5px] font-black leading-tight">dr. Gizi AI</h3>
-                    <p className="text-[10px] text-[#79D7D2] font-semibold">Konsultasi Nutrisi &amp; Menu MBG</p>
+                    <h3 className="text-[13.5px] font-black leading-tight">Bantuan &amp; FAQ Layanan</h3>
+                    <p className="text-[10px] text-[#79D7D2] font-semibold">Panduan &amp; Informasi Aplikasi Kcal</p>
                   </div>
                 </div>
                 <button
@@ -525,8 +509,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
                 {isBotTyping && (
                   <div className="flex items-center gap-2 text-slate-400 text-[11px] font-medium italic">
-                    <Bot className="w-4 h-4 text-[#8B5CF6] animate-bounce" />
-                    <span>dr. Gizi AI sedang mengetik...</span>
+                    <Bot className="w-4 h-4 text-[#0284C7] animate-bounce" />
+                    <span>Menyiapkan informasi bantuan...</span>
                   </div>
                 )}
               </div>
