@@ -46,15 +46,40 @@ const DEFAULT_CITIZEN_GREETING: ChatMsg = {
 };
 
 const WEB_ONLY_COMMANDS = new Set([
-  "/zscore",
-  "/ekspor",
+  "/menu",
+  "/generate",
   "/bom",
-  "/pin",
+  "/tahunan",
+  "/mingguan",
   "/pagu",
+  "/siklus",
+  "/rag",
+  "/rag_auth",
+  "/rag_komoditas",
+  "/rag_harga",
+  "/rag_kalibrasi",
+  "/rag_menu",
+  "/rag_gizi",
+  "/rag_wilayah",
+  "/rag_upload",
+  "/rag_template",
+  "/rag_tambah",
+  "/rag_edit",
+  "/rag_hapus",
+  "/rag_search",
+  "/rag_export",
+  "/rag_grounding",
+  "/scan",
+  "/zscore",
+  "/peta",
+  "/ekspor",
+  "/notif",
+  "/pengaturan",
+  "/pin",
   "/admin",
   "/firestore",
   "/device",
-  "/rag",
+  "/faq",
 ]);
 
 export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
@@ -130,10 +155,13 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     ];
 
     if (qaRes.success && qaRes.data) {
-      // Filter out WEB-only admin commands from mobile view
-      const citizenOnlyData = qaRes.data.filter(
-        (q) => !WEB_ONLY_COMMANDS.has((q.command || "").toLowerCase())
-      );
+      // Filter out ALL WEB-only admin commands from mobile view
+      const citizenOnlyData = qaRes.data.filter((q) => {
+        const cmd = (q.command || "").toLowerCase();
+        if (WEB_ONLY_COMMANDS.has(cmd)) return false;
+        if (cmd.startsWith("/rag")) return false;
+        return true;
+      });
 
       const existingCmds = new Set(citizenOnlyData.map((q) => q.command));
       const combined = [...citizenOnlyData];
