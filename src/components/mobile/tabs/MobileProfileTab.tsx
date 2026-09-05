@@ -17,6 +17,7 @@ import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CitizenUser, MobileTab } from "../types";
 import { GRESIK_DISTRICTS } from "@/data/gresik-districts";
+import { AuthSpectrumBackground } from "../auth/AuthSpectrumBackground";
 
 interface MobileProfileTabProps {
   citizenUser: CitizenUser | null;
@@ -65,13 +66,16 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
   };
 
   return (
-    <Page className="p-4 space-y-4 font-sans select-none bg-[#F8FAFC] min-h-full pb-28">
+    <Page className="p-4 space-y-4 font-sans select-none bg-[#F8FAFC] min-h-full pb-28 relative overflow-hidden">
+      {/* Dynamic Animated Spectrum & Glow Background */}
+      <AuthSpectrumBackground />
+
       {/* ═══ 1. APPBAR HEADER ═══ */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
-        className="flex items-center justify-between pt-1 px-1"
+        className="flex items-center justify-between pt-1 px-1 relative z-10"
       >
         <div>
           <h1 className="text-[19px] font-black text-ford-blue tracking-tight">

@@ -27,6 +27,7 @@ import {
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CitizenUser, AtmosphereState, MobileTab } from "../types";
+import { AuthSpectrumBackground } from "../auth/AuthSpectrumBackground";
 
 interface MobileHomeTabProps {
   citizenUser: CitizenUser | null;
@@ -216,12 +217,14 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   };
 
   return (
-    <Page className="p-4 space-y-3.5 font-sans select-none bg-[#F8FAFC] min-h-full pb-28">
+    <Page className="p-4 space-y-3.5 font-sans select-none bg-[#F8FAFC] min-h-full pb-28 relative overflow-hidden">
+      {/* Dynamic Animated Spectrum & Glow Background */}
+      <AuthSpectrumBackground />
 
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* 1. TOP APPBAR (SIMPLE & CLEAN)                                 */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="flex items-center justify-between pt-0.5 px-0.5">
+      <div className="flex items-center justify-between pt-0.5 px-0.5 relative z-10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0FA89B] to-[#24E0D1] text-[#050D18] flex items-center justify-center font-black text-sm shadow-xs border border-white">
             {userInitial}
@@ -289,7 +292,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* 2. LAYANAN & FITUR UTAMA (3 CARDS LAYOUT)                      */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <div className="space-y-3 pt-1">
+      <div className="space-y-3 pt-1 relative z-10">
         <div className="flex items-center justify-between px-0.5">
           <h2 className="text-[12px] font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#0FA89B]" />
