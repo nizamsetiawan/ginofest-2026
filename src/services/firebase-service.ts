@@ -1833,14 +1833,23 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
     const snap = await getDocs(colRef);
 
     if (snap.empty || snap.docs.length < 15) {
-      console.log("Seeding 15 articles into Firestore gscan_articles...");
+      console.log("Seeding 15 articles into Firestore gscan_articles with SerpAPI images...");
       const seeded: ArticleRecord[] = [];
       for (const art of DEFAULT_15_ARTICLES) {
         const docId = `art_${Math.random().toString(36).substring(2, 8)}_${Date.now()}`;
         const docRef = doc(db, "gscan_articles", docId);
+        
+        // Auto-fetch real Google Image from SerpAPI based on article title
+        let imageUrl = art.imageUrl;
+        const serpUrl = await fetchArticleImageFromSerpApi(art.title);
+        if (serpUrl) {
+          imageUrl = serpUrl;
+        }
+
         const artData: ArticleRecord = {
           ...art,
           id: docId,
+          imageUrl,
           createdAtIso: new Date().toISOString(),
         };
         await setDoc(docRef, artData, { merge: true });
