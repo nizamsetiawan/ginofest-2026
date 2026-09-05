@@ -680,8 +680,39 @@ export async function deleteNotification(docId: string) {
 }
 
 export async function seedInitialUserNotifications(userEmail: string, districtName: string = "Kebomas") {
-  // Disabled auto-seeding so notifications inbox is 100% event-driven from real actions
-  return;
+  try {
+    const cleanEmail = (userEmail || "").trim().toLowerCase();
+    if (!cleanEmail) return;
+
+    const colRef = collection(db, "gscan_notifications");
+    const snap = await getDocs(colRef);
+    
+    // Filter notifications for this user
+    const userNotifs = snap.docs.filter((d) => {
+      const data = d.data() as any;
+      const targetEmail = (data.userEmail || "").trim().toLowerCase();
+      return targetEmail === cleanEmail || targetEmail === "all";
+    });
+
+    // Only seed 1 single welcome greeting if inbox is completely empty for new user
+    if (userNotifs.length === 0) {
+      const docId = `notif_welcome_${Date.now()}`;
+      const docRef = doc(db, "gscan_notifications", docId);
+      await setDoc(docRef, {
+        id: docId,
+        userEmail: cleanEmail,
+        title: "Selamat Datang di GSCAN",
+        description: `Selamat datang di platform GSCAN! Seluruh pemberitahuan resmi mengenai Program Makan Bergizi Gratis (MBG) dan Skrining Biometrik Kecamatan ${districtName} akan dikirimkan langsung ke kotak masuk Anda.`,
+        category: "system",
+        isRead: false,
+        readBy: [],
+        createdAt: serverTimestamp(),
+        createdAtIso: new Date().toISOString(),
+      });
+    }
+  } catch (err) {
+    console.warn("Gagal seed initial welcome notification:", err);
+  }
 }
 
 // -------------------------------------------------------------
