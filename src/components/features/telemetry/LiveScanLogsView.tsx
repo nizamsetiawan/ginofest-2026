@@ -42,6 +42,8 @@ export const LiveScanLogsView: React.FC = () => {
   const [isClearing, setIsClearing] = useState(false);
   const [systemCheckLog, setSystemCheckLog] = useState<string | null>(null);
   const [isCheckingServices, setIsCheckingServices] = useState(false);
+  const [modeTab, setModeTab] = useState<"LIVE" | "HISTORY">("LIVE");
+  const [sessionStartTime, setSessionStartTime] = useState<string>(() => new Date().toISOString());
 
   const handleRunSystemDiagnostics = () => {
     setIsCheckingServices(true);
@@ -89,13 +91,6 @@ export const LiveScanLogsView: React.FC = () => {
           });
 
           setScans(loadedScans);
-          if (loadedScans.length > 0) {
-            setSelectedScan((prev) => {
-              if (!prev) return loadedScans[0];
-              const found = loadedScans.find((s) => s.scanId === prev.scanId);
-              return found || loadedScans[0];
-            });
-          }
         },
         (err) => {
           console.warn("Firestore realtime scans listener notice:", err);
@@ -107,6 +102,21 @@ export const LiveScanLogsView: React.FC = () => {
       console.warn("Realtime listener setup note:", e);
     }
   }, []);
+
+  const liveScansCount = scans.filter((s) => s.createdAt && s.createdAt >= sessionStartTime).length;
+  const displayedScans = modeTab === "LIVE"
+    ? scans.filter((s) => s.createdAt && s.createdAt >= sessionStartTime)
+    : scans;
+
+  useEffect(() => {
+    if (displayedScans.length > 0) {
+      if (!selectedScan || !displayedScans.some((s) => s.scanId === selectedScan.scanId)) {
+        setSelectedScan(displayedScans[0]);
+      }
+    } else {
+      setSelectedScan(null);
+    }
+  }, [displayedScans, modeTab]);
 
   // Helper to generate sample biometric JPEG Base64 for test scans
   const createSamplePhoto = (title: string, bgColor: string, icon: string): string => {
@@ -259,7 +269,7 @@ export const LiveScanLogsView: React.FC = () => {
             </div>
             <span className="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-extrabold border border-emerald-200 flex items-center gap-1.5 font-mono">
               <Radio className="w-3 h-3 text-emerald-600 animate-ping" />
-              LIVE STREAM ACTIVE
+              {modeTab === "LIVE" ? "LIVE STREAM MODE" : "RIWAYAT HISTORIS MODE"}
             </span>
           </div>
 
@@ -282,7 +292,7 @@ export const LiveScanLogsView: React.FC = () => {
               title="Kosongkan seluruh log konsol Firestore"
             >
               <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-              <span>{isClearing ? "CLEARING..." : "CLEAR CONSOLE"}</span>
+              <span>{isClearing ? "CLEARING..." : "CLEAR DB"}</span>
             </button>
 
             <button
@@ -296,6 +306,49 @@ export const LiveScanLogsView: React.FC = () => {
               <span>{isCheckingServices ? "CHECKING..." : "CHECK SERVICES"}</span>
             </button>
           </div>
+        </div>
+
+        {/* Tab Controls: LIVE STREAM vs RIWAYAT HISTORIS */}
+        <div className="flex items-center gap-2 pt-1 border-t border-slate-200/70">
+          <button
+            type="button"
+            onClick={() => setModeTab("LIVE")}
+            className={`px-4 py-2 rounded-xl text-xs font-black font-mono flex items-center gap-2 transition-all cursor-pointer ${
+              modeTab === "LIVE"
+                ? "bg-[#0FA89B] text-white shadow-xs"
+                : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+            }`}
+          >
+            <Radio className={`w-3.5 h-3.5 ${modeTab === "LIVE" ? "animate-pulse" : ""}`} />
+            <span>LIVE STREAMING AKTIF</span>
+            <span
+              className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold ${
+                modeTab === "LIVE" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700 border border-slate-200"
+              }`}
+            >
+              {liveScansCount} NEW
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setModeTab("HISTORY")}
+            className={`px-4 py-2 rounded-xl text-xs font-black font-mono flex items-center gap-2 transition-all cursor-pointer ${
+              modeTab === "HISTORY"
+                ? "bg-ford-blue text-white shadow-xs"
+                : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span>RIWAYAT HISTORIS</span>
+            <span
+              className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold ${
+                modeTab === "HISTORY" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700 border border-slate-200"
+              }`}
+            >
+              {scans.length} RECORDS
+            </span>
+          </button>
         </div>
       </div>
 
@@ -313,22 +366,45 @@ export const LiveScanLogsView: React.FC = () => {
           <div className="flex items-center justify-between px-1">
             <h2 className="text-xs font-black text-ford-blue uppercase tracking-wider flex items-center gap-2">
               <Cpu className="w-4 h-4 text-[#0FA89B]" />
-              <span>LOG EXECUTION STREAM</span>
+              <span>{modeTab === "LIVE" ? "SESI LIVE STREAMING" : "REKAP RIWAYAT SKRINING"}</span>
             </h2>
             <span className="text-[10.5px] text-slate-400 font-mono">
-              [LIMIT: 25 RECENT]
+              {modeTab === "LIVE" ? `[SESI: ${formatActualTime(sessionStartTime)}]` : `[TOTAL: ${scans.length}]`}
             </span>
           </div>
 
-          {scans.length === 0 ? (
-            <div className="bg-slate-50 rounded-2xl p-8 text-center border border-slate-200 space-y-3 font-mono">
-              <RefreshCw className="w-7 h-7 text-[#0FA89B] animate-spin mx-auto" />
-              <p className="text-xs font-bold text-slate-700">LISTENING FOR INCOMING BIOMETRIC FRAMES...</p>
-              <p className="text-[10px] text-slate-400">Perform scan on mobile device or click + EXECUTE TEST SCAN.</p>
+          {displayedScans.length === 0 ? (
+            <div className="bg-slate-50 rounded-2xl p-7 text-center border border-slate-200 space-y-3 font-mono">
+              {modeTab === "LIVE" ? (
+                <>
+                  <RefreshCw className="w-7 h-7 text-[#0FA89B] animate-spin mx-auto" />
+                  <p className="text-xs font-bold text-slate-700 uppercase">LISTENING FOR INCOMING LIVE STREAMS...</p>
+                  <p className="text-[10.5px] text-slate-500 leading-relaxed">
+                    Sesi live console aktif dibuka jam {formatActualTime(sessionStartTime)}. Skrining biometrik baru akan otomatis tampil di sini saat diproses.
+                  </p>
+                  {scans.length > 0 && (
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setModeTab("HISTORY")}
+                        className="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-ford-blue text-xs font-extrabold cursor-pointer transition-all shadow-2xs"
+                      >
+                        Buka Tab Riwayat ({scans.length} Scan Lampau) →
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Clock className="w-7 h-7 text-slate-400 mx-auto" />
+                  <p className="text-xs font-bold text-slate-700 uppercase">BELUM ADA DATA RIWAYAT SKRINING</p>
+                  <p className="text-[10.5px] text-slate-500">Database Firestore saat ini belum memiliki rekaman scan.</p>
+                </>
+              )}
             </div>
           ) : (
             <div className="space-y-2 max-h-[720px] overflow-y-auto pr-1">
-              {scans.map((scan) => {
+              {displayedScans.map((scan) => {
                 const isSelected = selectedScan?.scanId === scan.scanId;
                 const actualConfidence = scan.azureVisionMetrics?.confidenceScore;
                 const formattedConfidence = formatConfidence(actualConfidence);

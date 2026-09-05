@@ -43,6 +43,8 @@ export default function DedicatedConsolePage() {
   const [isCheckingServices, setIsCheckingServices] = useState(false);
   const [vercelLogs, setVercelLogs] = useState<VercelHttpLogEntry[]>(() => VercelLogService.getInitialVercelLogs());
   const [logTab, setLogTab] = useState<"NODES" | "VERCEL">("NODES");
+  const [modeTab, setModeTab] = useState<"LIVE" | "HISTORY">("LIVE");
+  const [sessionStartTime, setSessionStartTime] = useState<string>(() => new Date().toISOString());
 
   const handleRunSystemDiagnostics = () => {
     setIsCheckingServices(true);
@@ -93,13 +95,6 @@ export default function DedicatedConsolePage() {
           });
 
           setScans(loadedScans);
-          if (loadedScans.length > 0) {
-            setSelectedScan((prev) => {
-              if (!prev) return loadedScans[0];
-              const found = loadedScans.find((s) => s.scanId === prev.scanId);
-              return found || loadedScans[0];
-            });
-          }
         },
         (err) => {
           console.warn("Firestore console listener notice:", err);
@@ -111,6 +106,21 @@ export default function DedicatedConsolePage() {
       console.warn("Realtime console listener setup note:", e);
     }
   }, []);
+
+  const liveScansCount = scans.filter((s) => s.createdAt && s.createdAt >= sessionStartTime).length;
+  const displayedScans = modeTab === "LIVE"
+    ? scans.filter((s) => s.createdAt && s.createdAt >= sessionStartTime)
+    : scans;
+
+  useEffect(() => {
+    if (displayedScans.length > 0) {
+      if (!selectedScan || !displayedScans.some((s) => s.scanId === selectedScan.scanId)) {
+        setSelectedScan(displayedScans[0]);
+      }
+    } else {
+      setSelectedScan(null);
+    }
+  }, [displayedScans, modeTab]);
 
   // Realtime Vercel HTTP Access Log Stream Listener
   useEffect(() => {
@@ -299,15 +309,30 @@ Timestamp: ${selectedScan.createdAt}
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setLogTab("NODES")}
-                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer ${
-                  logTab === "NODES"
+                onClick={() => { setLogTab("NODES"); setModeTab("LIVE"); }}
+                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  logTab === "NODES" && modeTab === "LIVE"
                     ? "bg-[#1E2950] text-[#35CBC3] border border-[#35CBC3]/50 shadow-[0_0_10px_rgba(53,203,195,0.2)]"
                     : "bg-[#090D18] text-slate-400 border border-slate-800 hover:text-slate-200"
                 }`}
               >
-                LIVE SCAN NODES ({scans.length})
+                <Radio className={`w-3 h-3 ${modeTab === "LIVE" ? "text-emerald-400 animate-ping" : "text-slate-400"}`} />
+                <span>LIVE STREAM ({liveScansCount})</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => { setLogTab("NODES"); setModeTab("HISTORY"); }}
+                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  logTab === "NODES" && modeTab === "HISTORY"
+                    ? "bg-[#1E2950] text-[#35CBC3] border border-[#35CBC3]/50 shadow-[0_0_10px_rgba(53,203,195,0.2)]"
+                    : "bg-[#090D18] text-slate-400 border border-slate-800 hover:text-slate-200"
+                }`}
+              >
+                <Clock className="w-3 h-3 text-[#35CBC3]" />
+                <span>RIWAYAT ({scans.length})</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setLogTab("VERCEL")}
@@ -389,15 +414,38 @@ Timestamp: ${selectedScan.createdAt}
                 </div>
               ))}
             </div>
-          ) : scans.length === 0 ? (
-            <div className="p-8 text-center text-slate-500 space-y-2">
-              <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#35CBC3]" />
-              <p>NO ACTIVE SCAN SESSIONS RECORDED IN FIRESTORE.</p>
-              <p className="text-[10px]">Perform scan on mobile device or click + TEST SCAN above.</p>
+          ) : displayedScans.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 space-y-3 font-mono">
+              {modeTab === "LIVE" ? (
+                <>
+                  <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#35CBC3]" />
+                  <p className="text-xs font-bold text-white uppercase">LISTENING FOR INCOMING LIVE STREAMS...</p>
+                  <p className="text-[10.5px] text-slate-400">
+                    Sesi live console aktif dibuka. Skrining biometrik baru akan tampil otomatis di sini.
+                  </p>
+                  {scans.length > 0 && (
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={() => setModeTab("HISTORY")}
+                        className="px-3.5 py-1.5 rounded-xl bg-[#131C38] border border-[#35CBC3]/40 text-[#35CBC3] text-xs font-bold hover:text-white transition-all cursor-pointer"
+                      >
+                        Buka Tab Riwayat ({scans.length} Scan Lampau) →
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Clock className="w-6 h-6 mx-auto text-slate-500" />
+                  <p className="text-xs font-bold text-white uppercase">BELUM ADA DATA RIWAYAT SKRINING</p>
+                  <p className="text-[10px] text-slate-500">Database Firestore saat ini belum memiliki rekaman scan.</p>
+                </>
+              )}
             </div>
           ) : (
             <div className="space-y-3 pt-1 font-mono text-[11px]">
-              {scans.map((scan) => {
+              {displayedScans.map((scan) => {
                 const isSelected = selectedScan?.scanId === scan.scanId;
                 const formattedConf = formatConfidence(scan.azureVisionMetrics?.confidenceScore);
 
