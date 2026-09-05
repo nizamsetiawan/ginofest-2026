@@ -700,7 +700,15 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                             <QRCodeSVG
                               value={qrPayloadStr}
                               size={40}
-                              level="L"
+                              level="H"
+                              imageSettings={{
+                                src: "/logo_app.svg",
+                                x: undefined,
+                                y: undefined,
+                                height: 10,
+                                width: 10,
+                                excavate: true,
+                              }}
                             />
                           </div>
                           <span className={`text-[8.5px] font-black mt-1 tracking-tight ${
@@ -781,7 +789,15 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           menu: { name: selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal" }
                         })}
                         size={175}
-                        level="M"
+                        level="H"
+                        imageSettings={{
+                          src: "/logo_app.svg",
+                          x: undefined,
+                          y: undefined,
+                          height: 32,
+                          width: 32,
+                          excavate: true,
+                        }}
                       />
                     </div>
 
@@ -820,7 +836,15 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           menu: { name: selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal" }
                         })}
                         size={175}
-                        level="M"
+                        level="H"
+                        imageSettings={{
+                          src: "/logo_app.svg",
+                          x: undefined,
+                          y: undefined,
+                          height: 32,
+                          width: 32,
+                          excavate: true,
+                        }}
                       />
                     </div>
 
