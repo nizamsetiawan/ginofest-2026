@@ -87,7 +87,7 @@ export const ScreeningView: React.FC = () => {
   const [biometricList, setBiometricList] = useState<any[]>([]);
   const [isLoadingBiometric, setIsLoadingBiometric] = useState(false);
   const [biometricSearch, setBiometricSearch] = useState("");
-  const [biometricFilter, setBiometricFilter] = useState<"ALL" | "VALID" | "CLAIMED">("ALL");
+  const [biometricFilter, setBiometricFilter] = useState<"ALL" | "VALID" | "CLAIMED" | "EXPIRED">("ALL");
 
   // Tab 3: History Claims State
   const [historyList, setHistoryList] = useState<QrClaimRecord[]>([]);
@@ -96,6 +96,21 @@ export const ScreeningView: React.FC = () => {
 
   // Fullscreen Photo Lightbox Preview State
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string } | null>(null);
+
+  const checkIsExpired = (item: any): boolean => {
+    if (!item) return false;
+    if (item.status === "CLAIMED") return false;
+    if (item.status === "EXPIRED") return true;
+    if (item.expiresAt) {
+      const expTime = new Date(item.expiresAt).getTime();
+      if (!isNaN(expTime) && Date.now() > expTime) return true;
+    }
+    if (item.createdAt) {
+      const createdTime = new Date(item.createdAt).getTime();
+      if (!isNaN(createdTime) && Date.now() - createdTime > 24 * 60 * 60 * 1000) return true;
+    }
+    return false;
+  };
 
   // Explicit function to stop camera media tracks and release hardware sensor (Save Battery & Power)
   const stopCamera = useCallback(() => {
@@ -132,6 +147,18 @@ export const ScreeningView: React.FC = () => {
 
       // Stop camera hardware sensor immediately upon valid QR detection to save power
       stopCamera();
+
+      // Check if barcode claim ID is expired in Firestore records
+      const scanDocRes = await fetchBiometricScansFromFirestore();
+      if (scanDocRes.success && scanDocRes.data) {
+        const match = scanDocRes.data.find(
+          (b: any) => b.claimId === parsed.claimId || b.scanId === parsed.claimId || b.id === parsed.claimId
+        );
+        if (match && checkIsExpired(match)) {
+          setErrorMessage(`❌ Barcode Klaim ID #${parsed.claimId} telah KADALUARSA (Melebihi 24 Jam). Minta warga melakukan skrining AI ulang.`);
+          return;
+        }
+      }
 
       // Sync live citizen profile from Firestore (kcal_masyarakat) if email exists
       if (parsed.beneficiary.email) {
@@ -368,11 +395,16 @@ export const ScreeningView: React.FC = () => {
     const q = biometricSearch.toLowerCase();
     const matchesSearch = name.includes(q) || district.includes(q) || claimId.includes(q);
 
+    const isExpired = checkIsExpired(item);
+
     if (biometricFilter === "VALID") {
-      return matchesSearch && (item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS");
+      return matchesSearch && !isExpired && (item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS");
     }
     if (biometricFilter === "CLAIMED") {
       return matchesSearch && item.status === "CLAIMED";
+    }
+    if (biometricFilter === "EXPIRED") {
+      return matchesSearch && isExpired;
     }
     return matchesSearch;
   });
@@ -749,7 +781,7 @@ export const ScreeningView: React.FC = () => {
                   }`}
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Tersedia ({biometricList.filter((b) => b.status === "VALID" || b.status === "SCANNING_IN_PROGRESS").length})</span>
+                <span>Tersedia ({biometricList.filter((b) => !checkIsExpired(b) && (b.status === "VALID" || b.status === "SCANNING_IN_PROGRESS")).length})</span>
               </button>
 
               <button
@@ -760,6 +792,16 @@ export const ScreeningView: React.FC = () => {
                   }`}
               >
                 <span>Sudah Diambil ({biometricList.filter((b) => b.status === "CLAIMED").length})</span>
+              </button>
+
+              <button
+                onClick={() => setBiometricFilter("EXPIRED")}
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${biometricFilter === "EXPIRED"
+                    ? "bg-amber-600 text-white shadow-xs"
+                    : "bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100"
+                  }`}
+              >
+                <span>Kadaluarsa ({biometricList.filter((b) => checkIsExpired(b)).length})</span>
               </button>
 
               <button
@@ -790,8 +832,9 @@ export const ScreeningView: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {filteredBiometric.map((item) => {
+                const isExpired = checkIsExpired(item);
                 const isClaimed = item.status === "CLAIMED";
-                const isValid = item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS";
+                const isValid = !isExpired && (item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS");
                 const photos = item.photos || {};
                 const blobUrls = item.blobUrls || {};
 
@@ -803,7 +846,9 @@ export const ScreeningView: React.FC = () => {
                 return (
                   <div
                     key={item.id || item.scanId}
-                    className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-4 hover:border-slate-300 transition-all"
+                    className={`bg-white p-5 rounded-3xl border shadow-xs space-y-4 hover:border-slate-300 transition-all ${
+                      isExpired ? "border-amber-200 bg-amber-50/20" : "border-slate-200"
+                    }`}
                   >
                     {/* Card Header: Warga Identity & Claim Status Pill */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
@@ -831,6 +876,11 @@ export const ScreeningView: React.FC = () => {
 
                       {/* Status Badge */}
                       <div className="flex items-center gap-2 self-start sm:self-auto">
+                        {isExpired && (
+                          <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-extrabold text-[11px] border border-amber-300 flex items-center gap-1.5 shadow-xs">
+                            <span>Kadaluarsa (Melebihi 24 Jam)</span>
+                          </span>
+                        )}
                         {isValid && (
                           <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[11px] border border-emerald-300 flex items-center gap-1.5 shadow-xs">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />

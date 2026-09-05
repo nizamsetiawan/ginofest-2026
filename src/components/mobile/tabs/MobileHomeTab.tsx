@@ -137,18 +137,53 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [selectedDetailScan, setSelectedDetailScan] = useState<any | null>(null);
   const [previewHistoryPhoto, setPreviewHistoryPhoto] = useState<{ url: string; title: string } | null>(null);
 
+  const checkIsExpired = (item: any): boolean => {
+    if (!item) return false;
+    if (item.status === "CLAIMED") return false;
+    if (item.status === "EXPIRED") return true;
+
+    const now = Date.now();
+    if (item.expiresAt) {
+      const expTime = new Date(item.expiresAt).getTime();
+      if (!isNaN(expTime) && now > expTime) return true;
+    }
+
+    if (item.createdAt) {
+      const createdTime = new Date(item.createdAt).getTime();
+      if (!isNaN(createdTime) && now - createdTime > 24 * 60 * 60 * 1000) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   useEffect(() => {
     setIsLoadingUserScans(true);
     fetchUserScansAndClaimsFromFirestore(citizenUser?.email, citizenUser?.name).then((res) => {
-      if (res.success) {
+      if (res.success && res.data) {
         setUserScansHistory(res.data);
+
+        // Auto-emit notification for expired barcodes if not claimed
+        res.data.forEach((scan: any) => {
+          if (scan.status !== "CLAIMED" && checkIsExpired(scan) && citizenUser?.email) {
+            const claimId = scan.claimId || scan.scanId || scan.id;
+            const menuTitle = scan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal";
+            addNotification({
+              title: "Kode Barcode MBG Kadaluarsa",
+              description: `Masa berlaku Barcode Klaim #${claimId} (${menuTitle}) telah berakhir (melebihi 24 jam). Silakan lakukan skrining biometrik gizi ulang.`,
+              category: "mbg",
+              userEmail: citizenUser.email.trim().toLowerCase(),
+            }).catch(() => null);
+          }
+        });
       }
       setIsLoadingUserScans(false);
     });
   }, [showHistoryModal, citizenUser?.email, citizenUser?.name]);
 
   const unclaimedCount = userScansHistory.filter(
-    (item) => item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS" || (item.status !== "CLAIMED" && item.status !== "EXPIRED")
+    (item) => item.status !== "CLAIMED" && !checkIsExpired(item)
   ).length;
   const [showChatModal, setShowChatModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -596,8 +631,9 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   </div>
                 ) : (
                   userScansHistory.map((item) => {
+                    const isExpired = checkIsExpired(item);
                     const isClaimed = item.status === "CLAIMED";
-                    const isValid = item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS";
+                    const isValid = !isExpired && (item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS");
                     const claimCode = item.claimId || item.scanId || item.id;
                     const menuTitle = item.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening";
 
@@ -611,11 +647,18 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       <div
                         key={item.id || item.scanId}
                         onClick={() => setSelectedDetailScan(item)}
-                        className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:border-[#0FA89B]/60 transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99]"
+                        className={`p-3.5 rounded-2xl bg-white border shadow-xs hover:border-[#0FA89B]/60 transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99] ${
+                          isExpired ? "border-amber-200 bg-amber-50/30" : "border-slate-200/90"
+                        }`}
                       >
                         {/* Left Content Column (Article Style) */}
                         <div className="min-w-0 flex-1 space-y-1 text-left">
                           <div className="flex items-center gap-1.5 flex-wrap">
+                            {isExpired && (
+                              <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[9.5px] font-black border border-amber-300">
+                                Kadaluarsa
+                              </span>
+                            )}
                             {isValid && (
                               <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-black border border-emerald-200">
                                 Tersedia
@@ -646,15 +689,25 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                         </div>
 
                         {/* Right Column: Barcode / QR Code Preview Thumbnail (Article Style) */}
-                        <div className="shrink-0 flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-100/80 group-hover:scale-105 transition-transform">
-                          <div className="w-12 h-12 bg-white rounded-lg p-1 border border-teal-200 shadow-2xs flex items-center justify-center">
+                        <div className={`shrink-0 flex flex-col items-center justify-center p-2 rounded-xl border group-hover:scale-105 transition-transform ${
+                          isExpired 
+                            ? "bg-amber-100/50 border-amber-200" 
+                            : "bg-gradient-to-br from-teal-50 to-emerald-50 border-teal-100/80"
+                        }`}>
+                          <div className={`w-12 h-12 bg-white rounded-lg p-1 border shadow-2xs flex items-center justify-center relative ${
+                            isExpired ? "border-amber-300 opacity-50 grayscale" : "border-teal-200"
+                          }`}>
                             <QRCodeSVG
                               value={qrPayloadStr}
                               size={40}
                               level="L"
                             />
                           </div>
-                          <span className="text-[8.5px] font-black text-[#0FA89B] mt-1 tracking-tight">QR KLAIM</span>
+                          <span className={`text-[8.5px] font-black mt-1 tracking-tight ${
+                            isExpired ? "text-amber-800" : "text-[#0FA89B]"
+                          }`}>
+                            {isExpired ? "KADALUARSA" : "QR KLAIM"}
+                          </span>
                         </div>
                       </div>
                     );
@@ -702,6 +755,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-[10.5px] font-black border border-blue-300">
                       Sudah Diambil
                     </span>
+                  ) : checkIsExpired(selectedDetailScan) ? (
+                    <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-[10.5px] font-black border border-amber-300">
+                      Kadaluarsa (Melebihi 24 Jam)
+                    </span>
                   ) : (
                     <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10.5px] font-black border border-emerald-300">
                       Tersedia (Belum Diambil)
@@ -710,86 +767,127 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 </div>
 
                 {/* Hero Scannable Barcode / QR Code Card */}
-                <div className="p-5 rounded-3xl bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-teal-500/10 border border-teal-200 text-center space-y-3 relative overflow-hidden">
-                  <span className="text-[11px] font-extrabold text-[#0FA89B] uppercase tracking-wider block">
-                    Kode Barcode / QR Code Klaim MBG
+                {checkIsExpired(selectedDetailScan) ? (
+                  <div className="p-5 rounded-3xl bg-amber-50 border border-amber-200 text-center space-y-3 relative overflow-hidden">
+                    <span className="text-[11px] font-extrabold text-amber-800 uppercase tracking-wider block">
+                      Kode QR Klaim MBG (Kadaluarsa)
+                    </span>
+                    
+                    <div className="inline-block p-3.5 bg-white rounded-2xl border border-amber-300 shadow-md relative opacity-40 grayscale">
+                      <QRCodeSVG
+                        value={JSON.stringify({
+                          claimId: selectedDetailScan.claimId || selectedDetailScan.scanId || selectedDetailScan.id,
+                          beneficiary: { name: userName, email: citizenUser?.email || "-", district: userDistrict },
+                          menu: { name: selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal" }
+                        })}
+                        size={175}
+                        level="M"
+                      />
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-amber-100/90 border border-amber-200 text-left space-y-1">
+                      <p className="text-[11.5px] font-extrabold text-amber-950">
+                        ⚠️ Barcode Telah Kadaluarsa!
+                      </p>
+                      <p className="text-[10.5px] text-amber-900 leading-relaxed font-medium">
+                        Kode QR klaim makanan ini telah melebihi batas waktu 24 jam. Silakan lakukan Skrining AI Ulang untuk mendapatkan rekomendasi menu dan barcode klaim yang baru.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedDetailScan(null);
+                        setShowHistoryModal(false);
+                        setActiveTab("screening");
+                      }}
+                      className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 text-white font-black text-xs shadow-md hover:brightness-105 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      Mulai Skrining AI Ulang →
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-5 rounded-3xl bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-teal-500/10 border border-teal-200 text-center space-y-3 relative overflow-hidden">
+                    <span className="text-[11px] font-extrabold text-[#0FA89B] uppercase tracking-wider block">
+                      Kode Barcode / QR Code Klaim MBG
+                    </span>
+                    
+                    <div className="inline-block p-3.5 bg-white rounded-2xl border border-teal-200 shadow-md">
+                      <QRCodeSVG
+                        value={JSON.stringify({
+                          claimId: selectedDetailScan.claimId || selectedDetailScan.scanId || selectedDetailScan.id,
+                          beneficiary: { name: userName, email: citizenUser?.email || "-", district: userDistrict },
+                          menu: { name: selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal" }
+                        })}
+                        size={175}
+                        level="M"
+                      />
+                    </div>
+
+                    <p className="text-[11px] text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
+                      Tunjukkan kode QR ini kepada Petugas SPPG Kec. {userDistrict} untuk validasi penyerahan porsi makanan.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Recommended Menu & Nutrition */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
+                    Rekomendasi Menu Gizi AI
                   </span>
-                  
-                  <div className="inline-block p-3.5 bg-white rounded-2xl border border-teal-200 shadow-md">
-                    <QRCodeSVG
-                      value={JSON.stringify({
-                        claimId: selectedDetailScan.claimId || selectedDetailScan.scanId || selectedDetailScan.id,
-                        beneficiary: { name: userName, email: citizenUser?.email || "-", district: userDistrict },
-                        menu: { name: selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Bergizi Kcal" }
-                      })}
-                      size={175}
-                      level="M"
-                    />
-                  </div>
-
-                  <p className="text-[11px] text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
-                    Tunjukkan kode QR ini kepada Petugas SPPG Kec. {userDistrict} untuk validasi penyerahan porsi makanan.
-                  </p>
+                  <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
+                    {selectedDetailScan.recommendedMenu?.akgPercentage || 50}% AKG
+                  </span>
                 </div>
-
-                {/* Recommended Menu & Nutrition */}
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
-                      Rekomendasi Menu Gizi AI
-                    </span>
-                    <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
-                      {selectedDetailScan.recommendedMenu?.akgPercentage || 50}% AKG
-                    </span>
+                <h4 className="text-[14px] font-black text-slate-800">
+                  {selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening"}
+                </h4>
+                <div className="grid grid-cols-3 gap-2 text-center pt-1">
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                    <span className="text-[9px] font-bold text-slate-400 block">KALORI</span>
+                    <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.calories || 680} kkal</span>
                   </div>
-                  <h4 className="text-[14px] font-black text-slate-800">
-                    {selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening"}
-                  </h4>
-                  <div className="grid grid-cols-3 gap-2 text-center pt-1">
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[9px] font-bold text-slate-400 block">KALORI</span>
-                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.calories || 680} kkal</span>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[9px] font-bold text-slate-400 block">PROTEIN</span>
-                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.proteinGram || 31} g</span>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[9px] font-bold text-slate-400 block">ZAT BESI</span>
-                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.ironMg || 6} mg</span>
-                    </div>
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                    <span className="text-[9px] font-bold text-slate-400 block">PROTEIN</span>
+                    <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.proteinGram || 31} g</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                    <span className="text-[9px] font-bold text-slate-400 block">ZAT BESI</span>
+                    <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.ironMg || 6} mg</span>
                   </div>
                 </div>
+              </div>
 
-                {/* 4 Biometric Azure Photo Thumbnails */}
-                <div className="space-y-2">
-                  <span className="text-[11px] font-extrabold text-slate-600 block">Bukti Foto Biometrik Azure</span>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[
-                      { label: "Wajah", url: selectedDetailScan.photos?.faceBase64 || selectedDetailScan.blobUrls?.faceBlobUrl, icon: "👤" },
-                      { label: "Mata", url: selectedDetailScan.photos?.eyeBase64 || selectedDetailScan.blobUrls?.eyeBlobUrl, icon: "👁️" },
-                      { label: "Tangan", url: selectedDetailScan.photos?.handBase64 || selectedDetailScan.blobUrls?.handBlobUrl, icon: "✋" },
-                      { label: "Kuku", url: selectedDetailScan.photos?.nailBase64 || selectedDetailScan.blobUrls?.nailBlobUrl, icon: "💅" },
-                    ].map((p, i) => (
-                      <div key={i} className="space-y-1 text-center">
-                        <div
-                          onClick={() => {
-                            if (p.url) {
-                              setPreviewHistoryPhoto({ url: p.url, title: `Foto ${p.label} Biometrik` });
-                            }
-                          }}
-                          className={`w-full aspect-square rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${p.url ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""}`}
-                        >
-                          {p.url ? (
-                            <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                          ) : (
-                            <span className="text-base">{p.icon}</span>
-                          )}
-                        </div>
-                        <span className="text-[9px] font-bold text-slate-600 block">{p.label}</span>
+              {/* 4 Biometric Azure Photo Thumbnails */}
+              <div className="space-y-2">
+                <span className="text-[11px] font-extrabold text-slate-600 block">Bukti Foto Biometrik Azure</span>
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { label: "Wajah", url: selectedDetailScan.photos?.faceBase64 || selectedDetailScan.blobUrls?.faceBlobUrl, icon: "👤" },
+                    { label: "Mata", url: selectedDetailScan.photos?.eyeBase64 || selectedDetailScan.blobUrls?.eyeBlobUrl, icon: "👁️" },
+                    { label: "Tangan", url: selectedDetailScan.photos?.handBase64 || selectedDetailScan.blobUrls?.handBlobUrl, icon: "✋" },
+                    { label: "Kuku", url: selectedDetailScan.photos?.nailBase64 || selectedDetailScan.blobUrls?.nailBlobUrl, icon: "💅" },
+                  ].map((p, i) => (
+                    <div key={i} className="space-y-1 text-center">
+                      <div
+                        onClick={() => {
+                          if (p.url) {
+                            setPreviewHistoryPhoto({ url: p.url, title: `Foto ${p.label} Biometrik` });
+                          }
+                        }}
+                        className={`w-full aspect-square rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${p.url ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""}`}
+                      >
+                        {p.url ? (
+                          <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        ) : (
+                          <span className="text-base">{p.icon}</span>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                      <span className="text-[9px] font-bold text-slate-600 block">{p.label}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
