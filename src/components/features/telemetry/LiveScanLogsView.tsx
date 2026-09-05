@@ -256,6 +256,28 @@ export const LiveScanLogsView: React.FC = () => {
 
   return (
     <div className="space-y-5 font-mono select-none pb-12 bg-white text-slate-800 p-4 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xs">
+      {/* Banner Notifikasi Tab Baru */}
+      <div className="p-4 rounded-2xl bg-purple-50/90 border border-purple-200 text-purple-900 font-mono text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold shrink-0 border border-purple-200">
+            <ExternalLink className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="font-extrabold text-purple-900">Console Terminal IDE telah dibuka di Tab Baru Browser</p>
+            <p className="text-[11px] text-purple-700">Tampilan log real-time penuh (<code className="bg-purple-100 px-1.5 py-0.5 rounded font-bold">/pemerintah/console</code>) berjalan di tab terpisah.</p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => window.open("/pemerintah/console", "_blank")}
+          className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-xs shrink-0"
+        >
+          <ExternalLink className="w-3.5 h-3.5" />
+          <span>Buka Ulang Full Console ↗</span>
+        </button>
+      </div>
+
       {/* ═══ 1. LIVE CONSOLE TERMINAL HEADER ═══ */}
       <div className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-4">
         {/* Terminal Title Bar */}

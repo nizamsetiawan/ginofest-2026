@@ -186,6 +186,9 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
   const bottomItems = filteredItems.filter((i) => i.section === "bottom");
 
   const handleSelectNav = (key: NavKey) => {
+    if (key === "telemetry_logs") {
+      window.open("/pemerintah/console", "_blank");
+    }
     setActiveNav(key);
     if (searchTerm) {
       setSearchTerm("");
