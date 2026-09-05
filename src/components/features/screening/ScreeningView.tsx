@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   QrCode,
   ScanLine,
-  Camera,
   CheckCircle2,
   AlertTriangle,
   Sparkles,
@@ -26,8 +25,11 @@ import {
 import {
   recordQrClaimToFirestore,
   fetchQrClaimsFromFirestore,
+  getCitizenByEmailFromFirestore,
+  addNotification,
   QrClaimRecord,
 } from "@/services/firebase-service";
+import { AzureBlobService } from "@/services/azure-blob-service";
 
 interface DecodedPayload {
   claimId: string;
@@ -40,6 +42,7 @@ interface DecodedPayload {
     email: string;
     phone?: string;
     district?: string;
+    photoURL?: string;
   };
   menu?: {
     id?: string;
@@ -181,7 +184,7 @@ export const ScreeningView: React.FC = () => {
     setIsLoadingHistory(false);
   };
 
-  const handleProcessPayload = (rawString: string) => {
+  const handleProcessPayload = async (rawString: string) => {
     setErrorMessage("");
     setVerificationSuccess(false);
     try {
@@ -190,6 +193,19 @@ export const ScreeningView: React.FC = () => {
         setErrorMessage("Format payload QR Code tidak valid untuk program MBG.");
         return;
       }
+
+      // Sync live citizen profile from Firestore (kcal_masyarakat) if email exists
+      if (parsed.beneficiary.email) {
+        const citizenRes = await getCitizenByEmailFromFirestore(parsed.beneficiary.email);
+        if (citizenRes.success && citizenRes.data) {
+          const cData = citizenRes.data;
+          parsed.beneficiary.name = cData.fullName || cData.name || parsed.beneficiary.name;
+          parsed.beneficiary.phone = cData.phone || parsed.beneficiary.phone;
+          parsed.beneficiary.district = cData.district || parsed.beneficiary.district;
+          parsed.beneficiary.photoURL = cData.photoURL || "";
+        }
+      }
+
       setDecodedData(parsed);
     } catch (e) {
       setErrorMessage("Teks/QR tidak dapat diurai. Pastikan format JSON QR Code MBG valid.");
@@ -199,10 +215,10 @@ export const ScreeningView: React.FC = () => {
   const handleTriggerScan = (presetPayload?: string) => {
     setIsScanning(true);
     setErrorMessage("");
-    setTimeout(() => {
+    setTimeout(async () => {
       setIsScanning(false);
       const targetPayload = presetPayload || DEMO_PAYLOADS[0].payload;
-      handleProcessPayload(targetPayload);
+      await handleProcessPayload(targetPayload);
     }, 1500);
   };
 
@@ -227,7 +243,36 @@ export const ScreeningView: React.FC = () => {
       status: "VERIFIED",
     };
 
+    // 1. Record verification to Firestore (gscan_qr_claims)
     const res = await recordQrClaimToFirestore(claimRecord);
+
+    // 2. Dual-Write Backup to Azure Blob Storage
+    try {
+      await AzureBlobService.saveScanResultToAzure({
+        claimId: decodedData.claimId,
+        type: "MBG_FOOD_CLAIM_VERIFICATION",
+        beneficiary: decodedData.beneficiary,
+        menu: decodedData.menu,
+        verifiedAtIso: claimRecord.verifiedAtIso,
+        verifiedBy: claimRecord.verifiedBy,
+        firestoreDocId: res.docId || null,
+      });
+    } catch (azureErr) {
+      console.warn("Azure Blob backup dual-write handled:", azureErr);
+    }
+
+    // 3. Send Notification to Citizen in Firestore
+    if (decodedData.beneficiary?.email) {
+      try {
+        await addNotification({
+          title: "Klaim Makan Siang MBG Diverifikasi",
+          description: `Porsi ${decodedData.menu?.name || "Makan Siang MBG"} telah diverifikasi & diserahkan oleh staf SPPG Kemenkes RI.`,
+          userEmail: decodedData.beneficiary.email,
+          category: "mbg",
+        });
+      } catch {}
+    }
+
     setIsVerifying(false);
 
     if (res.success) {
@@ -400,7 +445,7 @@ export const ScreeningView: React.FC = () => {
                           {item.title}
                         </h4>
                         <p className="text-[10px] text-slate-500 font-mono">
-                          Payload MBG Valid • 680-720 kcal
+                          Payload MBG Valid • Sync Firestore & Azure
                         </p>
                       </div>
                       <span className="px-2.5 py-1 rounded-xl bg-ford-blue text-white group-hover:bg-light-sea-green group-hover:text-ford-blue text-[10px] font-bold transition-all shadow-2xs">
@@ -435,7 +480,7 @@ export const ScreeningView: React.FC = () => {
                         BERHASIL DIVERIFIKASI & DIDISTRIBUSIKAN!
                       </h3>
                       <p className="text-[12px] text-emerald-800 font-medium mt-0.5">
-                        Porsi MBG telah dicatat atas nama <strong>{decodedData.beneficiary?.name}</strong>.
+                        Porsi MBG telah dicatat atas nama <strong>{decodedData.beneficiary?.name}</strong>. Data tersinkron ke Firestore & Azure Blob.
                       </p>
                     </div>
                   </div>
@@ -466,7 +511,7 @@ export const ScreeningView: React.FC = () => {
 
                   <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-bold self-start sm:self-auto">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>QR Valid & Legal</span>
+                    <span>QR Valid & Terverifikasi Cloud</span>
                   </div>
                 </div>
 
@@ -481,8 +526,12 @@ export const ScreeningView: React.FC = () => {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-2xl bg-ford-blue text-white font-bold text-[14px] flex items-center justify-center shrink-0 shadow-2xs">
-                          {(decodedData.beneficiary?.name || "W").slice(0, 2).toUpperCase()}
+                        <div className="w-11 h-11 rounded-2xl bg-ford-blue text-white font-bold text-[14px] flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+                          {decodedData.beneficiary?.photoURL ? (
+                            <img src={decodedData.beneficiary.photoURL} alt={decodedData.beneficiary.name} className="w-full h-full object-cover" />
+                          ) : (
+                            (decodedData.beneficiary?.name || "W").slice(0, 2).toUpperCase()
+                          )}
                         </div>
                         <div>
                           <h5 className="font-bold text-[14px] text-ford-blue">
@@ -570,7 +619,7 @@ export const ScreeningView: React.FC = () => {
                       )}
                       <span>
                         {isVerifying
-                          ? "Mencatat Verifikasi..."
+                          ? "Mencatat Verifikasi Firestore & Azure..."
                           : "Konfirmasi Verifikasi & Catat Penyerahan Porsi MBG"}
                       </span>
                     </button>

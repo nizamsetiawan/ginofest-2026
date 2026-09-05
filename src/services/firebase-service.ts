@@ -1089,6 +1089,21 @@ export async function updateCitizenProfileInFirestore(
   }
 }
 
+export async function getCitizenByEmailFromFirestore(email: string): Promise<{ success: boolean; data?: any }> {
+  try {
+    const colRef = collection(db, "kcal_masyarakat");
+    const q = query(colRef, where("email", "==", email.trim().toLowerCase()));
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      return { success: false };
+    }
+    return { success: true, data: { id: snap.docs[0].id, ...snap.docs[0].data() } };
+  } catch (err) {
+    console.warn("Gagal get citizen by email:", err);
+    return { success: false };
+  }
+}
+
 export async function fetchComplaintsFromFirestore(): Promise<{ success: boolean; data: ComplaintRecord[] }> {
   try {
     const colRef = collection(db, "gscan_complaints");
