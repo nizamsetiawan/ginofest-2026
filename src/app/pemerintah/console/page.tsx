@@ -270,10 +270,6 @@ Timestamp: ${selectedScan.createdAt}
             <TerminalIcon className="w-5 h-5 text-[#35CBC3] animate-pulse" />
             <span className="uppercase text-sm">KCAL REALTIME AI LOG CONSOLE</span>
           </div>
-          <span className="px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/80 text-[10px] font-bold flex items-center gap-1.5 font-mono">
-            <Radio className="w-3 h-3 text-emerald-400 animate-ping" />
-            LIVE STREAM ACTIVE
-          </span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -310,39 +306,40 @@ Timestamp: ${selectedScan.createdAt}
               <button
                 type="button"
                 onClick={() => { setLogTab("NODES"); setModeTab("LIVE"); }}
-                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer flex items-center gap-2 ${
                   logTab === "NODES" && modeTab === "LIVE"
                     ? "bg-[#1E2950] text-[#35CBC3] border border-[#35CBC3]/50 shadow-[0_0_10px_rgba(53,203,195,0.2)]"
                     : "bg-[#090D18] text-slate-400 border border-slate-800 hover:text-slate-200"
                 }`}
               >
-                <Radio className={`w-3 h-3 ${modeTab === "LIVE" ? "text-emerald-400 animate-ping" : "text-slate-400"}`} />
+                <Radio className={`w-3.5 h-3.5 ${logTab === "NODES" && modeTab === "LIVE" ? "text-emerald-400 animate-ping" : "text-slate-400"}`} />
                 <span>LIVE STREAM ({liveScansCount})</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => { setLogTab("NODES"); setModeTab("HISTORY"); }}
-                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer flex items-center gap-2 ${
                   logTab === "NODES" && modeTab === "HISTORY"
                     ? "bg-[#1E2950] text-[#35CBC3] border border-[#35CBC3]/50 shadow-[0_0_10px_rgba(53,203,195,0.2)]"
                     : "bg-[#090D18] text-slate-400 border border-slate-800 hover:text-slate-200"
                 }`}
               >
-                <Clock className="w-3 h-3 text-[#35CBC3]" />
+                <Clock className="w-3.5 h-3.5 text-[#35CBC3]" />
                 <span>RIWAYAT ({scans.length})</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setLogTab("VERCEL")}
-                className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer ${
+                className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer flex items-center gap-2 ${
                   logTab === "VERCEL"
                     ? "bg-[#1E2950] text-[#35CBC3] border border-[#35CBC3]/50 shadow-[0_0_10px_rgba(53,203,195,0.2)]"
                     : "bg-[#090D18] text-slate-400 border border-slate-800 hover:text-slate-200"
                 }`}
               >
-                VERCEL CLOUD LOGS ({vercelLogs.length})
+                <Activity className="w-3.5 h-3.5 text-[#35CBC3]" />
+                <span>VERCEL CLOUD LOGS ({vercelLogs.length})</span>
               </button>
             </div>
 
