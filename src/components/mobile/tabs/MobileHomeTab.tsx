@@ -164,6 +164,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [notifications, setNotifications] = useState<FirestoreNotification[]>([]);
   const [isLoadingNotifs, setIsLoadingNotifs] = useState(true);
   const [activeNotifFilter, setActiveNotifFilter] = useState<"semua" | "mbg" | "screening" | "system">("semua");
+  const [selectedNotifDetail, setSelectedNotifDetail] = useState<FirestoreNotification | null>(null);
 
   useEffect(() => {
     const email = citizenUser?.email || "nizam@gmail.com";
@@ -788,7 +789,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             transition={{ type: "spring", damping: 25, stiffness: 280 }}
             className="fixed inset-0 z-50 bg-white flex flex-col h-full w-full overflow-hidden"
           >
-            {/* 1. TOP NAVBAR / HEADER (SIMPLE & MINIMALIST) */}
+            {/* 1. TOP NAVBAR / HEADER (ICON ONLY BACK BUTTON) */}
             <div className="bg-white border-b border-slate-200/80 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
               <button
                 type="button"
@@ -796,10 +797,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   triggerHaptic();
                   setShowNotificationModal(false);
                 }}
-                className="flex items-center gap-1.5 text-slate-700 hover:text-slate-900 font-extrabold text-[13px] active:scale-95 transition-all cursor-pointer bg-slate-100/80 hover:bg-slate-200/80 px-3 py-1.5 rounded-full"
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                title="Kembali"
               >
-                <ArrowLeft className="w-4 h-4 text-slate-700 stroke-[2.5]" />
-                <span>Kembali</span>
+                <ArrowLeft className="w-4.5 h-4.5 text-slate-700 stroke-[2.5]" />
               </button>
 
               <h2 className="text-[15px] font-black text-slate-800 tracking-tight">
@@ -823,7 +824,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               </div>
             </div>
 
-            {/* 2. CATEGORY PILL FILTER TABS (MATCHING USER DEMO IMAGE) */}
+            {/* 2. CATEGORY PILL FILTER TABS */}
             <div className="bg-white border-b border-slate-100 px-4 py-2.5 flex items-center gap-2 overflow-x-auto shrink-0 scrollbar-none">
               {[
                 { id: "semua", label: "Semua", count: notifications.length },
@@ -872,13 +873,15 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   <div
                     key={notif.id}
                     onClick={() => {
+                      triggerHaptic();
                       if (!notif.isRead) {
                         markNotificationRead(notif.id, citizenUser?.email || "nizam@gmail.com");
                       }
+                      setSelectedNotifDetail(notif);
                     }}
                     className={`p-3 rounded-2xl border transition-all cursor-pointer relative space-y-1 ${
                       notif.isRead
-                        ? "bg-white border-slate-150 opacity-75"
+                        ? "bg-white border-slate-150 opacity-75 hover:bg-slate-50/60"
                         : "bg-teal-50/20 border-[#0FA89B]/30 shadow-2xs hover:border-[#0FA89B]"
                     }`}
                   >
@@ -927,12 +930,105 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     <h4 className="text-[12.5px] font-extrabold text-slate-800 leading-snug">
                       {notif.title}
                     </h4>
-                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium line-clamp-2">
                       {notif.description}
                     </p>
                   </div>
                 ))
               )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* ═══ SUB-PAGE: DETAIL PEMBERITAHUAN (CLEAN & MINIMALIST) ═══    */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {selectedNotifDetail && (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 280 }}
+            className="fixed inset-0 z-50 bg-white flex flex-col h-full w-full overflow-hidden"
+          >
+            {/* 1. TOP HEADER (ICON ONLY BACK BUTTON) */}
+            <div className="bg-white border-b border-slate-200/80 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic();
+                  setSelectedNotifDetail(null);
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                title="Kembali"
+              >
+                <ArrowLeft className="w-4.5 h-4.5 text-slate-700 stroke-[2.5]" />
+              </button>
+
+              <h2 className="text-[15px] font-black text-slate-800 tracking-tight">
+                Detail Pemberitahuan
+              </h2>
+
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic();
+                  deleteNotification(selectedNotifDetail.id);
+                  setSelectedNotifDetail(null);
+                }}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
+                title="Hapus Notifikasi"
+              >
+                <Trash2 className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            {/* 2. DETAIL CONTENT CARD */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 max-w-md mx-auto w-full pb-24 bg-white">
+              <div className="p-4 rounded-3xl border border-slate-200/90 bg-slate-50/50 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider ${
+                      selectedNotifDetail.category === "mbg"
+                        ? "bg-amber-100 text-amber-800"
+                        : selectedNotifDetail.category === "screening"
+                        ? "bg-teal-100 text-teal-800"
+                        : "bg-slate-200 text-slate-700"
+                    }`}
+                  >
+                    {selectedNotifDetail.category || "sistem"}
+                  </span>
+
+                  <span className="text-[10px] text-slate-400 font-bold">
+                    {selectedNotifDetail.createdAtIso
+                      ? new Date(selectedNotifDetail.createdAtIso).toLocaleString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }) + " WIB"
+                      : "Baru saja"}
+                  </span>
+                </div>
+
+                <h3 className="text-[15px] font-black text-slate-800 leading-snug">
+                  {selectedNotifDetail.title}
+                </h3>
+
+                <div className="h-px bg-slate-200/80 w-full" />
+
+                <p className="text-[12px] text-slate-600 leading-relaxed font-medium">
+                  {selectedNotifDetail.description}
+                </p>
+
+                <div className="pt-2 flex items-center justify-between text-[10px] text-slate-400 font-semibold border-t border-slate-200/60">
+                  <span>ID: {selectedNotifDetail.id}</span>
+                  <span className="text-[#0FA89B] font-bold">● Terverifikasi Firestore Cloud</span>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
