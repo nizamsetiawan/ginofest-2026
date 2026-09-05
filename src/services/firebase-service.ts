@@ -951,6 +951,7 @@ export async function fetchHelpQA() {
 // -------------------------------------------------------------
 export interface HelpChatMessage {
   id?: string;
+  userEmail?: string;
   sender: "user" | "bot";
   text: string;
   isAiGenerated?: boolean;
@@ -958,11 +959,13 @@ export interface HelpChatMessage {
   createdAtIso?: string;
 }
 
-export async function saveHelpChatMessage(msg: Omit<HelpChatMessage, "id">) {
+export async function saveHelpChatMessage(msg: Omit<HelpChatMessage, "id">, userEmail?: string) {
   try {
     const colRef = collection(db, "gscan_help_history");
+    const cleanEmail = (userEmail || msg.userEmail || "nizam@gmail.com").trim().toLowerCase();
     const docRef = await addDoc(colRef, {
       ...msg,
+      userEmail: cleanEmail,
       timestamp: serverTimestamp(),
       createdAtIso: new Date().toISOString(),
     });
@@ -973,12 +976,16 @@ export async function saveHelpChatMessage(msg: Omit<HelpChatMessage, "id">) {
   }
 }
 
-export async function fetchHelpChatHistory() {
+export async function fetchHelpChatHistory(userEmail?: string) {
   try {
     const colRef = collection(db, "gscan_help_history");
     const snap = await getDocs(colRef);
     if (!snap.empty) {
-      const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as HelpChatMessage));
+      const cleanEmail = userEmail ? userEmail.trim().toLowerCase() : "";
+      let items = snap.docs.map(d => ({ id: d.id, ...d.data() } as HelpChatMessage));
+      if (cleanEmail) {
+        items = items.filter(m => (m.userEmail || "").toLowerCase() === cleanEmail || !m.userEmail);
+      }
       items.sort((a, b) => {
         const ta = a.createdAtIso || "";
         const tb = b.createdAtIso || "";
@@ -993,11 +1000,17 @@ export async function fetchHelpChatHistory() {
   }
 }
 
-export async function clearHelpChatHistory() {
+export async function clearHelpChatHistory(userEmail?: string) {
   try {
     const colRef = collection(db, "gscan_help_history");
     const snap = await getDocs(colRef);
-    await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+    const cleanEmail = userEmail ? userEmail.trim().toLowerCase() : "";
+    const docsToDelete = snap.docs.filter(d => {
+      if (!cleanEmail) return true;
+      const data = d.data();
+      return (data.userEmail || "").toLowerCase() === cleanEmail || !data.userEmail;
+    });
+    await Promise.all(docsToDelete.map(d => deleteDoc(d.ref)));
     return { success: true };
   } catch (error: any) {
     console.error("Gagal hapus gscan_help_history:", error);

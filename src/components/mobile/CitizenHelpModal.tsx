@@ -93,6 +93,8 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     }
   }, [messages, isTyping, isOpen]);
 
+  const currentEmail = (citizenUser?.email || "nizam@gmail.com").trim().toLowerCase();
+
   // Load QA Commands & Chat History
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -126,8 +128,8 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
       setQaData(baseCommands);
     }
 
-    // 2. Load Chat History
-    const historyRes = await fetchHelpChatHistory();
+    // 2. Load Chat History locked by user email
+    const historyRes = await fetchHelpChatHistory(currentEmail);
     if (historyRes.success && historyRes.data && historyRes.data.length > 0) {
       const loadedMsgs: ChatMsg[] = historyRes.data.map((m, idx) => ({
         id: m.id || `msg_${idx}`,
@@ -141,7 +143,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     }
 
     setIsLoading(false);
-  }, []);
+  }, [currentEmail]);
 
   useEffect(() => {
     if (isOpen) {
@@ -177,10 +179,10 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     const botMsg: ChatMsg = {
       id: `bot_complaint_prompt_${Date.now()}`,
       sender: "bot",
-      text: `📝 Silakan jelaskan keluhan atau masukan Anda secara langsung di percakapan ini.\n\nTuliskan rincian kendala yang Anda alami (seperti porsi makanan, rasa, ketepatan waktu, atau kendala skrining).\n\n*Nama (${citizenUser?.name || "Warga Kebomas"}), email (${citizenUser?.email || "nizam@gmail.com"}), dan kecamatan (${citizenUser?.district || "Kebomas"}) Anda akan otomatis dilampirkan ke tiket aduan ini.*`,
+      text: `📝 Silakan jelaskan keluhan atau masukan Anda secara langsung di percakapan ini.\n\nTuliskan rincian kendala yang Anda alami (seperti porsi makanan, rasa, ketepatan waktu, atau kendala skrining).\n\n*Nama (${citizenUser?.name || "Warga Kebomas"}), email (${currentEmail}), dan kecamatan (${citizenUser?.district || "Kebomas"}) Anda akan otomatis dilampirkan ke tiket aduan ini.*`,
     };
     setMessages((prev) => [...prev, botMsg]);
-    saveHelpChatMessage({ sender: "bot", text: botMsg.text });
+    saveHelpChatMessage({ sender: "bot", text: botMsg.text }, currentEmail);
   };
 
   // Start Conversational Track Flow
@@ -190,7 +192,6 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     setIsAwaitingTrackSelection(true);
     setIsTyping(true);
 
-    const userEmail = (citizenUser?.email || "nizam@gmail.com").toLowerCase();
     const userName = (citizenUser?.name || "warga").toLowerCase();
 
     const res = await fetchComplaintsFromFirestore();
@@ -199,7 +200,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     if (res.success && res.data) {
       userComplaints = res.data.filter(
         (c) =>
-          (c.senderContact || "").toLowerCase() === userEmail ||
+          (c.senderContact || "").toLowerCase() === currentEmail ||
           (c.senderName || "").toLowerCase().includes(userName)
       );
       if (userComplaints.length === 0 && res.data.length > 0) {
@@ -214,10 +215,10 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
       const emptyBotMsg: ChatMsg = {
         id: `bot_track_empty_${Date.now()}`,
         sender: "bot",
-        text: `🔍 **Daftar Tiket Pengaduan Anda**\n\nBelum ada tiket pengaduan yang terdaftar atas email (${userEmail}).\n\n💡 Ketik "/komplain" untuk membuat laporan pengaduan baru secara langsung di percakapan ini.`,
+        text: `🔍 **Daftar Tiket Pengaduan Anda**\n\nBelum ada tiket pengaduan yang terdaftar atas email (${currentEmail}).\n\n💡 Ketik "/komplain" untuk membuat laporan pengaduan baru secara langsung di percakapan ini.`,
       };
       setMessages((prev) => [...prev, emptyBotMsg]);
-      saveHelpChatMessage({ sender: "bot", text: emptyBotMsg.text });
+      saveHelpChatMessage({ sender: "bot", text: emptyBotMsg.text }, currentEmail);
       setIsAwaitingTrackSelection(false);
       return;
     }
@@ -231,8 +232,8 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
         item.status === "selesai"
           ? "🟢 SELESAI"
           : item.status === "proses"
-          ? "🟡 DIPROSES SPPG"
-          : "🔵 BARU";
+            ? "🟡 DIPROSES SPPG"
+            : "🔵 BARU";
       const snippet = item.message.length > 45 ? item.message.substring(0, 45) + "..." : item.message;
 
       listText += `${emoji} **[${ticketCode}]** - ${item.category}\n   • Aduan: "${snippet}"\n   • Status: ${statusLabel}\n\n`;
@@ -247,7 +248,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     };
 
     setMessages((prev) => [...prev, botMsg]);
-    saveHelpChatMessage({ sender: "bot", text: botMsg.text });
+    saveHelpChatMessage({ sender: "bot", text: botMsg.text }, currentEmail);
   };
 
   // Execute Command Selection
@@ -268,7 +269,7 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
         text: "/track",
       };
       setMessages((prev) => [...prev, userMsg]);
-      saveHelpChatMessage({ sender: "user", text: "/track" });
+      saveHelpChatMessage({ sender: "user", text: "/track" }, currentEmail);
       handleConversationalTrackFlow();
       return;
     }
@@ -286,8 +287,8 @@ export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
     };
 
     setMessages((prev) => [...prev, userMsg, botMsg]);
-    saveHelpChatMessage({ sender: "user", text: userMsg.text });
-    saveHelpChatMessage({ sender: "bot", text: botMsg.text });
+    saveHelpChatMessage({ sender: "user", text: userMsg.text }, currentEmail);
+    saveHelpChatMessage({ sender: "bot", text: botMsg.text }, currentEmail);
   };
 
   // Call Gemini AI Assistant for freeform user questions
@@ -400,7 +401,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
         text: query,
       };
       setMessages((prev) => [...prev, userMsg]);
-      saveHelpChatMessage({ sender: "user", text: query });
+      saveHelpChatMessage({ sender: "user", text: query }, currentEmail);
       startComplaintFlow();
       return;
     }
@@ -412,7 +413,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
         text: query,
       };
       setMessages((prev) => [...prev, userMsg]);
-      saveHelpChatMessage({ sender: "user", text: query });
+      saveHelpChatMessage({ sender: "user", text: query }, currentEmail);
       handleConversationalTrackFlow();
       return;
     }
@@ -424,20 +425,19 @@ PERTANYAAN WARGA: "${userQuery}"`;
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    saveHelpChatMessage({ sender: "user", text: query });
+    saveHelpChatMessage({ sender: "user", text: query }, currentEmail);
 
     // Handle Active Complaint Input directly from chat
     if (isAwaitingComplaint && !query.startsWith("/")) {
       setIsAwaitingComplaint(false);
       setIsTyping(true);
 
-      const userEmail = citizenUser?.email || "nizam@gmail.com";
       const userName = citizenUser?.name || "Warga Kebomas";
       const userDistrict = citizenUser?.district || "Kebomas";
 
       const res = await saveComplaintToFirestore({
         senderName: userName,
-        senderContact: userEmail,
+        senderContact: currentEmail,
         category: "Pengaduan Warga (Chat)",
         message: query,
         district: userDistrict,
@@ -449,7 +449,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
           title: `Pengaduan Warga (${userName})`,
           description: `Pengaduan dari ${userName} (Kec. ${userDistrict}): "${query.substring(0, 80)}..."`,
           category: "user",
-          userEmail: userEmail,
+          userEmail: currentEmail,
         });
 
         const createdTicketId = res.ticketId || `ADUAN-${Date.now().toString().slice(-4)}`;
@@ -460,7 +460,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
         };
 
         setMessages((prev) => [...prev, confirmBotMsg]);
-        saveHelpChatMessage({ sender: "bot", text: confirmBotMsg.text });
+        saveHelpChatMessage({ sender: "bot", text: confirmBotMsg.text }, currentEmail);
       } else {
         const errorBotMsg: ChatMsg = {
           id: `bot_complaint_err_${Date.now()}`,
@@ -511,28 +511,27 @@ PERTANYAAN WARGA: "${userQuery}"`;
           matchedComplaint.status === "selesai"
             ? "🟢 SELESAI"
             : matchedComplaint.status === "proses"
-            ? "🟡 DIPROSES SPPG"
-            : "🔵 BARU (MENUNGGU VERIFIKASI)";
+              ? "🟡 DIPROSES SPPG"
+              : "🔵 BARU (MENUNGGU VERIFIKASI)";
 
         const createdDate = matchedComplaint.createdAtIso
           ? new Date(matchedComplaint.createdAtIso).toLocaleString("id-ID", {
-              dateStyle: "medium",
-              timeStyle: "short",
-            })
+            dateStyle: "medium",
+            timeStyle: "short",
+          })
           : "Baru saja";
 
         const detailBotMsg: ChatMsg = {
           id: `bot_track_detail_${Date.now()}`,
           sender: "bot",
-          text: `📋 **Detail Status Tiket: ${matchedTicketCode}**\n\n• **Pelapor**: ${matchedComplaint.senderName}\n• **Kecamatan**: ${matchedComplaint.district || citizenUser?.district || "Kebomas"}\n• **Kategori**: ${matchedComplaint.category}\n• **Status Tiket**: ${statusBadge}\n• **Rincian Aduan**: "${matchedComplaint.message}"\n• **Tanggal Dilaporkan**: ${createdDate}\n\n💬 **Tanggapan Resmi Tim SPPG / Dinkes**:\n${
-            matchedComplaint.responseNotes
+          text: `📋 **Detail Status Tiket: ${matchedTicketCode}**\n\n• **Pelapor**: ${matchedComplaint.senderName}\n• **Kecamatan**: ${matchedComplaint.district || citizenUser?.district || "Kebomas"}\n• **Kategori**: ${matchedComplaint.category}\n• **Status Tiket**: ${statusBadge}\n• **Rincian Aduan**: "${matchedComplaint.message}"\n• **Tanggal Dilaporkan**: ${createdDate}\n\n💬 **Tanggapan Resmi Tim SPPG / Dinkes**:\n${matchedComplaint.responseNotes
               ? `"${matchedComplaint.responseNotes}"`
               : "⏱️ Laporan Anda telah tersimpan di sistem dan sedang dalam proses verifikasi tim verifikator SPPG Kebomas."
-          }\n\n------------------------------------\n💡 Ketik "/track" untuk memantau tiket lain, atau "/komplain" untuk membuat laporan baru.`,
+            }\n\n------------------------------------\n💡 Ketik "/track" untuk memantau tiket lain, atau "/komplain" untuk membuat laporan baru.`,
         };
 
         setMessages((prev) => [...prev, detailBotMsg]);
-        saveHelpChatMessage({ sender: "bot", text: detailBotMsg.text });
+        saveHelpChatMessage({ sender: "bot", text: detailBotMsg.text }, currentEmail);
         return;
       }
     }
@@ -555,7 +554,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
           text: exactQa.answer,
         };
         setMessages((prev) => [...prev, botMsg]);
-        saveHelpChatMessage({ sender: "bot", text: botMsg.text });
+        saveHelpChatMessage({ sender: "bot", text: botMsg.text }, currentEmail);
         setIsTyping(false);
       }, 500);
       return;
@@ -572,7 +571,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
     };
 
     setMessages((prev) => [...prev, botMsg]);
-    saveHelpChatMessage({ sender: "bot", text: botMsg.text, isAiGenerated: true });
+    saveHelpChatMessage({ sender: "bot", text: botMsg.text, isAiGenerated: true }, currentEmail);
     setIsTyping(false);
   };
 
@@ -584,12 +583,11 @@ PERTANYAAN WARGA: "${userQuery}"`;
     handleHaptic();
     setIsSubmittingComplaint(true);
 
-    const userEmail = citizenUser?.email || "nizam@gmail.com";
     const userDistrict = citizenUser?.district || "Kebomas";
 
     const res = await saveComplaintToFirestore({
       senderName: complaintName || "Warga Kebomas",
-      senderContact: complaintContact || userEmail,
+      senderContact: complaintContact || currentEmail,
       category: complaintCategory,
       message: complaintMessage,
       district: userDistrict,
@@ -602,7 +600,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
         title: `Pengaduan Warga (${complaintCategory})`,
         description: `Pengaduan dari ${complaintName} (Kec. ${userDistrict}): "${complaintMessage.substring(0, 80)}..."`,
         category: "user",
-        userEmail: userEmail,
+        userEmail: currentEmail,
       });
 
       const ticketId = `ADUAN-${Date.now().toString().slice(-4)}`;
@@ -613,7 +611,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
       };
 
       setMessages((prev) => [...prev, confirmBotMsg]);
-      saveHelpChatMessage({ sender: "bot", text: confirmBotMsg.text });
+      saveHelpChatMessage({ sender: "bot", text: confirmBotMsg.text }, currentEmail);
 
       setComplaintMessage("");
       setIsComplaintModalOpen(false);
@@ -630,10 +628,9 @@ PERTANYAAN WARGA: "${userQuery}"`;
 
     const res = await fetchComplaintsFromFirestore();
     if (res.success && res.data) {
-      const cleanEmail = (citizenUser?.email || "nizam@gmail.com").toLowerCase();
       const userComplaints = res.data.filter(
         (c) =>
-          (c.senderContact || "").toLowerCase() === cleanEmail ||
+          (c.senderContact || "").toLowerCase() === currentEmail ||
           (c.senderName || "").toLowerCase().includes("warga")
       );
       setMyComplaints(userComplaints);
@@ -644,7 +641,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
   // Clear Chat History
   const handleClearHistory = async () => {
     handleHaptic();
-    await clearHelpChatHistory();
+    await clearHelpChatHistory(currentEmail);
     setMessages([DEFAULT_CITIZEN_GREETING]);
     setIsConfirmClearOpen(false);
   };
@@ -658,228 +655,184 @@ PERTANYAAN WARGA: "${userQuery}"`;
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: "100%" }}
         transition={{ type: "spring", damping: 26, stiffness: 280 }}
-        className="fixed inset-0 z-[100] bg-white h-screen w-screen flex flex-col overflow-hidden"
+        className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-hidden"
       >
-        {/* 1. TOP NAVBAR / HEADER */}
-        <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <button
-              type="button"
-              onClick={() => {
-                handleHaptic();
-                onClose();
-              }}
-              className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
-              title="Kembali"
-            >
-              <ArrowLeft className="w-5 h-5 text-slate-700 stroke-[2.5]" />
-            </button>
+        <div className="bg-[#F8FAFC] sm:rounded-3xl sm:border sm:border-slate-200/90 shadow-2xl h-full sm:h-[90vh] w-full max-w-5xl flex flex-col overflow-hidden relative">
+          {/* 1. TOP NAVBAR / HEADER */}
+          <div className="bg-white border-b border-slate-200/80 px-5 py-4 flex items-center justify-between sticky top-0 z-20 shrink-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                type="button"
+                onClick={() => {
+                  handleHaptic();
+                  onClose();
+                }}
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                title="Kembali"
+              >
+                <ArrowLeft className="w-5 h-5 text-slate-700 stroke-[2.2]" />
+              </button>
 
-            <div className="min-w-0">
-              <h2 className="text-[16px] font-black text-slate-800 tracking-tight leading-tight truncate">
+              <h2 className="text-[17px] font-black text-slate-800 tracking-tight leading-none truncate">
                 Pusat Bantuan &amp; FAQ
               </h2>
-              <p className="text-[10.5px] text-[#0FA89B] font-bold tracking-wide truncate">
-                Asisten AI &amp; Layanan Warga Kebomas
-              </p>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            {/* COMPLAINT BUTTON */}
-            <button
-              type="button"
-              onClick={startComplaintFlow}
-              className="px-2.5 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200/80 text-[11px] font-extrabold flex items-center gap-1.5 cursor-pointer transition-colors"
-              title="Kirim Pengaduan"
-            >
-              <MessageSquarePlus className="w-3.5 h-3.5 text-amber-600 stroke-[2.3]" />
-              <span className="hidden sm:inline">Lapor</span>
-            </button>
-
-            {/* TRACK BUTTON */}
-            <button
-              type="button"
-              onClick={() => handleSendMessage("/track")}
-              className="px-2.5 py-1.5 rounded-full bg-teal-50 hover:bg-teal-100 text-[#0FA89B] border border-teal-200/80 text-[11px] font-extrabold flex items-center gap-1.5 cursor-pointer transition-colors"
-              title="Lacak Aduan"
-            >
-              <Clock className="w-3.5 h-3.5 text-[#0FA89B] stroke-[2.3]" />
-              <span className="hidden sm:inline">Track</span>
-            </button>
-
-            {/* CLEAR HISTORY BUTTON */}
-            <button
-              type="button"
-              onClick={() => {
-                handleHaptic();
-                setIsConfirmClearOpen(true);
-              }}
-              className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
-              title="Bersihkan Chat"
-            >
-              <Trash2 className="w-4 h-4 stroke-[2]" />
-            </button>
-          </div>
-        </div>
-
-        {/* 2. TOP QUICK PROMPTS CHIPS BAR */}
-        <div className="bg-slate-50 border-b border-slate-200/60 px-3.5 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
-          {[
-            { label: "📢 Kirim Pengaduan", cmd: "/komplain" },
-            { label: "🔍 Lacak Status Aduan", cmd: "/track" },
-            { label: "🩺 Skrining Biometrik", cmd: "/skrining" },
-            { label: "📞 Dukungan Helpdesk", cmd: "/kontak" },
-            { label: "💡 Topik Sering Ditanyakan", cmd: "/faq" },
-          ].map((prompt, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => handleSendMessage(prompt.cmd)}
-              className="px-3 py-1.5 rounded-full bg-white hover:bg-teal-50 border border-slate-200 text-slate-700 hover:text-[#0FA89B] hover:border-[#0FA89B]/40 text-[11px] font-bold whitespace-nowrap cursor-pointer transition-all shadow-2xs shrink-0"
-            >
-              {prompt.label}
-            </button>
-          ))}
-        </div>
-
-        {/* 3. MAIN CHAT STREAM AREA */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-white relative">
-          {isLoading ? (
-            <div className="py-20 text-center space-y-3 text-slate-400">
-              <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#0FA89B]" />
-              <p className="text-xs font-bold">Memuat Pusat Bantuan Warga...</p>
-            </div>
-          ) : (
-            messages.map((msg) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex items-start gap-2.5 ${
-                  msg.sender === "user" ? "justify-end" : "justify-start"
-                }`}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* TRASH / HAPUS BUTTON ONLY */}
+              <button
+                type="button"
+                onClick={() => {
+                  handleHaptic();
+                  setIsConfirmClearOpen(true);
+                }}
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                title="Bersihkan Chat"
               >
-                {msg.sender === "bot" && (
-                  <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-[#0FA89B] to-[#0B7E74] text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
-                    <Bot className="w-4 h-4 stroke-[2.2]" />
-                  </div>
-                )}
+                <Trash2 className="w-4.5 h-4.5 stroke-[2]" />
+              </button>
+            </div>
+          </div>
 
-                <div
-                  className={`max-w-[84%] sm:max-w-[78%] p-3.5 rounded-2xl text-[12.5px] leading-relaxed whitespace-pre-line ${
-                    msg.sender === "user"
-                      ? "bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-bold rounded-tr-xs shadow-sm"
-                      : "bg-slate-50 border border-slate-200/80 text-slate-800 font-medium rounded-tl-xs shadow-2xs"
+          {/* 2. MAIN CHAT STREAM AREA */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-[#F8FAFC] relative">
+            {isLoading ? (
+              <div className="py-20 text-center space-y-3 text-slate-400">
+                <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#52D4C5]" />
+                <p className="text-xs font-bold">Memuat Pusat Bantuan Kcal...</p>
+              </div>
+            ) : (
+              messages.map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex items-start gap-3 ${
+                    msg.sender === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
-                  {msg.text}
+                  {msg.sender === "bot" && (
+                    <>
+                      <div className="w-9 h-9 rounded-full bg-[#52D4C5] text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
+                        <Bot className="w-5 h-5 stroke-[2.2]" />
+                      </div>
 
-                  {msg.isAiGenerated && (
-                    <div className="mt-2 pt-1.5 border-t border-slate-200/60 flex items-center gap-1 text-[10px] font-extrabold text-[#0FA89B]">
-                      <Sparkles className="w-3 h-3 text-[#0FA89B]" />
-                      <span>Jawaban Otomatis AI Gemini</span>
-                    </div>
+                      <div className="max-w-[88%] sm:max-w-[80%] bg-white border border-slate-200/90 p-4 sm:p-5 rounded-2xl sm:rounded-3xl text-[13px] leading-relaxed text-slate-800 shadow-2xs whitespace-pre-line font-medium space-y-1.5">
+                        {msg.isAiGenerated && (
+                          <div className="flex items-center gap-1.5 text-[11px] font-black text-[#3ECFBE] mb-2 pb-1 border-b border-slate-100">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>Jawaban dari K-Bot</span>
+                          </div>
+                        )}
+                        <div>{msg.text}</div>
+                      </div>
+                    </>
                   )}
+
+                  {msg.sender === "user" && (
+                    <>
+                      <div className="max-w-[85%] sm:max-w-[75%] bg-[#4EDBCB] text-white font-semibold rounded-2xl sm:rounded-3xl px-5 py-3 text-[13px] shadow-xs whitespace-pre-line leading-relaxed">
+                        {msg.text}
+                      </div>
+
+                      <div className="w-9 h-9 rounded-full bg-[#1E2B45] text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-xs mt-0.5">
+                        <User className="w-5 h-5 stroke-[2.2]" />
+                      </div>
+                    </>
+                  )}
+                </motion.div>
+              ))
+            )}
+
+            {isTyping && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-3 text-slate-400 text-[12px] font-bold italic"
+              >
+                <div className="w-9 h-9 rounded-full bg-teal-50 text-[#52D4C5] flex items-center justify-center shrink-0 border border-teal-100">
+                  <Bot className="w-5 h-5 animate-bounce" />
                 </div>
-
-                {msg.sender === "user" && (
-                  <div className="w-8 h-8 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
-                    <User className="w-4 h-4 stroke-[2.2]" />
-                  </div>
-                )}
+                <span>K-Bot sedang mengetik jawaban...</span>
               </motion.div>
-            ))
-          )}
+            )}
 
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2.5 text-slate-400 text-[11.5px] font-bold italic"
-            >
-              <div className="w-8 h-8 rounded-2xl bg-teal-50 text-[#0FA89B] flex items-center justify-center shrink-0 border border-teal-100">
-                <Bot className="w-4 h-4 animate-bounce" />
-              </div>
-              <span>Menyiapkan jawaban untuk Warga Kebomas...</span>
-            </motion.div>
-          )}
-
-          <div ref={chatEndRef} />
-        </div>
-
-        {/* 4. SLASH COMMAND POPOVER MENU */}
-        <AnimatePresence>
-          {showCommands && filteredCommands.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="bg-white border-t border-b border-slate-200 shadow-2xl max-h-56 overflow-y-auto p-2 space-y-1 shrink-0 z-30"
-            >
-              <div className="px-3 py-1 flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                <span>Topik Bantuan Tersedia ({filteredCommands.length})</span>
-                <span>Pilih Command</span>
-              </div>
-              {filteredCommands.map((qa) => (
-                <button
-                  key={qa.id}
-                  type="button"
-                  onClick={() => handleSelectCommand(qa)}
-                  className="w-full text-left p-2.5 rounded-xl hover:bg-teal-50/80 transition-colors flex items-center justify-between cursor-pointer group border border-transparent hover:border-teal-200/60"
-                >
-                  <div className="min-w-0 pr-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-black text-[#0FA89B]">
-                        {qa.command}
-                      </span>
-                      <span className="text-[9.5px] font-extrabold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
-                        {qa.category}
-                      </span>
-                    </div>
-                    <p className="text-[11.5px] font-bold text-slate-700 truncate mt-0.5">
-                      {qa.question}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0FA89B] shrink-0" />
-                </button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* 5. BOTTOM INPUT BAR */}
-        <div className="p-3 bg-white border-t border-slate-200/80 flex items-center gap-2.5 shrink-0 sticky bottom-0 z-20">
-          <div className="relative flex-1">
-            <input
-              ref={inputRef}
-              type="text"
-              placeholder="Ketik pertanyaan gizi / ketik '/' untuk topik..."
-              value={inputText}
-              onChange={(e) => handleInputChange(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSendMessage();
-              }}
-              className="w-full pl-4 pr-10 py-3 bg-slate-100 border border-slate-200 rounded-2xl text-[12.5px] font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0FA89B] focus:bg-white transition-all"
-            />
-            <button
-              type="button"
-              onClick={() => handleInputChange("/")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0FA89B] font-black text-sm px-1 cursor-pointer"
-              title="Tampilkan Command"
-            >
-              /
-            </button>
+            <div ref={chatEndRef} />
           </div>
 
-          <motion.button
-            whileTap={{ scale: 0.94 }}
-            type="button"
-            onClick={() => handleSendMessage()}
-            className="w-11 h-11 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white flex items-center justify-center cursor-pointer shadow-md shrink-0"
-          >
-            <Send className="w-4.5 h-4.5" />
-          </motion.button>
+          {/* 3. SLASH COMMAND POPOVER MENU */}
+          <AnimatePresence>
+            {showCommands && filteredCommands.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="bg-white border-t border-b border-slate-200 shadow-2xl max-h-56 overflow-y-auto p-2 space-y-1 shrink-0 z-30"
+              >
+                <div className="px-3 py-1 flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                  <span>Topik Bantuan Tersedia ({filteredCommands.length})</span>
+                  <span>Pilih Command</span>
+                </div>
+                {filteredCommands.map((qa) => (
+                  <button
+                    key={qa.id}
+                    type="button"
+                    onClick={() => handleSelectCommand(qa)}
+                    className="w-full text-left p-2.5 rounded-xl hover:bg-teal-50/80 transition-colors flex items-center justify-between cursor-pointer group border border-transparent hover:border-teal-200/60"
+                  >
+                    <div className="min-w-0 pr-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] font-black text-[#52D4C5]">
+                          {qa.command}
+                        </span>
+                        <span className="text-[9.5px] font-extrabold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                          {qa.category}
+                        </span>
+                      </div>
+                      <p className="text-[11.5px] font-bold text-slate-700 truncate mt-0.5">
+                        {qa.question}
+                      </p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#52D4C5] shrink-0" />
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* 4. BOTTOM INPUT BAR (FIXED AT BOTTOM) */}
+          <div className="p-3.5 sm:p-4 bg-white border-t border-slate-200/80 flex items-center gap-3 shrink-0 sticky bottom-0 z-20">
+            <div className="relative flex-1">
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder='Ketik "/" untuk perintah cepat, "/komplain" untuk kirim keluhan, atau tanyakan apa saja...'
+                value={inputText}
+                onChange={(e) => handleInputChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSendMessage();
+                }}
+                className="w-full pl-5 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl sm:rounded-3xl text-[13px] font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#52D4C5] focus:bg-white transition-all shadow-2xs"
+              />
+              <button
+                type="button"
+                onClick={() => handleInputChange("/")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#52D4C5] font-black text-sm px-1 cursor-pointer"
+                title="Tampilkan Command"
+              >
+                /
+              </button>
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.94 }}
+              type="button"
+              onClick={() => handleSendMessage()}
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#52D4C5] hover:bg-[#43c5b6] text-white flex items-center justify-center cursor-pointer shadow-md shrink-0 transition-all"
+            >
+              <Send className="w-5 h-5" />
+            </motion.button>
+          </div>
         </div>
 
         {/* ═══ MODAL A: FORM PENGADUAN WARGA (/komplain) ═══ */}
@@ -947,11 +900,10 @@ PERTANYAAN WARGA: "${userQuery}"`;
                           key={cat}
                           type="button"
                           onClick={() => setComplaintCategory(cat)}
-                          className={`p-2.5 rounded-xl border text-[10.5px] font-bold leading-tight text-left transition-all cursor-pointer ${
-                            complaintCategory === cat
+                          className={`p-2.5 rounded-xl border text-[10.5px] font-bold leading-tight text-left transition-all cursor-pointer ${complaintCategory === cat
                               ? "bg-[#0FA89B]/10 border-[#0FA89B] text-[#0FA89B]"
                               : "bg-slate-50 border-slate-200 text-slate-600"
-                          }`}
+                            }`}
                         >
                           {cat}
                         </button>
@@ -1044,19 +996,18 @@ PERTANYAAN WARGA: "${userQuery}"`;
                             {item.category}
                           </span>
                           <span
-                            className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${
-                              item.status === "selesai"
+                            className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${item.status === "selesai"
                                 ? "bg-emerald-100 text-emerald-700"
                                 : item.status === "proses"
-                                ? "bg-sky-100 text-sky-700"
-                                : "bg-amber-100 text-amber-700"
-                            }`}
+                                  ? "bg-sky-100 text-sky-700"
+                                  : "bg-amber-100 text-amber-700"
+                              }`}
                           >
                             {item.status === "selesai"
                               ? "● SELESAI"
                               : item.status === "proses"
-                              ? "● DIPROSES SPPG"
-                              : "● BARU (MENUNGGU)"}
+                                ? "● DIPROSES SPPG"
+                                : "● BARU (MENUNGGU)"}
                           </span>
                         </div>
 
