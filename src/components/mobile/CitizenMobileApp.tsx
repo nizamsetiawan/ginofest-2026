@@ -282,17 +282,6 @@ export const CitizenMobileApp: React.FC = () => {
       setDeferredPrompt(e);
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstall);
-
-    // Auto-prompt permissions dialog once
-    const handled = localStorage.getItem("kcal_permissions_dialog_handled");
-    if (!handled) {
-      const timer = setTimeout(() => {
-        setShowPermissionDialog(true);
-      }, 2600);
-      return () => clearTimeout(timer);
-    }
-
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
     };

@@ -42,7 +42,7 @@ interface ChatMsg {
 const DEFAULT_CITIZEN_GREETING: ChatMsg = {
   id: "citizen_init_1",
   sender: "bot",
-  text: "Halo! Selamat datang di Pusat Bantuan & FAQ Kcal Warga.\n\nSaya K-Bot, asisten AI resmi Layanan Nutrisi MBG & Skrining Biometrik Kecamatan Kebomas.\n\nAda yang ingin Anda tanyakan hari ini?\n• Ketik \"/\" untuk memilih topik bantuan siap pakai.\n• Ketik \"/komplain\" untuk mengirim pengaduan kualitas MBG / layanan.\n• Ketik \"/track\" untuk memantau status aduan Anda secara realtime.\n• Atau ketik pertanyaan apa saja secara bebas, saya siap membantu Anda!",
+  text: "Halo! Selamat datang di Pusat Bantuan & FAQ Kcal Warga.\n\nSaya K-Bot, asisten AI resmi Layanan Nutrisi MBG & Skrining Biometrik.\n\nAda yang ingin Anda tanyakan hari ini? Tuliskan pertanyaan Anda secara bebas, saya siap membantu Anda!",
 };
 
 export const CitizenHelpModal: React.FC<CitizenHelpModalProps> = ({
@@ -808,22 +808,14 @@ PERTANYAAN WARGA: "${userQuery}"`;
               <input
                 ref={inputRef}
                 type="text"
-                placeholder='Ketik "/" untuk perintah cepat, "/komplain" untuk kirim keluhan, atau tanyakan apa saja...'
+                placeholder="Tanyakan apa saja tentang nutrisi, stunting, atau layanan MBG..."
                 value={inputText}
                 onChange={(e) => handleInputChange(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSendMessage();
                 }}
-                className="w-full pl-5 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl sm:rounded-3xl text-[13px] font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#52D4C5] focus:bg-white transition-all shadow-2xs"
+                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl sm:rounded-3xl text-[13px] font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#52D4C5] focus:bg-white transition-all shadow-2xs"
               />
-              <button
-                type="button"
-                onClick={() => handleInputChange("/")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#52D4C5] font-black text-sm px-1 cursor-pointer"
-                title="Tampilkan Command"
-              >
-                /
-              </button>
             </div>
 
             <motion.button
