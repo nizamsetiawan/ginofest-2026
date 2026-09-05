@@ -1198,6 +1198,25 @@ export async function fetchQrClaimsFromFirestore(): Promise<{ success: boolean; 
 }
 
 // -------------------------------------------------------------
+// 13C. BIOMETRIC SCANS HISTORY (Collection: biometric_scans_history)
+// -------------------------------------------------------------
+export async function fetchBiometricScansFromFirestore(): Promise<{ success: boolean; data: any[] }> {
+  try {
+    const colRef = collection(db, "biometric_scans_history");
+    const q = query(colRef, orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
+    const data: any[] = [];
+    snap.forEach((docSnap) => {
+      data.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    return { success: true, data };
+  } catch (err: any) {
+    console.error("Gagal mengambil data biometric_scans_history:", err);
+    return { success: false, data: [] };
+  }
+}
+
+// -------------------------------------------------------------
 // 10. STEP 10: CITIZEN AUTH & PROFILE SYNC (Collection: kcal_masyarakat)
 // -------------------------------------------------------------
 export interface CitizenAccountRecord {

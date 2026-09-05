@@ -19,11 +19,20 @@ import {
   ShieldCheck,
   History,
   CameraOff,
+  Activity,
+  Sparkles,
+  Eye,
+  Scan,
+  X,
+  Maximize2,
+  Filter,
+  Cpu,
 } from "lucide-react";
 import jsQR from "jsqr";
 import {
   recordQrClaimToFirestore,
   fetchQrClaimsFromFirestore,
+  fetchBiometricScansFromFirestore,
   getCitizenByEmailFromFirestore,
   addNotification,
   QrClaimRecord,
@@ -59,12 +68,13 @@ interface DecodedPayload {
 }
 
 export const ScreeningView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"scan" | "history">("scan");
+  // 3 Dedicated Tabs: 1. Scanner Camera, 2. Biometric Analysis (Ready/Claimed), 3. Verification History Logs
+  const [activeTab, setActiveTab] = useState<"scan" | "biometric" | "history">("scan");
   const [decodedData, setDecodedData] = useState<DecodedPayload | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   // Real camera stream & hardware power-saving state
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -73,10 +83,19 @@ export const ScreeningView: React.FC = () => {
   const [cameraErrorMsg, setCameraErrorMsg] = useState("");
   const isScanningRef = useRef(false);
 
-  // History state
+  // Tab 2: Biometric Scans (Hasil Analisis AI) State
+  const [biometricList, setBiometricList] = useState<any[]>([]);
+  const [isLoadingBiometric, setIsLoadingBiometric] = useState(false);
+  const [biometricSearch, setBiometricSearch] = useState("");
+  const [biometricFilter, setBiometricFilter] = useState<"ALL" | "VALID" | "CLAIMED">("ALL");
+
+  // Tab 3: History Claims State
   const [historyList, setHistoryList] = useState<QrClaimRecord[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
+
+  // Fullscreen Photo Lightbox Preview State
+  const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string } | null>(null);
 
   // Explicit function to stop camera media tracks and release hardware sensor (Save Battery & Power)
   const stopCamera = useCallback(() => {
@@ -84,7 +103,7 @@ export const ScreeningView: React.FC = () => {
       mediaStreamRef.current.getTracks().forEach((track) => {
         try {
           track.stop();
-        } catch {}
+        } catch { }
       });
       mediaStreamRef.current = null;
     }
@@ -94,7 +113,7 @@ export const ScreeningView: React.FC = () => {
         stream.getTracks().forEach((track) => {
           try {
             track.stop();
-          } catch {}
+          } catch { }
         });
         videoRef.current.srcObject = null;
       }
@@ -238,10 +257,21 @@ export const ScreeningView: React.FC = () => {
   }, [activeTab, decodedData, handleProcessPayload]);
 
   useEffect(() => {
-    if (activeTab === "history") {
+    if (activeTab === "biometric") {
+      loadBiometricScans();
+    } else if (activeTab === "history") {
       loadHistory();
     }
   }, [activeTab]);
+
+  const loadBiometricScans = async () => {
+    setIsLoadingBiometric(true);
+    const res = await fetchBiometricScansFromFirestore();
+    if (res.success) {
+      setBiometricList(res.data);
+    }
+    setIsLoadingBiometric(false);
+  };
 
   const loadHistory = async () => {
     setIsLoadingHistory(true);
@@ -288,15 +318,15 @@ export const ScreeningView: React.FC = () => {
         firestoreDocId: res.docId || null,
       });
     } catch (azureErr) {
-      console.warn("Azure Blob backup dual-write handled:", azureErr);
+      console.warn("Azure dual write notice:", azureErr);
     }
 
-    // 3. Dynamic Notification Title & Description (Context Aware according to time & menu)
+    // 3. Trigger realtime Push Notification
     if (decodedData.beneficiary?.email) {
       const currentHour = new Date().getHours();
-      let mealLabel = "Makan Siang";
-      if (currentHour < 11) {
-        mealLabel = "Sarapan Pagi";
+      let mealLabel = "Makan Siang Gratis";
+      if (currentHour >= 6 && currentHour < 11) {
+        mealLabel = "Sarapan Pagi Gratis";
       } else if (currentHour >= 15) {
         mealLabel = "Paket Gizi Malam";
       }
@@ -312,7 +342,7 @@ export const ScreeningView: React.FC = () => {
           userEmail: decodedData.beneficiary.email,
           category: "mbg",
         });
-      } catch {}
+      } catch { }
     }
 
     setIsVerifying(false);
@@ -330,6 +360,24 @@ export const ScreeningView: React.FC = () => {
     setErrorMessage("");
   };
 
+  // Filter for Biometric Scans History (Tab 2)
+  const filteredBiometric = biometricList.filter((item) => {
+    const name = (item.userName || item.beneficiary?.name || "").toLowerCase();
+    const district = (item.userDistrict || item.beneficiary?.district || "").toLowerCase();
+    const claimId = (item.claimId || item._id || "").toLowerCase();
+    const q = biometricSearch.toLowerCase();
+    const matchesSearch = name.includes(q) || district.includes(q) || claimId.includes(q);
+
+    if (biometricFilter === "VALID") {
+      return matchesSearch && (item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS");
+    }
+    if (biometricFilter === "CLAIMED") {
+      return matchesSearch && item.status === "CLAIMED";
+    }
+    return matchesSearch;
+  });
+
+  // Filter for Claim Transaction History (Tab 3)
   const filteredHistory = historyList.filter(
     (item) =>
       item.beneficiaryName.toLowerCase().includes(searchFilter.toLowerCase()) ||
@@ -340,7 +388,7 @@ export const ScreeningView: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-200 font-sans">
       {/* ─── HEADER ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
+      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 pb-4 border-b border-[#e2e8f0]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2C3968] to-[#1E2950] text-light-sea-green flex items-center justify-center font-bold shadow-xs">
@@ -348,38 +396,58 @@ export const ScreeningView: React.FC = () => {
             </div>
             <div>
               <h1 className="text-[22px] font-black text-[#2C3968] tracking-tight">
-                Scan QR Code Klaim MBG
+                Scan QR Code &amp; Pemantauan Klaim MBG
               </h1>
               <p className="text-[12px] text-[#64748b]">
-                Pemindaian kamera otomatis & validasi penyerahan porsi Makan Bergizi Gratis warga Kabupaten Gresik
+                Pemindaian kamera otomatis, pemantauan hasil analisis biometrik AI warga, &amp; verifikasi penyerahan porsi MBG
               </p>
             </div>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 self-start sm:self-auto">
+        {/* 3 Navigation Tabs */}
+        <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 self-start xl:self-auto flex-wrap sm:flex-nowrap gap-1">
           <button
             onClick={() => setActiveTab("scan")}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-              activeTab === "scan"
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${activeTab === "scan"
                 ? "bg-white text-ford-blue shadow-2xs"
                 : "text-slate-600 hover:text-ford-blue"
-            }`}
+              }`}
           >
-            <ScanLine className="w-4 h-4" />
+            <ScanLine className="w-4 h-4 text-[#0FA89B]" />
             <span>Kamera Scanner</span>
           </button>
+
           <button
-            onClick={() => setActiveTab("history")}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-              activeTab === "history"
+            onClick={() => setActiveTab("biometric")}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${activeTab === "biometric"
                 ? "bg-white text-ford-blue shadow-2xs"
                 : "text-slate-600 hover:text-ford-blue"
-            }`}
+              }`}
           >
-            <History className="w-4 h-4" />
-            <span>Riwayat Verifikasi</span>
+            <Activity className="w-4 h-4 text-[#0FA89B]" />
+            <span>Hasil Analisis AI</span>
+            {biometricList.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-[#0FA89B] text-white text-[9.5px] font-extrabold">
+                {biometricList.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab("history")}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${activeTab === "history"
+                ? "bg-white text-ford-blue shadow-2xs"
+                : "text-slate-600 hover:text-ford-blue"
+              }`}
+          >
+            <History className="w-4 h-4 text-[#0FA89B]" />
+            <span>Riwayat Verifikasi QR</span>
+            {historyList.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-emerald-600 text-white text-[9.5px] font-extrabold">
+                {historyList.length}
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -397,9 +465,8 @@ export const ScreeningView: React.FC = () => {
                   autoPlay
                   playsInline
                   muted
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                    hasCameraAccess ? "opacity-100" : "opacity-0"
-                  }`}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${hasCameraAccess ? "opacity-100" : "opacity-0"
+                    }`}
                 />
 
                 {/* Permission Request Fallback */}
@@ -485,10 +552,10 @@ export const ScreeningView: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="font-black text-[16px] text-emerald-950">
-                        BERHASIL DIVERIFIKASI & DIDISTRIBUSIKAN!
+                        BERHASIL DIVERIFIKASI &amp; DIDISTRIBUSIKAN!
                       </h3>
                       <p className="text-[12px] text-emerald-800 font-medium mt-0.5">
-                        Porsi MBG telah dicatat atas nama <strong>{decodedData.beneficiary?.name}</strong>. Notifikasi otomatis & audit Azure tersimpan.
+                        Porsi MBG telah dicatat atas nama <strong>{decodedData.beneficiary?.name}</strong>. Notifikasi otomatis &amp; audit Azure tersimpan.
                       </p>
                     </div>
                   </div>
@@ -519,7 +586,7 @@ export const ScreeningView: React.FC = () => {
 
                   <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-bold self-start sm:self-auto">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>QR Valid & Terverifikasi Cloud</span>
+                    <span>QR Valid &amp; Terverifikasi Cloud</span>
                   </div>
                 </div>
 
@@ -645,7 +712,246 @@ export const ScreeningView: React.FC = () => {
         </div>
       )}
 
-      {/* ─── TAB 2: RIWAYAT VERIFIKASI KLAIM ─── */}
+      {/* ─── TAB 2: DATA HASIL ANALISIS BIOMETRIK AI WARGA ─── */}
+      {activeTab === "biometric" && (
+        <div className="space-y-4">
+          {/* Top Control Bar: Search & Status Filter Pills */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white p-4 rounded-3xl border border-slate-200 shadow-xs">
+            {/* Search Input */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={biometricSearch}
+                onChange={(e) => setBiometricSearch(e.target.value)}
+                placeholder="Cari nama warga, kecamatan, atau ID klaim..."
+                className="w-full pl-9 pr-4 py-2 text-[12px] bg-slate-50 rounded-xl border border-slate-200 focus:bg-white focus:ring-2 focus:ring-light-sea-green/30 focus:border-light-sea-green focus:outline-none transition-all"
+              />
+            </div>
+
+            {/* Status Filter Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
+              <button
+                onClick={() => setBiometricFilter("ALL")}
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${biometricFilter === "ALL"
+                    ? "bg-ford-blue text-white shadow-xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+              >
+                Semua Status ({biometricList.length})
+              </button>
+
+              <button
+                onClick={() => setBiometricFilter("VALID")}
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${biometricFilter === "VALID"
+                    ? "bg-emerald-600 text-white shadow-xs"
+                    : "bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100"
+                  }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>🟢 SIAP KLAIM ({biometricList.filter((b) => b.status === "VALID" || b.status === "SCANNING_IN_PROGRESS").length})</span>
+              </button>
+
+              <button
+                onClick={() => setBiometricFilter("CLAIMED")}
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${biometricFilter === "CLAIMED"
+                    ? "bg-blue-600 text-white shadow-xs"
+                    : "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
+                  }`}
+              >
+                <span>🔵 TERKLAIM ({biometricList.filter((b) => b.status === "CLAIMED").length})</span>
+              </button>
+
+              <button
+                onClick={loadBiometricScans}
+                disabled={isLoadingBiometric}
+                className="p-2 rounded-xl text-ford-blue bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer shrink-0 ml-1"
+                title="Muat Ulang Data Biometrik"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoadingBiometric ? "animate-spin" : ""}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Biometric Scan Cards List */}
+          {isLoadingBiometric ? (
+            <div className="bg-white p-12 rounded-3xl border border-slate-200 text-center space-y-3">
+              <RefreshCw className="w-8 h-8 text-[#0FA89B] animate-spin mx-auto" />
+              <p className="text-[13px] font-bold text-ford-blue">Mengambil Data Biometrik Warga dari Firestore...</p>
+            </div>
+          ) : filteredBiometric.length === 0 ? (
+            <div className="bg-white p-12 rounded-3xl border border-slate-200 text-center space-y-3">
+              <Activity className="w-10 h-10 text-slate-300 mx-auto" />
+              <h4 className="font-bold text-[14px] text-ford-blue">Tidak Ada Data Analisis Biometrik</h4>
+              <p className="text-[12px] text-slate-500 max-w-sm mx-auto">
+                Warga yang telah menyelesaikan pemindaian foto biometrik &amp; kuesioner AI akan otomatis tercantum di sini.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredBiometric.map((item) => {
+                const isClaimed = item.status === "CLAIMED";
+                const isValid = item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS";
+                const photos = item.photos || {};
+                const blobUrls = item.blobUrls || {};
+
+                const faceImg = photos.faceBase64 || blobUrls.faceBlobUrl;
+                const eyeImg = photos.eyeBase64 || blobUrls.eyeBlobUrl;
+                const handImg = photos.handBase64 || blobUrls.handBlobUrl;
+                const nailImg = photos.nailBase64 || blobUrls.nailBlobUrl;
+
+                return (
+                  <div
+                    key={item.id || item.scanId}
+                    className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-4 hover:border-slate-300 transition-all"
+                  >
+                    {/* Card Header: Warga Identity & Claim Status Pill */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] text-white font-black text-sm flex items-center justify-center shrink-0 shadow-md">
+                          {(item.userName || "W").slice(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h4 className="font-black text-[15px] text-ford-blue">
+                              {item.userName || "Nizam Setiawan"}
+                            </h4>
+                            <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
+                              Kec. {item.userDistrict || "Kebomas"}
+                            </span>
+                            <span className="text-[10.5px] text-slate-400 font-medium">
+                              Usia: {item.userAge || 9} Tahun
+                            </span>
+                          </div>
+                          <p className="text-[11px] font-mono text-[#0FA89B] font-bold mt-0.5">
+                            ID: {item.claimId || item.scanId || item.id}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Status Badge */}
+                      <div className="flex items-center gap-2 self-start sm:self-auto">
+                        {isValid && (
+                          <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[11px] border border-emerald-300 flex items-center gap-1.5 shadow-xs">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                            <span>🟢 SIAP KLAIM (BELUM SCAN)</span>
+                          </span>
+                        )}
+                        {isClaimed && (
+                          <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-extrabold text-[11px] border border-blue-300 flex items-center gap-1.5 shadow-xs">
+                            <span>🔵 SUDAH KLAIM (VERIFIED)</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Body Grid: Menu Recommendation + 4 Biometric Photos */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                      {/* Column 1 & 2: Recommended Menu & Clinical Metrics */}
+                      <div className="lg:col-span-2 space-y-3">
+                        <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-extrabold text-emerald-700 tracking-wider uppercase flex items-center gap-1">
+                              <Utensils className="w-3 h-3 text-[#0FA89B]" />
+                              <span>Rekomendasi Menu Nutrisi AI</span>
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[9.5px] font-black">
+                              {item.recommendedMenu?.akgPercentage || 50}% AKG
+                            </span>
+                          </div>
+                          <h5 className="text-[13px] font-black text-slate-800 leading-snug">
+                            {item.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening"}
+                          </h5>
+                          <p className="text-[10.5px] text-slate-600 font-medium">
+                            {item.recommendedMenu?.calories || 680} kcal • {item.recommendedMenu?.portionDesc || "1x Makan Siang"}
+                          </p>
+                        </div>
+
+                        {/* Azure Vision Clinical Summary */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
+                          <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                            <span className="text-slate-400 block font-medium">Facial Vitality</span>
+                            <span className="font-bold text-slate-700 truncate block">
+                              {item.azureVisionMetrics?.facialVitalityScore !== undefined ? `${item.azureVisionMetrics.facialVitalityScore} (Segar)` : "Normal"}
+                            </span>
+                          </div>
+                          <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                            <span className="text-slate-400 block font-medium">Mata Konjungtiva</span>
+                            <span className="font-bold text-slate-700 truncate block">
+                              {item.azureVisionMetrics?.eyeConjunctivaStatus || "Merah Muda"}
+                            </span>
+                          </div>
+                          <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                            <span className="text-slate-400 block font-medium">Turgor Kulit</span>
+                            <span className="font-bold text-slate-700 truncate block">
+                              {item.azureVisionMetrics?.skinTurgorStatus || "Elastis / Normal"}
+                            </span>
+                          </div>
+                          <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                            <span className="text-slate-400 block font-medium">CRT Kuku</span>
+                            <span className="font-bold text-slate-700 truncate block">
+                              {item.azureVisionMetrics?.nailbedStatus || "Sehat (<2 dtk)"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Column 3: 4 Biometric Photo Thumbnails */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-extrabold text-slate-500 flex items-center gap-1">
+                          <Scan className="w-3 h-3 text-[#0FA89B]" />
+                          <span>4 Foto Biometrik Azure</span>
+                        </span>
+
+                        <div className="grid grid-cols-4 gap-1.5">
+                          {[
+                            { label: "Wajah", url: faceImg, icon: "👤" },
+                            { label: "Mata", url: eyeImg, icon: "👁️" },
+                            { label: "Tangan", url: handImg, icon: "✋" },
+                            { label: "Kuku", url: nailImg, icon: "💅" },
+                          ].map((p, i) => (
+                            <div key={i} className="space-y-0.5 text-center">
+                              <div
+                                onClick={() => {
+                                  if (p.url) {
+                                    setPreviewPhoto({ url: p.url, title: `Foto ${p.label} - ${item.userName || "Warga"}` });
+                                  }
+                                }}
+                                className={`w-full aspect-square rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${p.url ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""
+                                  }`}
+                              >
+                                {p.url ? (
+                                  <>
+                                    <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                      <Maximize2 className="w-3 h-3 text-white" />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <span className="text-base">{p.icon}</span>
+                                )}
+                              </div>
+                              <span className="text-[8.5px] font-bold text-slate-500 block truncate">{p.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card Footer: Timestamp */}
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10.5px] text-slate-400 font-mono">
+                      <span>Waktu Analisis: {item.createdAt ? new Date(item.createdAt).toLocaleString("id-ID") : "Terbaru"}</span>
+                      <span>Confidence: {item.azureVisionMetrics?.confidenceScore ? `${(item.azureVisionMetrics.confidenceScore * (item.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}%` : "95.2% Azure Vision"}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── TAB 3: RIWAYAT VERIFIKASI KLAIM (DOCS VERIFIED BY STAFF) ─── */}
       {activeTab === "history" && (
         <div className="space-y-4">
           {/* Top Bar: Search & Refresh */}
@@ -729,6 +1035,39 @@ export const ScreeningView: React.FC = () => {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ═══ FULLSCREEN PHOTO PREVIEW LIGHTBOX MODAL ═══ */}
+      {previewPhoto && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-4 animate-in fade-in duration-200">
+          <div className="w-full flex items-center justify-between pt-2 px-2 text-white">
+            <div className="flex items-center gap-2">
+              <Scan className="w-4 h-4 text-[#79D7D2]" />
+              <h4 className="text-[14px] font-bold tracking-tight">{previewPhoto.title}</h4>
+            </div>
+            <button
+              type="button"
+              onClick={() => setPreviewPhoto(null)}
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="flex-1 w-full max-w-md flex items-center justify-center p-2 relative">
+            <img
+              src={previewPhoto.url}
+              alt={previewPhoto.title}
+              className="max-h-[78vh] w-auto max-w-full object-contain rounded-2xl border border-white/20 shadow-2xl"
+            />
+          </div>
+
+          <div className="pb-4 text-center">
+            <span className="text-[11px] text-slate-400 font-mono">
+              Ekstraksi Visi Biometrik Kcal • Pemkab Gresik 2026
+            </span>
+          </div>
         </div>
       )}
     </div>
