@@ -598,7 +598,8 @@ export function subscribeUserNotifications(
         const data = d.data() as any;
         const targetEmail = (data.userEmail || "").trim().toLowerCase();
         
-        const isMatch = !targetEmail || targetEmail === "all" || targetEmail === cleanEmail;
+        const isCategoryAllowed = data.category !== "settings" && data.category !== "master";
+        const isMatch = isCategoryAllowed && (!targetEmail || targetEmail === "all" || targetEmail === cleanEmail);
         if (isMatch) {
           const readByList: string[] = Array.isArray(data.readBy) ? data.readBy : [];
           const isReadForUser = data.isRead === true || (cleanEmail ? readByList.includes(cleanEmail) : false);

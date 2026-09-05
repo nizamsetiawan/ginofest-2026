@@ -163,6 +163,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   // ─── FIRESTORE REALTIME NOTIFICATIONS ───
   const [notifications, setNotifications] = useState<FirestoreNotification[]>([]);
   const [isLoadingNotifs, setIsLoadingNotifs] = useState(true);
+  const [activeNotifFilter, setActiveNotifFilter] = useState<"semua" | "mbg" | "screening" | "system">("semua");
 
   useEffect(() => {
     const email = citizenUser?.email || "nizam@gmail.com";
@@ -181,6 +182,18 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   }, [citizenUser?.email, citizenUser?.district]);
 
   const unreadNotifCount = notifications.filter((n) => !n.isRead).length;
+
+  const mbgCount = notifications.filter((n) => n.category === "mbg").length;
+  const screeningCount = notifications.filter((n) => n.category === "screening").length;
+  const systemCount = notifications.filter((n) => n.category === "system" || n.category === "user" || !n.category).length;
+
+  const filteredNotifications = notifications.filter((n) => {
+    if (activeNotifFilter === "semua") return true;
+    if (activeNotifFilter === "mbg") return n.category === "mbg";
+    if (activeNotifFilter === "screening") return n.category === "screening";
+    if (activeNotifFilter === "system") return n.category === "system" || n.category === "user" || !n.category;
+    return true;
+  });
 
   const getTimeGreeting = () => {
     const hour = new Date().getHours();
@@ -764,7 +777,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* ═══ FULL SCREEN PAGE: NOTIFIKASI APP (REALTIME FIRESTORE) ═══  */}
+      {/* ═══ FULL SCREEN PAGE: NOTIFIKASI APP (CLEAN & MINIMALIST) ═══  */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {showNotificationModal && (
@@ -773,13 +786,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 280 }}
-            className="fixed inset-0 z-50 bg-[#F8FAFC] flex flex-col h-full w-full overflow-hidden"
+            className="fixed inset-0 z-50 bg-white flex flex-col h-full w-full overflow-hidden"
           >
-            {/* Ambient Background Spectrum */}
-            <AuthSpectrumBackground />
-
-            {/* 1. TOP NAVBAR / HEADER */}
-            <div className="bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
+            {/* 1. TOP NAVBAR / HEADER (SIMPLE & MINIMALIST) */}
+            <div className="bg-white border-b border-slate-200/80 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
               <button
                 type="button"
                 onClick={() => {
@@ -792,14 +802,9 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 <span>Kembali</span>
               </button>
 
-              <div className="text-center min-w-0 px-2">
-                <h2 className="text-[15px] font-black text-slate-800 tracking-tight leading-tight">
-                  Pemberitahuan
-                </h2>
-                <p className="text-[10px] text-slate-500 font-bold truncate">
-                  Kec. {userDistrict}
-                </p>
-              </div>
+              <h2 className="text-[15px] font-black text-slate-800 tracking-tight">
+                Pemberitahuan
+              </h2>
 
               <div className="flex items-center justify-end min-w-[70px]">
                 {unreadNotifCount > 0 && (
@@ -809,7 +814,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       triggerHaptic();
                       markAllNotificationsRead(citizenUser?.email || "nizam@gmail.com");
                     }}
-                    className="text-[11px] font-extrabold text-[#0FA89B] hover:text-[#0c877c] flex items-center gap-1 cursor-pointer bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/80"
+                    className="text-[11px] font-extrabold text-[#0FA89B] hover:underline flex items-center gap-1 cursor-pointer bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/80"
                   >
                     <CheckCheck className="w-3.5 h-3.5" />
                     <span>Dibaca</span>
@@ -818,65 +823,77 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               </div>
             </div>
 
-            {/* 2. SUB-HEADER BANNER */}
-            <div className="bg-slate-100/70 border-b border-slate-200/60 px-4 py-2.5 flex items-center justify-between text-[11px] font-bold text-slate-600">
-              <div className="flex items-center gap-2">
-                <Bell className="w-4 h-4 text-[#0FA89B]" />
-                <span>Kotak Masuk Notifikasi</span>
-              </div>
-              <span className="bg-white px-2.5 py-0.5 rounded-full border border-slate-200 text-[10px] text-slate-500 font-black">
-                {notifications.length} Pesan ({unreadNotifCount} Baru)
-              </span>
+            {/* 2. CATEGORY PILL FILTER TABS (MATCHING USER DEMO IMAGE) */}
+            <div className="bg-white border-b border-slate-100 px-4 py-2.5 flex items-center gap-2 overflow-x-auto shrink-0 scrollbar-none">
+              {[
+                { id: "semua", label: "Semua", count: notifications.length },
+                { id: "mbg", label: "MBG", count: mbgCount },
+                { id: "screening", label: "Skrining", count: screeningCount },
+                { id: "system", label: "Sistem", count: systemCount },
+              ].map((tab) => {
+                const isActive = activeNotifFilter === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic();
+                      setActiveNotifFilter(tab.id as any);
+                    }}
+                    className={`px-3.5 py-1.5 rounded-full text-[11px] font-black transition-all shrink-0 cursor-pointer ${
+                      isActive
+                        ? "bg-[#0FA89B] text-white shadow-2xs"
+                        : "bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50"
+                    }`}
+                  >
+                    {tab.label} ({tab.count})
+                  </button>
+                );
+              })}
             </div>
 
-            {/* 3. FULL SCROLLABLE NOTIFICATION LIST */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 max-w-md mx-auto w-full pb-24 relative z-10">
+            {/* 3. ULTRA-CLEAN COMPACT NOTIFICATION LIST */}
+            <div className="flex-1 overflow-y-auto p-3.5 space-y-2 max-w-md mx-auto w-full pb-24 bg-white">
               {isLoadingNotifs ? (
-                <div className="py-16 text-center text-slate-400 text-xs font-medium space-y-3">
-                  <div className="w-6 h-6 border-2 border-[#0FA89B] border-t-transparent rounded-full animate-spin mx-auto" />
-                  <p className="font-bold">Menghubungkan ke Database Firestore...</p>
+                <div className="py-16 text-center text-slate-400 text-xs font-medium space-y-2">
+                  <div className="w-5 h-5 border-2 border-[#0FA89B] border-t-transparent rounded-full animate-spin mx-auto" />
+                  <p>Memuat pemberitahuan...</p>
                 </div>
-              ) : notifications.length === 0 ? (
-                <div className="py-20 text-center space-y-3 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
-                    <Bell className="w-6 h-6 stroke-[1.8]" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-slate-800">Belum Ada Notifikasi</h3>
-                    <p className="text-[11.5px] text-slate-500 font-medium mt-1">
-                      Pemberitahuan resmi dapur SPPG, pembaruan menu MBG, dan status skrining gizi anak akan otomatis tersimpan di sini.
-                    </p>
-                  </div>
+              ) : filteredNotifications.length === 0 ? (
+                <div className="py-16 text-center space-y-2 bg-slate-50/60 rounded-2xl p-6 border border-slate-100">
+                  <Bell className="w-7 h-7 text-slate-300 mx-auto stroke-[1.8]" />
+                  <p className="text-xs font-black text-slate-700">
+                    Tidak ada notifikasi {activeNotifFilter !== "semua" ? `kategori ${activeNotifFilter.toUpperCase()}` : ""}
+                  </p>
+                  <p className="text-[11px] text-slate-400 font-medium">Pemberitahuan baru akan tampil di sini secara otomatis.</p>
                 </div>
               ) : (
-                notifications.map((notif) => (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                filteredNotifications.map((notif) => (
+                  <div
                     key={notif.id}
                     onClick={() => {
                       if (!notif.isRead) {
                         markNotificationRead(notif.id, citizenUser?.email || "nizam@gmail.com");
                       }
                     }}
-                    className={`p-4 rounded-3xl border transition-all cursor-pointer relative space-y-2 shadow-2xs ${
+                    className={`p-3 rounded-2xl border transition-all cursor-pointer relative space-y-1 ${
                       notif.isRead
-                        ? "bg-white/80 border-slate-200/90 opacity-85"
-                        : "bg-white border-[#0FA89B]/40 shadow-sm hover:border-[#0FA89B] ring-1 ring-[#0FA89B]/20"
+                        ? "bg-white border-slate-150 opacity-75"
+                        : "bg-teal-50/20 border-[#0FA89B]/30 shadow-2xs hover:border-[#0FA89B]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
+                      <div className="flex items-center gap-1.5 min-w-0">
                         {!notif.isRead && (
-                          <span className="w-2.5 h-2.5 rounded-full bg-[#0FA89B] shrink-0 animate-pulse" />
+                          <span className="w-2 h-2 rounded-full bg-[#0FA89B] shrink-0" />
                         )}
                         <span
-                          className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+                          className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${
                             notif.category === "mbg"
-                              ? "bg-amber-50 text-amber-800 border border-amber-200/80"
+                              ? "bg-amber-100/70 text-amber-800"
                               : notif.category === "screening"
-                              ? "bg-teal-50 text-teal-800 border border-teal-200/80"
-                              : "bg-sky-50 text-sky-800 border border-sky-200/80"
+                              ? "bg-teal-100/70 text-teal-800"
+                              : "bg-slate-100 text-slate-700"
                           }`}
                         >
                           {notif.category || "sistem"}
@@ -884,7 +901,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[10px] text-slate-400 font-bold">
+                        <span className="text-[9.5px] text-slate-400 font-bold">
                           {notif.createdAtIso
                             ? new Date(notif.createdAtIso).toLocaleTimeString("id-ID", {
                                 hour: "2-digit",
@@ -899,23 +916,21 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                             triggerHaptic();
                             deleteNotification(notif.id);
                           }}
-                          className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
+                          className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
                           title="Hapus Notifikasi"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
 
-                    <div>
-                      <h4 className="text-[13px] font-black text-slate-800 leading-snug">
-                        {notif.title}
-                      </h4>
-                      <p className="text-[11.5px] text-slate-600 leading-relaxed font-medium mt-1">
-                        {notif.description}
-                      </p>
-                    </div>
-                  </motion.div>
+                    <h4 className="text-[12.5px] font-extrabold text-slate-800 leading-snug">
+                      {notif.title}
+                    </h4>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                      {notif.description}
+                    </p>
+                  </div>
                 ))
               )}
             </div>
