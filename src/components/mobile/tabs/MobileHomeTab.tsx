@@ -292,7 +292,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
     // AI Simulated Reply
     setTimeout(() => {
       let botReply = "Terima kasih atas pertanyaannya! Berdasarkan panduan klinis Kemenkes RI & BGN 2026, nutrisi anak dioptimalkan melalui variasi menu bergizi MBG.";
-      
+
       const lower = msgToSend.toLowerCase();
       if (lower.includes("kalori") || lower.includes("9 tahun")) {
         botReply = "Untuk anak usia 7-9 tahun, rata-rata kebutuhan energi harian berkisar antara 1.650 - 1.800 kkal. Porsi Makan Bergizi Gratis (MBG) siang ini memenuhi sekitar 650-680 kkal (40-45% kebutuhan harian).";
@@ -558,7 +558,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 {isLoadingUserScans ? (
                   <div className="py-12 text-center space-y-2">
                     <RefreshCw className="w-7 h-7 text-[#0FA89B] animate-spin mx-auto" />
-                    <p className="text-[12px] font-bold text-slate-700">Mengambil Riwayat Analisis Firestore...</p>
+                    <p className="text-[12px] font-bold text-slate-700">Mengambil Riwayat Analisis...</p>
                   </div>
                 ) : userScansHistory.length === 0 ? (
                   <div className="py-10 px-4 text-center space-y-2.5 bg-slate-50 rounded-2xl border border-slate-200/70">
@@ -780,11 +780,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           key={cat}
                           type="button"
                           onClick={() => setFeedbackCategory(cat)}
-                          className={`py-2 px-3 rounded-xl border text-[11px] font-bold transition-all cursor-pointer ${
-                            feedbackCategory === cat
+                          className={`py-2 px-3 rounded-xl border text-[11px] font-bold transition-all cursor-pointer ${feedbackCategory === cat
                               ? "bg-[#0FA89B]/10 border-[#0FA89B] text-[#0FA89B]"
                               : "bg-slate-50 border-slate-200 text-slate-600"
-                          }`}
+                            }`}
                         >
                           {cat}
                         </button>
@@ -804,11 +803,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           className="cursor-pointer"
                         >
                           <Star
-                            className={`w-7 h-7 ${
-                              star <= feedbackRating
+                            className={`w-7 h-7 ${star <= feedbackRating
                                 ? "fill-amber-400 text-amber-400"
                                 : "text-slate-200"
-                            }`}
+                              }`}
                           />
                         </button>
                       ))}
@@ -888,11 +886,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     triggerHaptic();
                     setShowArticleFilterMenu(!showArticleFilterMenu);
                   }}
-                  className={`w-8.5 h-8.5 rounded-full flex items-center justify-center transition-colors cursor-pointer shrink-0 relative ${
-                    articleCategoryFilter !== "Semua"
+                  className={`w-8.5 h-8.5 rounded-full flex items-center justify-center transition-colors cursor-pointer shrink-0 relative ${articleCategoryFilter !== "Semua"
                       ? "bg-[#0FA89B]/10 text-[#0FA89B] border border-[#0FA89B]/30"
                       : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                  }`}
+                    }`}
                   title="Filter Kategori"
                 >
                   <SlidersHorizontal className="w-4 h-4 stroke-[2.2]" />
@@ -926,11 +923,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                             setArticleCategoryFilter(cat);
                             setShowArticleFilterMenu(false);
                           }}
-                          className={`w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold transition-all flex items-center justify-between cursor-pointer ${
-                            isActive
+                          className={`w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold transition-all flex items-center justify-between cursor-pointer ${isActive
                               ? "bg-[#0FA89B]/10 text-[#0FA89B]"
                               : "text-slate-700 hover:bg-slate-50"
-                          }`}
+                            }`}
                         >
                           <span className="truncate pr-2">{cat}</span>
                           <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">
@@ -1247,11 +1243,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                             setActiveNotifFilter(tab.id as any);
                             setShowFilterMenu(false);
                           }}
-                          className={`w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold transition-all flex items-center justify-between cursor-pointer ${
-                            isActive
+                          className={`w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold transition-all flex items-center justify-between cursor-pointer ${isActive
                               ? "bg-[#0FA89B]/10 text-[#0FA89B]"
                               : "text-slate-700 hover:bg-slate-50"
-                          }`}
+                            }`}
                         >
                           <span>{tab.label}</span>
                           <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
@@ -1300,11 +1295,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       }
                       setSelectedNotifDetail(notif);
                     }}
-                    className={`p-3 rounded-2xl border transition-colors cursor-pointer relative space-y-1 select-none touch-pan-y ${
-                      notif.isRead
+                    className={`p-3 rounded-2xl border transition-colors cursor-pointer relative space-y-1 select-none touch-pan-y ${notif.isRead
                         ? "bg-white border-slate-150 opacity-75 hover:bg-slate-50/60"
                         : "bg-teal-50/20 border-[#0FA89B]/30 shadow-2xs hover:border-[#0FA89B]"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5 min-w-0">
@@ -1312,13 +1306,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           <span className="w-2 h-2 rounded-full bg-[#0FA89B] shrink-0" />
                         )}
                         <span
-                          className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${
-                            notif.category === "mbg"
+                          className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${notif.category === "mbg"
                               ? "bg-amber-100/70 text-amber-800"
                               : notif.category === "screening"
-                              ? "bg-teal-100/70 text-teal-800"
-                              : "bg-slate-100 text-slate-700"
-                          }`}
+                                ? "bg-teal-100/70 text-teal-800"
+                                : "bg-slate-100 text-slate-700"
+                            }`}
                         >
                           {notif.category || "sistem"}
                         </span>
@@ -1327,9 +1320,9 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       <span className="text-[9.5px] text-slate-400 font-bold shrink-0">
                         {notif.createdAtIso
                           ? new Date(notif.createdAtIso).toLocaleTimeString("id-ID", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }) + " WIB"
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }) + " WIB"
                           : "Baru saja"}
                       </span>
                     </div>
@@ -1367,25 +1360,24 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-2 min-w-0">
                   <span
-                    className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider ${
-                      selectedNotifDetail.category === "mbg"
+                    className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider ${selectedNotifDetail.category === "mbg"
                         ? "bg-amber-100 text-amber-800"
                         : selectedNotifDetail.category === "screening"
-                        ? "bg-teal-100 text-teal-800"
-                        : "bg-slate-200 text-slate-700"
-                    }`}
+                          ? "bg-teal-100 text-teal-800"
+                          : "bg-slate-200 text-slate-700"
+                      }`}
                   >
                     {selectedNotifDetail.category || "sistem"}
                   </span>
                   <span className="text-[10px] text-slate-400 font-bold truncate">
                     {selectedNotifDetail.createdAtIso
                       ? new Date(selectedNotifDetail.createdAtIso).toLocaleString("id-ID", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }) + " WIB"
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }) + " WIB"
                       : "Baru saja"}
                   </span>
                 </div>
