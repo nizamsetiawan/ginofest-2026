@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  Package, 
-  Sparkles, 
-  Check, 
-  X, 
-  MapPin, 
-  Database, 
-  Printer, 
+import {
+  Package,
+  Sparkles,
+  Check,
+  X,
+  MapPin,
+  Database,
+  Printer,
   Download,
-  Calendar, 
-  ListOrdered, 
-  ArrowRight, 
-  RefreshCw, 
+  Calendar,
+  ListOrdered,
+  ArrowRight,
+  RefreshCw,
   Utensils,
   ChevronRight,
   Info,
@@ -25,9 +25,9 @@ import {
   List
 } from "lucide-react";
 import { GRESIK_DISTRICTS, DistrictData } from "@/data/gresik-districts";
-import { 
-  saveMenuPlanToFirestore, 
-  fetchMenuPlanFromFirestore, 
+import {
+  saveMenuPlanToFirestore,
+  fetchMenuPlanFromFirestore,
   deleteMenuPlanFromFirestore,
   fetchDistrictsFromFirestore,
   addNotification
@@ -53,7 +53,7 @@ interface DayMenuState {
 }
 
 const MONTH_NAMES = [
-  "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+  "Januari", "Februari", "Maret", "April", "Mei", "Juni",
   "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
 
@@ -78,10 +78,10 @@ function getWorkdaysForMonth(year: number, month: number, includeSaturday: boole
   const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const maxDayOfWeek = includeSaturday ? 6 : 5;
   const daysPerWeek = includeSaturday ? 6 : 5;
-  
+
   const workdays: { day: string; dateStr: string }[] = [];
   const daysInMonth = new Date(year, month, 0).getDate();
-  
+
   for (let d = 1; d <= daysInMonth; d++) {
     const dt = new Date(year, month - 1, d);
     const dayOfWeek = dt.getDay();
@@ -129,7 +129,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [generationStep, setGenerationStep] = useState<number>(0);
-  
+
   // Modals state
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isResetConfirmModalOpen, setIsResetConfirmModalOpen] = useState(false);
@@ -142,7 +142,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
   const [aiRecipePool, setAiRecipePool] = useState<string[]>([]);
   const [budgetSummary, setBudgetSummary] = useState<any>(null);
-  
+
   const [logisticsBOM, setLogisticsBOM] = useState<any[]>([]);
   const [districtsList, setDistrictsList] = useState<DistrictData[]>(GRESIK_DISTRICTS);
 
@@ -210,7 +210,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               setCachedFoodImages(prev => {
                 const next = { ...prev, [selectedDayForDetail.menuTitle!]: data.imageUrl };
                 if (typeof window !== "undefined") {
-                  try { localStorage.setItem("gscan_food_images_cache", JSON.stringify(next)); } catch (e) {}
+                  try { localStorage.setItem("gscan_food_images_cache", JSON.stringify(next)); } catch (e) { }
                 }
                 return next;
               });
@@ -261,7 +261,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
         if (typeof window !== "undefined") {
           try {
             localStorage.setItem("gscan_food_images_cache", JSON.stringify(next));
-          } catch (e) {}
+          } catch (e) { }
         }
         return next;
       });
@@ -506,7 +506,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             const periodText = selectedPeriod === "2026-8" ? "Agustus 2026" : selectedPeriod;
             await addNotification({
               title: `Rencana Menu MBG ${periodText} Siap`,
-              description: `Menu rekomendasi makanan bergizi seimbang untuk wilayah Kec. ${targetDistrictId} telah resmi diterbitkan dan disinkronkan ke cloud.`,
+              description: `Menu rekomendasi makanan bergizi seimbang untuk wilayah Kec. ${targetDistrictId} telah resmi diterbitkan.`,
               category: "mbg",
               userEmail: "all",
             });
@@ -531,7 +531,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
     setIsDeleting(true);
     try {
       await deleteMenuPlanFromFirestore(targetDistrictId, selectedPeriod);
-      
+
       const [yearStr, monthStr] = selectedPeriod.split("-");
       const dates = getWorkdaysForMonth(parseInt(yearStr), parseInt(monthStr), includeSaturday);
       setMonthlyWeeks({
@@ -557,7 +557,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
     if (!budgetSummary) return;
 
     const filename = `Laporan_BOM_Anggaran_MBG_Kec_${currentDistrictInfo.name}_${currentPeriodInfo.label.replace(/\\s+/g, "_")}.xls`;
-    
+
     const rowsHtml = logisticsBOM.map((item, idx) => `
       <tr>
         <td style="border: 1px solid #cbd5e1; text-align: center; font-weight: bold; padding: 8px;">${idx + 1}</td>
@@ -688,11 +688,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               </h1>
 
               {/* Filter Kecamatan */}
-              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border text-[12px] font-bold shadow-2xs ${
-                isKecamatanAdmin
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border text-[12px] font-bold shadow-2xs ${isKecamatanAdmin
                   ? "bg-slate-50 border-blue-200 text-[#2C3968]"
                   : "bg-white border-[#cbd5e1] text-[#2C3968]"
-              }`}>
+                }`}>
                 {isKecamatanAdmin ? (
                   <Lock className="w-3.5 h-3.5 text-light-sea-green" />
                 ) : (
@@ -794,11 +793,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
           <div className="flex items-center bg-[#f1f5f9] p-1 rounded-2xl border border-slate-200 w-fit">
             <button
               onClick={() => setViewMode("list")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-                viewMode === "list"
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${viewMode === "list"
                   ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                   : "text-slate-600 hover:text-[#2C3968]"
-              }`}
+                }`}
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Mingguan</span>
@@ -806,11 +804,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
             <button
               onClick={() => setViewMode("calendar")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-                viewMode === "calendar"
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${viewMode === "calendar"
                   ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                   : "text-slate-600 hover:text-[#2C3968]"
-              }`}
+                }`}
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Bulanan</span>
@@ -818,11 +815,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
             <button
               onClick={() => setViewMode("yearly")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-                viewMode === "yearly"
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${viewMode === "yearly"
                   ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                   : "text-slate-600 hover:text-[#2C3968]"
-              }`}
+                }`}
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Tahunan</span>
@@ -834,11 +830,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
             <div className="flex items-center bg-[#f1f5f9] p-1 rounded-2xl border border-slate-200 w-fit self-end sm:self-auto gap-1">
               <button
                 onClick={() => setLayoutStyle("list")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer ${
-                  layoutStyle === "list"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer ${layoutStyle === "list"
                     ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                     : "text-slate-600 hover:text-ford-blue"
-                }`}
+                  }`}
                 title="Tampilan Mode List"
               >
                 <List className="w-3.5 h-3.5" />
@@ -847,11 +842,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
               <button
                 onClick={() => setLayoutStyle("grid")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer ${
-                  layoutStyle === "grid"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all cursor-pointer ${layoutStyle === "grid"
                     ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                     : "text-slate-600 hover:text-ford-blue"
-                }`}
+                  }`}
                 title="Tampilan Mode Grid Kartu"
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
@@ -1098,11 +1092,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                     <button
                       key={p}
                       onClick={() => setSelectedWeek(p)}
-                      className={`w-8 h-8 rounded-xl font-bold transition-colors cursor-pointer ${
-                        p === selectedWeek
+                      className={`w-8 h-8 rounded-xl font-bold transition-colors cursor-pointer ${p === selectedWeek
                           ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-xs"
                           : "bg-[#f8fafc] text-slate-600 hover:bg-slate-100 border border-slate-200"
-                      }`}
+                        }`}
                     >
                       {p}
                     </button>
@@ -1298,11 +1291,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                   return (
                     <div
                       key={periodKey}
-                      className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
-                        isSelected
+                      className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${isSelected
                           ? "bg-blue-50/60 border-[#35CBC3] shadow-2xs"
                           : "bg-[#f8fafc] border-[#e2e8f0] hover:border-slate-300"
-                      }`}
+                        }`}
                     >
                       <div className="space-y-1">
                         <div className="flex items-center justify-between">
@@ -1336,11 +1328,10 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                           setSelectedPeriod(periodKey);
                           setViewMode("list");
                         }}
-                        className={`w-full py-1.5 px-3 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
-                          isSelected
+                        className={`w-full py-1.5 px-3 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${isSelected
                             ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold shadow-2xs hover:bg-[#22B5AC]"
                             : "bg-white text-[#2C3968] border border-[#cbd5e1] hover:bg-slate-50"
-                        }`}
+                          }`}
                       >
                         <span>Buka Rencana Menu</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -1357,7 +1348,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       {/* 0A. MODAL: KONFIRMASI HAPUS / BERSIHKAN HASIL GENERATE */}
       {isResetConfirmModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div 
+          <div
             className="w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-rose-200 space-y-4 animate-in zoom-in-95 text-center"
             onClick={(e) => e.stopPropagation()}
           >
@@ -1410,7 +1401,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       {/* 0B. MODAL: KONFIRMASI GENERATE MENU AI */}
       {isConfirmModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div 
+          <div
             className="w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-[#cbd5e1] space-y-4 animate-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
           >
@@ -1428,7 +1419,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                   </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setIsConfirmModalOpen(false)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
               >
@@ -1455,22 +1446,20 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                   <button
                     type="button"
                     onClick={() => handleDaysModeChange(false)}
-                    className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer ${
-                      !includeSaturday
+                    className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer ${!includeSaturday
                         ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold border-[#35CBC3] shadow-2xs"
                         : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"
-                    }`}
+                      }`}
                   >
                     5 Hari (Senin–Jumat)
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDaysModeChange(true)}
-                    className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer ${
-                      includeSaturday
+                    className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer ${includeSaturday
                         ? "bg-gradient-to-r from-green-02 to-light-sea-green text-ford-blue font-bold border-[#35CBC3] shadow-2xs"
                         : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"
-                    }`}
+                      }`}
                   >
                     6 Hari (+Sabtu)
                   </button>
@@ -1509,63 +1498,63 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       {/* 3A. MODAL: DETAIL GIZI & KOMPOSISI 5 BINTANG */}
       {isDetailModalOpen && selectedDayForDetail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in font-sans">
-            <div 
-              className="w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold text-ford-blue bg-green-tint px-2.5 py-0.5 rounded-lg border border-green-02/40">
-                      {selectedDayForDetail.day}, {selectedDayForDetail.dateStr}
-                    </span>
-                    <span className="text-[11px] text-blue-gray font-medium">
-                      Kec. {currentDistrictInfo.name}
-                    </span>
+          <div
+            className="w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold text-ford-blue bg-green-tint px-2.5 py-0.5 rounded-lg border border-green-02/40">
+                    {selectedDayForDetail.day}, {selectedDayForDetail.dateStr}
+                  </span>
+                  <span className="text-[11px] text-blue-gray font-medium">
+                    Kec. {currentDistrictInfo.name}
+                  </span>
+                </div>
+                <h3 className="text-[15px] sm:text-[16px] font-bold text-ford-blue mt-1 leading-snug">
+                  {selectedDayForDetail.menuTitle}
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsDetailModalOpen(false)}
+                className="p-1.5 rounded-lg text-blue-gray hover:text-ford-blue hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Foto Visual Masakan Asli (Google Images via SerpApi) - Bersih Tanpa Teks Overlay */}
+            {modalGoogleImage?.isLoading ? (
+              <div className="h-44 rounded-2xl bg-green-tint/50 border border-green-02/40 flex flex-col items-center justify-center text-ford-blue animate-pulse gap-2">
+                <Loader2 className="w-6 h-6 animate-spin text-light-sea-green" />
+                <span className="text-[12px] font-bold">Memuat foto hidangan...</span>
+              </div>
+            ) : modalGoogleImage?.url ? (
+              <div className="relative h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group bg-slate-100">
+                <img
+                  src={modalGoogleImage.url}
+                  alt={selectedDayForDetail.menuTitle || "Sajian Menu MBG"}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+            ) : null}
+
+            {/* Komposisi 5 Bintang + Susu */}
+            <div className="space-y-2">
+              <h4 className="text-[11px] font-bold text-blue-gray uppercase tracking-wider">
+                Formula 5 Bintang + Susu (BGN / Kemenkes RI)
+              </h4>
+              <div className="space-y-1.5 bg-[#F8FAFC] p-3.5 rounded-2xl border border-slate-200">
+                {selectedDayForDetail.composition?.split("•").map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-[12px]">
+                    <div className="w-2 h-2 rounded-full bg-green-02 shrink-0"></div>
+                    <span className="font-bold text-ford-blue">{item.trim()}</span>
                   </div>
-                  <h3 className="text-[15px] sm:text-[16px] font-bold text-ford-blue mt-1 leading-snug">
-                    {selectedDayForDetail.menuTitle}
-                  </h3>
-                </div>
-                <button 
-                  onClick={() => setIsDetailModalOpen(false)}
-                  className="p-1.5 rounded-lg text-blue-gray hover:text-ford-blue hover:bg-slate-100 transition-colors cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                ))}
               </div>
-
-              {/* Foto Visual Masakan Asli (Google Images via SerpApi) - Bersih Tanpa Teks Overlay */}
-              {modalGoogleImage?.isLoading ? (
-                <div className="h-44 rounded-2xl bg-green-tint/50 border border-green-02/40 flex flex-col items-center justify-center text-ford-blue animate-pulse gap-2">
-                  <Loader2 className="w-6 h-6 animate-spin text-light-sea-green" />
-                  <span className="text-[12px] font-bold">Memuat foto hidangan...</span>
-                </div>
-              ) : modalGoogleImage?.url ? (
-                <div className="relative h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group bg-slate-100">
-                  <img
-                    src={modalGoogleImage.url}
-                    alt={selectedDayForDetail.menuTitle || "Sajian Menu MBG"}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                </div>
-              ) : null}
-
-              {/* Komposisi 5 Bintang + Susu */}
-              <div className="space-y-2">
-                <h4 className="text-[11px] font-bold text-blue-gray uppercase tracking-wider">
-                  Formula 5 Bintang + Susu (BGN / Kemenkes RI)
-                </h4>
-                <div className="space-y-1.5 bg-[#F8FAFC] p-3.5 rounded-2xl border border-slate-200">
-                  {selectedDayForDetail.composition?.split("•").map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-[12px]">
-                      <div className="w-2 h-2 rounded-full bg-green-02 shrink-0"></div>
-                      <span className="font-bold text-ford-blue">{item.trim()}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            </div>
 
             {/* Nutrisi Lab AKG (High Contrast Green Tint Theme) */}
             <div className="space-y-2">
@@ -1596,22 +1585,22 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
               </strong>
             </div>
 
-              <div className="pt-1 text-right">
-                <button
-                  onClick={() => setIsDetailModalOpen(false)}
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-colors cursor-pointer shadow-xs"
-                >
-                  Tutup
-                </button>
-              </div>
+            <div className="pt-1 text-right">
+              <button
+                onClick={() => setIsDetailModalOpen(false)}
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-green-02 to-light-sea-green hover:opacity-95 text-ford-blue text-[12px] font-bold transition-colors cursor-pointer shadow-xs"
+              >
+                Tutup
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       {/* 3. MODAL: PILIH RESEP ALTERNATIF (TAMPIL HANYA SAAT INGIN GANTI MENU) */}
       {isChangeRecipeModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div 
+          <div
             className="w-full max-w-2xl bg-white rounded-3xl p-6 shadow-2xl border border-[#cbd5e1] space-y-4 animate-in zoom-in-95 max-h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
@@ -1629,7 +1618,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                   </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setIsChangeRecipeModalOpen(false)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
               >
@@ -1689,9 +1678,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
 
             {/* 4 Step Progress Indicators */}
             <div className="space-y-2 text-left text-[11px]">
-              <div className={`p-2.5 rounded-xl flex items-center gap-2.5 border transition-all ${
-                generationStep >= 1 ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-50 text-slate-400 border-slate-200"
-              }`}>
+              <div className={`p-2.5 rounded-xl flex items-center gap-2.5 border transition-all ${generationStep >= 1 ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-50 text-slate-400 border-slate-200"
+                }`}>
                 {generationStep > 1 ? (
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                 ) : (
@@ -1700,9 +1688,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 <span>1. Mengambil komoditas lokal Kec. {currentDistrictInfo.name}</span>
               </div>
 
-              <div className={`p-2.5 rounded-xl flex items-center gap-2.5 border transition-all ${
-                generationStep >= 2 ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-50 text-slate-400 border-slate-200"
-              }`}>
+              <div className={`p-2.5 rounded-xl flex items-center gap-2.5 border transition-all ${generationStep >= 2 ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-50 text-slate-400 border-slate-200"
+                }`}>
                 {generationStep > 2 ? (
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                 ) : generationStep === 2 ? (
@@ -1713,9 +1700,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 <span>2. Menganalisis harga harian SISKAPERBAPO Jatim</span>
               </div>
 
-              <div className={`p-2.5 rounded-xl flex items-center gap-2.5 border transition-all ${
-                generationStep >= 3 ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-50 text-slate-400 border-slate-200"
-              }`}>
+              <div className={`p-2.5 rounded-xl flex items-center gap-2.5 border transition-all ${generationStep >= 3 ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-50 text-slate-400 border-slate-200"
+                }`}>
                 {generationStep > 3 ? (
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                 ) : generationStep === 3 ? (
@@ -1726,9 +1712,8 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                 <span>3. Menghitung formula 5 Bintang + Susu & AKG TKPI</span>
               </div>
 
-              <div className={`p-2.5 rounded-xl flex items-center gap-2.5 border transition-all ${
-                generationStep >= 4 ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-50 text-slate-400 border-slate-200"
-              }`}>
+              <div className={`p-2.5 rounded-xl flex items-center gap-2.5 border transition-all ${generationStep >= 4 ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-50 text-slate-400 border-slate-200"
+                }`}>
                 {generationStep >= 4 ? (
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                 ) : (
@@ -1744,7 +1729,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
       {/* 5. MODAL: LAPORAN KEBUTUHAN BAHAN POKOK (BOM LOGISTIK) */}
       {isLogisticsModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div 
+          <div
             className="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#cbd5e1] space-y-4 animate-in zoom-in-95 duration-150 max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
@@ -1762,7 +1747,7 @@ export const MenuPlannerAI: React.FC<MenuPlannerAIProps> = ({ selectedDistrict }
                   </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setIsLogisticsModalOpen(false)}
                 className="p-1.5 rounded-lg text-blue-gray hover:text-ford-blue hover:bg-slate-100 transition-colors cursor-pointer"
               >
