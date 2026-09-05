@@ -165,6 +165,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [isLoadingNotifs, setIsLoadingNotifs] = useState(true);
   const [activeNotifFilter, setActiveNotifFilter] = useState<"semua" | "mbg" | "screening" | "system">("semua");
   const [selectedNotifDetail, setSelectedNotifDetail] = useState<FirestoreNotification | null>(null);
+  const [showDeleteAllConfirmModal, setShowDeleteAllConfirmModal] = useState(false);
 
   useEffect(() => {
     const email = citizenUser?.email || "nizam@gmail.com";
@@ -778,7 +779,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* ═══ FULL SCREEN PAGE: NOTIFIKASI APP (CLEAN & MINIMALIST) ═══  */}
+      {/* ═══ FULL SCREEN PAGE: NOTIFIKASI APP (FULL 100% COVERAGE) ═══  */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {showNotificationModal && (
@@ -787,27 +788,29 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 280 }}
-            className="fixed inset-0 z-50 bg-white flex flex-col h-full w-full overflow-hidden"
+            className="fixed inset-0 z-[100] bg-white h-screen w-screen flex flex-col overflow-hidden"
           >
-            {/* 1. TOP NAVBAR / HEADER (ICON ONLY BACK BUTTON) */}
-            <div className="bg-white border-b border-slate-200/80 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic();
-                  setShowNotificationModal(false);
-                }}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
-                title="Kembali"
-              >
-                <ArrowLeft className="w-4.5 h-4.5 text-slate-700 stroke-[2.5]" />
-              </button>
+            {/* 1. TOP NAVBAR / HEADER (BACK ICON & TITLE SIDE BY SIDE) */}
+            <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic();
+                    setShowNotificationModal(false);
+                  }}
+                  className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                  title="Kembali"
+                >
+                  <ArrowLeft className="w-5 h-5 text-slate-700 stroke-[2.5]" />
+                </button>
 
-              <h2 className="text-[15px] font-black text-slate-800 tracking-tight">
-                Pemberitahuan
-              </h2>
+                <h2 className="text-[16px] font-black text-slate-800 tracking-tight">
+                  Pemberitahuan
+                </h2>
+              </div>
 
-              <div className="flex items-center justify-end min-w-[70px]">
+              <div className="flex items-center gap-2">
                 {unreadNotifCount > 0 && (
                   <button
                     type="button"
@@ -816,9 +819,24 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       markAllNotificationsRead(citizenUser?.email || "nizam@gmail.com");
                     }}
                     className="text-[11px] font-extrabold text-[#0FA89B] hover:underline flex items-center gap-1 cursor-pointer bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/80"
+                    title="Tandai Semua Dibaca"
                   >
                     <CheckCheck className="w-3.5 h-3.5" />
                     <span>Dibaca</span>
+                  </button>
+                )}
+
+                {notifications.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic();
+                      setShowDeleteAllConfirmModal(true);
+                    }}
+                    className="w-8.5 h-8.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                    title="Hapus Semua Notifikasi"
+                  >
+                    <Trash2 className="w-4 h-4 stroke-[2]" />
                   </button>
                 )}
               </div>
@@ -853,7 +871,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               })}
             </div>
 
-            {/* 3. ULTRA-CLEAN COMPACT NOTIFICATION LIST */}
+            {/* 3. ULTRA-CLEAN COMPACT NOTIFICATION LIST (SWIPE TO DELETE) */}
             <div className="flex-1 overflow-y-auto p-3.5 space-y-2 max-w-md mx-auto w-full pb-24 bg-white">
               {isLoadingNotifs ? (
                 <div className="py-16 text-center text-slate-400 text-xs font-medium space-y-2">
@@ -870,8 +888,17 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 </div>
               ) : (
                 filteredNotifications.map((notif) => (
-                  <div
+                  <motion.div
                     key={notif.id}
+                    drag="x"
+                    dragConstraints={{ left: -100, right: 0 }}
+                    dragElastic={0.05}
+                    onDragEnd={(_, info) => {
+                      if (info.offset.x < -60) {
+                        triggerHaptic();
+                        deleteNotification(notif.id);
+                      }
+                    }}
                     onClick={() => {
                       triggerHaptic();
                       if (!notif.isRead) {
@@ -879,7 +906,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       }
                       setSelectedNotifDetail(notif);
                     }}
-                    className={`p-3 rounded-2xl border transition-all cursor-pointer relative space-y-1 ${
+                    className={`p-3 rounded-2xl border transition-colors cursor-pointer relative space-y-1 select-none touch-pan-y ${
                       notif.isRead
                         ? "bg-white border-slate-150 opacity-75 hover:bg-slate-50/60"
                         : "bg-teal-50/20 border-[#0FA89B]/30 shadow-2xs hover:border-[#0FA89B]"
@@ -903,28 +930,14 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[9.5px] text-slate-400 font-bold">
-                          {notif.createdAtIso
-                            ? new Date(notif.createdAtIso).toLocaleTimeString("id-ID", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }) + " WIB"
-                            : "Baru saja"}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            triggerHaptic();
-                            deleteNotification(notif.id);
-                          }}
-                          className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
-                          title="Hapus Notifikasi"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                      <span className="text-[9.5px] text-slate-400 font-bold shrink-0">
+                        {notif.createdAtIso
+                          ? new Date(notif.createdAtIso).toLocaleTimeString("id-ID", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }) + " WIB"
+                          : "Baru saja"}
+                      </span>
                     </div>
 
                     <h4 className="text-[12.5px] font-extrabold text-slate-800 leading-snug">
@@ -933,7 +946,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     <p className="text-[11px] text-slate-500 leading-relaxed font-medium line-clamp-2">
                       {notif.description}
                     </p>
-                  </div>
+                  </motion.div>
                 ))
               )}
             </div>
@@ -942,7 +955,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* ═══ SUB-PAGE: DETAIL PEMBERITAHUAN (CLEAN & MINIMALIST) ═══    */}
+      {/* ═══ SUB-PAGE: DETAIL PEMBERITAHUAN (FULL SCREEN z-[110]) ═══   */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {selectedNotifDetail && (
@@ -951,25 +964,27 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 280 }}
-            className="fixed inset-0 z-50 bg-white flex flex-col h-full w-full overflow-hidden"
+            className="fixed inset-0 z-[110] bg-white h-screen w-screen flex flex-col overflow-hidden"
           >
-            {/* 1. TOP HEADER (ICON ONLY BACK BUTTON) */}
-            <div className="bg-white border-b border-slate-200/80 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic();
-                  setSelectedNotifDetail(null);
-                }}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
-                title="Kembali"
-              >
-                <ArrowLeft className="w-4.5 h-4.5 text-slate-700 stroke-[2.5]" />
-              </button>
+            {/* 1. TOP HEADER (ICON ONLY BACK & TITLE SIDE BY SIDE) */}
+            <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic();
+                    setSelectedNotifDetail(null);
+                  }}
+                  className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                  title="Kembali"
+                >
+                  <ArrowLeft className="w-5 h-5 text-slate-700 stroke-[2.5]" />
+                </button>
 
-              <h2 className="text-[15px] font-black text-slate-800 tracking-tight">
-                Detail Pemberitahuan
-              </h2>
+                <h2 className="text-[16px] font-black text-slate-800 tracking-tight">
+                  Detail Pemberitahuan
+                </h2>
+              </div>
 
               <button
                 type="button"
@@ -978,10 +993,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   deleteNotification(selectedNotifDetail.id);
                   setSelectedNotifDetail(null);
                 }}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
+                className="w-8.5 h-8.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
                 title="Hapus Notifikasi"
               >
-                <Trash2 className="w-4.5 h-4.5" />
+                <Trash2 className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
 
@@ -1031,6 +1046,52 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               </div>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* ═══ MODAL: KONFIRMASI HAPUS SEMUA NOTIFIKASI ═══              */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {showDeleteAllConfirmModal && (
+          <div className="fixed inset-0 z-[120] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl p-5 w-full max-w-xs shadow-2xl space-y-4 border border-slate-100 text-center"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
+                <Trash2 className="w-6 h-6 stroke-[2]" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-slate-800">Hapus Semua Notifikasi?</h3>
+                <p className="text-[11.5px] text-slate-500 font-medium mt-1">
+                  Seluruh pemberitahuan di kotak masuk Anda akan dihapus secara permanen dari database.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteAllConfirmModal(false)}
+                  className="py-2.5 px-3 rounded-2xl bg-slate-100 text-slate-700 text-[11.5px] font-extrabold hover:bg-slate-200 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    triggerHaptic();
+                    setShowDeleteAllConfirmModal(false);
+                    await Promise.all(notifications.map((n) => deleteNotification(n.id)));
+                  }}
+                  className="py-2.5 px-3 rounded-2xl bg-rose-600 text-white text-[11.5px] font-extrabold hover:bg-rose-700 cursor-pointer shadow-xs"
+                >
+                  Hapus Semua
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </Page>
