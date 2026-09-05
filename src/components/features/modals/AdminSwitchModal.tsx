@@ -225,10 +225,14 @@ export const AdminSwitchModal: React.FC<AdminSwitchModalProps> = ({
                 >
                   {/* Avatar */}
                   <div
-                    className="w-10 h-10 rounded-xl text-white font-black text-[12px] flex items-center justify-center shrink-0 shadow-2xs"
+                    className="w-10 h-10 rounded-xl text-white font-black text-[12px] flex items-center justify-center shrink-0 shadow-2xs overflow-hidden"
                     style={{ backgroundColor: u.avatarBg || (isSuper ? "#2C3968" : "#35CBC3") }}
                   >
-                    {u.initials || u.name.slice(0, 2).toUpperCase()}
+                    {u.photoURL ? (
+                      <img src={u.photoURL} alt={u.name} className="w-full h-full object-cover" />
+                    ) : (
+                      u.initials || u.name.slice(0, 2).toUpperCase()
+                    )}
                   </div>
 
                   {/* Account Details */}

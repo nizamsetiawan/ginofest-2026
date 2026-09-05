@@ -21,7 +21,9 @@ import {
   fetchComplaintsFromFirestore,
   updateComplaintStatusInFirestore,
   ComplaintRecord,
+  db,
 } from "@/services/firebase-service";
+import { collection, getDocs } from "firebase/firestore";
 import { useAuth } from "@/contexts/AuthContext";
 import { CardListSkeleton } from "@/components/ui/Skeleton";
 
@@ -38,6 +40,7 @@ export const ComplaintCenterView: React.FC = () => {
   const isSuperAdmin = user?.role === "super_admin";
 
   const [complaints, setComplaints] = useState<ComplaintRecord[]>([]);
+  const [citizenPhotoMap, setCitizenPhotoMap] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -52,7 +55,22 @@ export const ComplaintCenterView: React.FC = () => {
   const loadComplaints = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetchComplaintsFromFirestore();
+      const [res, citizenSnap] = await Promise.all([
+        fetchComplaintsFromFirestore(),
+        getDocs(collection(db, "kcal_masyarakat")).catch(() => null),
+      ]);
+
+      if (citizenSnap && !citizenSnap.empty) {
+        const pMap: Record<string, string> = {};
+        citizenSnap.forEach((docSnap) => {
+          const d = docSnap.data();
+          if (d.email && d.photoURL) {
+            pMap[d.email.trim().toLowerCase()] = d.photoURL;
+          }
+        });
+        setCitizenPhotoMap(pMap);
+      }
+
       if (res.success && res.data) {
         setComplaints(res.data);
       }
@@ -209,13 +227,18 @@ export const ComplaintCenterView: React.FC = () => {
                 {/* Top: Sender info & status */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <div className="w-8 h-8 rounded-xl bg-ford-blue text-white font-bold text-[11px] flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
-                      {c.senderPhotoUrl ? (
-                        <img src={c.senderPhotoUrl} alt={c.senderName} className="w-full h-full object-cover" />
-                      ) : (
-                        c.senderName.slice(0, 2).toUpperCase()
-                      )}
-                    </div>
+                    {(() => {
+                      const photoSrc = c.senderPhotoUrl || (c.senderContact ? citizenPhotoMap[c.senderContact.trim().toLowerCase()] : "");
+                      return (
+                        <div className="w-8 h-8 rounded-xl bg-ford-blue text-white font-bold text-[11px] flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+                          {photoSrc ? (
+                            <img src={photoSrc} alt={c.senderName} className="w-full h-full object-cover" />
+                          ) : (
+                            c.senderName.slice(0, 2).toUpperCase()
+                          )}
+                        </div>
+                      );
+                    })()}
                     <span className="font-bold text-[13px] text-ford-blue">{c.senderName}</span>
                     {c.senderContact && (
                       <span className="text-[11px] font-mono text-ford-blue/80 flex items-center gap-1.5 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">

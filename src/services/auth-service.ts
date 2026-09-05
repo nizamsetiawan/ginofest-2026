@@ -555,6 +555,7 @@ export interface UserSessionLog {
   clientNotified?: boolean;
   userAgent?: string;
   ipAddress?: string;
+  photoURL?: string;
   status: "active" | "closed" | "revoked";
 }
 
@@ -570,6 +571,7 @@ export async function recordSessionLog(
       name: user.name,
       role: user.role,
       districtLabel: user.regionLabel,
+      photoURL: user.photoURL || "",
       loginAt: new Date().toISOString(),
       userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "Web Dashboard",
       status: "active",

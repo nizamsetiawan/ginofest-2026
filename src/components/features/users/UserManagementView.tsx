@@ -498,10 +498,14 @@ export const UserManagementView: React.FC = () => {
                       <td className="py-2.5 px-4">
                         <div className="flex items-center gap-2.5">
                           <div
-                            className="w-7 h-7 rounded-lg text-ford-blue font-bold text-[10px] flex items-center justify-center shrink-0 shadow-2xs"
+                            className="w-7 h-7 rounded-lg text-ford-blue font-bold text-[10px] flex items-center justify-center shrink-0 shadow-2xs overflow-hidden"
                             style={{ backgroundColor: u.avatarBg || "#E6FAF2" }}
                           >
-                            {u.initials || u.name.slice(0, 2).toUpperCase()}
+                            {u.photoURL ? (
+                              <img src={u.photoURL} alt={u.name} className="w-full h-full object-cover" />
+                            ) : (
+                              u.initials || u.name.slice(0, 2).toUpperCase()
+                            )}
                           </div>
                           <span className="font-bold text-ford-blue text-[12px]">{u.name}</span>
                         </div>
@@ -701,13 +705,17 @@ export const UserManagementView: React.FC = () => {
                         <td className="py-2.5 px-4">
                           <div className="flex items-center gap-2.5">
                             <div
-                              className="w-7 h-7 rounded-lg text-[10px] font-bold flex items-center justify-center shrink-0 shadow-2xs"
+                              className="w-7 h-7 rounded-lg text-[10px] font-bold flex items-center justify-center shrink-0 shadow-2xs overflow-hidden"
                               style={{
                                 backgroundColor: isCitizen ? "#E6FAF2" : isSuper ? "#2C3968" : "#EBF5FF",
                                 color: isSuper ? "#FFFFFF" : isCitizen ? "#047857" : "#1D4ED8",
                               }}
                             >
-                              {userInitials}
+                              {log.photoURL ? (
+                                <img src={log.photoURL} alt={log.name} className="w-full h-full object-cover" />
+                              ) : (
+                                userInitials
+                              )}
                             </div>
                             <div>
                               <span className="font-bold text-ford-blue block text-[12px]">{log.name}</span>
@@ -1184,13 +1192,17 @@ export const UserManagementView: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#f8fafc] to-[#f1f5f9] border border-slate-200 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div
-                  className="w-10 h-10 rounded-2xl text-[12px] font-black flex items-center justify-center shrink-0 shadow-xs"
+                  className="w-10 h-10 rounded-2xl text-[12px] font-black flex items-center justify-center shrink-0 shadow-xs overflow-hidden"
                   style={{
                     backgroundColor: viewingLog.role === "masyarakat" ? "#E6FAF2" : viewingLog.role === "super_admin" ? "#2C3968" : "#EBF5FF",
                     color: viewingLog.role === "super_admin" ? "#FFFFFF" : viewingLog.role === "masyarakat" ? "#047857" : "#1D4ED8",
                   }}
                 >
-                  {viewingLog.name ? viewingLog.name.slice(0, 2).toUpperCase() : "US"}
+                  {viewingLog.photoURL ? (
+                    <img src={viewingLog.photoURL} alt={viewingLog.name} className="w-full h-full object-cover" />
+                  ) : (
+                    viewingLog.name ? viewingLog.name.slice(0, 2).toUpperCase() : "US"
+                  )}
                 </div>
                 <div>
                   <h4 className="text-[14px] font-black text-ford-blue">{viewingLog.name}</h4>
@@ -1393,13 +1405,17 @@ export const UserManagementView: React.FC = () => {
             {/* Target User Info */}
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3">
               <div
-                className="w-10 h-10 rounded-2xl text-[12px] font-black flex items-center justify-center shrink-0 shadow-2xs"
+                className="w-10 h-10 rounded-2xl text-[12px] font-black flex items-center justify-center shrink-0 shadow-2xs overflow-hidden"
                 style={{
                   backgroundColor: revokingLog.role === "masyarakat" ? "#E6FAF2" : revokingLog.role === "super_admin" ? "#2C3968" : "#EBF5FF",
                   color: revokingLog.role === "super_admin" ? "#FFFFFF" : revokingLog.role === "masyarakat" ? "#047857" : "#1D4ED8",
                 }}
               >
-                {revokingLog.name ? revokingLog.name.slice(0, 2).toUpperCase() : "US"}
+                {revokingLog.photoURL ? (
+                  <img src={revokingLog.photoURL} alt={revokingLog.name} className="w-full h-full object-cover" />
+                ) : (
+                  revokingLog.name ? revokingLog.name.slice(0, 2).toUpperCase() : "US"
+                )}
               </div>
               <div className="min-w-0 flex-1">
                 <h4 className="text-[13px] font-bold text-ford-blue truncate">{revokingLog.name}</h4>
