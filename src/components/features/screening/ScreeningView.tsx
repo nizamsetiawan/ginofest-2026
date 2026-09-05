@@ -155,7 +155,7 @@ export const ScreeningView: React.FC = () => {
           (b: any) => b.claimId === parsed.claimId || b.scanId === parsed.claimId || b.id === parsed.claimId
         );
         if (match && checkIsExpired(match)) {
-          setErrorMessage(`❌ Barcode Klaim ID #${parsed.claimId} telah KADALUARSA (Melebihi 24 Jam). Minta warga melakukan skrining AI ulang.`);
+          setErrorMessage(`Barcode Klaim ID #${parsed.claimId} telah KADALUARSA (Melebihi 24 Jam). Minta warga melakukan skrining AI ulang.`);
           return;
         }
       }
@@ -955,10 +955,10 @@ export const ScreeningView: React.FC = () => {
 
                         <div className="grid grid-cols-4 gap-1.5">
                           {[
-                            { label: "Wajah", url: faceImg, icon: "👤" },
-                            { label: "Mata", url: eyeImg, icon: "👁️" },
-                            { label: "Tangan", url: handImg, icon: "✋" },
-                            { label: "Kuku", url: nailImg, icon: "💅" },
+                            { label: "Wajah", url: faceImg, icon: "" },
+                            { label: "Mata", url: eyeImg, icon: "" },
+                            { label: "Tangan", url: handImg, icon: "" },
+                            { label: "Kuku", url: nailImg, icon: "" },
                           ].map((p, i) => (
                             <div key={i} className="space-y-0.5 text-center">
                               <div

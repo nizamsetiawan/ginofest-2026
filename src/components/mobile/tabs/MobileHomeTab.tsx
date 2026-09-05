@@ -683,7 +683,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           </p>
 
                           <div className="pt-0.5 flex items-center justify-between text-[9.5px] text-slate-400 font-medium">
-                            <span>🕒 {item.createdAt ? new Date(item.createdAt).toLocaleDateString("id-ID") : "Terbaru"}</span>
+                            <span>{item.createdAt ? new Date(item.createdAt).toLocaleDateString("id-ID") : "Terbaru"}</span>
                             <span className="text-[#0FA89B] font-extrabold">Lihat Detail &amp; Barcode →</span>
                           </div>
                         </div>
@@ -787,7 +787,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
                     <div className="p-3 rounded-xl bg-amber-100/90 border border-amber-200 text-left space-y-1">
                       <p className="text-[11.5px] font-extrabold text-amber-950">
-                        ⚠️ Barcode Telah Kadaluarsa!
+                        Peringatan: Barcode Telah Kadaluarsa!
                       </p>
                       <p className="text-[10.5px] text-amber-900 leading-relaxed font-medium">
                         Kode QR klaim makanan ini telah melebihi batas waktu 24 jam. Silakan lakukan Skrining AI Ulang untuk mendapatkan rekomendasi menu dan barcode klaim yang baru.
@@ -865,10 +865,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 <span className="text-[11px] font-extrabold text-slate-600 block">Bukti Foto Biometrik Azure</span>
                 <div className="grid grid-cols-4 gap-2">
                   {[
-                    { label: "Wajah", url: selectedDetailScan.photos?.faceBase64 || selectedDetailScan.blobUrls?.faceBlobUrl, icon: "👤" },
-                    { label: "Mata", url: selectedDetailScan.photos?.eyeBase64 || selectedDetailScan.blobUrls?.eyeBlobUrl, icon: "👁️" },
-                    { label: "Tangan", url: selectedDetailScan.photos?.handBase64 || selectedDetailScan.blobUrls?.handBlobUrl, icon: "✋" },
-                    { label: "Kuku", url: selectedDetailScan.photos?.nailBase64 || selectedDetailScan.blobUrls?.nailBlobUrl, icon: "💅" },
+                    { label: "Wajah", url: selectedDetailScan.photos?.faceBase64 || selectedDetailScan.blobUrls?.faceBlobUrl, icon: "" },
+                    { label: "Mata", url: selectedDetailScan.photos?.eyeBase64 || selectedDetailScan.blobUrls?.eyeBlobUrl, icon: "" },
+                    { label: "Tangan", url: selectedDetailScan.photos?.handBase64 || selectedDetailScan.blobUrls?.handBlobUrl, icon: "" },
+                    { label: "Kuku", url: selectedDetailScan.photos?.nailBase64 || selectedDetailScan.blobUrls?.nailBlobUrl, icon: "" },
                   ].map((p, i) => (
                     <div key={i} className="space-y-1 text-center">
                       <div
