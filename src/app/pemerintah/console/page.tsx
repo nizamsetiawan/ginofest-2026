@@ -441,10 +441,65 @@ Timestamp: ${selectedScan.createdAt}
               )}
             </div>
           ) : (
-            <div className="space-y-3 pt-1 font-mono text-[11px]">
+            <div className="space-y-2.5 pt-1 font-mono text-[11px]">
               {displayedScans.map((scan) => {
                 const isSelected = selectedScan?.scanId === scan.scanId;
                 const formattedConf = formatConfidence(scan.azureVisionMetrics?.confidenceScore);
+
+                if (modeTab === "HISTORY") {
+                  return (
+                    <div
+                      key={scan.scanId}
+                      onClick={() => setSelectedScan(scan)}
+                      className={`p-3 rounded-xl border transition-all cursor-pointer font-mono space-y-1.5 ${
+                        isSelected
+                          ? "bg-[#1E2950] border-[#35CBC3] shadow-[0_0_12px_rgba(53,203,195,0.25)] text-white ring-1 ring-[#35CBC3]/40"
+                          : "bg-[#090D18] border-[#1E2950] hover:border-[#35CBC3]/50 text-slate-300 hover:bg-[#131C38]/50"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="px-2 py-0.5 rounded bg-[#131C38] text-[#35CBC3] font-bold border border-[#35CBC3]/30">
+                          {scan.scanId}
+                        </span>
+                        <span className="text-[10.5px] text-slate-400 flex items-center gap-1 font-mono">
+                          <Clock className="w-3 h-3 text-[#35CBC3]" />
+                          {scan.createdAt || new Date().toLocaleTimeString("id-ID")}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs pt-0.5">
+                        <div>
+                          <h3 className="font-bold text-white tracking-tight">
+                            {scan.userName}
+                          </h3>
+                          <p className="text-[10.5px] text-slate-400 flex items-center gap-1 mt-0.5">
+                            <MapPin className="w-3 h-3 text-[#35CBC3]" />
+                            Kec. {scan.userDistrict}
+                          </p>
+                        </div>
+
+                        <div className="text-right">
+                          {scan.status === "SCANNING_IN_PROGRESS" ? (
+                            <span className="px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800/80 text-[10px] font-bold block animate-pulse">
+                              [STREAMING]
+                            </span>
+                          ) : scan.status === "CANCELLED" ? (
+                            <span className="px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800/80 text-[10px] font-bold block">
+                              [ABORTED]
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/80 text-[10px] font-extrabold inline-flex items-center gap-1">
+                              [VALID: {formattedConf}]
+                            </span>
+                          )}
+                          <span className="text-[10px] font-bold text-[#35CBC3] block mt-1 max-w-[160px] truncate">
+                            {scan.recommendedMenu?.menuTitle || "Menu RAG Sesuai Klinis"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
 
                 return (
                   <div
@@ -469,7 +524,7 @@ Timestamp: ${selectedScan.createdAt}
                       ) : scan.status === "CANCELLED" ? (
                         <span className="text-rose-400 font-bold">[ABORTED_RECAPTURED]</span>
                       ) : (
-                        <span className="text-white font-bold">[VALIDATED: {formattedConf}]</span>
+                        <span className="text-white font-bold">[VALID: {formattedConf}]</span>
                       )}
                     </p>
 
@@ -551,16 +606,16 @@ Timestamp: ${selectedScan.createdAt}
                                 [{srvLog.level}]
                               </span>{" "}
                               <span className="text-white font-bold">[VERCEL_SERVERLESS]</span>{" "}
-                              <span className="text-white font-bold">[{srvLog.module}]</span> {srvLog.message}
+                              <span className="text-[#35CBC3] font-bold">[{srvLog.module}]</span> {srvLog.message}
                             </p>
                           ))}
                         </div>
                       )}
 
                       {/* Session Completed & Claimed Log */}
-                      {scan.status === "CLAIMED" && (
-                        <p className="text-white font-mono">
-                          <span className="text-white font-bold">[SUCCESS] [SESSION_COMPLETED]</span> Beneficiary QR claim verified. Screening session closed.
+                      {(scan.status === "VALID" || scan.status === "CLAIMED") && (
+                        <p className="text-[#35CBC3] font-mono font-bold">
+                          [SUCCESS] [BIOMETRIC_SESSION_COMPLETED] Record ID: {scan.scanId} committed to Firestore collection `biometric_scans_history` &amp; Azure Blob container `stgscanginofest26`
                         </p>
                       )}
                     </div>
