@@ -256,14 +256,6 @@ export default function SecretDiagnosticsPage() {
       {/* ═══ 1. HEADER CONTROL BAR ═══ */}
       <header className="max-w-7xl mx-auto bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-xs mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Link
-            href="/pemerintah/console"
-            className="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-[#0FA89B] transition-colors flex items-center justify-center cursor-pointer"
-            title="Kembali ke Console Log"
-          >
-            <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
-          </Link>
-
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200 text-[10px] font-extrabold flex items-center gap-1 font-mono">
