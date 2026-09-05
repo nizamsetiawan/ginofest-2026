@@ -39,6 +39,8 @@ import {
   deleteNotification,
   seedInitialUserNotifications,
   addNotification,
+  fetchArticlesFromFirestore,
+  ArticleRecord,
   FirestoreNotification,
 } from "@/services/firebase-service";
 import { CitizenHelpModal } from "../CitizenHelpModal";
@@ -80,46 +82,6 @@ const CLAIM_HISTORY = [
   },
 ];
 
-// ─── DUMMY DATA: EDUKASI GIZI ───
-const NUTRITION_ARTICLES = [
-  {
-    id: 1,
-    category: "Pencegahan Stunting",
-    title: "Pentingnya Protein Hewani pada Porsi Makan Bergizi Gratis",
-    readTime: "2 mnt baca",
-    tag: "Kemenkes RI",
-    icon: ThumbsUp,
-    summary:
-      "Asupan asam amino esensial dari daging ayam, telur, dan ikan lokal sangat krusial dalam memicu hormon pertumbuhan tinggi badan anak.",
-    content:
-      "Berdasarkan standar BGN 2026 dan Kemenkes RI, satu porsi MBG wajib mengandung minimal 25-30 gram protein hewani murni untuk menunjang tumbuh kembang optimal anak di usia sekolah dasar.",
-  },
-  {
-    id: 2,
-    category: "Deteksi Dini AI",
-    title: "Mengenali Tanda Anemia dari Konjungtiva & Bantalan Kuku",
-    readTime: "3 mnt baca",
-    tag: "AI Biometrik",
-    icon: HeartPulse,
-    summary:
-      "Kelopak mata pucat dan waktu pengisian kapiler kuku lebih dari 2 detik adalah indikasi awal kekurangan zat besi yang perlu penanganan cepat.",
-    content:
-      "Fitur pemindaian biometrik Kcal menganalisis spektrum warna konjungtiva dan capillary refill time kuku untuk merekomendasikan tambahan zat besi pada menu MBG anak Anda.",
-  },
-  {
-    id: 3,
-    category: "Pedoman Nutrisi",
-    title: "Prinsip 'Isi Piringku' untuk Anak Usia Sekolah",
-    readTime: "2 mnt baca",
-    tag: "Gizi Seimbang",
-    icon: Utensils,
-    summary:
-      "Proporsi 1/3 makanan pokok, 1/3 sayuran, 1/6 lauk pauk, dan 1/6 buah-buahan untuk menjaga imunitas dan konsentrasi belajar.",
-    content:
-      "Setiap bento tray MBG dirancang mengikuti kaidah gizi seimbang dengan gramatur yang telah ditimbang tepat oleh ahli gizi SPPG.",
-  },
-];
-
 // ─── INITIAL CHAT BOT MESSAGES ───
 const BOT_INITIAL_MESSAGES = [
   {
@@ -149,7 +111,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
   const [showChatModal, setShowChatModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<(typeof NUTRITION_ARTICLES)[0] | null>(null);
+  const [showArticleListModal, setShowArticleListModal] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState<ArticleRecord | null>(null);
+  const [articles, setArticles] = useState<ArticleRecord[]>([]);
+  const [isLoadingArticles, setIsLoadingArticles] = useState(true);
+  const [articleCategoryFilter, setArticleCategoryFilter] = useState<string>("Semua");
+  const [articleSearchQuery, setArticleSearchQuery] = useState<string>("");
 
   // ─── CHATBOT STATE ───
   const [chatMessages, setChatMessages] = useState(BOT_INITIAL_MESSAGES);
@@ -185,6 +152,44 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
     return () => unsubscribe();
   }, [citizenUser?.email, citizenUser?.district]);
+
+  // Fetch 15 Articles from Firestore (with automatic seeding)
+  useEffect(() => {
+    const loadArticles = async () => {
+      try {
+        setIsLoadingArticles(true);
+        const res = await fetchArticlesFromFirestore();
+        if (res.success && res.data) {
+          setArticles(res.data);
+        }
+      } catch (err) {
+        console.error("Error loading articles from Firestore:", err);
+      } finally {
+        setIsLoadingArticles(false);
+      }
+    };
+    loadArticles();
+  }, []);
+
+  const articleCategories = [
+    "Semua",
+    "Pencegahan Stunting",
+    "Deteksi Dini AI",
+    "Pedoman Nutrisi",
+    "Keamanan Pangan MBG",
+    "Kesehatan Ibu & Anak",
+  ];
+
+  const filteredArticles = articles.filter((art) => {
+    const matchCategory =
+      articleCategoryFilter === "Semua" || art.category === articleCategoryFilter;
+    const matchQuery =
+      !articleSearchQuery.trim() ||
+      art.title.toLowerCase().includes(articleSearchQuery.toLowerCase()) ||
+      art.summary.toLowerCase().includes(articleSearchQuery.toLowerCase()) ||
+      art.tag.toLowerCase().includes(articleSearchQuery.toLowerCase());
+    return matchCategory && matchQuery;
+  });
 
   const unreadNotifCount = notifications.filter((n) => !n.isRead).length;
 
@@ -430,9 +435,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               type="button"
               onClick={() => {
                 triggerHaptic();
-                if (NUTRITION_ARTICLES.length > 0) {
-                  setSelectedArticle(NUTRITION_ARTICLES[0]);
-                }
+                setShowArticleListModal(true);
               }}
               className="bg-white border border-slate-200/90 rounded-3xl p-4 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
             >
@@ -639,48 +642,193 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════════ */}
+      {/* ═══ FULL SCREEN PAGE: LIST ARTIKEL EDUKASI GIZI (15 ARTIKEL)  */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {showArticleListModal && (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 280 }}
+            className="fixed inset-0 z-[105] bg-slate-50 h-screen w-screen flex flex-col overflow-hidden"
+          >
+            {/* Header */}
+            <div className="bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20 shrink-0">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic();
+                    setShowArticleListModal(false);
+                  }}
+                  className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                  title="Kembali"
+                >
+                  <ArrowLeft className="w-5 h-5 text-slate-700 stroke-[2.5]" />
+                </button>
+                <div>
+                  <h2 className="text-[16px] font-black text-slate-800 tracking-tight leading-tight">
+                    Artikel &amp; Edukasi Gizi
+                  </h2>
+                  <p className="text-[10.5px] text-slate-500 font-medium">
+                    15 Panduan Nutrisi &amp; Pencegahan Stunting (BGN 2026)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Search & Category Filter bar */}
+            <div className="bg-white p-3.5 border-b border-slate-200/60 space-y-2.5 shrink-0">
+              {/* Search input */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Cari judul artikel, kata kunci (misal: stunting, anemia)..."
+                  value={articleSearchQuery}
+                  onChange={(e) => setArticleSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-slate-100 text-slate-800 text-[12px] font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0FA89B]/40 transition-all"
+                />
+                {articleSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setArticleSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {/* Category Filter Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                {articleCategories.map((cat) => {
+                  const isActive = articleCategoryFilter === cat;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic();
+                        setArticleCategoryFilter(cat);
+                      }}
+                      className={`px-3 py-1 rounded-full text-[10.5px] font-bold shrink-0 transition-all cursor-pointer ${
+                        isActive
+                          ? "bg-[#0FA89B] text-white shadow-2xs"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Articles List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 max-w-md mx-auto w-full pb-24">
+              {isLoadingArticles ? (
+                <div className="py-16 text-center text-slate-400 text-xs font-medium space-y-2">
+                  <div className="w-6 h-6 border-2 border-[#0FA89B] border-t-transparent rounded-full animate-spin mx-auto" />
+                  <p>Memuat artikel dari Firestore...</p>
+                </div>
+              ) : filteredArticles.length === 0 ? (
+                <div className="py-16 text-center space-y-2 bg-white rounded-2xl p-6 border border-slate-200/80">
+                  <BookOpen className="w-8 h-8 text-slate-300 mx-auto" />
+                  <p className="text-xs font-black text-slate-700">Tidak ada artikel ditemukan</p>
+                  <p className="text-[11px] text-slate-400">Coba ubah kata kunci atau kategori filter.</p>
+                </div>
+              ) : (
+                filteredArticles.map((article) => (
+                  <motion.div
+                    key={article.id}
+                    onClick={() => {
+                      triggerHaptic();
+                      setSelectedArticle(article);
+                    }}
+                    className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all cursor-pointer space-y-2 group"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#0FA89B]/10 text-[#0FA89B] text-[9.5px] font-bold truncate">
+                        {article.category}
+                      </span>
+                      <div className="flex items-center gap-1 text-[10px] text-slate-400 font-medium shrink-0">
+                        <Clock className="w-3 h-3 text-slate-400" />
+                        <span>{article.readTime}</span>
+                      </div>
+                    </div>
+
+                    <h3 className="text-[13.5px] font-black text-slate-800 leading-snug group-hover:text-[#0FA89B] transition-colors">
+                      {article.title}
+                    </h3>
+
+                    <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
+                      {article.summary}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px] text-slate-400 font-medium">
+                      <span>{article.author || "BGN RI & Kemenkes"}</span>
+                      <span className="font-bold text-[#0FA89B] flex items-center gap-0.5">
+                        Baca Selengkapnya
+                        <ChevronRight className="w-3 h-3" />
+                      </span>
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
       {/* ═══ MODAL 4: DETAIL ARTIKEL EDUKASI GIZI ═══                  */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {selectedArticle && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="fixed inset-0 z-[115] bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden"
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[88vh] flex flex-col shadow-2xl overflow-hidden"
             >
               {/* Header */}
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                <span className="px-2.5 py-0.5 rounded-full bg-[#0FA89B]/10 text-[#0FA89B] text-[9.5px] font-bold">
-                  {selectedArticle.tag}
-                </span>
+              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#0FA89B]/10 text-[#0FA89B] text-[10px] font-bold">
+                    {selectedArticle.category}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[9.5px] font-semibold">
+                    {selectedArticle.tag}
+                  </span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setSelectedArticle(null)}
-                  className="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold cursor-pointer"
+                  className="w-7 h-7 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-600 flex items-center justify-center text-xs font-bold cursor-pointer transition-colors"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Article Content */}
-              <div className="p-5 overflow-y-auto space-y-3">
+              <div className="p-5 overflow-y-auto space-y-3.5">
                 <h3 className="text-[16px] font-black text-slate-800 leading-snug">
                   {selectedArticle.title}
                 </h3>
-                <div className="flex items-center gap-2 text-[10.5px] text-slate-400 font-medium">
-                  <span>Kategori: {selectedArticle.category}</span>
-                  <span>•</span>
+                <div className="flex items-center justify-between text-[10.5px] text-slate-400 font-medium pb-2 border-b border-slate-100">
+                  <span>Oleh: {selectedArticle.author || "BGN RI & Kemenkes"}</span>
                   <span>{selectedArticle.readTime}</span>
                 </div>
-                <div className="h-px bg-slate-100 my-2" />
-                <p className="text-[12px] text-slate-600 leading-relaxed font-medium">
+                <div className="bg-teal-50/60 border border-teal-100 rounded-2xl p-3.5 text-[11.5px] text-teal-900 leading-relaxed font-medium">
+                  <span className="font-bold text-[#0FA89B]">Ringkasan Eksekutif: </span>
                   {selectedArticle.summary}
-                </p>
-                <p className="text-[12px] text-slate-600 leading-relaxed font-medium">
+                </div>
+                <div className="text-[12px] text-slate-700 leading-relaxed font-medium space-y-3 pt-1 whitespace-pre-line">
                   {selectedArticle.content}
-                </p>
+                </div>
               </div>
             </motion.div>
           </div>
