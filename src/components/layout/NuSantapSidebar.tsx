@@ -88,13 +88,6 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
         section: "main",
       },
       {
-        key: "telemetry_logs",
-        label: "Live AI Scan Logs",
-        icon: Terminal,
-        keywords: ["live", "scan", "log", "telemetry", "ai", "realtime", "akurasi", "recall", "scin", "medqa"],
-        section: "main",
-      },
-      {
         key: "map",
         label: "Peta Prevalensi",
         icon: MapPin,
@@ -107,6 +100,29 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
         icon: QrCode,
         keywords: ["scan", "qr", "code", "skrining", "tumbuh", "kembang", "balita", "posyandu", "zscore", "who", "antropometri", "tb", "bb"],
         section: "main",
+      },
+    ];
+
+    if (isSuperAdmin) {
+      items.push(
+        {
+          key: "complaints",
+          label: "Pusat Aduan",
+          icon: MessageSquare,
+          keywords: ["aduan", "komplain", "pengaduan", "masukan", "feedback", "keluhan", "tiket", "masyarakat"],
+          section: "main",
+          superAdminOnly: true,
+        }
+      );
+    }
+
+    items.push(
+      {
+        key: "telemetry_logs",
+        label: "Live AI Scan Logs",
+        icon: Terminal,
+        keywords: ["live", "scan", "log", "telemetry", "ai", "realtime", "akurasi", "recall", "scin", "medqa"],
+        section: "bottom",
       },
       {
         key: "notifications",
@@ -122,8 +138,8 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
         icon: HelpCircle,
         keywords: ["bantuan", "help", "k-bot", "panduan", "tanya", "faq", "perintah", "komplain", "pengaduan", "bot"],
         section: "bottom",
-      },
-    ];
+      }
+    );
 
     if (isSuperAdmin) {
       items.push(
@@ -132,14 +148,6 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
           label: "Kelola Pengguna",
           icon: Users,
           keywords: ["user", "pengguna", "management", "kelola", "admin", "kecamatan", "password", "pin", "role", "sesi", "log"],
-          section: "bottom",
-          superAdminOnly: true,
-        },
-        {
-          key: "complaints",
-          label: "Pusat Aduan",
-          icon: MessageSquare,
-          keywords: ["aduan", "komplain", "pengaduan", "masukan", "feedback", "keluhan", "tiket", "masyarakat"],
           section: "bottom",
           superAdminOnly: true,
         },

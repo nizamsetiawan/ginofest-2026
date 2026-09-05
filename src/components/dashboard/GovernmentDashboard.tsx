@@ -133,7 +133,7 @@ export const GovernmentDashboard: React.FC = () => {
       {/* 2. Main Workspace */}
       <main className="flex-1 p-6 lg:p-8 overflow-y-auto w-full min-w-0 transition-all duration-300">
         {/* Top Greeting (Only visible on main analytical dashboard pages) */}
-        {!["notifications", "help", "users", "complaints", "backup", "settings"].includes(activeNav) && (
+        {!["notifications", "help", "users", "telemetry_logs", "backup", "settings"].includes(activeNav) && (
           <NuSantapHeader
             adminName={user.name}
             regionName={user.regionLabel}
@@ -141,7 +141,7 @@ export const GovernmentDashboard: React.FC = () => {
         )}
 
         {/* Dynamic Navigation Content */}
-        <div className={!["notifications", "help", "users", "complaints", "backup", "settings"].includes(activeNav) ? "mt-4" : ""}>
+        <div className={!["notifications", "help", "users", "telemetry_logs", "backup", "settings"].includes(activeNav) ? "mt-4" : ""}>
           {activeNav === "scan" && (
             <ScanResultsView
               selectedDistrictId={selectedDistrictId}
