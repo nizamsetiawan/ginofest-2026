@@ -743,23 +743,23 @@ export const ScreeningView: React.FC = () => {
 
               <button
                 onClick={() => setBiometricFilter("VALID")}
-                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${biometricFilter === "VALID"
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${biometricFilter === "VALID"
                     ? "bg-emerald-600 text-white shadow-xs"
                     : "bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100"
                   }`}
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>🟢 SIAP KLAIM ({biometricList.filter((b) => b.status === "VALID" || b.status === "SCANNING_IN_PROGRESS").length})</span>
+                <span>Tersedia ({biometricList.filter((b) => b.status === "VALID" || b.status === "SCANNING_IN_PROGRESS").length})</span>
               </button>
 
               <button
                 onClick={() => setBiometricFilter("CLAIMED")}
-                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${biometricFilter === "CLAIMED"
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${biometricFilter === "CLAIMED"
                     ? "bg-blue-600 text-white shadow-xs"
                     : "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
                   }`}
               >
-                <span>🔵 TERKLAIM ({biometricList.filter((b) => b.status === "CLAIMED").length})</span>
+                <span>Sudah Diambil ({biometricList.filter((b) => b.status === "CLAIMED").length})</span>
               </button>
 
               <button
@@ -833,13 +833,13 @@ export const ScreeningView: React.FC = () => {
                       <div className="flex items-center gap-2 self-start sm:self-auto">
                         {isValid && (
                           <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[11px] border border-emerald-300 flex items-center gap-1.5 shadow-xs">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                            <span>🟢 SIAP KLAIM (BELUM SCAN)</span>
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span>Tersedia (Belum Diambil)</span>
                           </span>
                         )}
                         {isClaimed && (
                           <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-extrabold text-[11px] border border-blue-300 flex items-center gap-1.5 shadow-xs">
-                            <span>🔵 SUDAH KLAIM (VERIFIED)</span>
+                            <span>Sudah Diambil</span>
                           </span>
                         )}
                       </div>

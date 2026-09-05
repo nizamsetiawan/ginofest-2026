@@ -602,12 +602,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           </span>
                           {isValid && (
                             <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9.5px] font-black border border-emerald-300 shrink-0">
-                              🟢 SIAP KLAIM
+                              Tersedia
                             </span>
                           )}
                           {isClaimed && (
                             <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[9.5px] font-black border border-blue-300 shrink-0">
-                              🔵 TERKLAIM
+                              Sudah Diambil
                             </span>
                           )}
                         </div>

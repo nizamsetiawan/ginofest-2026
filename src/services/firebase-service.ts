@@ -1270,6 +1270,21 @@ export async function recordQrClaimToFirestore(claim: Omit<QrClaimRecord, "id">)
       verifiedAtIso: claim.verifiedAtIso || new Date().toISOString(),
     });
 
+    // Automatically sync matching scan in biometric_scans_history to CLAIMED status
+    try {
+      const scansRef = collection(db, "biometric_scans_history");
+      const q = query(scansRef, where("claimId", "==", claim.claimId));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        await setDoc(doc(db, "biometric_scans_history", snap.docs[0].id), {
+          status: "CLAIMED",
+          claimedAtIso: new Date().toISOString(),
+        }, { merge: true });
+      }
+    } catch (scanUpdateErr) {
+      console.warn("Notice updating biometric scan status to CLAIMED:", scanUpdateErr);
+    }
+
     const districtName = claim.district || "Kebomas";
     const verifierLabel = claim.verifiedBy || `Staf SPPG Kec. ${districtName}`;
 
