@@ -1,18 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   QrCode,
   ScanLine,
   Camera,
-  Upload,
   CheckCircle2,
   AlertTriangle,
   Sparkles,
   User,
   Utensils,
   Clock,
-  Building2,
   BadgeCheck,
   RefreshCw,
   Search,
@@ -23,7 +21,7 @@ import {
   Flame,
   ShieldCheck,
   History,
-  FileText,
+  CameraOff,
 } from "lucide-react";
 import {
   recordQrClaimToFirestore,
@@ -122,18 +120,51 @@ const DEMO_PAYLOADS = [
 
 export const ScreeningView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"scan" | "history">("scan");
-  const [scanMethod, setScanMethod] = useState<"camera" | "demo" | "input">("demo");
-  const [manualInput, setManualInput] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const [decodedData, setDecodedData] = useState<DecodedPayload | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   
+  // Real camera stream state
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [hasCameraAccess, setHasCameraAccess] = useState<boolean | null>(null);
+
   // History state
   const [historyList, setHistoryList] = useState<QrClaimRecord[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
+
+  // Start web camera on mount when in scan tab
+  useEffect(() => {
+    let stream: MediaStream | null = null;
+
+    if (activeTab === "scan" && !decodedData) {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia({ video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } } })
+          .then((mediaStream) => {
+            stream = mediaStream;
+            setHasCameraAccess(true);
+            if (videoRef.current) {
+              videoRef.current.srcObject = mediaStream;
+            }
+          })
+          .catch((err) => {
+            console.warn("Camera access warning:", err);
+            setHasCameraAccess(false);
+          });
+      } else {
+        setHasCameraAccess(false);
+      }
+    }
+
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [activeTab, decodedData]);
 
   useEffect(() => {
     if (activeTab === "history") {
@@ -165,14 +196,14 @@ export const ScreeningView: React.FC = () => {
     }
   };
 
-  const handleSimulateScanCamera = () => {
+  const handleTriggerScan = (presetPayload?: string) => {
     setIsScanning(true);
     setErrorMessage("");
     setTimeout(() => {
       setIsScanning(false);
-      // Process first demo payload
-      handleProcessPayload(DEMO_PAYLOADS[0].payload);
-    }, 1800);
+      const targetPayload = presetPayload || DEMO_PAYLOADS[0].payload;
+      handleProcessPayload(targetPayload);
+    }, 1500);
   };
 
   const handleConfirmVerification = async () => {
@@ -210,7 +241,6 @@ export const ScreeningView: React.FC = () => {
     setDecodedData(null);
     setVerificationSuccess(false);
     setErrorMessage("");
-    setManualInput("");
   };
 
   const filteredHistory = historyList.filter(
@@ -239,7 +269,7 @@ export const ScreeningView: React.FC = () => {
                 </span>
               </div>
               <p className="text-[12px] text-[#64748b]">
-                Pemindaian & validasi penerimaan porsi Makan Bergizi Gratis warga Kabupaten Gresik
+                Pemindaian kamera live & validasi penerimaan porsi Makan Bergizi Gratis warga Kabupaten Gresik
               </p>
             </div>
           </div>
@@ -256,7 +286,7 @@ export const ScreeningView: React.FC = () => {
             }`}
           >
             <ScanLine className="w-4 h-4" />
-            <span>Pindai QR</span>
+            <span>Kamera Scanner</span>
           </button>
           <button
             onClick={() => setActiveTab("history")}
@@ -272,184 +302,112 @@ export const ScreeningView: React.FC = () => {
         </div>
       </div>
 
-      {/* ─── TAB 1: PEMINDAIAN QR ─── */}
+      {/* ─── TAB 1: PEMINDAIAN QR KAMERA FULL VIEW ─── */}
       {activeTab === "scan" && (
         <div className="space-y-6">
           {!decodedData ? (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              {/* Left Column: Scanner Method Selection & Action */}
-              <div className="lg:col-span-7 space-y-4">
-                {/* Method selector pills */}
-                <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200 text-[11px] font-bold">
-                  <button
-                    onClick={() => setScanMethod("demo")}
-                    className={`flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                      scanMethod === "demo"
-                        ? "bg-ford-blue text-white shadow-2xs"
-                        : "text-slate-600 hover:text-ford-blue"
-                    }`}
-                  >
-                    <Zap className="w-3.5 h-3.5 text-green-02" />
-                    <span>Pindai Instan (Demo 1-Click)</span>
-                  </button>
+            <div className="max-w-3xl mx-auto space-y-6">
+              {/* FULL CAMERA SCANNER VIEWPORT */}
+              <div className="relative w-full aspect-[4/3] rounded-3xl bg-slate-950 overflow-hidden shadow-2xl border-4 border-ford-blue flex items-center justify-center">
+                {/* Live Video Feed or Fallback Grid Background */}
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                    hasCameraAccess ? "opacity-100" : "opacity-0"
+                  }`}
+                />
 
-                  <button
-                    onClick={() => setScanMethod("camera")}
-                    className={`flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                      scanMethod === "camera"
-                        ? "bg-ford-blue text-white shadow-2xs"
-                        : "text-slate-600 hover:text-ford-blue"
-                    }`}
-                  >
-                    <Camera className="w-3.5 h-3.5 text-light-sea-green" />
-                    <span>Kamera Web Scanner</span>
-                  </button>
+                {!hasCameraAccess && (
+                  <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-[#131C38] to-slate-950 flex flex-col items-center justify-center p-6 text-center">
+                    <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-3">
+                      <CameraOff className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <p className="text-[13px] font-bold text-slate-200">
+                      Kamera Web Siap Dipindai
+                    </p>
+                    <p className="text-[11px] text-slate-400 max-w-xs mt-1">
+                      Arahkan QR Code Warga ke tengah layar atau gunakan tombol simulasi pemindaian di bawah.
+                    </p>
+                  </div>
+                )}
 
-                  <button
-                    onClick={() => setScanMethod("input")}
-                    className={`flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                      scanMethod === "input"
-                        ? "bg-ford-blue text-white shadow-2xs"
-                        : "text-slate-600 hover:text-ford-blue"
-                    }`}
-                  >
-                    <FileText className="w-3.5 h-3.5 text-brand-orange" />
-                    <span>Input Manual JSON</span>
-                  </button>
+                {/* Dark Vignette Overlay for Focus */}
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
+
+                {/* CENTERED SQUARE TARGET BOX FOR BARCODE */}
+                <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-3xl border-2 border-white/20 flex items-center justify-center shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] overflow-hidden">
+                  {/* Glowing Corner Brackets */}
+                  <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-02 rounded-tl-xl"></div>
+                  <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-02 rounded-tr-xl"></div>
+                  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-02 rounded-bl-xl"></div>
+                  <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-02 rounded-br-xl"></div>
+
+                  {/* Animated Laser Scanning Line */}
+                  <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-green-02 to-transparent shadow-[0_0_15px_#23B5A8] animate-bounce top-1/2"></div>
+
+                  {/* Center Watermark QR Icon */}
+                  <QrCode className={`w-20 h-20 text-green-02/70 ${isScanning ? "animate-pulse scale-110" : ""}`} />
                 </div>
 
-                {/* Mode 1: Fast Demo 1-Click */}
-                {scanMethod === "demo" && (
-                  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
-                    <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200/80 text-[12px] text-ford-blue">
-                      <Sparkles className="w-5 h-5 text-light-sea-green shrink-0 mt-0.5" />
-                      <div>
-                        <strong className="font-bold">Mode Simulasi Instan SPPG:</strong>
-                        <p className="mt-0.5 leading-relaxed text-slate-600">
-                          Klik salah satu sampel QR Code Klaim Warga di bawah ini untuk mensimulasikan hasil pemindaian langsung oleh staf.
-                        </p>
-                      </div>
-                    </div>
+                {/* Target Instruction Pill */}
+                <div className="absolute top-4 inset-x-0 flex justify-center">
+                  <span className="px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white font-bold text-[11px] border border-white/20 shadow-md flex items-center gap-2">
+                    <ScanLine className="w-3.5 h-3.5 text-green-02 animate-pulse" />
+                    <span>Posisikan Barcode / QR Code Tepat di Dalam Kotak</span>
+                  </span>
+                </div>
 
-                    <div className="space-y-3">
-                      {DEMO_PAYLOADS.map((item, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => handleProcessPayload(item.payload)}
-                          className="p-4 rounded-2xl border border-slate-200 hover:border-light-sea-green bg-slate-50/60 hover:bg-emerald-50/40 transition-all cursor-pointer flex items-center justify-between group"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-ford-blue text-green-02 flex items-center justify-center font-bold shrink-0">
-                              <QrCode className="w-5 h-5" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] text-ford-blue group-hover:text-light-sea-green transition-colors">
-                                {item.title}
-                              </h4>
-                              <p className="text-[11px] text-slate-500 font-mono mt-0.5">
-                                Verified Payload • MBG Kemenkes 2026
-                              </p>
-                            </div>
-                          </div>
-                          <span className="px-3 py-1.5 rounded-xl bg-ford-blue text-white group-hover:bg-light-sea-green group-hover:text-ford-blue text-[11px] font-bold transition-all shadow-2xs">
-                            Pindai QR ini
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Mode 2: Camera Stream Simulation */}
-                {scanMethod === "camera" && (
-                  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4 text-center">
-                    <div className="relative w-full max-w-sm mx-auto aspect-square rounded-3xl bg-slate-900 overflow-hidden flex flex-col items-center justify-center text-white p-6 shadow-inner border-4 border-ford-blue">
-                      {/* Laser scanner effect */}
-                      <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-green-02 to-transparent shadow-[0_0_15px_#23B5A8] animate-bounce top-1/3"></div>
-                      
-                      <div className="w-48 h-48 border-2 border-dashed border-green-02/60 rounded-2xl flex items-center justify-center relative bg-white/5">
-                        <QrCode className={`w-20 h-20 text-green-02 ${isScanning ? "animate-pulse" : "opacity-80"}`} />
-                      </div>
-
-                      <p className="text-[12px] text-slate-300 font-medium mt-4">
-                        {isScanning ? "Memindai QR Code..." : "Arahkan QR Code Warga ke Frame Kamera"}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={handleSimulateScanCamera}
-                      disabled={isScanning}
-                      className="w-full py-3.5 rounded-2xl bg-ford-blue hover:bg-ford-blue/90 text-white font-bold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer disabled:opacity-50"
-                    >
-                      <ScanLine className={`w-4 h-4 text-green-02 ${isScanning ? "animate-spin" : ""}`} />
-                      <span>{isScanning ? "Proses Pemindaian AI..." : "Simulasikan Kamera Memindai QR"}</span>
-                    </button>
-                  </div>
-                )}
-
-                {/* Mode 3: Manual JSON Input */}
-                {scanMethod === "input" && (
-                  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
-                    <div>
-                      <label className="block font-bold text-[12px] text-ford-blue mb-1.5">
-                        Tempel / Paste Payload JSON QR Code Warga
-                      </label>
-                      <textarea
-                        rows={6}
-                        value={manualInput}
-                        onChange={(e) => setManualInput(e.target.value)}
-                        placeholder='{"claimId":"MBG-...", "beneficiary":{...}, "menu":{...}}'
-                        className="w-full p-3.5 rounded-2xl border border-slate-200 bg-slate-50 font-mono text-[11px] text-ford-blue focus:bg-white focus:ring-2 focus:ring-light-sea-green/30 focus:border-light-sea-green focus:outline-none transition-all"
-                      ></textarea>
-                    </div>
-
-                    <button
-                      onClick={() => handleProcessPayload(manualInput)}
-                      disabled={!manualInput.trim()}
-                      className="w-full py-3 rounded-2xl bg-ford-blue hover:bg-ford-blue/90 text-white font-bold text-[12px] flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer disabled:opacity-40"
-                    >
-                      <CheckCircle2 className="w-4 h-4 text-green-02" />
-                      <span>Dekode Payload QR</span>
-                    </button>
-                  </div>
-                )}
-
-                {errorMessage && (
-                  <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-[12px] font-medium flex items-center gap-2.5">
-                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
+                {/* Bottom Camera Action Controls inside Viewport */}
+                <div className="absolute bottom-4 inset-x-4 flex justify-center">
+                  <button
+                    onClick={() => handleTriggerScan()}
+                    disabled={isScanning}
+                    className="w-full max-w-sm py-3.5 rounded-2xl bg-gradient-to-r from-[#35CBC3] to-light-sea-green hover:from-[#22B5AC] hover:to-light-sea-green text-ford-blue font-black text-[13.5px] flex items-center justify-center gap-2.5 shadow-xl transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    <ScanLine className={`w-5 h-5 text-ford-blue ${isScanning ? "animate-spin" : ""}`} />
+                    <span>{isScanning ? "Memindai AI Payload..." : "Pindai & Dekode QR Code"}</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Right Column: Information Panel */}
-              <div className="lg:col-span-5 space-y-4">
-                <div className="bg-gradient-to-br from-[#131C38] via-[#1E2950] to-[#2C3968] p-6 rounded-3xl text-white shadow-md space-y-4 border border-ford-blue/60 relative overflow-hidden">
-                  <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-green-02/10 blur-2xl pointer-events-none"></div>
+              {errorMessage && (
+                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-[12px] font-medium flex items-center gap-2.5">
+                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
 
-                  <div className="flex items-center gap-2 text-green-02 text-[11px] font-bold uppercase tracking-wider">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span>Petunjuk Staf SPPG</span>
-                  </div>
+              {/* FAST DEMO SIMULATION BUTTONS BELOW CAMERA */}
+              <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                <div className="flex items-center gap-2 text-ford-blue font-bold text-[12px]">
+                  <Zap className="w-4 h-4 text-green-02" />
+                  <span>Uji Simulasi Pindai Instan (Demo 1-Click Warga):</span>
+                </div>
 
-                  <h3 className="font-black text-[16px] text-white leading-snug">
-                    Sistem Validasi Distribusi Makanan Bergizi Gratis (MBG)
-                  </h3>
-
-                  <ul className="space-y-2.5 text-[11px] text-slate-300">
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-02 font-bold mt-0.5">•</span>
-                      <span>QR Code secara otomatis dibuat oleh aplikasi warga setelah skrining nutrisi.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-02 font-bold mt-0.5">•</span>
-                      <span>Pastikan nama warga & rekomendasi porsi sesuai dengan paket yang disiapkan dapur SPPG.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-02 font-bold mt-0.5">•</span>
-                      <span>Tekan tombol verifikasi untuk mencatat distribusi secara real-time ke audit audit trail Pemkab Gresik.</span>
-                    </li>
-                  </ul>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {DEMO_PAYLOADS.map((item, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleTriggerScan(item.payload)}
+                      disabled={isScanning}
+                      className="p-3.5 rounded-2xl border border-slate-200 hover:border-light-sea-green bg-slate-50/80 hover:bg-emerald-50/50 transition-all cursor-pointer text-left flex items-center justify-between group"
+                    >
+                      <div className="space-y-0.5">
+                        <h4 className="font-bold text-[12.5px] text-ford-blue group-hover:text-light-sea-green transition-colors">
+                          {item.title}
+                        </h4>
+                        <p className="text-[10px] text-slate-500 font-mono">
+                          Payload MBG Valid • 680-720 kcal
+                        </p>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-xl bg-ford-blue text-white group-hover:bg-light-sea-green group-hover:text-ford-blue text-[10px] font-bold transition-all shadow-2xs">
+                        Pindai
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
