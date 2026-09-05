@@ -535,8 +535,12 @@ PERTANYAAN PENGGUNA: "${userQuery}"`;
                   {msg.text}
                 </div>
                 {msg.sender === "user" && (
-                  <div className="w-8 h-8 rounded-xl bg-[#2C3968] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                    <User className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-[#2C3968] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs overflow-hidden">
+                    {user?.photoURL ? (
+                      <img src={user.photoURL} alt={user.name || "User"} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-4 h-4" />
+                    )}
                   </div>
                 )}
               </div>

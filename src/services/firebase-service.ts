@@ -1026,6 +1026,7 @@ export interface ComplaintRecord {
   ticketId?: string;
   senderName: string;
   senderContact?: string;
+  senderPhotoUrl?: string;
   category: string;
   message: string;
   district?: string;
@@ -1042,6 +1043,7 @@ export async function saveComplaintToFirestore(complaint: Omit<ComplaintRecord, 
     const docRef = await addDoc(colRef, {
       ...complaint,
       ticketId: autoTicketId,
+      senderPhotoUrl: complaint.senderPhotoUrl || "",
       status: complaint.status || "baru",
       timestamp: serverTimestamp(),
       createdAtIso: new Date().toISOString(),

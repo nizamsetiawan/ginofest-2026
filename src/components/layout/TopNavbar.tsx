@@ -10,6 +10,8 @@ import {
   MessageSquareHeart
 } from "lucide-react";
 
+import { useAuth } from "@/contexts/AuthContext";
+
 interface TopNavbarProps {
   activeModule: string;
   setActiveModule: (mod: string) => void;
@@ -21,6 +23,8 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
   setActiveModule,
   onOpenChat,
 }) => {
+  const { user } = useAuth();
+  const avatarInitials = user?.initials || "G";
   return (
     <header className="w-full bg-ford-blue text-white select-none sticky top-0 z-50 shadow-md border-b border-ford-blue/80 font-sans">
       <div className="flex items-center justify-between px-4 h-14">
@@ -125,8 +129,12 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
           </button>
 
           {/* User Avatar Circle */}
-          <div className="flex items-center justify-center w-7 h-7 rounded-full bg-light-sea-green text-ford-blue font-bold text-[12px] ring-2 ring-white/30 cursor-pointer">
-            G
+          <div className="flex items-center justify-center w-7 h-7 rounded-full bg-light-sea-green text-ford-blue font-bold text-[12px] ring-2 ring-white/30 cursor-pointer overflow-hidden">
+            {user?.photoURL ? (
+              <img src={user.photoURL} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              avatarInitials
+            )}
           </div>
         </div>
       </div>

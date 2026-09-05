@@ -12,6 +12,7 @@ export interface KcalUser {
   isPinConfigured: boolean; // Whether custom PIN has been configured
   initials: string;
   avatarBg: string;
+  photoURL?: string;
   createdAt: string;
   lastLoginAt?: string;
 }

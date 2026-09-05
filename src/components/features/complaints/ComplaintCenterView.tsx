@@ -209,8 +209,12 @@ export const ComplaintCenterView: React.FC = () => {
                 {/* Top: Sender info & status */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <div className="w-8 h-8 rounded-xl bg-ford-blue text-white font-bold text-[11px] flex items-center justify-center shrink-0 shadow-2xs">
-                      {c.senderName.slice(0, 2).toUpperCase()}
+                    <div className="w-8 h-8 rounded-xl bg-ford-blue text-white font-bold text-[11px] flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+                      {c.senderPhotoUrl ? (
+                        <img src={c.senderPhotoUrl} alt={c.senderName} className="w-full h-full object-cover" />
+                      ) : (
+                        c.senderName.slice(0, 2).toUpperCase()
+                      )}
                     </div>
                     <span className="font-bold text-[13px] text-ford-blue">{c.senderName}</span>
                     {c.senderContact && (

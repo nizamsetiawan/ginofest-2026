@@ -483,6 +483,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
       const res = await saveComplaintToFirestore({
         senderName: userName,
         senderContact: currentEmail,
+        senderPhotoUrl: citizenUser?.photoURL || "",
         category: "Pengaduan Warga (Chat)",
         message: query,
         district: userDistrict,
@@ -633,6 +634,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
     const res = await saveComplaintToFirestore({
       senderName: complaintName || "Warga Kebomas",
       senderContact: complaintContact || currentEmail,
+      senderPhotoUrl: citizenUser?.photoURL || "",
       category: complaintCategory,
       message: complaintMessage,
       district: userDistrict,
