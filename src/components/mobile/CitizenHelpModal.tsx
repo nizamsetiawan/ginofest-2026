@@ -216,16 +216,16 @@ BATASAN CAKUPAN SISTEM (STRICT SCOPE):
 Anda HANYA boleh menjawab pertanyaan yang berkaitan dengan:
 1. Program Makan Bergizi Gratis (MBG), komposisi menu 5 Bintang, gizi anak sekolah & balita, kecukupan AKG.
 2. Penanganan & pencegahan Stunting, pengukuran Z-Score WHO, antropometri balita.
-3. Skrining Biometrik Wajah & Telapak Tangan pada aplikasi GSCAN.
-4. Penggunaan fitur aplikasi GSCAN / Kcal (Notifikasi, Profil, Fitur Lapor Pengaduan Warga /komplain, Lacak Aduan /track).
+3. Skrining Biometrik Wajah & Telapak Tangan pada aplikasi Kcal.
+4. Penggunaan fitur aplikasi Kcal (Notifikasi, Profil, Fitur Lapor Pengaduan Warga /komplain, Lacak Aduan /track).
 5. Layanan kesehatan warga, Posyandu, Puskesmas, dan bantuan helpdesk Dinkes Gresik.
 6. Sapaan ramah dari warga (seperti "halo", "hai", "selamat pagi", "apa kabar").
 
 ATURAN PENTING & OUT-OF-SCOPE GUARDRAIL:
 - Jika pertanyaan TERFOKUS pada topik di atas: Berikan jawaban yang **singkat, simpel, ramah, dan mudah dipahami** oleh warga/orang tua (maksimal 2-3 paragraf ringkas). Jika pengguna menanyakan tentang stunting (misal: "apa yang kamu ketahui tentang stunting"), jelaskan pengertian stunting secara sederhana serta poin pencegahannya.
-- Jika pertanyaan DILUAR CAKUPAN SISTEM (misal: tentang politik, olahraga, kuis, hiburan, gosip, film, koding/pemrograman umum, matematika umum, atau topik di luar nutrisi/stunting/MBG/GSCAN):
+- Jika pertanyaan DILUAR CAKUPAN SISTEM (misal: tentang politik, olahraga, kuis, hiburan, gosip, film, koding/pemrograman umum, matematika umum, atau topik di luar nutrisi/stunting/MBG/Kcal):
   WAJIB HANYA mengembalikan kalimat berikut secara persis tanpa tambahan kata lain:
-  "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem GSCAN. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga."
+  "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem Kcal. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga."
 
 PERTANYAAN WARGA: "${userQuery}"`;
 
@@ -285,7 +285,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
       if (lower.includes("halo") || lower.includes("hai") || lower.includes("selamat")) {
         return "Halo! Selamat datang di Pusat Bantuan Warga Kcal. Ada yang bisa saya bantu terkait layanan gizi, skrining biometrik, atau MBG hari ini?";
       }
-      return "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem GSCAN. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga.";
+      return "Mohon maaf, pertanyaan Anda berada di luar cakupan Layanan Nutrisi & Sistem Kcal. Pastikan pertanyaan Anda berkaitan dengan Program Makan Bergizi Gratis (MBG), Skrining Biometrik, Pencegahan Stunting, atau Layanan Kesehatan Warga.";
     }
   };
 
@@ -723,7 +723,7 @@ PERTANYAAN WARGA: "${userQuery}"`;
                         "Kualitas & Porsi Makanan MBG",
                         "Kendala Skrining Biometrik",
                         "Layanan Posyandu & Puskesmas",
-                        "Kendala Aplikasi GSCAN",
+                        "Kendala Aplikasi Kcal",
                       ].map((cat) => (
                         <button
                           key={cat}

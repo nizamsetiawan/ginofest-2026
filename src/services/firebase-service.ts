@@ -701,8 +701,8 @@ export async function seedInitialUserNotifications(userEmail: string, districtNa
       await setDoc(docRef, {
         id: docId,
         userEmail: cleanEmail,
-        title: "Selamat Datang di GSCAN",
-        description: `Selamat datang di platform GSCAN! Seluruh pemberitahuan resmi mengenai Program Makan Bergizi Gratis (MBG) dan Skrining Biometrik Kecamatan ${districtName} akan dikirimkan langsung ke kotak masuk Anda.`,
+        title: "Selamat Datang di Kcal",
+        description: `Selamat datang di aplikasi Kcal! Seluruh pemberitahuan resmi mengenai Program Makan Bergizi Gratis (MBG) dan Skrining Biometrik Kecamatan ${districtName} akan dikirimkan langsung ke kotak masuk Anda.`,
         category: "system",
         isRead: false,
         readBy: [],
