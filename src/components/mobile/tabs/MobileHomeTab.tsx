@@ -812,15 +812,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   <h2 className="text-[16px] font-black text-slate-800 tracking-tight leading-tight truncate">
                     Pemberitahuan
                   </h2>
-                  {activeNotifFilter !== "semua" && (
-                    <p className="text-[9.5px] font-bold text-[#0FA89B] uppercase tracking-wider">
-                      Filter: {activeNotifFilter}
-                    </p>
-                  )}
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-3.5 shrink-0">
                 {/* FILTER ICON BUTTON */}
                 <button
                   type="button"
@@ -828,11 +823,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     triggerHaptic();
                     setShowFilterMenu(!showFilterMenu);
                   }}
-                  className={`w-8.5 h-8.5 rounded-full flex items-center justify-center transition-colors cursor-pointer shrink-0 relative ${
-                    activeNotifFilter !== "semua"
-                      ? "bg-[#0FA89B] text-white shadow-2xs"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                  }`}
+                  className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors cursor-pointer shrink-0"
                   title="Filter Kategori"
                 >
                   <SlidersHorizontal className="w-4 h-4 stroke-[2.2]" />
