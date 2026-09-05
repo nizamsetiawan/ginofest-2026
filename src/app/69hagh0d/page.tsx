@@ -179,106 +179,14 @@ export default function SecretDiagnosticsPage() {
     }
   };
 
-  // ─── INITIAL VERIFIED FALLBACK DATA (No Emojis, Pure Professional Data) ───
-  const activeScans = scans.length > 0 ? scans : [
-    {
-      scanId: "SCAN-1788550201413-6VVOA2",
-      claimId: "MBG-1788550201413-6VVOA2",
-      userName: "EKA ANINDA",
-      userDistrict: "Menganti",
-      userAge: 9,
-      status: "VALID",
-      createdAt: "2026-09-04 18:30:12",
-      photos: {
-        faceBase64: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80",
-        eyeBase64: "https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?w=300&auto=format&fit=crop&q=80",
-        handBase64: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=300&auto=format&fit=crop&q=80",
-        nailBase64: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=300&auto=format&fit=crop&q=80"
-      },
-      azureVisionMetrics: {
-        facialVitalityScore: 0.88,
-        eyeConjunctivaStatus: "Normal Merah Muda Sehat",
-        skinTurgorStatus: "Elastis Ringan",
-        nailbedStatus: "CRT < 2 Detik",
-        detectedDeficiencyRisk: "LOW_RISK"
-      },
-      questionnaireAnswers: {
-        nafsuMakan: "Tinggi (Lahap)",
-        aktivitasFisik: "Aktif Bermain",
-        alergi: "Tidak ada"
-      },
-      recommendedMenu: {
-        menuTitle: "Nasi Bandeng Goreng Tanpa Duri + Tumis Kangkung & Pisang",
-        calories: 680,
-        proteinGram: 28,
-        ironMg: 6.4,
-        akgPercentage: 55
-      }
-    },
-    {
-      scanId: "SCAN-1788550198002-9A82B1",
-      claimId: "MBG-1788550198002-9A82B1",
-      userName: "DANI RAHMAN",
-      userDistrict: "Kebomas",
-      userAge: 7,
-      status: "CLAIMED",
-      createdAt: "2026-09-04 17:15:40",
-      photos: {
-        faceBase64: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
-        eyeBase64: "https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?w=300&auto=format&fit=crop&q=80",
-        handBase64: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=300&auto=format&fit=crop&q=80",
-        nailBase64: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=300&auto=format&fit=crop&q=80"
-      },
-      azureVisionMetrics: {
-        facialVitalityScore: 0.74,
-        eyeConjunctivaStatus: "Pucat Ringan Indikasi Anemia",
-        skinTurgorStatus: "Elastis Normal",
-        nailbedStatus: "CRT 2 Detik",
-        detectedDeficiencyRisk: "MODERATE_ANEMIA"
-      },
-      questionnaireAnswers: {
-        nafsuMakan: "Sedang",
-        aktivitasFisik: "Normal Sekolah",
-        alergi: "Alergi Udang"
-      },
-      recommendedMenu: {
-        menuTitle: "Nasi Semur Daging Sapi + Sop Bayam Wortel & Jeruk",
-        calories: 710,
-        proteinGram: 31,
-        ironMg: 8.2,
-        akgPercentage: 68
-      }
-    }
-  ];
-
-  const activeUsers = users.length > 0 ? users : [
-    { email: "ekaanin11@gmail.com", name: "EKA ANINDA", district: "Menganti", age: 9, role: "MASYARAKAT", phone: "081234567890" },
-    { email: "dani.kebomas@gmail.com", name: "DANI RAHMAN", district: "Kebomas", age: 7, role: "MASYARAKAT", phone: "081398765432" },
-    { email: "admin.pemerintah@gresik.go.id", name: "Admin Dinas Kesehatan Gresik", district: "Gresik Kota", role: "PEMERINTAH", phone: "081100223344" }
-  ];
-
-  const activeMenuPlans = menuPlans.length > 0 ? menuPlans : [
-    { planId: "MENU-2026-09-01", menuTitle: "Nasi Bandeng Goreng + Tumis Kangkung", targetDistrict: "Menganti", totalCalories: 680, targetAgeGroup: "7-9 Tahun" },
-    { planId: "MENU-2026-09-02", menuTitle: "Nasi Semur Daging + Sop Bayam Wortel", targetDistrict: "Kebomas", totalCalories: 710, targetAgeGroup: "7-9 Tahun" }
-  ];
-
-  const activeNotifs = notifications.length > 0 ? notifications : [
-    { id: "NOTIF-101", type: "SCREENING_SUCCESS", message: "Skrining biometrik EKA ANINDA berhasil disinkronkan ke Azure Blob Storage", timestamp: "2026-09-04 18:30:15" },
-    { id: "NOTIF-102", type: "MENU_GENERATE", message: "Menu MBG Berbasis RAG Pangan Lokal diperbarui oleh Admin Dinkes", timestamp: "2026-09-04 16:45:00" }
-  ];
-
-  const activeComplaints = complaints.length > 0 ? complaints : [
-    { id: "COMP-001", citizenName: "EKA ANINDA", category: "Ketersediaan Menu", detail: "Menu porsi di sekolah sangat disukai anak-anak", status: "RESOLVED", date: "2026-09-03" }
-  ];
-
-  const activeSettings = settingsDocs.length > 0 ? settingsDocs : [
-    { id: "app_config", azureStorageAccount: "stgscanginofest26", azureStorageContainer: "gscan-media", azureVisionEndpoint: "https://gscan-ai-vision.cognitiveservices.azure.com/", version: "2.4.0" }
-  ];
-
-  const activeQA = qaDocs.length > 0 ? qaDocs : [
-    { id: "QA-001", command: "/skrining", question: "Bagaimana cara melakukan skrining awal?", category: "Fitur Aplikasi", answer: "Buka menu Skrining, ikuti 4 langkah foto biometrik (Wajah, Mata, Tangan, Kuku), lalu jawab 3 pertanyaan kuesioner AI." },
-    { id: "QA-002", command: "/anemia", question: "Bagaimana Kcal mendeteksi potensi anemia?", category: "Klinis Gizi", answer: "Melalui ekstraksi Visi AI konjungtiva mata dan capillary refill time kuku anak." }
-  ];
+  // ─── FIRESTORE REALTIME DATA ───
+  const activeScans = scans;
+  const activeUsers = users;
+  const activeMenuPlans = menuPlans;
+  const activeNotifs = notifications;
+  const activeComplaints = complaints;
+  const activeSettings = settingsDocs;
+  const activeQA = qaDocs;
 
   // ─── FILTERED SCANS ───
   const filteredScans = activeScans.filter((scan: any) => {
@@ -1156,55 +1064,63 @@ export default function SecretDiagnosticsPage() {
               <span className="text-slate-500 font-mono text-[11px]">Storage Account: stgscanginofest26</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {filteredScans.map((scan: any) => {
-                const photos = [
-                  { label: "Wajah", url: scan.photos?.faceBase64 || scan.blobUrls?.faceBlobUrl },
-                  { label: "Mata", url: scan.photos?.eyeBase64 || scan.blobUrls?.eyeBlobUrl },
-                  { label: "Tangan", url: scan.photos?.handBase64 || scan.blobUrls?.handBlobUrl },
-                  { label: "Kuku", url: scan.photos?.nailBase64 || scan.blobUrls?.nailBlobUrl },
-                ];
+            {filteredScans.length === 0 ? (
+              <div className="py-14 text-center space-y-2 bg-slate-50/50 rounded-2xl p-6 border border-slate-200/80">
+                <HardDrive className="w-8 h-8 text-slate-300 mx-auto" />
+                <p className="text-xs font-black text-slate-700">Belum Ada Bukti Foto Biometrik Tersimpan</p>
+                <p className="text-[11px] text-slate-400">Lakukan skrining biometrik pada aplikasi versi mobile untuk mengunggah foto ke Azure Storage.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {filteredScans.map((scan: any) => {
+                  const photos = [
+                    { label: "Wajah", url: scan.photos?.faceBase64 || scan.blobUrls?.faceBlobUrl },
+                    { label: "Mata", url: scan.photos?.eyeBase64 || scan.blobUrls?.eyeBlobUrl },
+                    { label: "Tangan", url: scan.photos?.handBase64 || scan.blobUrls?.handBlobUrl },
+                    { label: "Kuku", url: scan.photos?.nailBase64 || scan.blobUrls?.nailBlobUrl },
+                  ];
 
-                return (
-                  <div key={scan.scanId} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 space-y-2">
-                    <div className="flex items-center justify-between text-[11.5px]">
-                      <span className="font-black text-ford-blue truncate">{scan.userName}</span>
-                      <span className="text-slate-500 text-[10px] font-mono">Kec. {scan.userDistrict}</span>
-                    </div>
+                  return (
+                    <div key={scan.scanId} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 space-y-2">
+                      <div className="flex items-center justify-between text-[11.5px]">
+                        <span className="font-black text-ford-blue truncate">{scan.userName}</span>
+                        <span className="text-slate-500 text-[10px] font-mono">Kec. {scan.userDistrict}</span>
+                      </div>
 
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {photos.map((p, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => {
-                            if (p.url) {
-                              setPreviewPhoto({ url: p.url, title: `Foto ${p.label} - ${scan.userName}` });
-                            }
-                          }}
-                          className={`aspect-square rounded-xl bg-white border border-slate-200 overflow-hidden relative flex items-center justify-center ${
-                            p.url ? "cursor-pointer hover:border-[#0FA89B] hover:shadow-xs transition-all group" : "opacity-40"
-                          }`}
-                        >
-                          {p.url ? (
-                            <>
-                              <img src={p.url} alt={p.label} className="w-full h-full object-cover" />
-                              <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                <Maximize2 className="w-4 h-4 text-white drop-shadow-md" />
-                              </div>
-                            </>
-                          ) : (
-                            <span className="text-[10px] text-slate-400 font-mono">Empty</span>
-                          )}
-                          <span className="absolute bottom-0.5 left-0.5 px-1.5 bg-slate-900/80 text-[8px] text-white rounded font-mono">
-                            {p.label}
-                          </span>
-                        </div>
-                      ))}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {photos.map((p, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              if (p.url) {
+                                setPreviewPhoto({ url: p.url, title: `Foto ${p.label} - ${scan.userName}` });
+                              }
+                            }}
+                            className={`aspect-square rounded-xl bg-white border border-slate-200 overflow-hidden relative flex items-center justify-center ${
+                              p.url ? "cursor-pointer hover:border-[#0FA89B] hover:shadow-xs transition-all group" : "opacity-40"
+                            }`}
+                          >
+                            {p.url ? (
+                              <>
+                                <img src={p.url} alt={p.label} className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                  <Maximize2 className="w-4 h-4 text-white drop-shadow-md" />
+                                </div>
+                              </>
+                            ) : (
+                              <span className="text-[10px] text-slate-400 font-mono">Empty</span>
+                            )}
+                            <span className="absolute bottom-0.5 left-0.5 px-1.5 bg-slate-900/80 text-[8px] text-white rounded font-mono">
+                              {p.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
