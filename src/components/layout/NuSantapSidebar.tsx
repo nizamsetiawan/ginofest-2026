@@ -346,32 +346,6 @@ export const NuSantapSidebar: React.FC<NuSantapSidebarProps> = ({
             </motion.div>
           )}
         </AnimatePresence>
-
-        <button
-          onClick={() => setActiveNav("settings")}
-          title={isCollapsed ? `${currentAdmin.name} (${currentAdmin.role === "Kabupaten" ? "Super Admin" : "Kecamatan"})` : undefined}
-          className={`w-full flex items-center ${isCollapsed ? "justify-center p-2" : "gap-2.5 p-2"} rounded-2xl bg-white border border-[#e2e8f0] hover:border-light-sea-green hover:bg-green-tint/40 transition-all text-left group shadow-xs cursor-pointer`}
-        >
-          <div className="shrink-0">
-            <div
-              className="w-9 h-9 rounded-xl text-white font-black text-[11px] flex items-center justify-center shadow-xs"
-              style={{ backgroundColor: currentAdmin.avatarBg || "#35CBC3" }}
-            >
-              {currentAdmin.initials}
-            </div>
-          </div>
-
-          {!isCollapsed && (
-            <div className="flex-1 overflow-hidden truncate">
-              <h4 className="text-[11px] font-bold text-ford-blue truncate group-hover:text-light-sea-green transition-colors">
-                {currentAdmin.name}
-              </h4>
-              <p className="text-[10px] text-blue-gray truncate">
-                {currentAdmin.regionLabel} • <span className="font-semibold text-light-sea-green">{currentAdmin.role === "Kabupaten" ? "Super Admin" : "Kecamatan"}</span>
-              </p>
-            </div>
-          )}
-        </button>
       </div>
 
       <LogoutModal
