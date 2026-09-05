@@ -1132,6 +1132,57 @@ export async function updateComplaintStatusInFirestore(
 }
 
 // -------------------------------------------------------------
+// 13B. QR CODE MBG CLAIMS VERIFICATION (Collection: gscan_qr_claims)
+// -------------------------------------------------------------
+export interface QrClaimRecord {
+  id?: string;
+  claimId: string;
+  beneficiaryName: string;
+  beneficiaryEmail: string;
+  beneficiaryPhone?: string;
+  district?: string;
+  menuId?: string;
+  menuName: string;
+  calories?: number;
+  porsi?: string;
+  programName?: string;
+  verifiedAtIso: string;
+  verifiedBy?: string;
+  status: "VERIFIED" | "REJECTED";
+}
+
+export async function recordQrClaimToFirestore(claim: Omit<QrClaimRecord, "id">): Promise<{ success: boolean; docId?: string; error?: string }> {
+  try {
+    const colRef = collection(db, "gscan_qr_claims");
+    const docRef = await addDoc(colRef, {
+      ...claim,
+      timestamp: serverTimestamp(),
+      verifiedAtIso: claim.verifiedAtIso || new Date().toISOString(),
+    });
+    return { success: true, docId: docRef.id };
+  } catch (err: any) {
+    console.error("Gagal mencatat klaim QR:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function fetchQrClaimsFromFirestore(): Promise<{ success: boolean; data: QrClaimRecord[] }> {
+  try {
+    const colRef = collection(db, "gscan_qr_claims");
+    const q = query(colRef, orderBy("verifiedAtIso", "desc"));
+    const snap = await getDocs(q);
+    const data: QrClaimRecord[] = [];
+    snap.forEach((docSnap) => {
+      data.push({ id: docSnap.id, ...docSnap.data() } as QrClaimRecord);
+    });
+    return { success: true, data };
+  } catch (err: any) {
+    console.error("Gagal mengambil riwayat klaim QR:", err);
+    return { success: false, data: [] };
+  }
+}
+
+// -------------------------------------------------------------
 // 10. STEP 10: CITIZEN AUTH & PROFILE SYNC (Collection: kcal_masyarakat)
 // -------------------------------------------------------------
 export interface CitizenAccountRecord {
