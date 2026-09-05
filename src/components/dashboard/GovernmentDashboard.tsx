@@ -131,7 +131,7 @@ export const GovernmentDashboard: React.FC = () => {
       />
 
       {/* 2. Main Workspace */}
-      <main className="flex-1 p-6 lg:p-8 overflow-y-auto max-w-7xl">
+      <main className="flex-1 p-6 lg:p-8 overflow-y-auto w-full min-w-0 transition-all duration-300">
         {/* Top Greeting (Only visible on main analytical dashboard pages) */}
         {!["notifications", "help", "users", "complaints", "backup", "settings"].includes(activeNav) && (
           <NuSantapHeader
