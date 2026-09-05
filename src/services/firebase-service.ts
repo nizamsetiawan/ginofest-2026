@@ -1216,6 +1216,36 @@ export async function fetchBiometricScansFromFirestore(): Promise<{ success: boo
   }
 }
 
+export async function fetchUserScansAndClaimsFromFirestore(userEmail?: string, userName?: string): Promise<{ success: boolean; data: any[] }> {
+  try {
+    const colRef = collection(db, "biometric_scans_history");
+    const snap = await getDocs(colRef);
+    const results: any[] = [];
+
+    snap.forEach((docSnap) => {
+      const d = docSnap.data();
+      const matchEmail = userEmail && d.userEmail && d.userEmail.toLowerCase() === userEmail.toLowerCase();
+      const matchName = userName && d.userName && d.userName.toLowerCase() === userName.toLowerCase();
+
+      // Return records that match email or name or return all if guest
+      if (matchEmail || matchName || (!userEmail && !userName)) {
+        results.push({ id: docSnap.id, ...d });
+      }
+    });
+
+    results.sort((a, b) => {
+      const tA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const tB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return tB - tA;
+    });
+
+    return { success: true, data: results };
+  } catch (err: any) {
+    console.error("Gagal mengambil riwayat scan pengguna:", err);
+    return { success: false, data: [] };
+  }
+}
+
 // -------------------------------------------------------------
 // 10. STEP 10: CITIZEN AUTH & PROFILE SYNC (Collection: kcal_masyarakat)
 // -------------------------------------------------------------

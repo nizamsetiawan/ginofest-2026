@@ -26,7 +26,12 @@ import {
   Trash2,
   CheckCheck,
   ArrowLeft,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Scan,
+  Maximize2,
+  Activity,
+  Cpu,
+  RefreshCw,
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,6 +45,7 @@ import {
   seedInitialUserNotifications,
   addNotification,
   fetchArticlesFromFirestore,
+  fetchUserScansAndClaimsFromFirestore,
   ArticleRecord,
   FirestoreNotification,
 } from "@/services/firebase-service";
@@ -125,6 +131,21 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
   // ─── MODAL STATES ───
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [userScansHistory, setUserScansHistory] = useState<any[]>([]);
+  const [isLoadingUserScans, setIsLoadingUserScans] = useState(false);
+  const [previewHistoryPhoto, setPreviewHistoryPhoto] = useState<{ url: string; title: string } | null>(null);
+
+  useEffect(() => {
+    if (showHistoryModal) {
+      setIsLoadingUserScans(true);
+      fetchUserScansAndClaimsFromFirestore(citizenUser?.email, citizenUser?.name).then((res) => {
+        if (res.success) {
+          setUserScansHistory(res.data);
+        }
+        setIsLoadingUserScans(false);
+      });
+    }
+  }, [showHistoryModal, citizenUser?.email, citizenUser?.name]);
   const [showChatModal, setShowChatModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
@@ -501,7 +522,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* ═══ MODAL 1: RIWAYAT KLAIM LENGKAP ═══                         */}
+      {/* ═══ MODAL 1: RIWAYAT ANALISIS & KLAIM WARGA (REALTIME) ═══     */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {showHistoryModal && (
@@ -510,15 +531,18 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden"
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden font-sans"
             >
               {/* Header */}
               <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#0FA89B]/10 flex items-center justify-center text-[#0FA89B]">
-                    <History className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-[#0FA89B]/10 flex items-center justify-center text-[#0FA89B] shrink-0">
+                    <History className="w-4.5 h-4.5" />
                   </div>
-                  <h3 className="text-[14px] font-black text-slate-800">Semua Riwayat Klaim MBG</h3>
+                  <div>
+                    <h3 className="text-[14px] font-black text-slate-800 leading-tight">Riwayat Skrining &amp; Klaim</h3>
+                    <p className="text-[9.5px] text-slate-400 font-medium">{userName} • Kec. {userDistrict}</p>
+                  </div>
                 </div>
                 <button
                   type="button"
@@ -529,31 +553,168 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 </button>
               </div>
 
-              {/* List */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
-                {CLAIM_HISTORY.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2 text-left"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono font-bold text-[#0FA89B]">{item.id}</span>
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[9px] font-bold">
-                        {item.status}
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="text-[13px] font-black text-slate-800">{item.menu}</h4>
-                      <p className="text-[10.5px] text-slate-500">{item.lokasi} • Petugas: {item.petugas}</p>
-                    </div>
-                    <div className="pt-1 border-t border-slate-200/50 flex items-center justify-between text-[10px] text-slate-400 font-medium">
-                      <span>{item.waktu}</span>
-                      <span className="font-bold text-slate-700">{item.kalori}</span>
-                    </div>
+              {/* Body Content */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {isLoadingUserScans ? (
+                  <div className="py-12 text-center space-y-2">
+                    <RefreshCw className="w-7 h-7 text-[#0FA89B] animate-spin mx-auto" />
+                    <p className="text-[12px] font-bold text-slate-700">Mengambil Riwayat Analisis Firestore...</p>
                   </div>
-                ))}
+                ) : userScansHistory.length === 0 ? (
+                  <div className="py-10 px-4 text-center space-y-2.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+                    <Activity className="w-9 h-9 text-slate-300 mx-auto" />
+                    <h4 className="text-[13px] font-extrabold text-slate-700">Belum Ada Rekam Skrining</h4>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-xs mx-auto">
+                      Lakukan analisis biometrik AI &amp; kuesioner pertama Anda untuk melihat riwayat nutrisi di sini!
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowHistoryModal(false);
+                        setActiveTab("screening");
+                      }}
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[11px] shadow-sm cursor-pointer"
+                    >
+                      Mulai Skrining AI Sekarang
+                    </button>
+                  </div>
+                ) : (
+                  userScansHistory.map((item) => {
+                    const isClaimed = item.status === "CLAIMED";
+                    const isValid = item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS";
+                    const photos = item.photos || {};
+                    const blobUrls = item.blobUrls || {};
+
+                    const faceImg = photos.faceBase64 || blobUrls.faceBlobUrl;
+                    const eyeImg = photos.eyeBase64 || blobUrls.eyeBlobUrl;
+                    const handImg = photos.handBase64 || blobUrls.handBlobUrl;
+                    const nailImg = photos.nailBase64 || blobUrls.nailBlobUrl;
+
+                    return (
+                      <div
+                        key={item.id || item.scanId}
+                        className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-3 text-left hover:border-slate-300 transition-all"
+                      >
+                        {/* Status Header */}
+                        <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                          <span className="text-[10.5px] font-mono font-bold text-[#0FA89B] truncate">
+                            ID: {item.claimId || item.scanId || item.id}
+                          </span>
+                          {isValid && (
+                            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9.5px] font-black border border-emerald-300 shrink-0">
+                              🟢 SIAP KLAIM
+                            </span>
+                          )}
+                          {isClaimed && (
+                            <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[9.5px] font-black border border-blue-300 shrink-0">
+                              🔵 TERKLAIM
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Recommended Menu */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-[13px] font-black text-slate-800 leading-snug">
+                              {item.recommendedMenu?.menuTitle || "Nasi Ayam Kari &amp; Sayur Bening"}
+                            </h4>
+                            <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] border border-teal-200 shrink-0">
+                              {item.recommendedMenu?.akgPercentage || 50}% AKG
+                            </span>
+                          </div>
+                          <p className="text-[10.5px] text-slate-500 font-medium">
+                            {item.recommendedMenu?.calories || 680} kkal • {item.recommendedMenu?.portionDesc || "1x Makan Siang"}
+                          </p>
+                        </div>
+
+                        {/* 4 Biometric Photo Thumbnails */}
+                        <div className="space-y-1 pt-0.5">
+                          <span className="text-[9.5px] font-extrabold text-slate-500 flex items-center gap-1">
+                            <Scan className="w-3 h-3 text-[#0FA89B]" />
+                            <span>Bukti Foto Biometrik Azure</span>
+                          </span>
+                          <div className="grid grid-cols-4 gap-1.5">
+                            {[
+                              { label: "Wajah", url: faceImg, icon: "👤" },
+                              { label: "Mata", url: eyeImg, icon: "👁️" },
+                              { label: "Tangan", url: handImg, icon: "✋" },
+                              { label: "Kuku", url: nailImg, icon: "💅" },
+                            ].map((p, i) => (
+                              <div key={i} className="space-y-0.5 text-center">
+                                <div
+                                  onClick={() => {
+                                    if (p.url) {
+                                      setPreviewHistoryPhoto({ url: p.url, title: `Foto ${p.label} Biometrik` });
+                                    }
+                                  }}
+                                  className={`w-full aspect-square rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative flex items-center justify-center ${p.url ? "cursor-pointer hover:ring-2 hover:ring-[#0FA89B] transition-all group" : ""
+                                    }`}
+                                >
+                                  {p.url ? (
+                                    <>
+                                      <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <Maximize2 className="w-3 h-3 text-white" />
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <span className="text-sm">{p.icon}</span>
+                                  )}
+                                </div>
+                                <span className="text-[8px] font-bold text-slate-500 block truncate">{p.label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Timestamp &amp; Clinical Metrics Footer */}
+                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[9.5px] text-slate-400 font-medium">
+                          <span>🕒 {item.createdAt ? new Date(item.createdAt).toLocaleString("id-ID") : "Terbaru"}</span>
+                          <span className="font-bold text-[#0FA89B]">
+                            {item.azureVisionMetrics?.confidenceScore ? `${(item.azureVisionMetrics.confidenceScore * (item.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}% Akurasi` : "Visi AI Presisi"}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══ LIGHTBOX PHOTO PREVIEW MODAL IN MOBILE HOME ═══ */}
+      <AnimatePresence>
+        {previewHistoryPhoto && (
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-4 font-sans animate-in fade-in duration-200">
+            <div className="w-full flex items-center justify-between pt-2 px-2 text-white">
+              <div className="flex items-center gap-2">
+                <Scan className="w-4 h-4 text-[#79D7D2]" />
+                <h4 className="text-[13.5px] font-bold tracking-tight">{previewHistoryPhoto.title}</h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewHistoryPhoto(null)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            <div className="flex-1 w-full max-w-xs flex items-center justify-center p-2 relative">
+              <img
+                src={previewHistoryPhoto.url}
+                alt={previewHistoryPhoto.title}
+                className="max-h-[75vh] w-auto max-w-full object-contain rounded-2xl border border-white/20 shadow-2xl"
+              />
+            </div>
+
+            <div className="pb-4 text-center">
+              <span className="text-[10px] text-slate-400 font-mono">
+                Bukti Biometrik Kcal • Pemkab Gresik 2026
+              </span>
+            </div>
           </div>
         )}
       </AnimatePresence>
