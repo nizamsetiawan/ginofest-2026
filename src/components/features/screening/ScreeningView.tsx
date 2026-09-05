@@ -65,8 +65,9 @@ export const ScreeningView: React.FC = () => {
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   
-  // Real camera stream & auto scan state
+  // Real camera stream & hardware power-saving state
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasCameraAccess, setHasCameraAccess] = useState<boolean | null>(null);
   const [cameraErrorMsg, setCameraErrorMsg] = useState("");
@@ -77,6 +78,29 @@ export const ScreeningView: React.FC = () => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
 
+  // Explicit function to stop camera media tracks and release hardware sensor (Save Battery & Power)
+  const stopCamera = useCallback(() => {
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => {
+        try {
+          track.stop();
+        } catch {}
+      });
+      mediaStreamRef.current = null;
+    }
+    if (videoRef.current) {
+      if (videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => {
+          try {
+            track.stop();
+          } catch {}
+        });
+        videoRef.current.srcObject = null;
+      }
+    }
+  }, []);
+
   const handleProcessPayload = useCallback(async (rawString: string) => {
     setErrorMessage("");
     setVerificationSuccess(false);
@@ -86,6 +110,9 @@ export const ScreeningView: React.FC = () => {
         setErrorMessage("Format QR Code tidak teridentifikasi sebagai payload MBG.");
         return;
       }
+
+      // Stop camera hardware sensor immediately upon valid QR detection to save power
+      stopCamera();
 
       // Sync live citizen profile from Firestore (kcal_masyarakat) if email exists
       if (parsed.beneficiary.email) {
@@ -101,12 +128,13 @@ export const ScreeningView: React.FC = () => {
 
       setDecodedData(parsed);
     } catch (e) {
-      setErrorMessage("Format teks QR Code tidak dapat diurai. Pastikan QR Code MBG terstruktur valid.");
+      setErrorMessage("Format teks QR Code tidak dapat diurai. Pastikan format JSON QR Code MBG valid.");
     }
-  }, []);
+  }, [stopCamera]);
 
   // Request camera permission and start video feed automatically
   const startCamera = useCallback(async () => {
+    stopCamera();
     setCameraErrorMsg("");
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setHasCameraAccess(false);
@@ -118,6 +146,7 @@ export const ScreeningView: React.FC = () => {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
       });
+      mediaStreamRef.current = mediaStream;
       setHasCameraAccess(true);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
@@ -127,21 +156,20 @@ export const ScreeningView: React.FC = () => {
       setHasCameraAccess(false);
       setCameraErrorMsg(err.message || "Akses kamera belum diizinkan oleh browser.");
     }
-  }, []);
+  }, [stopCamera]);
 
-  // Auto camera initialization when entering tab
+  // Auto camera lifecycle: Start when in scan tab, STOP IMMEDIATELY when switching menu/unmounting
   useEffect(() => {
     if (activeTab === "scan" && !decodedData) {
       startCamera();
+    } else {
+      stopCamera();
     }
 
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach((track) => track.stop());
-      }
+      stopCamera();
     };
-  }, [activeTab, decodedData, startCamera]);
+  }, [activeTab, decodedData, startCamera, stopCamera]);
 
   // CONTINUOUS AUTOMATIC QR SCANNER LOOP (NO CLICK NEEDED)
   useEffect(() => {
@@ -424,7 +452,7 @@ export const ScreeningView: React.FC = () => {
                 {/* Bottom Auto Scan Badge */}
                 <div className="absolute bottom-5 inset-x-0 flex justify-center z-10">
                   <span className="px-4 py-1.5 rounded-full bg-ford-blue/90 text-green-02 font-mono font-bold text-[11px] border border-green-02/40 shadow-lg">
-                    ● Sistem Memindai Otomatis (Auto Scan Active)
+                    ● Kamera Aktif - Memindai Otomatis
                   </span>
                 </div>
               </div>
