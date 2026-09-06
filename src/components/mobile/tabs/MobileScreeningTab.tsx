@@ -520,6 +520,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           userName: citizenUser?.name || "Muhammad Nizam Setiawan",
           userDistrict: citizenUser?.district || "Kebomas",
           userEmail: citizenUser?.email,
+          userAge: citizenUser?.age !== undefined ? Number(citizenUser.age) : 9,
           photos: {
             faceBase64: rawPhotosMap.wajah || rawPhotosMap.face,
             eyeBase64: rawPhotosMap.mata || rawPhotosMap.eye,

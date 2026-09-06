@@ -1701,7 +1701,7 @@ export async function loginCitizenFromFirestore(
   email: string,
   password?: string,
   district?: string
-): Promise<{ success: boolean; user?: { id: string; name: string; email: string; phone?: string; district: string }; sessionId?: string; error?: string }> {
+): Promise<{ success: boolean; user?: { id: string; name: string; email: string; phone?: string; district: string; age?: number; photoURL?: string }; sessionId?: string; error?: string }> {
   try {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPass = password || "";
@@ -1774,6 +1774,7 @@ export async function loginCitizenFromFirestore(
       email: userData.email,
       phone: userData.phone,
       district: userData.district || cleanDistrict || "Kebomas",
+      age: userData.age !== undefined ? Number(userData.age) : 9,
       photoURL: userData.photoURL || "",
     };
 
