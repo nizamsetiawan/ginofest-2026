@@ -302,7 +302,9 @@ export class BiometricSyncService {
         id: selectedMenuId,
         name: menuTitle,
         calories: finalCalories,
+        kalori: finalCalories,
         portion: "1x Makan Siang",
+        porsi: "1x Makan Siang",
       },
       clinicalSummary: {
         deficiencyRisk: azureMetrics.detectedDeficiencyRisk,

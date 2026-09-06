@@ -57,8 +57,10 @@ interface DecodedPayload {
   menu?: {
     id?: string;
     name: string;
-    kalori: number;
+    kalori?: number;
+    calories?: number;
     porsi?: string;
+    portion?: string;
     program?: string;
   };
   program?: {
@@ -703,17 +705,17 @@ export const ScreeningView: React.FC = () => {
 
                       <div className="space-y-2">
                         <h5 className="font-bold text-[13.5px] text-ford-blue leading-snug">
-                          {decodedData.menu?.name || "Nasi Bergizi Kcal"}
+                          {decodedData.menu?.name || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis"}
                         </h5>
 
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="px-2.5 py-1 rounded-lg bg-ford-blue text-white text-[11px] font-bold flex items-center gap-1 shadow-2xs">
                             <Flame className="w-3 h-3 text-brand-orange" />
-                            <span>{decodedData.menu?.kalori || 680} Kalori</span>
+                            <span>{decodedData.menu?.calories || decodedData.menu?.kalori || 690} Kalori</span>
                           </span>
 
                           <span className="px-2.5 py-1 rounded-lg bg-white text-ford-blue text-[11px] font-bold border border-slate-200 shadow-2xs">
-                            {decodedData.menu?.porsi || "1x Makan Siang"}
+                            {decodedData.menu?.portion || decodedData.menu?.porsi || "1x Makan Siang"}
                           </span>
                         </div>
                       </div>
