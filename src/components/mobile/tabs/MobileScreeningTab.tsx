@@ -1114,18 +1114,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
           {/* ─── TOP BAR ─── */}
           <div className="px-4 pt-4 pb-3 space-y-3">
-            <div className="flex items-center justify-between">
-              <motion.button whileTap={{ scale: 0.9 }} type="button" onClick={handleBackNavigation}
-                className="w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center cursor-pointer">
-                <ArrowLeft className="w-4 h-4 text-slate-700 stroke-[2.5]" />
-              </motion.button>
-
-              <div className="text-center">
-                <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Menu untuk Anda</p>
-                <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Rekomendasi Nutrisi Harian</p>
-              </div>
-
-              <div className="w-9 h-9" />
+            <div className="text-center">
+              <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Menu untuk Anda</p>
+              <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Rekomendasi Nutrisi Harian</p>
             </div>
 
             {/* Progress */}
