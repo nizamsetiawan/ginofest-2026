@@ -1140,9 +1140,25 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
           {/* ─── TOP BAR ─── */}
           <div className="px-4 pt-4 pb-3 space-y-3">
-            <div className="text-center">
-              <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Menu untuk Anda</p>
-              <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Rekomendasi Nutrisi Harian</p>
+            <div className="flex items-center justify-between">
+              <div className="w-16 h-8" /> {/* Balance spacer */}
+
+              <div className="text-center">
+                <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Menu untuk Anda</p>
+                <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Rekomendasi Nutrisi Harian</p>
+              </div>
+
+              {/* Right Top Action Icon: Buka QR Code Klaim MBG */}
+              <motion.button
+                whileTap={{ scale: 0.92 }}
+                type="button"
+                onClick={() => setScreeningStep(4)}
+                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] text-white text-[11px] font-black flex items-center gap-1.5 shadow-md shadow-teal-500/20 active:scale-95 transition-transform cursor-pointer"
+                title="Buka QR Code Klaim MBG"
+              >
+                <QrCode className="w-4 h-4 text-white" />
+                <span>QR Klaim</span>
+              </motion.button>
             </div>
 
             {/* Progress */}
@@ -1152,7 +1168,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── SCROLLABLE CONTENT ─── */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 pb-28">
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 pb-6">
 
             {/* Menu Image Card */}
             <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm bg-white">
@@ -1466,27 +1482,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
 
           </div>
-
-          {/* ─── STICKY FIXED BOTTOM BAR FOR QR CODE CLAIM ─── */}
-          <div className="px-4 pt-3.5 pb-8 mb-1 bg-white border-t border-slate-200/90 shadow-[0_-6px_24px_rgba(0,0,0,0.1)] flex-shrink-0 z-30">
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              type="button"
-              onClick={() => setScreeningStep(4)}
-              className="w-full bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white rounded-2xl p-3.5 flex items-center justify-between shadow-lg shadow-teal-500/25 cursor-pointer transition-all active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-3 text-left">
-                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                  <QrCode className="w-5 h-5 text-white" />
-                </div>
-                <div className="text-left">
-                  <h5 className="text-[13.5px] font-black text-white leading-tight">Buka QR Code Klaim MBG</h5>
-                  <p className="text-[10.5px] text-white/90 font-medium">Tampilkan ke kamera website petugas untuk verifikasi</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-white" />
-            </motion.button>
-          </div>
         </div>
       )}
 
@@ -1499,14 +1494,26 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           {/* ─── TOP BAR (fixed header, no back icon) ─── */}
           <div className="px-4 pt-4 pb-2 space-y-2 flex-shrink-0">
             <div className="flex items-center justify-between">
-              <div className="w-8 h-8" />
+              <div className="w-16 h-8" /> {/* Balance spacer */}
 
               <div className="text-center">
                 <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Verifikasi Klaim</p>
                 <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">QR Code Menu MBG</p>
               </div>
 
-              <div className="w-8 h-8" />
+              {/* Right Top Action Button: Pindai Nanti */}
+              <motion.button
+                whileTap={{ scale: 0.92 }}
+                type="button"
+                onClick={() => {
+                  setScreeningStep(1);
+                  if (onBackToHome) onBackToHome();
+                }}
+                className="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-black hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
+                title="Pindai Nanti"
+              >
+                <span>Pindai Nanti</span>
+              </motion.button>
             </div>
 
             {/* Progress */}
@@ -1516,7 +1523,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── SCROLLABLE BODY WITH CENTERED QR HERO ─── */}
-          <div className="flex-1 overflow-y-auto px-5 pt-1 pb-28 flex flex-col items-center justify-between space-y-3">
+          <div className="flex-1 overflow-y-auto px-5 pt-1 pb-6 flex flex-col items-center justify-between space-y-3">
             {/* Instruction Title */}
             <div className="text-center space-y-0.5">
               <h4 className="text-[15px] font-black text-slate-800 tracking-tight">Scan Kode QR ke Website SPPG!</h4>
@@ -1597,24 +1604,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <li className="flex items-start gap-1.5"><span className="text-[#23B5A8] font-bold">•</span> Pastikan menu fisik sesuai rekomendasi nutrisi AI.</li>
                 <li className="flex items-start gap-1.5"><span className="text-[#23B5A8] font-bold">•</span> Kecamatan {citizenUser?.district || "Kebomas"} • SPPG Kemenkes RI</li>
               </ul>
-            </div>
-          </div>
-
-          {/* ─── STICKY BOTTOM ACTIONS ─── */}
-          <div className="flex-shrink-0 relative z-30">
-            <div className="bg-white border-t border-slate-200/90 px-4 pt-3.5 pb-8 mb-1 space-y-2 shadow-[0_-6px_24px_rgba(0,0,0,0.1)]">
-              {/* Primary Action: Pindai Nanti */}
-              <motion.button
-                whileTap={{ scale: 0.98 }}
-                type="button"
-                onClick={() => {
-                  setScreeningStep(1);
-                  if (onBackToHome) onBackToHome();
-                }}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[14px] shadow-lg shadow-teal-500/25 transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
-              >
-                <span>Pindai Nanti</span>
-              </motion.button>
             </div>
           </div>
         </div>
