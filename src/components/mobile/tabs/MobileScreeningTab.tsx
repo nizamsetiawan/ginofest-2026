@@ -1565,16 +1565,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 )}
               </div>
 
-              {/* Click to Download QR Code Button Badge */}
-              <button
-                type="button"
-                onClick={() => downloadQRCodeImage("qr-code-step4-container", `QR_Klaim_MBG_${claimId || "code"}.png`)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 hover:bg-teal-100 text-[#0FA89B] text-[10.5px] font-bold border border-teal-200 transition-colors cursor-pointer"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Simpan Gambar QR (Klik)</span>
-              </button>
-
               {/* ID KLAIM, MENU & MASA BERLAKU DIRECTLY UNDERNEATH */}
               <div className="w-full space-y-1.5 pt-1">
                 {/* ID Klaim (Compact & Smaller font) */}
