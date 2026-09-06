@@ -1153,12 +1153,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
               <div className="space-y-2.5">
                 {[
-                  { label: "Energi Total", val: `${syncedRecord?.recommendedMenu?.calories || 690} Kkal`, pct: 35, color: "#0FA89B" },
-                  { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 35.5} g`, pct: 50, color: "#23B5A8" },
+                  { label: "Energi Total", val: `${syncedRecord?.recommendedMenu?.calories || 690} Kkal`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.calories || 690) / 2000) * 100)), color: "#0FA89B" },
+                  { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 35.5} g`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.proteinGram || 35.5) / 70) * 100)), color: "#23B5A8" },
                   { label: "Zat Besi / Fe", val: `${syncedRecord?.recommendedMenu?.ironMg || 7.1} mg`, pct: syncedRecord?.recommendedMenu?.akgPercentage || 51, color: "#F87171" },
-                  { label: "Karbohidrat", val: "50 g", pct: 17, color: "#0FA89B" },
-                  { label: "Lemak Total", val: "10 g", pct: 22, color: "#F59E0B" },
-                  { label: "Serat", val: "7 g", pct: 18, color: "#34D399" },
+                  { label: "Karbohidrat", val: `${syncedRecord?.recommendedMenu?.carbsGram || 50} g`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.carbsGram || 50) / 300) * 100)), color: "#0FA89B" },
+                  { label: "Lemak Total", val: `${syncedRecord?.recommendedMenu?.fatGram || 10} g`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.fatGram || 10) / 45) * 100)), color: "#F59E0B" },
+                  { label: "Serat", val: `${syncedRecord?.recommendedMenu?.fiberGram || 7} g`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.fiberGram || 7) / 40) * 100)), color: "#34D399" },
                 ].map((n) => (
                   <div key={n.label}>
                     <div className="flex items-center justify-between mb-1">

@@ -43,6 +43,9 @@ export interface CompleteBiometricScanRecord {
     calories: number;
     proteinGram: number;
     ironMg: number;
+    carbsGram?: number;
+    fatGram?: number;
+    fiberGram?: number;
     portionDesc: string;
     akgPercentage: number;
     estimatedCost?: number;
@@ -135,6 +138,9 @@ export class BiometricSyncService {
     let finalCalories = 690;
     let finalProtein = 35.5;
     let finalIron = 7.1;
+    let finalCarbs = 50;
+    let finalFat = 10;
+    let finalFiber = 7;
     let finalCost = 14800;
     let finalComposition = "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
     let menuSource = "FALLBACK_NASIONAL";
@@ -246,6 +252,9 @@ export class BiometricSyncService {
           finalCalories    = bestMenu.calories || 690;
           finalProtein     = bestMenu.protein  || (bestMenu as any).proteinGram || 35.5;
           finalIron        = bestMenu.iron     || (bestMenu as any).ironMg || 7.1;
+          finalCarbs       = (bestMenu as any).carbs || (bestMenu as any).carbohydrates || 50;
+          finalFat         = (bestMenu as any).fat || (bestMenu as any).fats || 10;
+          finalFiber       = (bestMenu as any).fiber || 7;
           finalCost        = (bestMenu as any).cost || (bestMenu as any).estimatedCost || 14800;
           finalComposition = (bestMenu as any).composition || (bestMenu as any).components || "";
           menuSource       = "AI_RAG_PRECISION_CLINICAL";
@@ -265,6 +274,9 @@ export class BiometricSyncService {
       calories: finalCalories,
       proteinGram: finalProtein,
       ironMg: finalIron,
+      carbsGram: finalCarbs || 50,
+      fatGram: finalFat || 10,
+      fiberGram: finalFiber || 7,
       estimatedCost: finalCost || 14800,
       composition: finalComposition || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)",
       portionDesc: "Formula 5 Bintang + Susu (BGN / Kemenkes RI)",
