@@ -700,8 +700,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
                         {/* Right Column: Barcode / QR Code Preview Thumbnail (Article Style) */}
                         <div className={`shrink-0 flex flex-col items-center justify-center p-2 rounded-xl border group-hover:scale-105 transition-transform ${isExpired
-                            ? "bg-amber-100/50 border-amber-200"
-                            : "bg-gradient-to-br from-teal-50 to-emerald-50 border-teal-100/80"
+                          ? "bg-amber-100/50 border-amber-200"
+                          : "bg-gradient-to-br from-teal-50 to-emerald-50 border-teal-100/80"
                           }`}>
                           <div className={`w-12 h-12 bg-white rounded-lg p-1 border shadow-2xs flex items-center justify-center relative ${isExpired ? "border-amber-300 opacity-50 grayscale" : "border-teal-200"
                             }`}>
@@ -770,7 +770,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               <div className="flex-1 overflow-y-auto p-5 space-y-4">
                 {/* Status Banner */}
                 <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
-                  <span className="text-[11px] font-bold text-slate-600">Status Penyerahan MBG:</span>
+                  <span className="text-[11px] font-bold text-slate-600">Status Penyerahan:</span>
                   {selectedDetailScan.status === "CLAIMED" ? (
                     <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-[10.5px] font-black border border-blue-300">
                       Sudah Diambil
@@ -870,7 +870,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
-                      Rekomendasi Menu Gizi AI
+                      Rekomendasi Menu Gizi
                     </span>
                     <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
                       {selectedDetailScan.recommendedMenu?.akgPercentage || 50}% AKG
@@ -897,7 +897,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
 
                 {/* 4 Biometric Azure Photo Thumbnails */}
                 <div className="space-y-2">
-                  <span className="text-[11px] font-extrabold text-slate-600 block">Bukti Foto Biometrik Azure</span>
+                  <span className="text-[11px] font-extrabold text-slate-600 block">Bukti Foto Biometrik</span>
                   <div className="grid grid-cols-4 gap-2">
                     {[
                       { label: "Wajah", url: selectedDetailScan.photos?.faceBase64 || selectedDetailScan.blobUrls?.faceBlobUrl, icon: "" },
@@ -1392,10 +1392,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       <AnimatePresence>
         {showNotificationModal && (
           <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 280 }}
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 26, stiffness: 280 }}
             className="fixed inset-0 z-[100] bg-white h-screen w-screen flex flex-col overflow-hidden"
           >
             {/* 1. TOP NAVBAR / HEADER (BACK ICON & TITLE SIDE BY SIDE + ACTION ICONS) */}
@@ -1605,8 +1605,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[88vh] flex flex-col shadow-2xl overflow-hidden"
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md h-[93vh] sm:h-auto max-h-[93vh] sm:max-h-[90vh] flex flex-col shadow-2xl overflow-hidden font-sans"
             >
+              {/* Top Mobile Drag Handle Pill */}
+              <div className="w-full flex justify-center pt-2.5 pb-1 sm:hidden shrink-0">
+                <div className="w-12 h-1 bg-slate-200 rounded-full" />
+              </div>
               {/* Header */}
               <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-2 min-w-0">
