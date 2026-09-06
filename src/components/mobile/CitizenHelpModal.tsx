@@ -726,17 +726,17 @@ PERTANYAAN WARGA: "${userQuery}"`;
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              {/* TRASH / HAPUS BUTTON ONLY */}
+              {/* TRASH / HAPUS BUTTON MATCHING NOTIFICATION STYLE */}
               <button
                 type="button"
                 onClick={() => {
                   handleHaptic();
                   setIsConfirmClearOpen(true);
                 }}
-                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                className="w-8.5 h-8.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
                 title="Bersihkan Chat"
               >
-                <Trash2 className="w-4.5 h-4.5 stroke-[2]" />
+                <Trash2 className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
           </div>
