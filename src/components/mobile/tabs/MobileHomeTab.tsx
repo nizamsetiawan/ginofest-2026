@@ -485,7 +485,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
             className="w-full bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-4.5 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer space-y-3 group relative overflow-hidden"
           >
             {/* Top Right Unclaimed Count Badge */}
-            {unclaimedCount > 0 ? (
+            {isLoadingUserScans ? (
+              <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200/70 text-slate-400 text-[10px] font-bold flex items-center gap-1 animate-pulse">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                <span>Sinkronisasi...</span>
+              </div>
+            ) : unclaimedCount > 0 ? (
               <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[10px] font-extrabold flex items-center gap-1 shadow-2xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>{unclaimedCount} Tersedia</span>
