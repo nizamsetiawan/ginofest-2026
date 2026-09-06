@@ -1159,18 +1159,20 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <div className="relative">
                 <img
                   src={
+                    (syncedRecord?.recommendedMenu as any)?.imageUrl ||
+                    (syncedRecord?.recommendedMenu as any)?.photo ||
                     (() => {
                       const t = (syncedRecord?.recommendedMenu?.menuTitle || "").toLowerCase();
                       if (t.includes("daging") || t.includes("semur") || t.includes("sapi") || t.includes("rawon") || t.includes("empal")) {
                         return "/assets/mbg_tray_daging.jpg";
                       }
-                      if (t.includes("bandeng") || t.includes("ikan") || t.includes("kupang")) {
+                      if (t.includes("bandeng") || t.includes("ikan") || t.includes("kupang") || t.includes("seafood") || t.includes("pepes")) {
                         return "/assets/mbg_tray_bandeng.jpg";
                       }
                       return "/assets/mbg_tray_ayam.jpg";
                     })()
                   }
-                  alt="Menu MBG"
+                  alt={syncedRecord?.recommendedMenu?.menuTitle || "Menu MBG"}
                   className="w-full h-36 object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

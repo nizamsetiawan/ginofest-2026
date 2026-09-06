@@ -143,6 +143,7 @@ export class BiometricSyncService {
     let finalFiber = 7;
     let finalCost = 14800;
     let finalComposition = "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
+    let finalImageUrl = "";
     let menuSource = "FALLBACK_NASIONAL";
 
     try {
@@ -245,6 +246,7 @@ export class BiometricSyncService {
           finalFiber       = (bestMenu as any).fiber || 7;
           finalCost        = (bestMenu as any).cost || (bestMenu as any).estimatedCost || 14800;
           finalComposition = (bestMenu as any).composition || (bestMenu as any).components || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
+          finalImageUrl    = (bestMenu as any).imageUrl || (bestMenu as any).photo || "";
           menuSource       = "AI_RAG_PRECISION_CLINICAL";
 
           console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}" (${finalCalories} kkal, ${finalProtein}g protein, ${finalIron}mg Fe)`);
@@ -269,6 +271,7 @@ export class BiometricSyncService {
       fiberGram: finalFiber || 7,
       estimatedCost: finalCost || 14800,
       composition: finalComposition || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)",
+      imageUrl: finalImageUrl,
       portionDesc: "Formula 5 Bintang + Susu (BGN / Kemenkes RI)",
       akgPercentage: calculatedAKG,
       source: menuSource,
