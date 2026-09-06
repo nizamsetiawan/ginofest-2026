@@ -856,7 +856,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     </div>
 
                     <p className="text-[11px] text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
-                      Tunjukkan kode QR ini kepada Petugas SPPG Kec. {userDistrict} untuk validasi penyerahan porsi makanan.
+                      Arahkan layar QR ini ke kamera website SPPG Kec. {userDistrict} yang disediakan petugas untuk verifikasi penyerahan porsi makanan.
                     </p>
                   </div>
                 )}

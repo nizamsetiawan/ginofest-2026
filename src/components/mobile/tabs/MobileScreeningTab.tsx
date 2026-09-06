@@ -1382,9 +1382,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           <div className="flex-1 overflow-y-auto px-5 pt-1 pb-4 flex flex-col items-center justify-between space-y-3">
             {/* Instruction Title */}
             <div className="text-center space-y-0.5">
-              <h4 className="text-[15px] font-black text-slate-800 tracking-tight">Tunjukkan QR ini pada Staf!</h4>
+              <h4 className="text-[15px] font-black text-slate-800 tracking-tight">Scan Kode QR ke Website SPPG!</h4>
               <p className="text-[10.5px] text-slate-500 font-medium max-w-xs mx-auto leading-snug">
-                Petugas SPPG MBG akan memindai kode ini untuk validasi porsi menu anak Anda.
+                Arahkan layar QR ini ke kamera website yang disediakan petugas untuk verifikasi porsi makanan.
               </p>
             </div>
 

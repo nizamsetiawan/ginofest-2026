@@ -27,7 +27,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
   const [isSetupPinOpen, setIsSetupPinOpen] = useState(false);
 
-  // Initialize from LocalStorage
   useEffect(() => {
     try {
       const savedUser = getSessionUser();
