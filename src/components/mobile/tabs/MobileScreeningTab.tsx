@@ -1152,7 +1152,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── SCROLLABLE CONTENT ─── */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 pb-6">
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 pb-28">
 
             {/* Menu Image Card */}
             <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm bg-white">
@@ -1471,15 +1471,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── STICKY FIXED BOTTOM BAR FOR QR CODE CLAIM ─── */}
-          <div className="px-4 pt-3 pb-7 bg-white border-t border-slate-200/90 shadow-[0_-6px_20px_rgba(0,0,0,0.08)] flex-shrink-0 z-30">
+          <div className="px-4 pt-3.5 pb-8 mb-1 bg-white border-t border-slate-200/90 shadow-[0_-6px_24px_rgba(0,0,0,0.1)] flex-shrink-0 z-30">
             <motion.button
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => setScreeningStep(4)}
-              className="w-full bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white rounded-2xl p-3.5 flex items-center justify-between shadow-lg shadow-teal-500/20 cursor-pointer transition-all active:scale-[0.99]"
+              className="w-full bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white rounded-2xl p-3.5 flex items-center justify-between shadow-lg shadow-teal-500/25 cursor-pointer transition-all active:scale-[0.99]"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center flex-shrink-0">
+              <div className="flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
                   <QrCode className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-left">
