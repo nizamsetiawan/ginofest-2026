@@ -17,7 +17,8 @@ import {
   Layers
 } from "lucide-react";
 import * as XLSX from "xlsx";
-import { loadMasterDataFromFirestore } from "@/services/firebase-service";
+import { collection, getDocs } from "firebase/firestore";
+import { db, loadMasterDataFromFirestore } from "@/services/firebase-service";
 import { GRESIK_DISTRICTS, DistrictData } from "@/data/gresik-districts";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -36,6 +37,7 @@ interface BackupSummary {
   districts: DistrictData[];
   users: KcalUser[];
   sessionLogs: UserSessionLog[];
+  dynamicDataMap: Record<string, any[]>;
 }
 
 // Header label maps per collection for clean Excel headers
@@ -76,7 +78,52 @@ const HEADER_MAPS: Record<string, Record<string, string>> = {
     role: "Role", districtLabel: "Wilayah", loginAt: "Waktu Login",
     userAgent: "User Agent", status: "Status Sesi",
   },
+  kcal_masyarakat: {
+    id: "ID", name: "Nama Anak/Orang Tua", email: "Email", age: "Usia (Tahun)",
+    gender: "Jenis Kelamin", districtId: "Kecamatan", phone: "No HP",
+  },
+  biometric_scans_history: {
+    id: "ID", userName: "Nama Siswa/Warga", userEmail: "Email", status: "Status Klaim",
+    createdAt: "Tanggal Pemindaian", menuTitle: "Rekomendasi Menu",
+  },
+  gscan_qr_claims: {
+    id: "ID", claimId: "ID Klaim", scanId: "ID Pemindaian", beneficiaryName: "Penerima Manfaat",
+    verifiedAtIso: "Waktu Verifikasi", verifiedByRole: "Role Verifikator", status: "Status Transaksi",
+  },
+  gscan_notifications: {
+    id: "ID", title: "Judul Notifikasi", description: "Deskripsi Activity", type: "Tipe", timestamp: "Waktu Log",
+  },
+  gscan_complaints: {
+    id: "ID", name: "Nama Pelapor", category: "Kategori Pengaduan", message: "Pesan Aduan", status: "Status Penanganan",
+  },
+  gscan_settings: {
+    id: "ID", appName: "Nama Sistem", mbgTargetPortionCost: "Pagu Anggaran (Rp)", systemStatus: "Status System",
+  },
+  gscan_help_qa: {
+    id: "ID", question: "Pertanyaan FAQ", answer: "Jawaban Solusi AI", category: "Kategori Knowledge",
+  },
+  mbg_menu_plans: {
+    id: "ID", title: "Nama Rencana Menu", monthYear: "Periode", totalCost: "HPP Total",
+  },
 };
+
+const ALL_COLLECTIONS_CONFIG = [
+  { name: "Master Komoditas Lokal", collection: "master_komoditas", icon: Package, color: "text-emerald-600 bg-emerald-50" },
+  { name: "Harga Pasar SISKAPERBAPO", collection: "master_harga_pasar", icon: FileSpreadsheet, color: "text-blue-600 bg-blue-50" },
+  { name: "Standar Menu MBG (Resep)", collection: "master_menu_makanan", icon: Layers, color: "text-violet-600 bg-violet-50" },
+  { name: "Nilai Gizi TKPI 2019", collection: "master_nilai_gizi", icon: Shield, color: "text-amber-600 bg-amber-50" },
+  { name: "Wilayah & Sasaran 18 Kecamatan", collection: "master_wilayah", icon: Database, color: "text-indigo-600 bg-indigo-50" },
+  { name: "Akun Pengguna Terdaftar", collection: "kcal_users", icon: HardDrive, color: "text-rose-600 bg-rose-50" },
+  { name: "Log Sesi Login & Keamanan", collection: "kcal_session_logs", icon: Calendar, color: "text-cyan-600 bg-cyan-50" },
+  { name: "Database Profil Warga & Posyandu", collection: "kcal_masyarakat", icon: HardDrive, color: "text-emerald-600 bg-emerald-50" },
+  { name: "Riwayat Biometrik Azure Vision", collection: "biometric_scans_history", icon: Database, color: "text-teal-600 bg-teal-50" },
+  { name: "Transaksi Klaim Makanan QR MBG", collection: "gscan_qr_claims", icon: FileSpreadsheet, color: "text-indigo-600 bg-indigo-50" },
+  { name: "Pusat Log & Audit Notifikasi System", collection: "gscan_notifications", icon: Layers, color: "text-purple-600 bg-purple-50" },
+  { name: "Laporan Pengaduan & Feedback Publik", collection: "gscan_complaints", icon: Shield, color: "text-rose-600 bg-rose-50" },
+  { name: "Konfigurasi & Pagu Anggaran MBG", collection: "gscan_settings", icon: Package, color: "text-amber-600 bg-amber-50" },
+  { name: "Basis Data Pengetahuan FAQ AI Bot", collection: "gscan_help_qa", icon: FileSpreadsheet, color: "text-blue-600 bg-blue-50" },
+  { name: "Rencana Pola Menu Mingguan MBG", collection: "mbg_menu_plans", icon: Layers, color: "text-teal-600 bg-teal-50" },
+];
 
 export const BackupSnapshotView: React.FC = () => {
   const { user } = useAuth();
@@ -90,6 +137,7 @@ export const BackupSnapshotView: React.FC = () => {
     districts: GRESIK_DISTRICTS,
     users: [],
     sessionLogs: [],
+    dynamicDataMap: {},
   });
   const [isLoading, setIsLoading] = useState(true);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -98,6 +146,18 @@ export const BackupSnapshotView: React.FC = () => {
   const showToast = (msg: string) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 3500);
+  };
+
+  const fetchCollectionDocs = async (colName: string): Promise<any[]> => {
+    try {
+      const snap = await getDocs(collection(db, colName));
+      const docs: any[] = [];
+      snap.forEach((d) => docs.push({ id: d.id, ...d.data() }));
+      return docs;
+    } catch (err) {
+      console.warn(`[Firestore Backup] Collection ${colName} fetch error:`, err);
+      return [];
+    }
   };
 
   const loadAllData = useCallback(async () => {
@@ -109,14 +169,41 @@ export const BackupSnapshotView: React.FC = () => {
         fetchSessionLogs(),
       ]);
 
+      const dynamicDataMap: Record<string, any[]> = {};
+      
+      // Load all 15 Firestore collections dynamically
+      await Promise.all(
+        ALL_COLLECTIONS_CONFIG.map(async (cfg) => {
+          const docs = await fetchCollectionDocs(cfg.collection);
+          dynamicDataMap[cfg.collection] = docs;
+        })
+      );
+
+      const comms = dynamicDataMap["master_komoditas"]?.length ? dynamicDataMap["master_komoditas"] : (ragRes.success && ragRes.commodities ? ragRes.commodities : []);
+      const prcs = dynamicDataMap["master_harga_pasar"]?.length ? dynamicDataMap["master_harga_pasar"] : (ragRes.success && ragRes.prices ? ragRes.prices : []);
+      const rcps = dynamicDataMap["master_menu_makanan"]?.length ? dynamicDataMap["master_menu_makanan"] : (ragRes.success && ragRes.recipes ? ragRes.recipes : []);
+      const ntrs = dynamicDataMap["master_nilai_gizi"]?.length ? dynamicDataMap["master_nilai_gizi"] : (ragRes.success && ragRes.nutrition ? ragRes.nutrition : []);
+      const usrs = dynamicDataMap["kcal_users"]?.length ? dynamicDataMap["kcal_users"] : usersRes;
+      const lgs = dynamicDataMap["kcal_session_logs"]?.length ? dynamicDataMap["kcal_session_logs"] : logsRes;
+      const dists = dynamicDataMap["master_wilayah"]?.length ? dynamicDataMap["master_wilayah"] : GRESIK_DISTRICTS;
+
+      dynamicDataMap["master_komoditas"] = comms;
+      dynamicDataMap["master_harga_pasar"] = prcs;
+      dynamicDataMap["master_menu_makanan"] = rcps;
+      dynamicDataMap["master_nilai_gizi"] = ntrs;
+      dynamicDataMap["kcal_users"] = usrs;
+      dynamicDataMap["kcal_session_logs"] = lgs;
+      dynamicDataMap["master_wilayah"] = dists;
+
       setData({
-        commodities: ragRes.success && ragRes.commodities ? ragRes.commodities : [],
-        prices: ragRes.success && ragRes.prices ? ragRes.prices : [],
-        recipes: ragRes.success && ragRes.recipes ? ragRes.recipes : [],
-        nutrition: ragRes.success && ragRes.nutrition ? ragRes.nutrition : [],
-        districts: GRESIK_DISTRICTS,
-        users: usersRes,
-        sessionLogs: logsRes,
+        commodities: comms,
+        prices: prcs,
+        recipes: rcps,
+        nutrition: ntrs,
+        districts: dists,
+        users: usrs,
+        sessionLogs: lgs,
+        dynamicDataMap,
       });
     } catch (e) {
       console.error("Error loading backup data:", e);
@@ -129,31 +216,24 @@ export const BackupSnapshotView: React.FC = () => {
     loadAllData();
   }, [loadAllData]);
 
-  // Collections summary
-  const collections = [
-    { name: "Master Komoditas Lokal", collection: "master_komoditas", count: data.commodities.length, icon: Package, color: "text-emerald-600 bg-emerald-50" },
-    { name: "Harga Pasar SISKAPERBAPO", collection: "master_harga_pasar", count: data.prices.length, icon: FileSpreadsheet, color: "text-blue-600 bg-blue-50" },
-    { name: "Standar Menu MBG (Resep)", collection: "master_menu_makanan", count: data.recipes.length, icon: Layers, color: "text-violet-600 bg-violet-50" },
-    { name: "Nilai Gizi TKPI 2019", collection: "master_nilai_gizi", count: data.nutrition.length, icon: Shield, color: "text-amber-600 bg-amber-50" },
-    { name: "Wilayah & Sasaran 18 Kecamatan", collection: "master_wilayah", count: data.districts.length, icon: Database, color: "text-indigo-600 bg-indigo-50" },
-    { name: "Akun Pengguna Terdaftar", collection: "kcal_users", count: data.users.length, icon: HardDrive, color: "text-rose-600 bg-rose-50" },
-    { name: "Log Sesi Login", collection: "kcal_session_logs", count: data.sessionLogs.length, icon: Calendar, color: "text-cyan-600 bg-cyan-50" },
-  ];
+  // Dynamic Collections Summary (ALL 15 Collections)
+  const collections = ALL_COLLECTIONS_CONFIG.map((cfg) => {
+    const rows = data.dynamicDataMap[cfg.collection] || [];
+    return {
+      ...cfg,
+      count: rows.length,
+    };
+  });
 
   const totalRecords = collections.reduce((sum, c) => sum + c.count, 0);
 
   // Get rows for a collection
   const getCollectionRows = (collectionName: string): any[] => {
-    switch (collectionName) {
-      case "master_komoditas": return data.commodities;
-      case "master_harga_pasar": return data.prices;
-      case "master_menu_makanan": return data.recipes;
-      case "master_nilai_gizi": return data.nutrition;
-      case "master_wilayah": return data.districts;
-      case "kcal_users": return data.users.map(({ password, pin, ...safe }) => safe);
-      case "kcal_session_logs": return data.sessionLogs;
-      default: return [];
+    const rawRows = data.dynamicDataMap[collectionName] || [];
+    if (collectionName === "kcal_users") {
+      return rawRows.map(({ password, pin, ...safe }) => safe);
     }
+    return rawRows;
   };
 
   // Export single collection as .xlsx
@@ -357,7 +437,7 @@ export const BackupSnapshotView: React.FC = () => {
             </p>
           </div>
           <span className="text-[11px] font-bold text-light-sea-green bg-blue-50 px-3 py-1 rounded-xl border border-blue-200 self-start sm:self-auto">
-            7 Koleksi Aktif • {totalRecords.toLocaleString("id-ID")} Total Baris
+            {collections.length} Koleksi Aktif • {totalRecords.toLocaleString("id-ID")} Total Baris
           </span>
         </div>
 
