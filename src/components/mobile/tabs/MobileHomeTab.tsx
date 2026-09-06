@@ -33,9 +33,64 @@ import {
   Activity,
   Cpu,
   RefreshCw,
+  Download,
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
+
+const downloadQRCodeImage = (containerId: string, fileName: string = "QR_Klaim_MBG.png") => {
+  try {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(15);
+    }
+    const container = document.getElementById(containerId);
+    const svgElement = container?.querySelector("svg");
+    if (!svgElement) {
+      console.warn("Element SVG QR Code tidak ditemukan:", containerId);
+      return;
+    }
+
+    const serializer = new XMLSerializer();
+    let svgString = serializer.serializeToString(svgElement);
+    if (!svgString.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+      svgString = svgString.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+
+    const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+    const URL = window.URL || window.webkitURL || window;
+    const blobURL = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const scale = 3;
+      const width = (svgElement.clientWidth || 175) * scale;
+      const height = (svgElement.clientHeight || 175) * scale;
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const pngUrl = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.download = fileName;
+        a.href = pngUrl;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      URL.revokeObjectURL(blobURL);
+    };
+    img.src = blobURL;
+  } catch (err) {
+    console.error("Gagal mengunduh gambar QR Code:", err);
+  }
+};
 import { CitizenUser, AtmosphereState, MobileTab } from "../types";
 import { AuthSpectrumBackground } from "../auth/AuthSpectrumBackground";
 import {
@@ -840,7 +895,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       Kode Barcode / QR Code Klaim MBG
                     </span>
 
-                    <div className="inline-block p-3.5 bg-white rounded-2xl border border-teal-200 shadow-md">
+                    <div
+                      id="qr-code-detail-modal-container"
+                      onClick={() => downloadQRCodeImage("qr-code-detail-modal-container", `QR_Klaim_MBG_${selectedDetailScan.claimId || "code"}.png`)}
+                      className="inline-block p-3.5 bg-white rounded-2xl border border-teal-200 shadow-md cursor-pointer hover:ring-4 hover:ring-[#0FA89B]/30 transition-all group relative"
+                      title="Klik untuk mengunduh/menyimpan gambar QR Code"
+                    >
                       <QRCodeSVG
                         value={JSON.stringify({
                           claimId: selectedDetailScan.claimId || selectedDetailScan.scanId || selectedDetailScan.id,
@@ -858,6 +918,21 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           excavate: true,
                         }}
                       />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 rounded-2xl flex flex-col items-center justify-center text-white transition-opacity gap-1 backdrop-blur-[1px]">
+                        <Download className="w-6 h-6 text-white" />
+                        <span className="text-[10px] font-black">Simpan QR</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => downloadQRCodeImage("qr-code-detail-modal-container", `QR_Klaim_MBG_${selectedDetailScan.claimId || "code"}.png`)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 hover:bg-teal-100 text-[#0FA89B] text-[10.5px] font-bold border border-teal-200 transition-colors cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Simpan Gambar QR (Klik)</span>
+                      </button>
                     </div>
 
                     <p className="text-[11px] text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">

@@ -26,9 +26,64 @@ import {
   Cpu,
   X,
   Maximize2,
+  Download,
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
+
+const downloadQRCodeImage = (containerId: string, fileName: string = "QR_Klaim_MBG.png") => {
+  try {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(15);
+    }
+    const container = document.getElementById(containerId);
+    const svgElement = container?.querySelector("svg");
+    if (!svgElement) {
+      console.warn("Element SVG QR Code tidak ditemukan:", containerId);
+      return;
+    }
+
+    const serializer = new XMLSerializer();
+    let svgString = serializer.serializeToString(svgElement);
+    if (!svgString.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+      svgString = svgString.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+
+    const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+    const URL = window.URL || window.webkitURL || window;
+    const blobURL = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const scale = 3;
+      const width = (svgElement.clientWidth || 185) * scale;
+      const height = (svgElement.clientHeight || 185) * scale;
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const pngUrl = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.download = fileName;
+        a.href = pngUrl;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      URL.revokeObjectURL(blobURL);
+    };
+    img.src = blobURL;
+  } catch (err) {
+    console.error("Gagal mengunduh gambar QR Code:", err);
+  }
+};
 import { CitizenUser } from "../types";
 import { BiometricSyncService, CompleteBiometricScanRecord } from "@/services/biometric-sync-service";
 import { fetchScreeningQuestionsFromFirestore, ScreeningQuestionItem, db, recordQrClaimToFirestore } from "@/services/firebase-service";
@@ -1443,7 +1498,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
             {/* ══ HERO CENTERPIECE: PROMINENT CENTERED QR CODE ══ */}
             <div className="w-full max-w-[275px] bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_12px_40px_rgba(35,181,168,0.18)] flex flex-col items-center text-center space-y-3.5 my-auto">
-              <div className="relative p-3.5 bg-white rounded-2xl border border-slate-100 shadow-inner flex items-center justify-center">
+              <div
+                id="qr-code-step4-container"
+                onClick={() => downloadQRCodeImage("qr-code-step4-container", `QR_Klaim_MBG_${claimId || "code"}.png`)}
+                className="relative p-3.5 bg-white rounded-2xl border border-slate-100 shadow-inner flex flex-col items-center justify-center cursor-pointer hover:ring-4 hover:ring-[#0FA89B]/30 transition-all group"
+                title="Klik untuk mengunduh/menyimpan gambar QR Code"
+              >
                 <QRCodeSVG
                   value={claimPayload}
                   size={185}
@@ -1460,13 +1520,27 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     excavate: true,
                   }}
                 />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 rounded-2xl flex flex-col items-center justify-center text-white transition-opacity gap-1 backdrop-blur-[1px]">
+                  <Download className="w-6 h-6 text-white" />
+                  <span className="text-[10px] font-black">Simpan QR</span>
+                </div>
                 {isQrVerifying && (
-                  <div className="absolute inset-0 bg-white/95 rounded-2xl flex flex-col items-center justify-center gap-2">
+                  <div className="absolute inset-0 bg-white/95 rounded-2xl flex flex-col items-center justify-center gap-2 z-10">
                     <RefreshCw className="w-7 h-7 text-[#23B5A8] animate-spin" />
                     <span className="text-[10px] font-extrabold text-[#0FA89B]">Memverifikasi Klaim...</span>
                   </div>
                 )}
               </div>
+
+              {/* Click to Download QR Code Button Badge */}
+              <button
+                type="button"
+                onClick={() => downloadQRCodeImage("qr-code-step4-container", `QR_Klaim_MBG_${claimId || "code"}.png`)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 hover:bg-teal-100 text-[#0FA89B] text-[10.5px] font-bold border border-teal-200 transition-colors cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Simpan Gambar QR (Klik)</span>
+              </button>
 
               {/* ID KLAIM, MENU & MASA BERLAKU DIRECTLY UNDERNEATH */}
               <div className="w-full space-y-1.5 pt-1">
