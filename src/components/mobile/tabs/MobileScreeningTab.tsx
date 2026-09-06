@@ -1505,7 +1505,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={() => {
-                  setScreeningStep(1);
                   if (onBackToHome) onBackToHome();
                 }}
                 className="w-9 h-9 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-800 flex items-center justify-center shadow-xs active:scale-95 transition-all cursor-pointer"
@@ -1708,7 +1707,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 whileTap={{ scale: 0.98 }}
                 type="button"
                 onClick={() => {
-                  setScreeningStep(1);
                   if (onBackToHome) onBackToHome();
                 }}
                 className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[14px] shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"

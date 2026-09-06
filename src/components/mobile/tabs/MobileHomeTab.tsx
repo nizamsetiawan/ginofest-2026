@@ -960,7 +960,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5 text-left">
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
-                      Rekomendasi Menu Gizi (TKPI 2019)
+                      Rekomendasi Menu Gizi
                     </span>
                     <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
                       {selectedDetailScan.recommendedMenu?.akgPercentage || 41}% AKG Harian
