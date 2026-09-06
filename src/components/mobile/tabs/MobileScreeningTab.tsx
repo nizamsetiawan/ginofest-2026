@@ -1440,20 +1440,20 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── STICKY FIXED BOTTOM BAR FOR QR CODE CLAIM ─── */}
-          <div className="px-4 py-3 bg-white border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.05)] flex-shrink-0 z-20">
+          <div className="px-4 pt-3 pb-7 bg-white border-t border-slate-200/90 shadow-[0_-6px_20px_rgba(0,0,0,0.08)] flex-shrink-0 z-30">
             <motion.button
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => setScreeningStep(4)}
-              className="w-full bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white rounded-2xl p-3 flex items-center justify-between shadow-md cursor-pointer transition-all active:scale-[0.99]"
+              className="w-full bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white rounded-2xl p-3.5 flex items-center justify-between shadow-lg shadow-teal-500/20 cursor-pointer transition-all active:scale-[0.99]"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center flex-shrink-0">
                   <QrCode className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-left">
-                  <h5 className="text-[13px] font-black text-white leading-tight">Buka QR Code Klaim MBG</h5>
-                  <p className="text-[10px] text-white/80 font-medium">Tampilkan ke kamera website petugas untuk verifikasi</p>
+                  <h5 className="text-[13.5px] font-black text-white leading-tight">Buka QR Code Klaim MBG</h5>
+                  <p className="text-[10.5px] text-white/90 font-medium">Tampilkan ke kamera website petugas untuk verifikasi</p>
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-white" />
