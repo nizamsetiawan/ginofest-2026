@@ -1544,8 +1544,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
               {/* ID KLAIM, MENU & MASA BERLAKU DIRECTLY UNDERNEATH */}
               <div className="w-full space-y-1.5 pt-1">
-                {/* ID Klaim */}
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0FA89B]/10 border border-[#0FA89B]/25 text-[#0FA89B] font-mono text-[12px] font-black tracking-wide">
+                {/* ID Klaim (Compact & Smaller font) */}
+                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-[10px] font-bold tracking-tight">
                   <span>ID: {claimId}</span>
                 </div>
 
@@ -1557,13 +1557,13 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   {syncedRecord?.recommendedMenu?.calories || 680} kkal · 1x Porsi Makan Siang
                 </p>
 
-                {/* Masa Berlaku */}
+                {/* Masa Berlaku (Red Background & No Emojis) */}
                 <div className="pt-1 flex items-center justify-center gap-2 text-[9.5px]">
-                  <span className="px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold border border-amber-200">
-                    ⏱️ Masa Berlaku: 6 Jam
+                  <span className="px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-700 font-bold border border-rose-200">
+                    Masa Berlaku: 6 Jam
                   </span>
                   <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
-                    ✓ 1x Pakai
+                    1x Pakai
                   </span>
                 </div>
               </div>
