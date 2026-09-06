@@ -246,7 +246,28 @@ export class BiometricSyncService {
           finalFiber       = (bestMenu as any).fiber || 7;
           finalCost        = (bestMenu as any).cost || (bestMenu as any).estimatedCost || 14800;
           finalComposition = (bestMenu as any).composition || (bestMenu as any).components || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
-          finalImageUrl    = (bestMenu as any).imageUrl || (bestMenu as any).photo || "";
+          
+          const getFallbackDishPhoto = (t: string) => {
+            const lower = (t || "").toLowerCase();
+            if (lower.includes("bandeng") || lower.includes("ikan") || lower.includes("pepes")) {
+              return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bandeng_Bakar_01.jpg/800px-Bandeng_Bakar_01.jpg";
+            }
+            if (lower.includes("soto")) {
+              return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Soto_Ayam_Semarang.jpg/800px-Soto_Ayam_Semarang.jpg";
+            }
+            if (lower.includes("daging") || lower.includes("semur") || lower.includes("sapi") || lower.includes("rawon")) {
+              return "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Semur_Daging_Sapi_01.jpg/800px-Semur_Daging_Sapi_01.jpg";
+            }
+            if (lower.includes("telur")) {
+              return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Telur_Dadar_Padang.jpg/800px-Telur_Dadar_Padang.jpg";
+            }
+            if (lower.includes("sayur") || lower.includes("sop") || lower.includes("buncis")) {
+              return "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Sayur_Sop_Bening.jpg/800px-Sayur_Sop_Bening.jpg";
+            }
+            return "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Ayam_Goreng_Kalasan_01.jpg/800px-Ayam_Goreng_Kalasan_01.jpg";
+          };
+
+          finalImageUrl    = (bestMenu as any).imageUrl || (bestMenu as any).photo || getFallbackDishPhoto(menuTitle);
           menuSource       = "AI_RAG_PRECISION_CLINICAL";
 
           console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}" (${finalCalories} kkal, ${finalProtein}g protein, ${finalIron}mg Fe)`);

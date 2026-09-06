@@ -463,22 +463,61 @@ export async function saveAllMasterDataToFirestore(dataset: {
   }
 }
 
-// -------------------------------------------------------------
-// 8. MBG MENU PLAN PERSISTENCE (Collection: mbg_menu_plans)
-// -------------------------------------------------------------
+export function getFallbackDishPhoto(title?: string): string {
+  const lower = (title || "").toLowerCase();
+  if (lower.includes("bandeng") || lower.includes("ikan") || lower.includes("pepes")) {
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bandeng_Bakar_01.jpg/800px-Bandeng_Bakar_01.jpg";
+  }
+  if (lower.includes("soto")) {
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Soto_Ayam_Semarang.jpg/800px-Soto_Ayam_Semarang.jpg";
+  }
+  if (lower.includes("daging") || lower.includes("semur") || lower.includes("sapi") || lower.includes("rawon")) {
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Semur_Daging_Sapi_01.jpg/800px-Semur_Daging_Sapi_01.jpg";
+  }
+  if (lower.includes("telur")) {
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Telur_Dadar_Padang.jpg/800px-Telur_Dadar_Padang.jpg";
+  }
+  if (lower.includes("sayur") || lower.includes("sop") || lower.includes("buncis")) {
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Sayur_Sop_Bening.jpg/800px-Sayur_Sop_Bening.jpg";
+  }
+  return "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Ayam_Goreng_Kalasan_01.jpg/800px-Ayam_Goreng_Kalasan_01.jpg";
+}
+
 export async function saveMenuPlanToFirestore(districtId: string, period: string, planData: any) {
   try {
     const planDocId = `${districtId}_${period}`;
     const docRef = doc(db, "mbg_menu_plans", planDocId);
+
+    // Auto-enrich menu items with matching dish photo URLs
+    const enrichedWeeks = planData.monthlyWeeks ? Object.fromEntries(
+      Object.entries(planData.monthlyWeeks).map(([weekKey, days]: [string, any]) => [
+        weekKey,
+        Array.isArray(days)
+          ? days.map((d: any) => ({
+              ...d,
+              imageUrl: d.imageUrl || d.photo || getFallbackDishPhoto(d.menuTitle || ""),
+            }))
+          : days,
+      ])
+    ) : planData.monthlyWeeks;
+
+    const enrichedRecipes = Array.isArray(planData.availableGeneratedRecipes)
+      ? planData.availableGeneratedRecipes.map((r: any) =>
+          typeof r === "object"
+            ? { ...r, imageUrl: r.imageUrl || r.photo || getFallbackDishPhoto(r.menuTitle || r.title || "") }
+            : r
+        )
+      : planData.availableGeneratedRecipes || [];
+
     await setDoc(docRef, {
       id: planDocId,
       districtId,
       period,
       includeSaturday: !!planData.includeSaturday,
-      monthlyWeeks: planData.monthlyWeeks,
+      monthlyWeeks: enrichedWeeks,
       budgetSummary: planData.budgetSummary || null,
       logisticsBOM: planData.logisticsBOM || [],
-      availableGeneratedRecipes: planData.availableGeneratedRecipes || [],
+      availableGeneratedRecipes: enrichedRecipes,
       updatedAt: serverTimestamp(),
       updatedAtIso: new Date().toISOString()
     }, { merge: true });

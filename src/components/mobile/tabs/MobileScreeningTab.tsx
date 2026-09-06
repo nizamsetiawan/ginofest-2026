@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowLeft,
@@ -27,6 +27,7 @@ import {
   X,
   Maximize2,
   Download,
+  FileText,
 } from "lucide-react";
 import { Page } from "konsta/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -286,6 +287,52 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const [syncedRecord, setSyncedRecord] = useState<CompleteBiometricScanRecord | null>(null);
   const [showDetailedReport, setShowDetailedReport] = useState(false);
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string } | null>(null);
+  const [menuImageUrl, setMenuImageUrl] = useState<string>("");
+
+  const getDishFallbackPhoto = useCallback((title?: string) => {
+    const t = (title || "").toLowerCase();
+    if (t.includes("bandeng") || t.includes("ikan") || t.includes("pepes")) {
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bandeng_Bakar_01.jpg/800px-Bandeng_Bakar_01.jpg";
+    }
+    if (t.includes("soto")) {
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Soto_Ayam_Semarang.jpg/800px-Soto_Ayam_Semarang.jpg";
+    }
+    if (t.includes("daging") || t.includes("semur") || t.includes("sapi") || t.includes("rawon")) {
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Semur_Daging_Sapi_01.jpg/800px-Semur_Daging_Sapi_01.jpg";
+    }
+    if (t.includes("telur")) {
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Telur_Dadar_Padang.jpg/800px-Telur_Dadar_Padang.jpg";
+    }
+    if (t.includes("sayur") || t.includes("sop") || t.includes("buncis") || t.includes("bayam")) {
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Sayur_Sop_Bening.jpg/800px-Sayur_Sop_Bening.jpg";
+    }
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Ayam_Goreng_Kalasan_01.jpg/800px-Ayam_Goreng_Kalasan_01.jpg";
+  }, []);
+
+  useEffect(() => {
+    const title = syncedRecord?.recommendedMenu?.menuTitle;
+    const existingUrl = (syncedRecord?.recommendedMenu as any)?.imageUrl || (syncedRecord?.recommendedMenu as any)?.photo;
+
+    if (existingUrl) {
+      setMenuImageUrl(existingUrl);
+      return;
+    }
+
+    if (title) {
+      let isMounted = true;
+      fetch(`/api/search-food-image?query=${encodeURIComponent(title)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (isMounted && data.imageUrl) {
+            setMenuImageUrl(data.imageUrl);
+          }
+        })
+        .catch(() => {});
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [syncedRecord?.recommendedMenu]);
 
   // Step 4: QR Code Scanner Timer / Verification Simulation
   const [isQrVerifying, setIsQrVerifying] = useState(false);
@@ -1167,28 +1214,20 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── SCROLLABLE CONTENT ─── */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 pb-6">
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3.5 pb-28 sm:pb-32">
 
             {/* Menu Image Card */}
             <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm bg-white">
               <div className="relative">
                 <img
                   src={
+                    menuImageUrl ||
                     (syncedRecord?.recommendedMenu as any)?.imageUrl ||
                     (syncedRecord?.recommendedMenu as any)?.photo ||
-                    (() => {
-                      const t = (syncedRecord?.recommendedMenu?.menuTitle || "").toLowerCase();
-                      if (t.includes("daging") || t.includes("semur") || t.includes("sapi") || t.includes("rawon") || t.includes("empal")) {
-                        return "/assets/mbg_tray_daging.jpg";
-                      }
-                      if (t.includes("bandeng") || t.includes("ikan") || t.includes("kupang") || t.includes("seafood") || t.includes("pepes")) {
-                        return "/assets/mbg_tray_bandeng.jpg";
-                      }
-                      return "/assets/mbg_tray_ayam.jpg";
-                    })()
+                    getDishFallbackPhoto(syncedRecord?.recommendedMenu?.menuTitle)
                   }
                   alt={syncedRecord?.recommendedMenu?.menuTitle || "Menu MBG"}
-                  className="w-full h-36 object-cover"
+                  className="w-full h-40 object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
@@ -1291,7 +1330,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
 
             {/* ═══ EXPANDABLE CLINICAL DETAILS & PHOTO EVIDENCE SECTION ═══ */}
-            <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-2xs transition-all">
+            <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-2xs transition-all mb-6">
               <button
                 type="button"
                 onClick={() => setShowDetailedReport((prev) => !prev)}
@@ -1324,7 +1363,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.25, ease: "easeInOut" }}
-                    className="px-4 pb-4 space-y-3.5 border-t border-slate-100 pt-3"
+                    className="px-4 pb-6 space-y-3.5 border-t border-slate-100 pt-3"
                   >
                     {/* 1. Lampiran Foto Biometrik (4 Frame) */}
                     <div className="space-y-1.5">
@@ -1444,11 +1483,11 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                       </div>
                     </div>
 
-                    {/* 3. Hasil Akhir Analisis Klinis & Anamnesis */}
+                    {/* 3. Hasil Akhir Analisis Fisik */}
                     <div className="space-y-1.5 pt-1">
                       <p className="text-[10.5px] font-extrabold text-slate-700 flex items-center gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-[#0FA89B]" />
-                        <span>Hasil Akhir Analisis &amp; Anamnesis</span>
+                        <span>Ringkasan Profil Fisik &amp; Domisili</span>
                       </p>
 
                       <div className="p-3 rounded-2xl bg-teal-50/60 border border-teal-100/80 space-y-1.5 text-[10.5px]">
@@ -1466,12 +1505,44 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                           <span className="text-slate-600 font-medium">Usia Target AKG</span>
                           <span className="font-bold text-slate-800">{citizenUser?.age || 9} Tahun (Standar Kemenkes)</span>
                         </div>
-                        <div className="flex items-center justify-between pt-1 border-t border-teal-100 text-slate-600">
-                          <span>Anamnesis Ortu</span>
-                          <span className="font-bold text-slate-800">
-                            Nafsu Makan: {answersMap[0] || "Lahap"} • Fisik: {answersMap[1] || "Aktif"}
-                          </span>
-                        </div>
+                      </div>
+                    </div>
+
+                    {/* 4. Hasil Anamnesis Orang Tua (Daftar Pertanyaan & Jawaban) */}
+                    <div className="space-y-1.5 pt-1">
+                      <p className="text-[10.5px] font-extrabold text-slate-700 flex items-center gap-1.5">
+                        <FileText className="w-3.5 h-3.5 text-[#0FA89B]" />
+                        <span>Jawaban Anamnesis Orang Tua / Wali</span>
+                      </p>
+
+                      <div className="p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-2.5 text-[10.5px]">
+                        {questions.map((q, idx) => {
+                          const qRecord = (syncedRecord as any)?.questionnaire;
+                          const ans =
+                            answersMap[idx] ||
+                            (idx === 0
+                              ? qRecord?.nafsuMakan || "Sangat lahap (Habis)"
+                              : idx === 1
+                              ? qRecord?.aktivitasFisik || "Aktif / Normal"
+                              : idx === 2
+                              ? qRecord?.alergi || "Tidak ada alergi"
+                              : "Sesuai Standar");
+
+                          return (
+                            <div key={q.id || idx} className="space-y-1 pb-2 border-b border-slate-200/60 last:border-0 last:pb-0">
+                              <p className="text-slate-600 font-semibold leading-snug">
+                                <span className="text-[#0FA89B] font-extrabold mr-1">{idx + 1}.</span>
+                                {q.title}
+                              </p>
+                              <div className="flex items-center gap-1.5 pl-3">
+                                <span className="text-slate-400 font-medium text-[9.5px]">Jawaban:</span>
+                                <span className="font-extrabold text-emerald-800 bg-emerald-50/90 px-2 py-0.5 rounded-md border border-emerald-200/80 text-[10px]">
+                                  {ans}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </motion.div>
@@ -1520,17 +1591,17 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── SCROLLABLE BODY WITH CENTERED QR HERO ─── */}
-          <div className="flex-1 overflow-y-auto px-5 pt-1 pb-6 flex flex-col items-center justify-between space-y-3">
+          <div className="flex-1 overflow-y-auto px-5 pt-2 pb-8 flex flex-col items-center space-y-3">
             {/* Instruction Title */}
-            <div className="text-center space-y-0.5">
+            <div className="text-center space-y-1 pt-1 pb-1">
               <h4 className="text-[15px] font-black text-slate-800 tracking-tight">Scan Kode QR ke Website SPPG!</h4>
               <p className="text-[10.5px] text-slate-500 font-medium max-w-xs mx-auto leading-snug">
                 Arahkan layar QR ini ke kamera website yang disediakan petugas untuk verifikasi porsi makanan.
               </p>
             </div>
 
-            {/* ══ HERO CENTERPIECE: PROMINENT CENTERED QR CODE ══ */}
-            <div className="w-full max-w-[275px] bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_12px_40px_rgba(35,181,168,0.18)] flex flex-col items-center text-center space-y-3.5 my-auto">
+            {/* ══ HERO CENTERPIECE: PROMINENT CENTERED QR CODE (SHIFTED HIGHER) ══ */}
+            <div className="w-full max-w-[275px] bg-white rounded-3xl p-4.5 border border-slate-100 shadow-[0_12px_40px_rgba(35,181,168,0.18)] flex flex-col items-center text-center space-y-3">
               <div
                 id="qr-code-step4-container"
                 onClick={() => downloadQRCodeImage("qr-code-step4-container", `QR_Klaim_MBG_${claimId || "code"}.png`)}
@@ -1539,7 +1610,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               >
                 <QRCodeSVG
                   value={claimPayload}
-                  size={185}
+                  size={180}
                   bgColor="#FFFFFF"
                   fgColor="#0D1B2A"
                   level="H"
@@ -1566,7 +1637,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </div>
 
               {/* ID KLAIM, MENU & MASA BERLAKU DIRECTLY UNDERNEATH */}
-              <div className="w-full space-y-1.5 pt-1">
+              <div className="w-full space-y-1.5 pt-0.5">
                 {/* ID Klaim (Compact & Smaller font) */}
                 <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-[10px] font-bold tracking-tight">
                   <span>ID: {claimId}</span>
@@ -1592,8 +1663,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </div>
             </div>
 
-            {/* ══ KETENTUAN KLAIM — SMALLER & COMPACT AT BOTTOM ══ */}
-            <div className="w-full bg-slate-50/80 border border-slate-200/70 rounded-2xl p-2.5 space-y-1 text-left">
+            {/* ══ KETENTUAN KLAIM — DIRECTLY BELOW THE BARCODE CARD ══ */}
+            <div className="w-full max-w-[275px] bg-slate-50/90 border border-slate-200/80 rounded-2xl p-3 space-y-1 text-left">
               <p className="text-[9.5px] font-extrabold text-slate-700 uppercase tracking-wider">Ketentuan Klaim</p>
               <ul className="space-y-1 text-[9px] text-slate-500 font-medium leading-tight">
                 <li className="flex items-start gap-1.5"><span className="text-[#23B5A8] font-bold">•</span> QR hanya dapat digunakan 1x per sesi makan siang.</li>
