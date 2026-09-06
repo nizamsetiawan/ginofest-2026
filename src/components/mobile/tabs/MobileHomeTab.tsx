@@ -969,23 +969,19 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                   <h4 className="text-[14px] font-black text-slate-800">
                     {selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis"}
                   </h4>
-                  <div className="grid grid-cols-4 gap-1.5 text-center pt-1">
-                    <div className="p-2 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[8.5px] font-bold text-slate-400 block">KALORI</span>
-                      <span className="text-[11.5px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.calories || 690} kkal</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[8.5px] font-bold text-slate-400 block">PROTEIN</span>
-                      <span className="text-[11.5px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.proteinGram || 35.5} g</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[8.5px] font-bold text-slate-400 block">ZAT BESI</span>
-                      <span className="text-[11.5px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.ironMg || 7.1} mg</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[8.5px] font-bold text-slate-400 block">ESTIMASI HPP</span>
-                      <span className="text-[11.5px] font-black text-[#0FA89B]">Rp {(selectedDetailScan.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")}</span>
-                    </div>
+                  {/* Compact Inline Nutrition List */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 pt-1">
+                    {[
+                      { label: "Kalori", val: `${selectedDetailScan.recommendedMenu?.calories || 690} kkal` },
+                      { label: "Protein", val: `${selectedDetailScan.recommendedMenu?.proteinGram || 35.5} g` },
+                      { label: "Zat Besi", val: `${selectedDetailScan.recommendedMenu?.ironMg || 7.1} mg` },
+                      { label: "Est. HPP", val: `Rp ${(selectedDetailScan.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")}` },
+                    ].map((n) => (
+                      <div key={n.label} className="flex items-center justify-between gap-2">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{n.label}</span>
+                        <span className="text-[11px] font-black text-slate-700">{n.val}</span>
+                      </div>
+                    ))}
                   </div>
 
                   {/* Dynamic Composition Items (Clean Vertical List Format) */}

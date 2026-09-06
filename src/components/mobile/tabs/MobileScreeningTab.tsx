@@ -1255,20 +1255,19 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 </span>
               </div>
 
-              {/* 3 Top Metric Highlight Cards */}
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="p-2.5 rounded-2xl bg-teal-50/50 border border-teal-100">
-                  <span className="text-[9px] font-extrabold text-slate-400 block uppercase">Energi</span>
-                  <span className="text-[12.5px] font-black text-slate-800">{syncedRecord?.recommendedMenu?.calories || 690} Kkal</span>
-                </div>
-                <div className="p-2.5 rounded-2xl bg-teal-50/50 border border-teal-100">
-                  <span className="text-[9px] font-extrabold text-slate-400 block uppercase">Protein</span>
-                  <span className="text-[12.5px] font-black text-slate-800">{syncedRecord?.recommendedMenu?.proteinGram || 35.5} g</span>
-                </div>
-                <div className="p-2.5 rounded-2xl bg-teal-50/50 border border-teal-100">
-                  <span className="text-[9px] font-extrabold text-slate-400 block uppercase">Zat Besi</span>
-                  <span className="text-[12.5px] font-black text-slate-800">{syncedRecord?.recommendedMenu?.ironMg || 7.1} mg</span>
-                </div>
+              {/* Compact Inline Nutrition List */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 pt-0.5">
+                {[
+                  { label: "Energi", val: `${syncedRecord?.recommendedMenu?.calories || 690} Kkal` },
+                  { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 35.5} g` },
+                  { label: "Zat Besi", val: `${syncedRecord?.recommendedMenu?.ironMg || 7.1} mg` },
+                  { label: "Est. HPP", val: `Rp ${(syncedRecord?.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")}` },
+                ].map((n) => (
+                  <div key={n.label} className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{n.label}</span>
+                    <span className="text-[11px] font-black text-slate-700">{n.val}</span>
+                  </div>
+                ))}
               </div>
 
               {/* Detail Progress Bars */}
