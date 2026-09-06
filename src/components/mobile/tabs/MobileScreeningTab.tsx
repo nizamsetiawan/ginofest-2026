@@ -1180,13 +1180,13 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
             {/* Formula 5 Bintang & HPP Card */}
             <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-2xs space-y-2.5 text-left">
-              <div className="flex items-center justify-between">
-                <p className="text-[12px] font-black text-slate-800">Formula 5 Bintang + Susu</p>
-                <span className="text-[10px] font-mono font-extrabold text-[#0FA89B] bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/80">
-                  Estimasi HPP: Rp {(syncedRecord?.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")} / porsi
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <p className="text-[12.5px] font-black text-slate-800">Formula 5 Bintang + Susu</p>
+                <span className="self-start sm:self-auto text-[10px] font-mono font-extrabold text-[#0FA89B] bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/80">
+                  HPP: Rp {(syncedRecord?.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")} / porsi
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-2 text-[10px] text-slate-600 font-medium bg-slate-50/90 p-3 rounded-2xl border border-slate-200/70">
+              <div className="space-y-1.5 text-[11px] text-slate-700 font-medium bg-slate-50/90 p-3 rounded-2xl border border-slate-200/70">
                 {(() => {
                   const compStr = syncedRecord?.recommendedMenu?.composition || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
                   const items = compStr.split(/[\|\•]/).map((s: string) => s.trim()).filter(Boolean);
@@ -1196,23 +1196,31 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                       const cat = item.substring(0, colonIdx).trim();
                       const val = item.substring(colonIdx + 1).trim();
                       return (
-                        <div key={idx} className="truncate">
-                          • <strong>{cat}:</strong> {val}
+                        <div key={idx} className="flex items-start gap-1.5 leading-snug">
+                          <span className="text-[#0FA89B] font-bold shrink-0">•</span>
+                          <div>
+                            <strong className="text-slate-800">{cat}:</strong> {val}
+                          </div>
                         </div>
                       );
                     }
-                    return <div key={idx} className="truncate">• {item}</div>;
+                    return (
+                      <div key={idx} className="flex items-start gap-1.5 leading-snug">
+                        <span className="text-[#0FA89B] font-bold shrink-0">•</span>
+                        <div>{item}</div>
+                      </div>
+                    );
                   });
                 })()}
               </div>
             </div>
 
             {/* Nutrition Breakdown */}
-            <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-[12px] font-black text-slate-800">Profil Nutrisi &amp; Analisis Gizi Lab (TKPI 2019)</p>
-                <span className="text-[9.5px] px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-200">
-                  {syncedRecord?.recommendedMenu?.akgPercentage || 41}% AKG Harian (Makan Siang)
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-2xs space-y-3 text-left">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-0.5 border-b border-slate-100">
+                <p className="text-[12.5px] font-black text-slate-800">Profil Nutrisi (Lab TKPI 2019)</p>
+                <span className="self-start sm:self-auto text-[9.5px] px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-200">
+                  {syncedRecord?.recommendedMenu?.akgPercentage || 41}% AKG Harian
                 </span>
               </div>
 
