@@ -1375,9 +1375,16 @@ export function subscribeBiometricScans(onUpdate: (scans: any[]) => void) {
 
     const notifyCombined = () => {
       const claimedSet = new Set<string>();
+      const claimedTsSet = new Set<string>();
+
       claimsData.forEach((c) => {
         if (c.claimId) claimedSet.add(String(c.claimId).trim().toUpperCase());
         if (c.id) claimedSet.add(String(c.id).trim().toUpperCase());
+
+        const tsMatch = String(c.claimId || "").match(/\d{10,}/);
+        if (tsMatch) {
+          claimedTsSet.add(tsMatch[0]);
+        }
       });
 
       const results = scansData.map((s) => {
@@ -1385,11 +1392,24 @@ export function subscribeBiometricScans(onUpdate: (scans: any[]) => void) {
         const c2 = s.scanId ? String(s.scanId).trim().toUpperCase() : "";
         const c3 = s.id ? String(s.id).trim().toUpperCase() : "";
 
+        const scanTsMatch = (String(s.claimId || "") + String(s.scanId || "") + String(s.id || "")).match(/\d{10,}/);
+        const hasTsMatch = scanTsMatch && claimedTsSet.has(scanTsMatch[0]);
+
+        const nameMatch = claimsData.some((c) => {
+          const sameName = (c.beneficiaryName || "").trim().toLowerCase() === (s.userName || "").trim().toLowerCase();
+          if (!sameName) return false;
+          const cTime = c.verifiedAtIso ? new Date(c.verifiedAtIso).getTime() : 0;
+          const sTime = s.createdAt ? new Date(s.createdAt).getTime() : 0;
+          return cTime >= sTime - 5 * 60 * 1000;
+        });
+
         const isClaimed =
           s.status === "CLAIMED" ||
           (c1 && claimedSet.has(c1)) ||
           (c2 && claimedSet.has(c2)) ||
-          (c3 && claimedSet.has(c3));
+          (c3 && claimedSet.has(c3)) ||
+          Boolean(hasTsMatch) ||
+          nameMatch;
 
         return {
           ...s,
@@ -1483,9 +1503,16 @@ export function subscribeUserScansAndClaims(
 
     const notifyCombined = () => {
       const claimedSet = new Set<string>();
+      const claimedTsSet = new Set<string>();
+
       claimsData.forEach((c) => {
         if (c.claimId) claimedSet.add(String(c.claimId).trim().toUpperCase());
         if (c.id) claimedSet.add(String(c.id).trim().toUpperCase());
+
+        const tsMatch = String(c.claimId || "").match(/\d{10,}/);
+        if (tsMatch) {
+          claimedTsSet.add(tsMatch[0]);
+        }
       });
 
       const results = scansData.map((s) => {
@@ -1493,11 +1520,24 @@ export function subscribeUserScansAndClaims(
         const c2 = s.scanId ? String(s.scanId).trim().toUpperCase() : "";
         const c3 = s.id ? String(s.id).trim().toUpperCase() : "";
 
+        const scanTsMatch = (String(s.claimId || "") + String(s.scanId || "") + String(s.id || "")).match(/\d{10,}/);
+        const hasTsMatch = scanTsMatch && claimedTsSet.has(scanTsMatch[0]);
+
+        const nameMatch = claimsData.some((c) => {
+          const sameName = (c.beneficiaryName || "").trim().toLowerCase() === (s.userName || "").trim().toLowerCase();
+          if (!sameName) return false;
+          const cTime = c.verifiedAtIso ? new Date(c.verifiedAtIso).getTime() : 0;
+          const sTime = s.createdAt ? new Date(s.createdAt).getTime() : 0;
+          return cTime >= sTime - 5 * 60 * 1000;
+        });
+
         const isClaimed =
           s.status === "CLAIMED" ||
           (c1 && claimedSet.has(c1)) ||
           (c2 && claimedSet.has(c2)) ||
-          (c3 && claimedSet.has(c3));
+          (c3 && claimedSet.has(c3)) ||
+          Boolean(hasTsMatch) ||
+          nameMatch;
 
         return {
           ...s,

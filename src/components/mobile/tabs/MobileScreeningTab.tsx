@@ -271,10 +271,11 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   // ─── CLAIM PAYLOAD (encode real claim data into QR) ───
   // Generated once when user reaches step 3/4; stable per session
   const claimId = useMemo(() => {
+    if (syncedRecord?.claimId) return syncedRecord.claimId;
     const ts = Date.now();
     const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
     return `MBG-${ts}-${rand}`;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [syncedRecord]);
 
   // 15-Second Auto-Close Countdown for Step 5 (Scan Sukses)
   useEffect(() => {
