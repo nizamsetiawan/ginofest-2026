@@ -1370,9 +1370,30 @@ export async function fetchBiometricScansFromFirestore(): Promise<{ success: boo
 
 export function subscribeBiometricScans(onUpdate: (scans: any[]) => void) {
   try {
-    const colRef = collection(db, "biometric_scans_history");
-    const unsubscribe = onSnapshot(
-      colRef,
+    let scansData: any[] = [];
+    let claimsData: any[] = [];
+
+    const notifyCombined = () => {
+      const claimedMap = new Set<string>();
+      claimsData.forEach((c) => {
+        if (c.claimId) claimedMap.add(c.claimId);
+      });
+
+      const results = scansData.map((s) => {
+        const code = s.claimId || s.scanId || s.id;
+        const isClaimed = s.status === "CLAIMED" || (code && claimedMap.has(code));
+        return {
+          ...s,
+          status: isClaimed ? "CLAIMED" : s.status,
+        };
+      });
+
+      onUpdate(results);
+    };
+
+    const scansColRef = collection(db, "biometric_scans_history");
+    const unsubScans = onSnapshot(
+      scansColRef,
       (snap) => {
         const items: any[] = [];
         snap.forEach((docSnap) => {
@@ -1383,13 +1404,30 @@ export function subscribeBiometricScans(onUpdate: (scans: any[]) => void) {
           const tB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
           return tB - tA;
         });
-        onUpdate(items);
+        scansData = items;
+        notifyCombined();
       },
-      (err) => {
-        console.warn("Firestore biometric scans snapshot error:", err);
-      }
+      (err) => console.warn("Firestore biometric scans snapshot error:", err)
     );
-    return unsubscribe;
+
+    const claimsColRef = collection(db, "gscan_qr_claims");
+    const unsubClaims = onSnapshot(
+      claimsColRef,
+      (snap) => {
+        const items: any[] = [];
+        snap.forEach((docSnap) => {
+          items.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        claimsData = items;
+        notifyCombined();
+      },
+      (err) => console.warn("Firestore claims snapshot error:", err)
+    );
+
+    return () => {
+      unsubScans();
+      unsubClaims();
+    };
   } catch (err) {
     console.warn("Gagal init subscribeBiometricScans:", err);
     return () => {};
@@ -1407,7 +1445,6 @@ export async function fetchUserScansAndClaimsFromFirestore(userEmail?: string, u
       const matchEmail = userEmail && d.userEmail && d.userEmail.toLowerCase() === userEmail.toLowerCase();
       const matchName = userName && d.userName && d.userName.toLowerCase() === userName.toLowerCase();
 
-      // Return records that match email or name or return all if guest
       if (matchEmail || matchName || (!userEmail && !userName)) {
         results.push({ id: docSnap.id, ...d });
       }
@@ -1432,9 +1469,30 @@ export function subscribeUserScansAndClaims(
   onUpdate: (scans: any[]) => void
 ) {
   try {
-    const colRef = collection(db, "biometric_scans_history");
-    const unsubscribe = onSnapshot(
-      colRef,
+    let scansData: any[] = [];
+    let claimsData: any[] = [];
+
+    const notifyCombined = () => {
+      const claimedMap = new Set<string>();
+      claimsData.forEach((c) => {
+        if (c.claimId) claimedMap.add(c.claimId);
+      });
+
+      const results = scansData.map((s) => {
+        const code = s.claimId || s.scanId || s.id;
+        const isClaimed = s.status === "CLAIMED" || (code && claimedMap.has(code));
+        return {
+          ...s,
+          status: isClaimed ? "CLAIMED" : s.status,
+        };
+      });
+
+      onUpdate(results);
+    };
+
+    const scansColRef = collection(db, "biometric_scans_history");
+    const unsubScans = onSnapshot(
+      scansColRef,
       (snap) => {
         const results: any[] = [];
         const cleanEmail = userEmail ? userEmail.trim().toLowerCase() : "";
@@ -1456,13 +1514,30 @@ export function subscribeUserScansAndClaims(
           return tB - tA;
         });
 
-        onUpdate(results);
+        scansData = results;
+        notifyCombined();
       },
-      (err) => {
-        console.warn("Firestore user scans snapshot error:", err);
-      }
+      (err) => console.warn("Firestore user scans snapshot error:", err)
     );
-    return unsubscribe;
+
+    const claimsColRef = collection(db, "gscan_qr_claims");
+    const unsubClaims = onSnapshot(
+      claimsColRef,
+      (snap) => {
+        const items: any[] = [];
+        snap.forEach((docSnap) => {
+          items.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        claimsData = items;
+        notifyCombined();
+      },
+      (err) => console.warn("Firestore claims snapshot error:", err)
+    );
+
+    return () => {
+      unsubScans();
+      unsubClaims();
+    };
   } catch (err) {
     console.warn("Gagal init subscribeUserScansAndClaims:", err);
     return () => {};
