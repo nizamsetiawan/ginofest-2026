@@ -370,7 +370,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         id: syncedRecord?.recommendedMenu?.menuId || menuType,
         name: menuName,
         kalori: calories,
-        porsi: "1x Makan Siang",
+        porsi: "1x Porsi Harian",
         program: "Makan Bergizi Gratis",
       },
       program: {
@@ -588,7 +588,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         menuId: syncedRecord?.recommendedMenu?.menuId || menuType,
         menuName,
         calories: syncedRecord?.recommendedMenu?.calories || 680,
-        porsi: "1x Makan Siang",
+        porsi: "1x Porsi Harian",
         programName: "Ginofest 2026",
         verifiedAtIso: new Date().toISOString(),
         verifiedBy: "Petugas SPPG MBG (Simulasi)",
@@ -1579,7 +1579,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   {syncedRecord?.recommendedMenu?.menuTitle || (menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu")}
                 </p>
                 <p className="text-[10px] text-slate-500 font-bold">
-                  {syncedRecord?.recommendedMenu?.calories || 680} kkal · 1x Porsi Makan Siang
+                  {syncedRecord?.recommendedMenu?.calories || 680} kkal · 1x Porsi Harian
                 </p>
 
                 {/* Masa Berlaku (Red Background & No Emojis) */}

@@ -375,7 +375,7 @@ export const ScreeningView: React.FC = () => {
       menuId: decodedData.menu?.id || "menu_mbg",
       menuName: decodedData.menu?.name || "Nasi Bergizi Kcal",
       calories: decodedData.menu?.kalori || 680,
-      porsi: decodedData.menu?.porsi || "1x Makan Siang",
+      porsi: decodedData.menu?.porsi || "1x Porsi Harian",
       programName: decodedData.program?.name || "Ginofest 2026",
       verifiedAtIso: new Date().toISOString(),
       verifiedBy: `Staf SPPG Kec. ${decodedData.beneficiary?.district || "Kebomas"}`,
@@ -750,7 +750,7 @@ export const ScreeningView: React.FC = () => {
                           </span>
 
                           <span className="px-2.5 py-1 rounded-lg bg-white text-ford-blue text-[11px] font-bold border border-slate-200 shadow-2xs">
-                            {decodedData.menu?.portion || decodedData.menu?.porsi || "1x Makan Siang"}
+                            {decodedData.menu?.portion || decodedData.menu?.porsi || "1x Porsi Harian"}
                           </span>
                         </div>
                       </div>

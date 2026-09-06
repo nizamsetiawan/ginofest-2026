@@ -296,8 +296,8 @@ export class BiometricSyncService {
         name: menuTitle,
         calories: finalCalories,
         kalori: finalCalories,
-        portion: "1x Makan Siang",
-        porsi: "1x Makan Siang",
+        portion: "1x Porsi Harian",
+        porsi: "1x Porsi Harian",
       },
       clinicalSummary: {
         deficiencyRisk: azureMetrics.detectedDeficiencyRisk,
