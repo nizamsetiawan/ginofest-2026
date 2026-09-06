@@ -258,7 +258,8 @@ export class BiometricSyncService {
 
     const childAge = params.userAge || 9;
     const dailyAKG24h = childAge <= 3 ? 1350 : childAge <= 6 ? 1400 : childAge <= 9 ? 1650 : childAge <= 12 ? 2000 : 2400;
-    const calculatedAKG = Math.round((finalCalories / dailyAKG24h) * 100);
+    const mbgTargetCalories = dailyAKG24h * 0.35; // Target 1 Porsi Harian MBG (~35% AKG 24 Jam)
+    const calculatedAKG = Math.min(100, Math.round((finalCalories / mbgTargetCalories) * 100));
 
     const recommendedMenu = {
       menuId: selectedMenuId,

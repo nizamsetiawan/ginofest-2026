@@ -1199,7 +1199,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-[10.5px] font-black shadow-md">
-                      {syncedRecord?.recommendedMenu?.akgPercentage || 41}% AKG Harian
+                      {syncedRecord?.recommendedMenu?.akgPercentage || 97}% AKG Porsi Harian
                     </span>
                     <span className="px-2.5 py-1 rounded-xl bg-[#0FA89B] text-white text-[10.5px] font-black shadow-md">
                       {syncedRecord?.recommendedMenu?.calories || 690} kkal
@@ -1251,7 +1251,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-0.5 border-b border-slate-100">
                 <p className="text-[12.5px] font-black text-slate-800">Profil Nutrisi (Lab TKPI 2019)</p>
                 <span className="self-start sm:self-auto text-[9.5px] px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-200">
-                  {syncedRecord?.recommendedMenu?.akgPercentage || 41}% AKG Harian
+                  {syncedRecord?.recommendedMenu?.akgPercentage || 97}% AKG Porsi Harian
                 </span>
               </div>
 

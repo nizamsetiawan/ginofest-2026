@@ -770,7 +770,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           </h4>
 
                           <p className="text-[10.5px] text-slate-500 font-medium">
-                            {item.recommendedMenu?.calories || 680} kkal • {item.recommendedMenu?.akgPercentage || 41}% AKG Harian
+                            {item.recommendedMenu?.calories || 680} kkal • {item.recommendedMenu?.akgPercentage || 97}% AKG Porsi Harian
                           </p>
 
                           <div className="pt-0.5 flex items-center justify-between text-[9.5px] text-slate-400 font-medium">
@@ -963,7 +963,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       Rekomendasi Menu Gizi
                     </span>
                     <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
-                      {selectedDetailScan.recommendedMenu?.akgPercentage || 41}% AKG Harian
+                      {selectedDetailScan.recommendedMenu?.akgPercentage || 97}% AKG Porsi Harian
                     </span>
                   </div>
                   <h4 className="text-[14px] font-black text-slate-800">

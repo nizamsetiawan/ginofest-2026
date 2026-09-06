@@ -875,7 +875,7 @@ Timestamp: ${selectedScan.createdAt}
                   <div className="grid grid-cols-3 gap-1.5 text-[10px] text-slate-300 text-center pt-1 border-t border-emerald-900/60">
                     <div>Protein: <strong className="text-white">{selectedScan.recommendedMenu?.proteinGram || 31}g</strong></div>
                     <div>Zat Besi: <strong className="text-white">{selectedScan.recommendedMenu?.ironMg || 6}mg</strong></div>
-                    <div>AKG: <strong className="text-emerald-400">{selectedScan.recommendedMenu?.akgPercentage || 45}%</strong></div>
+                    <div>AKG Porsi: <strong className="text-emerald-400">{selectedScan.recommendedMenu?.akgPercentage || 97}%</strong></div>
                   </div>
                 </div>
               )}
