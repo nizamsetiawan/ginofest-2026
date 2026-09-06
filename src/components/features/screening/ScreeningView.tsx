@@ -986,7 +986,7 @@ export const ScreeningView: React.FC = () => {
                               <span>Rekomendasi Menu Nutrisi AI</span>
                             </span>
                             <span className="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[9.5px] font-black">
-                              {item.recommendedMenu?.akgPercentage || 51}% AKG
+                              {item.recommendedMenu?.akgPercentage || 41}% AKG Harian
                             </span>
                           </div>
                           <h5 className="text-[13px] font-black text-slate-800 leading-snug">

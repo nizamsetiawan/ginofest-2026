@@ -1168,7 +1168,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-[10.5px] font-black shadow-md">
-                      {syncedRecord?.recommendedMenu?.akgPercentage || 98}% AKG
+                      {syncedRecord?.recommendedMenu?.akgPercentage || 41}% AKG Harian
                     </span>
                     <span className="px-2.5 py-1 rounded-xl bg-[#0FA89B] text-white text-[10.5px] font-black shadow-md">
                       {syncedRecord?.recommendedMenu?.calories || 690} kkal
@@ -1212,7 +1212,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <div className="flex items-center justify-between">
                 <p className="text-[12px] font-black text-slate-800">Profil Nutrisi &amp; Analisis Gizi Lab (TKPI 2019)</p>
                 <span className="text-[9.5px] px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-200">
-                  {syncedRecord?.recommendedMenu?.akgPercentage || 98}% AKG Terpenuhi
+                  {syncedRecord?.recommendedMenu?.akgPercentage || 41}% AKG Harian (Makan Siang)
                 </span>
               </div>
 

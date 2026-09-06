@@ -267,8 +267,8 @@ export class BiometricSyncService {
     }
 
     const childAge = params.userAge || 9;
-    const targetLunchCal = childAge <= 3 ? 400 : childAge <= 6 ? 500 : childAge <= 9 ? 650 : childAge <= 12 ? 700 : 750;
-    const calculatedAKG = Math.min(100, Math.max(85, Math.round((finalCalories / targetLunchCal) * 100)));
+    const dailyAKG24h = childAge <= 3 ? 1350 : childAge <= 6 ? 1400 : childAge <= 9 ? 1650 : childAge <= 12 ? 2000 : 2400;
+    const calculatedAKG = Math.round((finalCalories / dailyAKG24h) * 100);
 
     const recommendedMenu = {
       menuId: selectedMenuId,
