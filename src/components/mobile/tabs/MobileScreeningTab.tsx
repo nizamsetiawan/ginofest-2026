@@ -11,6 +11,7 @@ import {
   RefreshCw,
   ChevronUp,
   ChevronDown,
+  ChevronRight,
   MessageSquare,
   Activity,
   Scan,
@@ -1077,10 +1078,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── SCROLLABLE CONTENT ─── */}
-          <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 pb-6">
 
             {/* Menu Image Card */}
-            <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-md">
+            <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm bg-white">
               <div className="relative">
                 <img
                   src={
@@ -1098,17 +1099,17 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   alt="Menu MBG"
                   className="w-full h-36 object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
-                  <div>
-                    <h4 className="text-[13.5px] font-black text-white leading-tight drop-shadow">
+                  <div className="pr-2">
+                    <h4 className="text-[14px] font-black text-white leading-snug drop-shadow-sm">
                       {syncedRecord?.recommendedMenu?.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis"}
                     </h4>
-                    <p className="text-[10px] text-white/70 font-medium">
+                    <p className="text-[10px] text-white/80 font-medium mt-0.5">
                       Formula 5 Bintang + Susu (BGN / Kemenkes RI)
                     </p>
                   </div>
-                  <span className="px-2.5 py-1 rounded-xl bg-[#23B5A8] text-white text-[10px] font-black shadow-md flex-shrink-0">
+                  <span className="px-2.5 py-1 rounded-xl bg-[#0FA89B] text-white text-[10.5px] font-black shadow-md flex-shrink-0">
                     {syncedRecord?.recommendedMenu?.calories || 690} kkal
                   </span>
                 </div>
@@ -1116,14 +1117,14 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
 
             {/* Formula 5 Bintang & HPP Card */}
-            <div className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-2 text-left">
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-2xs space-y-2.5 text-left">
               <div className="flex items-center justify-between">
-                <p className="text-[11.5px] font-black text-slate-800">Formula 5 Bintang + Susu</p>
-                <span className="text-[10px] font-mono font-extrabold text-[#0FA89B] bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                <p className="text-[12px] font-black text-slate-800">Formula 5 Bintang + Susu</p>
+                <span className="text-[10px] font-mono font-extrabold text-[#0FA89B] bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/80">
                   Estimasi HPP: Rp {(syncedRecord?.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")} / porsi
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-1.5 text-[10px] text-slate-600 font-medium bg-slate-50/80 p-2.5 rounded-2xl border border-slate-200/70">
+              <div className="grid grid-cols-2 gap-2 text-[10px] text-slate-600 font-medium bg-slate-50/90 p-3 rounded-2xl border border-slate-200/70">
                 {(() => {
                   const compStr = syncedRecord?.recommendedMenu?.composition || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
                   const items = compStr.split(/[\|\•]/).map((s: string) => s.trim()).filter(Boolean);
@@ -1145,23 +1146,37 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
 
             {/* Nutrition Breakdown */}
-            <div className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-3">
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-2xs space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-[11.5px] font-black text-slate-800">Profil Nutrisi &amp; Analisis Gizi Lab (TKPI 2019)</p>
-                <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-[#79D7D2]/15 text-[#0FA89B] font-bold border border-[#79D7D2]/30">% AKG</span>
+                <p className="text-[12px] font-black text-slate-800">Profil Nutrisi &amp; Analisis Gizi Lab (TKPI 2019)</p>
+                <span className="text-[9.5px] px-2.5 py-0.5 rounded-full bg-[#79D7D2]/15 text-[#0FA89B] font-bold border border-[#79D7D2]/30">% AKG</span>
               </div>
 
-              <div className="space-y-2.5">
+              {/* 3 Top Metric Highlight Cards */}
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-2.5 rounded-2xl bg-teal-50/50 border border-teal-100">
+                  <span className="text-[9px] font-extrabold text-slate-400 block uppercase">Energi</span>
+                  <span className="text-[12.5px] font-black text-slate-800">{syncedRecord?.recommendedMenu?.calories || 690} Kkal</span>
+                </div>
+                <div className="p-2.5 rounded-2xl bg-teal-50/50 border border-teal-100">
+                  <span className="text-[9px] font-extrabold text-slate-400 block uppercase">Protein</span>
+                  <span className="text-[12.5px] font-black text-slate-800">{syncedRecord?.recommendedMenu?.proteinGram || 35.5} g</span>
+                </div>
+                <div className="p-2.5 rounded-2xl bg-teal-50/50 border border-teal-100">
+                  <span className="text-[9px] font-extrabold text-slate-400 block uppercase">Zat Besi</span>
+                  <span className="text-[12.5px] font-black text-slate-800">{syncedRecord?.recommendedMenu?.ironMg || 7.1} mg</span>
+                </div>
+              </div>
+
+              {/* Detail Progress Bars */}
+              <div className="space-y-2 pt-1 border-t border-slate-100">
                 {[
-                  { label: "Energi Total", val: `${syncedRecord?.recommendedMenu?.calories || 690} Kkal`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.calories || 690) / 2000) * 100)), color: "#0FA89B" },
-                  { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 35.5} g`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.proteinGram || 35.5) / 70) * 100)), color: "#23B5A8" },
-                  { label: "Zat Besi / Fe", val: `${syncedRecord?.recommendedMenu?.ironMg || 7.1} mg`, pct: syncedRecord?.recommendedMenu?.akgPercentage || 51, color: "#F87171" },
                   { label: "Karbohidrat", val: `${syncedRecord?.recommendedMenu?.carbsGram || 50} g`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.carbsGram || 50) / 300) * 100)), color: "#0FA89B" },
                   { label: "Lemak Total", val: `${syncedRecord?.recommendedMenu?.fatGram || 10} g`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.fatGram || 10) / 45) * 100)), color: "#F59E0B" },
                   { label: "Serat", val: `${syncedRecord?.recommendedMenu?.fiberGram || 7} g`, pct: Math.min(100, Math.round(((syncedRecord?.recommendedMenu?.fiberGram || 7) / 40) * 100)), color: "#34D399" },
                 ].map((n) => (
                   <div key={n.label}>
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center justify-between mb-0.5">
                       <span className="text-[10.5px] text-slate-600 font-medium">{n.label} <span className="text-slate-400">({n.val})</span></span>
                       <span className="text-[10.5px] font-black" style={{ color: n.color }}>{n.pct}%</span>
                     </div>
@@ -1173,8 +1188,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </div>
             </div>
 
-            {/* ═══ EXPANDABLE CLINICAL DETAILS & PHOTO EVIDENCE SECTION (COLLAPSED BY DEFAULT) ═══ */}
-            <div className="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm transition-all">
+            {/* ═══ EXPANDABLE CLINICAL DETAILS & PHOTO EVIDENCE SECTION ═══ */}
+            <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-2xs transition-all">
               <button
                 type="button"
                 onClick={() => setShowDetailedReport((prev) => !prev)}
@@ -1190,11 +1205,11 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                       <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                         {syncedRecord?.azureVisionMetrics?.confidenceScore
                           ? `${(syncedRecord.azureVisionMetrics.confidenceScore * (syncedRecord.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}% Akurasi`
-                          : "Visi AI Presisi"}
+                          : "95.2% Visi AI"}
                       </span>
                     </h5>
                     <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                      {showDetailedReport ? "Klik untuk menyembunyikan bukti biometrik" : "Lihat 4 foto biometrik, akurasi AI & skor klinis"}
+                      {showDetailedReport ? "Klik untuk menyembunyikan rincian biometrik" : "Lihat 4 foto biometrik, akurasi AI & skor klinis"}
                     </p>
                   </div>
                 </div>
@@ -1365,23 +1380,26 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </AnimatePresence>
             </div>
 
-            {/* QR Code CTA */}
+          </div>
+
+          {/* ─── STICKY FIXED BOTTOM BAR FOR QR CODE CLAIM ─── */}
+          <div className="px-4 py-3 bg-white border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.05)] flex-shrink-0 z-20">
             <motion.button
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => setScreeningStep(4)}
-              className="w-full bg-white border border-slate-200 rounded-2xl p-3.5 flex items-center justify-between shadow-sm cursor-pointer hover:border-[#23B5A8]/40 hover:shadow-md transition-all"
+              className="w-full bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white rounded-2xl p-3 flex items-center justify-between shadow-md cursor-pointer transition-all active:scale-[0.99]"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#23B5A8] to-[#79D7D2] flex items-center justify-center shadow-md flex-shrink-0">
-                  <QrCode className="w-4.5 h-4.5 text-white" />
+                <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center flex-shrink-0">
+                  <QrCode className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-left">
-                  <h5 className="text-[12px] font-black text-slate-800 leading-tight">QR Code Klaim</h5>
-                  <p className="text-[9.5px] text-slate-400 font-medium">Tampilkan untuk verifikasi menu</p>
+                  <h5 className="text-[13px] font-black text-white leading-tight">Buka QR Code Klaim MBG</h5>
+                  <p className="text-[10px] text-white/80 font-medium">Tampilkan ke kamera website petugas untuk verifikasi</p>
                 </div>
               </div>
-              <ChevronUp className="w-4 h-4 text-[#23B5A8]" />
+              <ChevronRight className="w-5 h-5 text-white" />
             </motion.button>
           </div>
         </div>
