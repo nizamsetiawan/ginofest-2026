@@ -1147,7 +1147,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             {/* Nutrition Breakdown */}
             <div className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-[11.5px] font-black text-slate-800">Analisis Nilai Gizi Lab (TKPI 2019)</p>
+                <p className="text-[11.5px] font-black text-slate-800">Profil Nutrisi &amp; Analisis Gizi Lab (TKPI 2019)</p>
                 <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-[#79D7D2]/15 text-[#0FA89B] font-bold border border-[#79D7D2]/30">% AKG</span>
               </div>
 
