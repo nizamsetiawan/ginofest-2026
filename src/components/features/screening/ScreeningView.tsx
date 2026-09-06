@@ -351,6 +351,16 @@ export const ScreeningView: React.FC = () => {
     return () => clearTimeout(timer);
   }, [autoConfirmCount]);
 
+  // Auto-reset back to camera scanner 2.5s after successful verification
+  useEffect(() => {
+    if (verificationSuccess) {
+      const timer = setTimeout(() => {
+        resetScanner();
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [verificationSuccess]);
+
   const handleConfirmVerification = async () => {
     if (!decodedData) return;
     setIsVerifying(true);
@@ -630,7 +640,7 @@ export const ScreeningView: React.FC = () => {
                         BERHASIL DIVERIFIKASI &amp; DIDISTRIBUSIKAN!
                       </h3>
                       <p className="text-[12px] text-emerald-800 font-medium mt-0.5">
-                        Porsi MBG telah dicatat atas nama <strong>{decodedData.beneficiary?.name}</strong>. Notifikasi otomatis &amp; audit Azure tersimpan.
+                        Porsi MBG telah dicatat atas nama <strong>{decodedData.beneficiary?.name}</strong>. Membuka kembali kamera scanner dalam 2.5s...
                       </p>
                     </div>
                   </div>
