@@ -1084,10 +1084,16 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               <div className="relative">
                 <img
                   src={
-                    syncedRecord?.recommendedMenu?.menuTitle?.toLowerCase().includes("bandeng") ||
-                      syncedRecord?.recommendedMenu?.menuTitle?.toLowerCase().includes("ikan")
-                      ? "/assets/mbg_tray_bandeng.jpg"
-                      : "/assets/mbg_tray_ayam.jpg"
+                    (() => {
+                      const t = (syncedRecord?.recommendedMenu?.menuTitle || "").toLowerCase();
+                      if (t.includes("daging") || t.includes("semur") || t.includes("sapi") || t.includes("rawon") || t.includes("empal")) {
+                        return "/assets/mbg_tray_daging.jpg";
+                      }
+                      if (t.includes("bandeng") || t.includes("ikan") || t.includes("kupang")) {
+                        return "/assets/mbg_tray_bandeng.jpg";
+                      }
+                      return "/assets/mbg_tray_ayam.jpg";
+                    })()
                   }
                   alt="Menu MBG"
                   className="w-full h-36 object-cover"
@@ -1096,34 +1102,52 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
                   <div>
                     <h4 className="text-[13.5px] font-black text-white leading-tight drop-shadow">
-                      {syncedRecord?.recommendedMenu?.menuTitle || (menuType === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu")}
+                      {syncedRecord?.recommendedMenu?.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis"}
                     </h4>
                     <p className="text-[10px] text-white/70 font-medium">
-                      {syncedRecord?.recommendedMenu?.portionDesc || "Nasi 200g · Protein 150g · Sayur 50g"}
+                      Formula 5 Bintang + Susu (BGN / Kemenkes RI)
                     </p>
                   </div>
                   <span className="px-2.5 py-1 rounded-xl bg-[#23B5A8] text-white text-[10px] font-black shadow-md flex-shrink-0">
-                    {syncedRecord?.recommendedMenu?.calories || 680} kkal
+                    {syncedRecord?.recommendedMenu?.calories || 690} kkal
                   </span>
                 </div>
+              </div>
+            </div>
+
+            {/* Formula 5 Bintang & HPP Card */}
+            <div className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-2 text-left">
+              <div className="flex items-center justify-between">
+                <p className="text-[11.5px] font-black text-slate-800">Formula 5 Bintang + Susu</p>
+                <span className="text-[10px] font-mono font-extrabold text-[#0FA89B] bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                  Estimasi HPP: Rp {(syncedRecord?.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")} / porsi
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5 text-[10px] text-slate-600 font-medium bg-slate-50/80 p-2.5 rounded-2xl border border-slate-200/70">
+                <div>• <strong>Karbohidrat:</strong> Nasi Putih (150g)</div>
+                <div>• <strong>Prot. Hewani:</strong> Daging Sapi (60g)</div>
+                <div>• <strong>Prot. Nabati:</strong> Tempe (40g)</div>
+                <div>• <strong>Sayuran:</strong> Sop Wortel Buncis (80g)</div>
+                <div>• <strong>Buah:</strong> Jeruk (75g)</div>
+                <div>• <strong>Susu:</strong> Susu UHT (200ml)</div>
               </div>
             </div>
 
             {/* Nutrition Breakdown */}
             <div className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-[11.5px] font-black text-slate-800">Profil Nutrisi</p>
+                <p className="text-[11.5px] font-black text-slate-800">Analisis Nilai Gizi Lab (TKPI 2019)</p>
                 <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-[#79D7D2]/15 text-[#0FA89B] font-bold border border-[#79D7D2]/30">% AKG</span>
               </div>
 
               <div className="space-y-2.5">
                 {[
-                  { label: "Lemak Total", val: "10 g", pct: 22, color: "#F59E0B" },
+                  { label: "Energi Total", val: `${syncedRecord?.recommendedMenu?.calories || 690} Kkal`, pct: 35, color: "#0FA89B" },
+                  { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 35.5} g`, pct: 50, color: "#23B5A8" },
+                  { label: "Zat Besi / Fe", val: `${syncedRecord?.recommendedMenu?.ironMg || 7.1} mg`, pct: syncedRecord?.recommendedMenu?.akgPercentage || 51, color: "#F87171" },
                   { label: "Karbohidrat", val: "50 g", pct: 17, color: "#0FA89B" },
+                  { label: "Lemak Total", val: "10 g", pct: 22, color: "#F59E0B" },
                   { label: "Serat", val: "7 g", pct: 18, color: "#34D399" },
-                  { label: "Protein", val: `${syncedRecord?.recommendedMenu?.proteinGram || 31} g`, pct: 50, color: "#23B5A8" },
-                  { label: "Vitamin D", val: "0.4 mg", pct: 15, color: "#A78BFA" },
-                  { label: "Zat Besi / Fe", val: `${syncedRecord?.recommendedMenu?.ironMg || 6} mg`, pct: syncedRecord?.recommendedMenu?.akgPercentage || 50, color: "#F87171" },
                 ].map((n) => (
                   <div key={n.label}>
                     <div className="flex items-center justify-between mb-1">

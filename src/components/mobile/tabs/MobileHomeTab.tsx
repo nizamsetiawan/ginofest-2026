@@ -870,27 +870,31 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
-                      Rekomendasi Menu Gizi
+                      Rekomendasi Menu Gizi (TKPI 2019)
                     </span>
                     <span className="px-2 py-0.5 rounded-md bg-teal-50 text-[#0FA89B] text-[10px] font-bold border border-teal-200">
-                      {selectedDetailScan.recommendedMenu?.akgPercentage || 50}% AKG
+                      {selectedDetailScan.recommendedMenu?.akgPercentage || 51}% AKG
                     </span>
                   </div>
                   <h4 className="text-[14px] font-black text-slate-800">
-                    {selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening"}
+                    {selectedDetailScan.recommendedMenu?.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis"}
                   </h4>
-                  <div className="grid grid-cols-3 gap-2 text-center pt-1">
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[9px] font-bold text-slate-400 block">KALORI</span>
-                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.calories || 680} kkal</span>
+                  <div className="grid grid-cols-4 gap-1.5 text-center pt-1">
+                    <div className="p-2 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[8.5px] font-bold text-slate-400 block">KALORI</span>
+                      <span className="text-[11.5px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.calories || 690} kkal</span>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[9px] font-bold text-slate-400 block">PROTEIN</span>
-                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.proteinGram || 31} g</span>
+                    <div className="p-2 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[8.5px] font-bold text-slate-400 block">PROTEIN</span>
+                      <span className="text-[11.5px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.proteinGram || 35.5} g</span>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200/80">
-                      <span className="text-[9px] font-bold text-slate-400 block">ZAT BESI</span>
-                      <span className="text-[12px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.ironMg || 6} mg</span>
+                    <div className="p-2 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[8.5px] font-bold text-slate-400 block">ZAT BESI</span>
+                      <span className="text-[11.5px] font-black text-slate-700">{selectedDetailScan.recommendedMenu?.ironMg || 7.1} mg</span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-white border border-slate-200/80">
+                      <span className="text-[8.5px] font-bold text-slate-400 block">ESTIMASI HPP</span>
+                      <span className="text-[11.5px] font-black text-[#0FA89B]">Rp {(selectedDetailScan.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")}</span>
                     </div>
                   </div>
                 </div>

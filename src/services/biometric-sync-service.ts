@@ -45,6 +45,8 @@ export interface CompleteBiometricScanRecord {
     ironMg: number;
     portionDesc: string;
     akgPercentage: number;
+    estimatedCost?: number;
+    composition?: string;
   };
   qrCodePayloadString: string;
   createdAt: string;
@@ -259,7 +261,9 @@ export class BiometricSyncService {
       calories: finalCalories,
       proteinGram: finalProtein,
       ironMg: finalIron,
-      portionDesc: "1x Porsi MBG Sesuai Anggaran (Rp15.000)",
+      estimatedCost: 14800,
+      composition: "Nasi Putih (150g) • Daging Sapi (60g) • Tempe (40g) • Sop Wortel Buncis (80g) • Jeruk (75g) • Susu UHT (200ml)",
+      portionDesc: "Formula 5 Bintang + Susu (BGN / Kemenkes RI)",
       akgPercentage: calculatedAKG,
       source: menuSource,
     };
