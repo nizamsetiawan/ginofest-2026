@@ -266,7 +266,9 @@ export class BiometricSyncService {
       console.warn("Gagal fetch atau generate menu RAG untuk integrasi scanner:", e);
     }
 
-    const calculatedAKG = Math.min(100, Math.round((finalIron / 14) * 100)) || 51;
+    const childAge = params.userAge || 9;
+    const targetLunchCal = childAge <= 3 ? 400 : childAge <= 6 ? 500 : childAge <= 9 ? 650 : childAge <= 12 ? 700 : 750;
+    const calculatedAKG = Math.min(100, Math.max(85, Math.round((finalCalories / targetLunchCal) * 100)));
 
     const recommendedMenu = {
       menuId: selectedMenuId,
