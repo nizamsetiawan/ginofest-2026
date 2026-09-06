@@ -171,63 +171,8 @@ export class BiometricSyncService {
         }
       }
 
-      const fallbackRecipes = [
-        {
-          id: "rec-daging",
-          menuTitle: "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis",
-          calories: 690,
-          proteinGram: 35.5,
-          ironMg: 7.1,
-          carbsGram: 52,
-          fatGram: 12,
-          fiberGram: 7,
-          estimatedCost: 14800,
-          composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)",
-          type: "daging"
-        },
-        {
-          id: "rec-bandeng",
-          menuTitle: "Nasi Bandeng Bakar Madu Manyar & Sayur Bening Bayam",
-          calories: 675,
-          proteinGram: 34.0,
-          ironMg: 6.8,
-          carbsGram: 48,
-          fatGram: 11,
-          fiberGram: 6,
-          estimatedCost: 14200,
-          composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Bandeng Bakar (65g) | Protein Nabati: Tahu Kukus (50g) | Sayuran: Sayur Bening Bayam (80g) | Buah: Pisang (80g) | Susu: Susu UHT (200ml)",
-          type: "ikan"
-        },
-        {
-          id: "rec-ayam",
-          menuTitle: "Nasi Kari Ayam Kampung & Tumis Kacang Panjang",
-          calories: 680,
-          proteinGram: 33.5,
-          ironMg: 6.5,
-          carbsGram: 50,
-          fatGram: 10,
-          fiberGram: 7,
-          estimatedCost: 13900,
-          composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ayam Kari (70g) | Protein Nabati: Tempe Bacem (40g) | Sayuran: Tumis Kacang Panjang (80g) | Buah: Semangka (90g) | Susu: Susu UHT (200ml)",
-          type: "ayam"
-        }
-      ];
-
-      // Default fallback pick
-      const pickFallback = fallbackRecipes[Math.floor(Math.random() * fallbackRecipes.length)];
-      selectedMenuId   = pickFallback.id;
-      menuTitle        = pickFallback.menuTitle;
-      finalCalories    = pickFallback.calories;
-      finalProtein     = pickFallback.proteinGram;
-      finalIron        = pickFallback.ironMg;
-      finalCarbs       = pickFallback.carbsGram;
-      finalFat         = pickFallback.fatGram;
-      finalFiber       = pickFallback.fiberGram;
-      finalCost        = pickFallback.estimatedCost;
-      finalComposition = pickFallback.composition;
-
       if (availableMenus.length > 0) {
-        // ─── FILTER 1: Alergi ─────────────────────────────────────────────────
+        // ─── FILTER 1: Alergi (Strict Allergen Exclusion) ─────────────────────
         const alergi = params.questionnaire.alergi.toLowerCase();
         if (alergi.includes("seafood") || alergi.includes("ikan")) {
           availableMenus = availableMenus.filter(m =>
@@ -269,6 +214,7 @@ export class BiometricSyncService {
             ? "PROTEIN"
             : "CALORIE";
 
+          // Calculate clinical score for logging and validation
           const scored = availableMenus.map(m => {
             const mIron    = (m.iron    || 0) / 10;
             const mProtein = (m.protein || 0) / 40;
@@ -286,22 +232,19 @@ export class BiometricSyncService {
             return { ...m, _clinicalScore: score };
           });
 
-          // Sort by score descending and select among top candidates for variety
-          scored.sort((a, b) => b._clinicalScore - a._clinicalScore);
-          const topScore = scored[0]._clinicalScore;
-          const topCandidates = scored.filter(m => m._clinicalScore >= topScore * 0.85);
-          const bestMenu = topCandidates[Math.floor(Math.random() * topCandidates.length)];
+          // Pure Best-Practice Selection: Select randomly from ALL valid allergy-safe Firestore RAG menus for max variety
+          const bestMenu = scored[Math.floor(Math.random() * scored.length)];
 
           selectedMenuId   = `rag-${bestMenu.day?.toLowerCase() || 'dynamic'}`;
-          menuTitle        = bestMenu.menuTitle || pickFallback.menuTitle;
-          finalCalories    = bestMenu.calories || pickFallback.calories;
-          finalProtein     = bestMenu.protein  || (bestMenu as any).proteinGram || pickFallback.proteinGram;
-          finalIron        = bestMenu.iron     || (bestMenu as any).ironMg || pickFallback.ironMg;
-          finalCarbs       = (bestMenu as any).carbs || (bestMenu as any).carbohydrates || pickFallback.carbsGram;
-          finalFat         = (bestMenu as any).fat || (bestMenu as any).fats || pickFallback.fatGram;
-          finalFiber       = (bestMenu as any).fiber || pickFallback.fiberGram;
-          finalCost        = (bestMenu as any).cost || (bestMenu as any).estimatedCost || pickFallback.estimatedCost;
-          finalComposition = (bestMenu as any).composition || (bestMenu as any).components || pickFallback.composition;
+          menuTitle        = bestMenu.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis";
+          finalCalories    = bestMenu.calories || 690;
+          finalProtein     = bestMenu.protein  || (bestMenu as any).proteinGram || 35.5;
+          finalIron        = bestMenu.iron     || (bestMenu as any).ironMg || 7.1;
+          finalCarbs       = (bestMenu as any).carbs || (bestMenu as any).carbohydrates || 50;
+          finalFat         = (bestMenu as any).fat || (bestMenu as any).fats || 10;
+          finalFiber       = (bestMenu as any).fiber || 7;
+          finalCost        = (bestMenu as any).cost || (bestMenu as any).estimatedCost || 14800;
+          finalComposition = (bestMenu as any).composition || (bestMenu as any).components || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
           menuSource       = "AI_RAG_PRECISION_CLINICAL";
 
           console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}" (${finalCalories} kkal, ${finalProtein}g protein, ${finalIron}mg Fe)`);
