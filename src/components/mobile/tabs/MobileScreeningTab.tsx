@@ -1516,7 +1516,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── SCROLLABLE BODY WITH CENTERED QR HERO ─── */}
-          <div className="flex-1 overflow-y-auto px-5 pt-1 pb-4 flex flex-col items-center justify-between space-y-3">
+          <div className="flex-1 overflow-y-auto px-5 pt-1 pb-28 flex flex-col items-center justify-between space-y-3">
             {/* Instruction Title */}
             <div className="text-center space-y-0.5">
               <h4 className="text-[15px] font-black text-slate-800 tracking-tight">Scan Kode QR ke Website SPPG!</h4>
@@ -1602,7 +1602,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
           {/* ─── STICKY BOTTOM ACTIONS ─── */}
           <div className="flex-shrink-0 relative z-30">
-            <div className="bg-white border-t border-slate-200/90 px-4 pb-7 pt-3 space-y-2 shadow-[0_-6px_20px_rgba(0,0,0,0.08)]">
+            <div className="bg-white border-t border-slate-200/90 px-4 pt-3.5 pb-8 mb-1 space-y-2 shadow-[0_-6px_24px_rgba(0,0,0,0.1)]">
               {/* Primary Action: Pindai Nanti */}
               <motion.button
                 whileTap={{ scale: 0.98 }}
@@ -1611,7 +1611,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   setScreeningStep(1);
                   if (onBackToHome) onBackToHome();
                 }}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[14px] shadow-lg shadow-teal-500/20 transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[14px] shadow-lg shadow-teal-500/25 transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
               >
                 <span>Pindai Nanti</span>
               </motion.button>
