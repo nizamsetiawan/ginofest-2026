@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import {
-  ShieldCheck,
   LogOut,
   User,
   MapPin,
@@ -154,11 +153,6 @@ export const MobileProfileTab: React.FC<MobileProfileTabProps> = ({
           <p className="text-[11.5px] text-slate-500 font-medium">
             Akun Warga &amp; Kebutuhan Gizi Anak
           </p>
-        </div>
-
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/70 text-[10.5px] font-bold text-emerald-700 shadow-2xs">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Terverifikasi</span>
         </div>
       </motion.div>
 
