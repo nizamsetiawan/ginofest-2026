@@ -440,21 +440,42 @@ export const ScreeningView: React.FC = () => {
     setAutoConfirmCount(null);
   };
 
+  const isScanClaimed = (item: any) => {
+    if (item.status === "CLAIMED") return true;
+    const code = item.claimId || item.scanId || item.id;
+    return historyList.some(
+      (c) => c.claimId === code || c.claimId === item.claimId || c.claimId === item.scanId || c.claimId === item.id
+    );
+  };
+
+  const isScanExpired = (item: any) => {
+    if (isScanClaimed(item)) return false;
+    return checkIsExpired(item);
+  };
+
+  const isScanValid = (item: any) => {
+    if (isScanClaimed(item)) return false;
+    if (isScanExpired(item)) return false;
+    return item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS";
+  };
+
   // Filter for Biometric Scans History (Tab 2)
   const filteredBiometric = biometricList.filter((item) => {
     const name = (item.userName || item.beneficiary?.name || "").toLowerCase();
     const district = (item.userDistrict || item.beneficiary?.district || "").toLowerCase();
-    const claimId = (item.claimId || item._id || "").toLowerCase();
+    const claimId = (item.claimId || item._id || item.scanId || "").toLowerCase();
     const q = biometricSearch.toLowerCase();
     const matchesSearch = name.includes(q) || district.includes(q) || claimId.includes(q);
 
-    const isExpired = checkIsExpired(item);
+    const isClaimed = isScanClaimed(item);
+    const isExpired = isScanExpired(item);
+    const isValid = isScanValid(item);
 
     if (biometricFilter === "VALID") {
-      return matchesSearch && !isExpired && (item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS");
+      return matchesSearch && isValid;
     }
     if (biometricFilter === "CLAIMED") {
-      return matchesSearch && item.status === "CLAIMED";
+      return matchesSearch && isClaimed;
     }
     if (biometricFilter === "EXPIRED") {
       return matchesSearch && isExpired;
@@ -836,7 +857,7 @@ export const ScreeningView: React.FC = () => {
                   }`}
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Tersedia ({biometricList.filter((b) => !checkIsExpired(b) && (b.status === "VALID" || b.status === "SCANNING_IN_PROGRESS")).length})</span>
+                <span>Tersedia ({biometricList.filter((b) => isScanValid(b)).length})</span>
               </button>
 
               <button
@@ -846,7 +867,7 @@ export const ScreeningView: React.FC = () => {
                     : "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
                   }`}
               >
-                <span>Sudah Diambil ({biometricList.filter((b) => b.status === "CLAIMED").length})</span>
+                <span>Sudah Diambil ({biometricList.filter((b) => isScanClaimed(b)).length})</span>
               </button>
 
               <button
@@ -856,7 +877,7 @@ export const ScreeningView: React.FC = () => {
                     : "bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100"
                   }`}
               >
-                <span>Kadaluarsa ({biometricList.filter((b) => checkIsExpired(b)).length})</span>
+                <span>Kadaluarsa ({biometricList.filter((b) => isScanExpired(b)).length})</span>
               </button>
 
               <button
@@ -887,9 +908,9 @@ export const ScreeningView: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {filteredBiometric.map((item) => {
-                const isExpired = checkIsExpired(item);
-                const isClaimed = item.status === "CLAIMED";
-                const isValid = !isExpired && (item.status === "VALID" || item.status === "SCANNING_IN_PROGRESS");
+                const isClaimed = isScanClaimed(item);
+                const isExpired = isScanExpired(item);
+                const isValid = isScanValid(item);
                 const photos = item.photos || {};
                 const blobUrls = item.blobUrls || {};
 
