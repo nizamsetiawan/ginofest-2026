@@ -1288,16 +1288,13 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     <Activity className="w-4.5 h-4.5" />
                   </div>
                   <div>
-                    <h5 className="text-[12.5px] font-black text-slate-800 leading-tight flex items-center gap-1.5">
-                      <span>Detail Analisis Klinis &amp; Foto</span>
-                      <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                        {syncedRecord?.azureVisionMetrics?.confidenceScore
-                          ? `${(syncedRecord.azureVisionMetrics.confidenceScore * (syncedRecord.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}% Akurasi`
-                          : "95.2% Visi AI"}
-                      </span>
+                    <h5 className="text-[13px] font-black text-slate-800 leading-tight">
+                      Detail Analisis Klinis &amp; Foto
                     </h5>
-                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                      {showDetailedReport ? "Klik untuk menyembunyikan rincian biometrik" : "Lihat 4 foto biometrik, akurasi AI & skor klinis"}
+                    <p className="text-[10.5px] text-slate-400 font-medium mt-0.5">
+                      Akurasi Visi AI: {syncedRecord?.azureVisionMetrics?.confidenceScore
+                        ? `${(syncedRecord.azureVisionMetrics.confidenceScore * (syncedRecord.azureVisionMetrics.confidenceScore > 1 ? 1 : 100)).toFixed(1)}%`
+                        : "95.2%"} (4 Foto Biometrik)
                     </p>
                   </div>
                 </div>
