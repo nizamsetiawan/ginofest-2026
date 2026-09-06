@@ -951,14 +951,14 @@ export const ScreeningView: React.FC = () => {
                               <span>Rekomendasi Menu Nutrisi AI</span>
                             </span>
                             <span className="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[9.5px] font-black">
-                              {item.recommendedMenu?.akgPercentage || 50}% AKG
+                              {item.recommendedMenu?.akgPercentage || 51}% AKG
                             </span>
                           </div>
                           <h5 className="text-[13px] font-black text-slate-800 leading-snug">
-                            {item.recommendedMenu?.menuTitle || "Nasi Ayam Kari & Sayur Bening"}
+                            {item.recommendedMenu?.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis"}
                           </h5>
                           <p className="text-[10.5px] text-slate-600 font-medium">
-                            {item.recommendedMenu?.calories || 680} kcal • {item.recommendedMenu?.portionDesc || "1x Makan Siang"}
+                            {item.recommendedMenu?.calories || 690} kcal • 1x Porsi MBG Sesuai Anggaran (Rp {(item.recommendedMenu?.estimatedCost || (item.recommendedMenu as any)?.cost || 14800).toLocaleString("id-ID")})
                           </p>
                         </div>
 
