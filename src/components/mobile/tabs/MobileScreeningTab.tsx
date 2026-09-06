@@ -1592,20 +1592,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   setScreeningStep(1);
                   if (onBackToHome) onBackToHome();
                 }}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[13.5px] shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[14px] shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
               >
                 <span>Pindai Nanti</span>
-              </motion.button>
-
-              {/* Simulation button for demo */}
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={handleVerifyQR}
-                disabled={isQrVerifying}
-                className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10.5px] cursor-pointer disabled:opacity-60 transition-colors"
-              >
-                {isQrVerifying ? "Memproses Verifikasi..." : "⚡ Simulasikan Pindai Staf SPPG (Demo)"}
               </motion.button>
             </div>
           </div>
