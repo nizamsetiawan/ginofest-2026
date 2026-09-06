@@ -1608,7 +1608,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
           {/* ─── SCROLLABLE BODY ─── */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto pb-6">
 
             {/* SUCCESS BANNER */}
             <div className="px-4 pt-5 pb-2 text-center">
@@ -1626,7 +1626,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
               </p>
               {/* Scan Timestamp Pill */}
               <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0FA89B]/10 border border-[#0FA89B]/25 text-[#0FA89B] text-[10.5px] font-mono font-bold shadow-xs">
-                <span>🕒 Waktu Pindai: {scanSuccessTime || "5 Sep 2026, 21:56:00 WIB"}</span>
+                <span>Waktu Pindai: {scanSuccessTime || "5 Sep 2026, 21:56:00 WIB"}</span>
               </div>
             </div>
 
@@ -1676,7 +1676,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 </div>
                 <div className="h-px bg-slate-100" />
                 <div className="flex items-center justify-between text-[10.5px]">
-                  <span className="font-black text-slate-800">{citizenUser?.name || "Oscar Ryanda Putra"}</span>
+                  <span className="font-black text-slate-800">{citizenUser?.name || "Awan mazina"}</span>
                   <span className="text-slate-400 font-medium">Kec. {citizenUser?.district || "Kebomas"}</span>
                 </div>
                 <div className="flex items-center justify-between text-[10px] pt-1 text-slate-500 font-medium border-t border-slate-100">
@@ -1684,32 +1684,29 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   <span className="font-mono font-bold text-[#0FA89B]">{scanSuccessTime || "5 Sep 2026, 21:56:00 WIB"}</span>
                 </div>
               </div>
-
-              {/* Bottom padding to clear sticky bar */}
-              <div className="h-4" />
             </div>
           </div>
 
-          {/* ─── STICKY BOTTOM — 15s Countdown & Return Home Button (Fixed at Bottom) ─── */}
-          <div className="flex-shrink-0 relative">
-            <div className="h-6 bg-gradient-to-b from-transparent to-white pointer-events-none" />
-            <div className="bg-white border-t border-slate-100 px-5 pb-6 pt-3 space-y-2.5 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] text-center">
-              {/* 15s Countdown Timer */}
+          {/* ─── STICKY FIXED BOTTOM BAR ─── */}
+          <div className="flex-shrink-0 relative z-20">
+            <div className="bg-white border-t border-slate-200/90 px-4 pb-5 pt-3 space-y-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.05)] text-center">
+              {/* Auto Close Timer Text */}
               <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-slate-500">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0FA89B] animate-ping" />
-                <span>Menutup otomatis dalam <strong className="text-[#0FA89B] font-mono text-[13px] font-black">{autoCloseTimer}s</strong></span>
+                <span className="w-2 h-2 rounded-full bg-[#0FA89B] animate-ping" />
+                <span>Menutup otomatis dalam <strong className="text-[#0FA89B] font-mono text-[12px] font-black">{autoCloseTimer}s</strong></span>
               </div>
 
-              {/* Primary Button: Kembali ke Beranda Utama */}
+              {/* Primary Button: Selesai */}
               <motion.button
-                whileTap={{ scale: 0.97 }}
+                whileTap={{ scale: 0.98 }}
                 type="button"
                 onClick={() => {
+                  setScreeningStep(1);
                   if (onBackToHome) onBackToHome();
                 }}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#79D7D2] text-white font-black text-[13px] tracking-wide shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[14px] shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
               >
-                <span>🏠 Kembali ke Beranda Utama</span>
+                <span>Selesai</span>
               </motion.button>
             </div>
           </div>
