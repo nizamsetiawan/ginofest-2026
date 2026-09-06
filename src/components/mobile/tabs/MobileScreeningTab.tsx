@@ -1466,11 +1466,20 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {screeningStep === 4 && (
         <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
-          {/* ─── TOP BAR (fixed header, back icon removed per prompt request) ─── */}
+          {/* ─── TOP BAR ─── */}
           <div className="px-4 pt-4 pb-2 space-y-2 flex-shrink-0">
             <div className="flex items-center justify-between">
-              {/* Back button removed as requested */}
-              <div className="w-8 h-8" />
+              <button
+                type="button"
+                onClick={() => {
+                  setScreeningStep(1);
+                  if (onBackToHome) onBackToHome();
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                title="Kembali ke Beranda"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
 
               <div className="text-center">
                 <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Verifikasi Klaim</p>
@@ -1581,19 +1590,32 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             </div>
           </div>
 
-          {/* ─── STICKY BOTTOM FOR DEMO SIMULATION ─── */}
+          {/* ─── STICKY BOTTOM ACTIONS ─── */}
           <div className="flex-shrink-0 relative">
             <div className="h-4 bg-gradient-to-b from-transparent to-white pointer-events-none" />
-            <div className="bg-white border-t border-slate-100 px-5 pb-6 pt-2.5 space-y-2 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+            <div className="bg-white border-t border-slate-200/90 px-4 pb-5 pt-3 space-y-2 shadow-[0_-4px_16px_rgba(0,0,0,0.05)]">
+              {/* Primary Action: Selesai & Kembali ke Beranda */}
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                type="button"
+                onClick={() => {
+                  setScreeningStep(1);
+                  if (onBackToHome) onBackToHome();
+                }}
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[13px] shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>Selesai &amp; Kembali ke Beranda (Pindai Nanti)</span>
+              </motion.button>
+
               {/* Simulation button for demo */}
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 type="button"
                 onClick={handleVerifyQR}
                 disabled={isQrVerifying}
-                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10.5px] cursor-pointer disabled:opacity-60 transition-colors"
+                className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10.5px] cursor-pointer disabled:opacity-60 transition-colors"
               >
-                {isQrVerifying ? "Memproses Verifikasi..." : "⚡ Simulasikan Pindai Staf (Pindah ke Sukses)"}
+                {isQrVerifying ? "Memproses Verifikasi..." : "⚡ Simulasikan Pindai Staf SPPG (Demo)"}
               </motion.button>
             </div>
           </div>
