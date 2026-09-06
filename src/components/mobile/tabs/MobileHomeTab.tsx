@@ -897,6 +897,27 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       <span className="text-[11.5px] font-black text-[#0FA89B]">Rp {(selectedDetailScan.recommendedMenu?.estimatedCost || 14800).toLocaleString("id-ID")}</span>
                     </div>
                   </div>
+
+                  {/* Dynamic Composition Items */}
+                  <div className="grid grid-cols-2 gap-1 text-[9.5px] text-slate-600 font-medium bg-white/80 p-2.5 rounded-xl border border-slate-200/70">
+                    {(() => {
+                      const compStr = selectedDetailScan.recommendedMenu?.composition || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
+                      const items = compStr.split(/[\|\•]/).map((s: string) => s.trim()).filter(Boolean);
+                      return items.map((item: string, idx: number) => {
+                        const colonIdx = item.indexOf(":");
+                        if (colonIdx !== -1) {
+                          const cat = item.substring(0, colonIdx).trim();
+                          const val = item.substring(colonIdx + 1).trim();
+                          return (
+                            <div key={idx} className="truncate">
+                              • <strong>{cat}:</strong> {val}
+                            </div>
+                          );
+                        }
+                        return <div key={idx} className="truncate">• {item}</div>;
+                      });
+                    })()}
+                  </div>
                 </div>
 
                 {/* 4 Biometric Azure Photo Thumbnails */}

@@ -131,10 +131,12 @@ export class BiometricSyncService {
     
     // Default fallback menu jika RAG belum siap di kecamatan ini
     let selectedMenuId: string = params.preferredMenuType || "ayam";
-    let menuTitle = selectedMenuId === "ayam" ? "Nasi Ayam Kari & Sayur" : "Nasi Bandeng Bakar Madu";
-    let finalCalories = 680;
-    let finalProtein = 31;
-    let finalIron = 6;
+    let menuTitle = selectedMenuId === "ayam" ? "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis" : "Nasi Bandeng Bakar Madu";
+    let finalCalories = 690;
+    let finalProtein = 35.5;
+    let finalIron = 7.1;
+    let finalCost = 14800;
+    let finalComposition = "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
     let menuSource = "FALLBACK_NASIONAL";
 
     try {
@@ -239,12 +241,14 @@ export class BiometricSyncService {
             curr._clinicalScore > prev._clinicalScore ? curr : prev
           );
 
-          selectedMenuId = `rag-${bestMenu.day?.toLowerCase() || 'dynamic'}`;
-          menuTitle      = bestMenu.menuTitle || "Nasi Ayam Kari & Sayur Sop";
-          finalCalories  = bestMenu.calories || 680;
-          finalProtein   = bestMenu.protein  || (bestMenu as any).proteinGram || 31;
-          finalIron      = bestMenu.iron     || (bestMenu as any).ironMg || 6;
-          menuSource     = "AI_RAG_PRECISION_CLINICAL";
+          selectedMenuId   = `rag-${bestMenu.day?.toLowerCase() || 'dynamic'}`;
+          menuTitle        = bestMenu.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis";
+          finalCalories    = bestMenu.calories || 690;
+          finalProtein     = bestMenu.protein  || (bestMenu as any).proteinGram || 35.5;
+          finalIron        = bestMenu.iron     || (bestMenu as any).ironMg || 7.1;
+          finalCost        = (bestMenu as any).cost || (bestMenu as any).estimatedCost || 14800;
+          finalComposition = (bestMenu as any).composition || (bestMenu as any).components || "";
+          menuSource       = "AI_RAG_PRECISION_CLINICAL";
 
           console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}" (${finalCalories} kkal, ${finalProtein}g protein, ${finalIron}mg Fe)`);
         }
@@ -253,7 +257,7 @@ export class BiometricSyncService {
       console.warn("Gagal fetch atau generate menu RAG untuk integrasi scanner:", e);
     }
 
-    const calculatedAKG = Math.min(100, Math.round((finalIron / 14) * 100)) || 45;
+    const calculatedAKG = Math.min(100, Math.round((finalIron / 14) * 100)) || 51;
 
     const recommendedMenu = {
       menuId: selectedMenuId,
@@ -261,8 +265,8 @@ export class BiometricSyncService {
       calories: finalCalories,
       proteinGram: finalProtein,
       ironMg: finalIron,
-      estimatedCost: 14800,
-      composition: "Nasi Putih (150g) • Daging Sapi (60g) • Tempe (40g) • Sop Wortel Buncis (80g) • Jeruk (75g) • Susu UHT (200ml)",
+      estimatedCost: finalCost || 14800,
+      composition: finalComposition || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)",
       portionDesc: "Formula 5 Bintang + Susu (BGN / Kemenkes RI)",
       akgPercentage: calculatedAKG,
       source: menuSource,

@@ -1124,12 +1124,23 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-1.5 text-[10px] text-slate-600 font-medium bg-slate-50/80 p-2.5 rounded-2xl border border-slate-200/70">
-                <div>• <strong>Karbohidrat:</strong> Nasi Putih (150g)</div>
-                <div>• <strong>Prot. Hewani:</strong> Daging Sapi (60g)</div>
-                <div>• <strong>Prot. Nabati:</strong> Tempe (40g)</div>
-                <div>• <strong>Sayuran:</strong> Sop Wortel Buncis (80g)</div>
-                <div>• <strong>Buah:</strong> Jeruk (75g)</div>
-                <div>• <strong>Susu:</strong> Susu UHT (200ml)</div>
+                {(() => {
+                  const compStr = syncedRecord?.recommendedMenu?.composition || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
+                  const items = compStr.split(/[\|\•]/).map((s: string) => s.trim()).filter(Boolean);
+                  return items.map((item: string, idx: number) => {
+                    const colonIdx = item.indexOf(":");
+                    if (colonIdx !== -1) {
+                      const cat = item.substring(0, colonIdx).trim();
+                      const val = item.substring(colonIdx + 1).trim();
+                      return (
+                        <div key={idx} className="truncate">
+                          • <strong>{cat}:</strong> {val}
+                        </div>
+                      );
+                    }
+                    return <div key={idx} className="truncate">• {item}</div>;
+                  });
+                })()}
               </div>
             </div>
 
