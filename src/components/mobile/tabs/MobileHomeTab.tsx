@@ -57,35 +57,61 @@ const downloadQRCodeImage = (containerId: string, fileName: string = "QR_Klaim_M
     }
 
     const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
-    const URL = window.URL || window.webkitURL || window;
-    const blobURL = URL.createObjectURL(svgBlob);
+    const URLObj = window.URL || window.webkitURL || window;
+    const blobURL = URLObj.createObjectURL(svgBlob);
+
+    const triggerDownload = (url: string, name: string) => {
+      const a = document.createElement("a");
+      a.download = name;
+      a.href = url;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        if (document.body.contains(a)) document.body.removeChild(a);
+      }, 150);
+    };
 
     const img = new Image();
     img.crossOrigin = "anonymous";
+
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const scale = 3;
-      const width = (svgElement.clientWidth || 175) * scale;
-      const height = (svgElement.clientHeight || 175) * scale;
-      canvas.width = width;
-      canvas.height = height;
+      try {
+        const canvas = document.createElement("canvas");
+        const scale = 3;
+        const width = (svgElement.clientWidth || 220) * scale;
+        const height = (svgElement.clientHeight || 220) * scale;
+        canvas.width = width;
+        canvas.height = height;
 
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(img, 0, 0, width, height);
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
 
-        const pngUrl = canvas.toDataURL("image/png");
-        const a = document.createElement("a");
-        a.download = fileName;
-        a.href = pngUrl;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const pngBlobUrl = URLObj.createObjectURL(blob);
+              triggerDownload(pngBlobUrl, fileName);
+              setTimeout(() => URLObj.revokeObjectURL(pngBlobUrl), 5000);
+            } else {
+              triggerDownload(blobURL, fileName.replace(".png", ".svg"));
+            }
+          }, "image/png");
+        } else {
+          triggerDownload(blobURL, fileName.replace(".png", ".svg"));
+        }
+      } catch (err) {
+        console.warn("Canvas export fallback:", err);
+        triggerDownload(blobURL, fileName.replace(".png", ".svg"));
       }
-      URL.revokeObjectURL(blobURL);
     };
+
+    img.onerror = () => {
+      triggerDownload(blobURL, fileName.replace(".png", ".svg"));
+    };
+
     img.src = blobURL;
   } catch (err) {
     console.error("Gagal mengunduh gambar QR Code:", err);
