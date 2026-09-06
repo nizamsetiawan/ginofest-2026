@@ -1589,9 +1589,8 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           </div>
 
           {/* ─── STICKY BOTTOM ACTIONS ─── */}
-          <div className="flex-shrink-0 relative">
-            <div className="h-4 bg-gradient-to-b from-transparent to-white pointer-events-none" />
-            <div className="bg-white border-t border-slate-200/90 px-4 pb-5 pt-3 space-y-2 shadow-[0_-4px_16px_rgba(0,0,0,0.05)]">
+          <div className="flex-shrink-0 relative z-30">
+            <div className="bg-white border-t border-slate-200/90 px-4 pb-7 pt-3 space-y-2 shadow-[0_-6px_20px_rgba(0,0,0,0.08)]">
               {/* Primary Action: Pindai Nanti */}
               <motion.button
                 whileTap={{ scale: 0.98 }}
@@ -1600,7 +1599,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                   setScreeningStep(1);
                   if (onBackToHome) onBackToHome();
                 }}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[14px] shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[14px] shadow-lg shadow-teal-500/20 transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
               >
                 <span>Pindai Nanti</span>
               </motion.button>
