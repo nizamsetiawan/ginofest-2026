@@ -442,10 +442,14 @@ export const ScreeningView: React.FC = () => {
 
   const isScanClaimed = (item: any) => {
     if (item.status === "CLAIMED") return true;
-    const code = item.claimId || item.scanId || item.id;
-    return historyList.some(
-      (c) => c.claimId === code || c.claimId === item.claimId || c.claimId === item.scanId || c.claimId === item.id
-    );
+    const c1 = item.claimId ? String(item.claimId).trim().toUpperCase() : "";
+    const c2 = item.scanId ? String(item.scanId).trim().toUpperCase() : "";
+    const c3 = item.id ? String(item.id).trim().toUpperCase() : "";
+
+    return historyList.some((c) => {
+      const targetCode = String(c.claimId || c.id || "").trim().toUpperCase();
+      return (c1 && targetCode === c1) || (c2 && targetCode === c2) || (c3 && targetCode === c3);
+    });
   };
 
   const isScanExpired = (item: any) => {

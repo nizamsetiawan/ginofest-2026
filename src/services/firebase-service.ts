@@ -1374,14 +1374,23 @@ export function subscribeBiometricScans(onUpdate: (scans: any[]) => void) {
     let claimsData: any[] = [];
 
     const notifyCombined = () => {
-      const claimedMap = new Set<string>();
+      const claimedSet = new Set<string>();
       claimsData.forEach((c) => {
-        if (c.claimId) claimedMap.add(c.claimId);
+        if (c.claimId) claimedSet.add(String(c.claimId).trim().toUpperCase());
+        if (c.id) claimedSet.add(String(c.id).trim().toUpperCase());
       });
 
       const results = scansData.map((s) => {
-        const code = s.claimId || s.scanId || s.id;
-        const isClaimed = s.status === "CLAIMED" || (code && claimedMap.has(code));
+        const c1 = s.claimId ? String(s.claimId).trim().toUpperCase() : "";
+        const c2 = s.scanId ? String(s.scanId).trim().toUpperCase() : "";
+        const c3 = s.id ? String(s.id).trim().toUpperCase() : "";
+
+        const isClaimed =
+          s.status === "CLAIMED" ||
+          (c1 && claimedSet.has(c1)) ||
+          (c2 && claimedSet.has(c2)) ||
+          (c3 && claimedSet.has(c3));
+
         return {
           ...s,
           status: isClaimed ? "CLAIMED" : s.status,
@@ -1473,14 +1482,23 @@ export function subscribeUserScansAndClaims(
     let claimsData: any[] = [];
 
     const notifyCombined = () => {
-      const claimedMap = new Set<string>();
+      const claimedSet = new Set<string>();
       claimsData.forEach((c) => {
-        if (c.claimId) claimedMap.add(c.claimId);
+        if (c.claimId) claimedSet.add(String(c.claimId).trim().toUpperCase());
+        if (c.id) claimedSet.add(String(c.id).trim().toUpperCase());
       });
 
       const results = scansData.map((s) => {
-        const code = s.claimId || s.scanId || s.id;
-        const isClaimed = s.status === "CLAIMED" || (code && claimedMap.has(code));
+        const c1 = s.claimId ? String(s.claimId).trim().toUpperCase() : "";
+        const c2 = s.scanId ? String(s.scanId).trim().toUpperCase() : "";
+        const c3 = s.id ? String(s.id).trim().toUpperCase() : "";
+
+        const isClaimed =
+          s.status === "CLAIMED" ||
+          (c1 && claimedSet.has(c1)) ||
+          (c2 && claimedSet.has(c2)) ||
+          (c3 && claimedSet.has(c3));
+
         return {
           ...s,
           status: isClaimed ? "CLAIMED" : s.status,
