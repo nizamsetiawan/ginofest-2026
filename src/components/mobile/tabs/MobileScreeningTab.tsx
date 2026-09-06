@@ -1141,7 +1141,7 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           {/* ─── TOP BAR ─── */}
           <div className="px-4 pt-4 pb-3 space-y-3">
             <div className="flex items-center justify-between">
-              <div className="w-16 h-8" /> {/* Balance spacer */}
+              <div className="w-9 h-9" /> {/* Balance spacer */}
 
               <div className="text-center">
                 <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Menu untuk Anda</p>
@@ -1150,14 +1150,13 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
 
               {/* Right Top Action Icon: Buka QR Code Klaim MBG */}
               <motion.button
-                whileTap={{ scale: 0.92 }}
+                whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={() => setScreeningStep(4)}
-                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] text-white text-[11px] font-black flex items-center gap-1.5 shadow-md shadow-teal-500/20 active:scale-95 transition-transform cursor-pointer"
+                className="w-9 h-9 rounded-2xl bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] text-white flex items-center justify-center shadow-md shadow-teal-500/20 active:scale-95 transition-transform cursor-pointer"
                 title="Buka QR Code Klaim MBG"
               >
-                <QrCode className="w-4 h-4 text-white" />
-                <span>QR Klaim</span>
+                <QrCode className="w-5 h-5 text-white" />
               </motion.button>
             </div>
 
@@ -1494,25 +1493,25 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           {/* ─── TOP BAR (fixed header, no back icon) ─── */}
           <div className="px-4 pt-4 pb-2 space-y-2 flex-shrink-0">
             <div className="flex items-center justify-between">
-              <div className="w-16 h-8" /> {/* Balance spacer */}
+              <div className="w-9 h-9" /> {/* Balance spacer */}
 
               <div className="text-center">
                 <p className="text-[11px] font-bold text-[#0FA89B] tracking-widest uppercase">Verifikasi Klaim</p>
                 <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">QR Code Menu MBG</p>
               </div>
 
-              {/* Right Top Action Button: Pindai Nanti */}
+              {/* Right Top Action Icon: Pindai Nanti */}
               <motion.button
-                whileTap={{ scale: 0.92 }}
+                whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={() => {
                   setScreeningStep(1);
                   if (onBackToHome) onBackToHome();
                 }}
-                className="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-black hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
-                title="Pindai Nanti"
+                className="w-9 h-9 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-800 flex items-center justify-center shadow-xs active:scale-95 transition-all cursor-pointer"
+                title="Pindai Nanti (Tutup)"
               >
-                <span>Pindai Nanti</span>
+                <X className="w-5 h-5 stroke-[2.5]" />
               </motion.button>
             </div>
 
