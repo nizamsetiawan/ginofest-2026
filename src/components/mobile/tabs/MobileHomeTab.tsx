@@ -950,17 +950,6 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                       </div>
                     </div>
 
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => downloadQRCodeImage("qr-code-detail-modal-container", `QR_Klaim_MBG_${selectedDetailScan.claimId || "code"}.png`)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 hover:bg-teal-100 text-[#0FA89B] text-[10.5px] font-bold border border-teal-200 transition-colors cursor-pointer"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>Simpan Gambar QR (Klik)</span>
-                      </button>
-                    </div>
-
                     <p className="text-[11px] text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
                       Arahkan layar QR ini ke kamera website SPPG Kec. {userDistrict} yang disediakan petugas untuk verifikasi penyerahan porsi makanan.
                     </p>
@@ -968,7 +957,7 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                 )}
 
                 {/* Recommended Menu & Nutrition */}
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5 text-left">
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider">
                       Rekomendasi Menu Gizi (TKPI 2019)
@@ -999,8 +988,8 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                     </div>
                   </div>
 
-                  {/* Dynamic Composition Items */}
-                  <div className="grid grid-cols-2 gap-1 text-[9.5px] text-slate-600 font-medium bg-white/80 p-2.5 rounded-xl border border-slate-200/70">
+                  {/* Dynamic Composition Items (Clean Vertical List Format) */}
+                  <div className="space-y-1.5 text-[11px] text-slate-700 font-medium bg-white/90 p-3 rounded-2xl border border-slate-200/70">
                     {(() => {
                       const compStr = selectedDetailScan.recommendedMenu?.composition || "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)";
                       const items = compStr.split(/[\|\•]/).map((s: string) => s.trim()).filter(Boolean);
@@ -1010,12 +999,20 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                           const cat = item.substring(0, colonIdx).trim();
                           const val = item.substring(colonIdx + 1).trim();
                           return (
-                            <div key={idx} className="truncate">
-                              • <strong>{cat}:</strong> {val}
+                            <div key={idx} className="flex items-start gap-1.5 leading-snug">
+                              <span className="text-[#0FA89B] font-bold shrink-0">•</span>
+                              <div>
+                                <strong className="text-slate-800">{cat}:</strong> {val}
+                              </div>
                             </div>
                           );
                         }
-                        return <div key={idx} className="truncate">• {item}</div>;
+                        return (
+                          <div key={idx} className="flex items-start gap-1.5 leading-snug">
+                            <span className="text-[#0FA89B] font-bold shrink-0">•</span>
+                            <div>{item}</div>
+                          </div>
+                        );
                       });
                     })()}
                   </div>
