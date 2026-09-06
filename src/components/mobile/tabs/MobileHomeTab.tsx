@@ -1094,10 +1094,10 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
       <AnimatePresence>
         {showArticleListModal && (
           <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 280 }}
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 26, stiffness: 280 }}
             className="fixed inset-0 z-[105] bg-slate-50 h-screen w-screen flex flex-col overflow-hidden"
           >
             {/* Header */}
