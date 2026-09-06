@@ -1181,9 +1181,6 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     <h4 className="text-[14px] font-black text-white leading-snug drop-shadow-sm">
                       {syncedRecord?.recommendedMenu?.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis"}
                     </h4>
-                    <p className="text-[10px] text-white/80 font-medium mt-0.5">
-                      Formula 5 Bintang + Susu (BGN / Kemenkes RI)
-                    </p>
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-[10.5px] font-black shadow-md">
