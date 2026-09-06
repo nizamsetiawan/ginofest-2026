@@ -857,7 +857,7 @@ export const ScreeningView: React.FC = () => {
                   }`}
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Tersedia ({biometricList.filter((b) => isScanValid(b)).length})</span>
+                <span>Belum Diklaim ({biometricList.filter((b) => isScanValid(b)).length})</span>
               </button>
 
               <button
@@ -867,7 +867,7 @@ export const ScreeningView: React.FC = () => {
                     : "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
                   }`}
               >
-                <span>Sudah Diambil ({biometricList.filter((b) => isScanClaimed(b)).length})</span>
+                <span>Sudah Diklaim ({biometricList.filter((b) => isScanClaimed(b)).length})</span>
               </button>
 
               <button
@@ -960,12 +960,12 @@ export const ScreeningView: React.FC = () => {
                         {isValid && (
                           <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[11px] border border-emerald-300 flex items-center gap-1.5 shadow-xs">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span>Tersedia (Belum Diambil)</span>
+                            <span>Belum Diklaim</span>
                           </span>
                         )}
                         {isClaimed && (
                           <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-extrabold text-[11px] border border-blue-300 flex items-center gap-1.5 shadow-xs">
-                            <span>Sudah Diambil</span>
+                            <span>Sudah Diklaim</span>
                           </span>
                         )}
                       </div>

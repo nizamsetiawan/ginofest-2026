@@ -726,12 +726,12 @@ export const MobileHomeTab: React.FC<MobileHomeTabProps> = ({
                             )}
                             {isValid && (
                               <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-black border border-emerald-200">
-                                Tersedia
+                                Belum Diklaim
                               </span>
                             )}
                             {isClaimed && (
                               <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[9.5px] font-black border border-blue-200">
-                                Sudah Diambil
+                                Sudah Diklaim
                               </span>
                             )}
                             <span className="text-[9.5px] font-mono font-bold text-slate-400 truncate">
