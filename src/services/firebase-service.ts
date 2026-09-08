@@ -477,34 +477,53 @@ export function getFallbackDishPhoto(title?: string): string {
   return "/assets/mbg_tray_ayam.jpg";
 }
 
+export async function getDishPhotoFromCacheOrFallback(title?: string): Promise<string> {
+  if (!title) return "/assets/mbg_tray_ayam.jpg";
+  try {
+    const cached = await getCachedFoodImageFromFirestore(title);
+    if (cached && cached.imageUrl && !cached.imageUrl.includes("wikimedia.org")) {
+      return cached.imageUrl;
+    }
+  } catch (e) {
+    console.warn("getDishPhotoFromCacheOrFallback notice:", e);
+  }
+  return getFallbackDishPhoto(title);
+}
+
 export async function saveMenuPlanToFirestore(districtId: string, period: string, planData: any) {
   try {
     const planDocId = `${districtId}_${period}`;
     const docRef = doc(db, "mbg_menu_plans", planDocId);
 
-    // Auto-enrich menu items with matching dish photo URLs
+    // Auto-enrich menu items with matching dish photo URLs from food_images_cache / fallback
     const enrichedWeeks = planData.monthlyWeeks ? Object.fromEntries(
-      Object.entries(planData.monthlyWeeks).map(([weekKey, days]: [string, any]) => [
-        weekKey,
-        Array.isArray(days)
-          ? days.map((d: any) => {
-              const u = d.imageUrl || d.photo;
-              const validUrl = (u && typeof u === "string" && !u.includes("wikimedia.org")) ? u : getFallbackDishPhoto(d.menuTitle || "");
-              return { ...d, imageUrl: validUrl };
-            })
-          : days,
-      ])
+      await Promise.all(
+        Object.entries(planData.monthlyWeeks).map(async ([weekKey, days]: [string, any]) => [
+          weekKey,
+          Array.isArray(days)
+            ? await Promise.all(days.map(async (d: any) => {
+                const u = d.imageUrl || d.photo;
+                const validUrl = (u && typeof u === "string" && !u.includes("wikimedia.org")) 
+                  ? u 
+                  : await getDishPhotoFromCacheOrFallback(d.menuTitle || "");
+                return { ...d, imageUrl: validUrl };
+              }))
+            : days,
+        ])
+      )
     ) : planData.monthlyWeeks;
 
     const enrichedRecipes = Array.isArray(planData.availableGeneratedRecipes)
-      ? planData.availableGeneratedRecipes.map((r: any) => {
+      ? await Promise.all(planData.availableGeneratedRecipes.map(async (r: any) => {
         if (typeof r === "object") {
           const u = r.imageUrl || r.photo;
-          const validUrl = (u && typeof u === "string" && !u.includes("wikimedia.org")) ? u : getFallbackDishPhoto(r.menuTitle || r.title || "");
+          const validUrl = (u && typeof u === "string" && !u.includes("wikimedia.org")) 
+            ? u 
+            : await getDishPhotoFromCacheOrFallback(r.menuTitle || r.title || "");
           return { ...r, imageUrl: validUrl };
         }
         return r;
-      })
+      }))
       : planData.availableGeneratedRecipes || [];
 
     await setDoc(docRef, {

@@ -3,7 +3,8 @@ import {
   fetchPricesFromFirestore, 
   fetchRecipesFromFirestore, 
   fetchNutritionFromFirestore,
-  getFallbackDishPhoto
+  getFallbackDishPhoto,
+  getDishPhotoFromCacheOrFallback
 } from "./firebase-service";
 
 export interface MasterPromptInput {
@@ -160,10 +161,15 @@ WAJIB JSON VALID:
           const parsed = JSON.parse(rawText.replace(/```json/g, "").replace(/```/g, "").trim());
 
           if (parsed.weeklyPlan && parsed.weeklyPlan.length >= 5) {
-            const enrichedWeeklyPlan = parsed.weeklyPlan.map((d: any) => ({
-              ...d,
-              imageUrl: d.imageUrl || d.photo || getFallbackDishPhoto(d.menuTitle || ""),
-            }));
+            const enrichedWeeklyPlan = await Promise.all(
+              parsed.weeklyPlan.map(async (d: any) => {
+                const u = d.imageUrl || d.photo;
+                const validUrl = (u && typeof u === "string" && !u.includes("wikimedia.org"))
+                  ? u
+                  : await getDishPhotoFromCacheOrFallback(d.menuTitle || "");
+                return { ...d, imageUrl: validUrl };
+              })
+            );
             return {
               success: true,
               engineUsed: "GOOGLE_GEMINI_FLAGSHIP_LIVE",

@@ -8,7 +8,7 @@
  */
 
 import { doc, setDoc, getDoc, collection, getDocs, query, where, orderBy, serverTimestamp, deleteDoc } from "firebase/firestore";
-import { db, fetchMenuPlanFromFirestore, saveMenuPlanToFirestore } from "./firebase-service";
+import { db, fetchMenuPlanFromFirestore, saveMenuPlanToFirestore, getDishPhotoFromCacheOrFallback } from "./firebase-service";
 import { generateMenuWithSinglePrompt } from "./gemini-rag-service";
 import { AzureBlobService, BiometricPhotoPayload, AzureBlobUploadedUrls } from "./azure-blob-service";
 import { AzureVisionService, AzureVisionClinicalMetrics } from "./azure-vision-service";
@@ -259,7 +259,7 @@ export class BiometricSyncService {
           };
 
           const rawBestUrl = (bestMenu as any).imageUrl || (bestMenu as any).photo;
-          finalImageUrl    = (rawBestUrl && typeof rawBestUrl === "string" && !rawBestUrl.includes("wikimedia.org")) ? rawBestUrl : getFallbackDishPhoto(menuTitle);
+          finalImageUrl    = (rawBestUrl && typeof rawBestUrl === "string" && !rawBestUrl.includes("wikimedia.org")) ? rawBestUrl : await getDishPhotoFromCacheOrFallback(menuTitle);
           menuSource       = "AI_RAG_PRECISION_CLINICAL";
 
           console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}" (${finalCalories} kkal, ${finalProtein}g protein, ${finalIron}mg Fe)`);
