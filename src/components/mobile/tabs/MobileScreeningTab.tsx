@@ -1687,11 +1687,31 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       {screeningStep === 5 && (
         <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-gradient-to-b from-[#F0FDF8] via-white to-[#F0FDF8]">
 
+          {/* ─── TOP BAR WITH TOP-RIGHT 'SELESAI' BUTTON ─── */}
+          <div className="flex items-center justify-between px-4 pt-4 pb-1 z-10 shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[11px] font-black text-slate-700 font-mono uppercase tracking-wider">Kcal. Claim Verified</span>
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.94 }}
+              type="button"
+              onClick={() => {
+                if (onBackToHome) onBackToHome();
+              }}
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#0FA89B] to-[#23B5A8] hover:from-[#0d968b] hover:to-[#1fa296] text-white font-black text-[12px] shadow-sm transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 border border-teal-200/50"
+            >
+              <span>Selesai</span>
+              <X className="w-3.5 h-3.5" />
+            </motion.button>
+          </div>
+
           {/* ─── SCROLLABLE BODY ─── */}
           <div className="flex-1 overflow-y-auto pb-6">
 
             {/* SUCCESS BANNER */}
-            <div className="px-4 pt-5 pb-2 text-center">
+            <div className="px-4 pt-3 pb-2 text-center">
               <motion.div
                 initial={{ scale: 0.6, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
