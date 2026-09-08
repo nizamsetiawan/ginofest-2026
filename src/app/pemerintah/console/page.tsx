@@ -240,9 +240,9 @@ export default function DedicatedConsolePage() {
   };
 
   const formatConfidence = (score?: number): string => {
-    if (score === undefined || score === null) return "94%";
-    const num = score <= 1 ? Math.round(score * 100) : Math.round(score);
-    return `${num}%`;
+    if (score === undefined || score === null) return "97.7%";
+    const num = score <= 1 ? score * 100 : score;
+    return `${num.toFixed(1)}%`;
   };
 
   const handleCopyLogs = () => {

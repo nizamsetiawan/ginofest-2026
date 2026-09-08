@@ -301,10 +301,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   }, []);
 
   useEffect(() => {
-    const title = syncedRecord?.recommendedMenu?.menuTitle;
+    const title = syncedRecord?.recommendedMenu?.menuTitle || (menuType === "ayam" ? "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis" : "Nasi Bandeng Bakar Madu & Sayur Sop");
     const existingUrl = (syncedRecord?.recommendedMenu as any)?.imageUrl || (syncedRecord?.recommendedMenu as any)?.photo;
 
-    if (existingUrl) {
+    if (existingUrl && !existingUrl.includes("wikimedia.org")) {
       setMenuImageUrl(existingUrl);
       return;
     }
@@ -314,16 +314,20 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
       fetch(`/api/search-food-image?query=${encodeURIComponent(title)}`)
         .then((res) => res.json())
         .then((data) => {
-          if (isMounted && data.imageUrl) {
+          if (isMounted && data.imageUrl && !data.imageUrl.includes("wikimedia.org")) {
             setMenuImageUrl(data.imageUrl);
+          } else if (isMounted) {
+            setMenuImageUrl(getDishFallbackPhoto(title));
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          if (isMounted) setMenuImageUrl(getDishFallbackPhoto(title));
+        });
       return () => {
         isMounted = false;
       };
     }
-  }, [syncedRecord?.recommendedMenu]);
+  }, [syncedRecord?.recommendedMenu, menuType, getDishFallbackPhoto]);
 
   // Step 4: QR Code Scanner Timer / Verification Simulation
   const [isQrVerifying, setIsQrVerifying] = useState(false);
@@ -1208,40 +1212,45 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3.5 pb-28 sm:pb-32">
 
             {/* Menu Image Card */}
-            <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm bg-white">
-              <div className="relative">
-                <img
-                  src={
-                    menuImageUrl ||
-                    (syncedRecord?.recommendedMenu as any)?.imageUrl ||
-                    (syncedRecord?.recommendedMenu as any)?.photo ||
-                    getDishFallbackPhoto(syncedRecord?.recommendedMenu?.menuTitle)
-                  }
-                  alt={syncedRecord?.recommendedMenu?.menuTitle || "Menu MBG"}
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = getDishFallbackPhoto(syncedRecord?.recommendedMenu?.menuTitle);
-                  }}
-                  className="w-full h-40 object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
-                  <div className="pr-2">
-                    <h4 className="text-[14px] font-black text-white leading-snug drop-shadow-sm">
-                      {syncedRecord?.recommendedMenu?.menuTitle || "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis"}
-                    </h4>
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-[10.5px] font-black shadow-md">
-                      {syncedRecord?.recommendedMenu?.akgPercentage || 97}% AKG Porsi Harian
-                    </span>
-                    <span className="px-2.5 py-1 rounded-xl bg-[#0FA89B] text-white text-[10.5px] font-black shadow-md">
-                      {syncedRecord?.recommendedMenu?.calories || 690} kkal
-                    </span>
+            {(() => {
+              const activeMenuTitle = syncedRecord?.recommendedMenu?.menuTitle || (menuType === "ayam" ? "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis" : "Nasi Bandeng Bakar Madu & Sayur Sop");
+              return (
+                <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+                  <div className="relative">
+                    <img
+                      src={
+                        menuImageUrl ||
+                        (syncedRecord?.recommendedMenu as any)?.imageUrl ||
+                        (syncedRecord?.recommendedMenu as any)?.photo ||
+                        getDishFallbackPhoto(activeMenuTitle)
+                      }
+                      alt={activeMenuTitle}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = getDishFallbackPhoto(activeMenuTitle);
+                      }}
+                      className="w-full h-40 object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
+                      <div className="pr-2">
+                        <h4 className="text-[14px] font-black text-white leading-snug drop-shadow-sm">
+                          {activeMenuTitle}
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-[10.5px] font-black shadow-md">
+                          {syncedRecord?.recommendedMenu?.akgPercentage || 97}% AKG Porsi Harian
+                        </span>
+                        <span className="px-2.5 py-1 rounded-xl bg-[#0FA89B] text-white text-[10.5px] font-black shadow-md">
+                          {syncedRecord?.recommendedMenu?.calories || 690} kkal
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              );
+            })()}
 
             {/* Formula 5 Bintang & HPP Card */}
             <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-2xs space-y-2.5 text-left">

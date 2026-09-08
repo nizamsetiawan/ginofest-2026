@@ -466,7 +466,10 @@ export async function saveAllMasterDataToFirestore(dataset: {
 export function getFallbackDishPhoto(title?: string): string {
   const lower = (title || "").toLowerCase();
   if (lower.includes("bandeng") || lower.includes("ikan") || lower.includes("pepes")) {
-    return "/assets/mbg_tray_bandeng.jpg";
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bandeng_Bakar_01.jpg/800px-Bandeng_Bakar_01.jpg";
+  }
+  if (lower.includes("soto")) {
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Soto_Ayam_Semarang.jpg/800px-Soto_Ayam_Semarang.jpg";
   }
   if (lower.includes("daging") || lower.includes("semur") || lower.includes("sapi") || lower.includes("rawon")) {
     return "/assets/mbg_tray_daging.jpg";
@@ -485,19 +488,19 @@ export async function saveMenuPlanToFirestore(districtId: string, period: string
         weekKey,
         Array.isArray(days)
           ? days.map((d: any) => ({
-              ...d,
-              imageUrl: d.imageUrl || d.photo || getFallbackDishPhoto(d.menuTitle || ""),
-            }))
+            ...d,
+            imageUrl: d.imageUrl || d.photo || getFallbackDishPhoto(d.menuTitle || ""),
+          }))
           : days,
       ])
     ) : planData.monthlyWeeks;
 
     const enrichedRecipes = Array.isArray(planData.availableGeneratedRecipes)
       ? planData.availableGeneratedRecipes.map((r: any) =>
-          typeof r === "object"
-            ? { ...r, imageUrl: r.imageUrl || r.photo || getFallbackDishPhoto(r.menuTitle || r.title || "") }
-            : r
-        )
+        typeof r === "object"
+          ? { ...r, imageUrl: r.imageUrl || r.photo || getFallbackDishPhoto(r.menuTitle || r.title || "") }
+          : r
+      )
       : planData.availableGeneratedRecipes || [];
 
     await setDoc(docRef, {
@@ -654,7 +657,7 @@ export function subscribeUserNotifications(
       snap.forEach((d) => {
         const data = d.data() as any;
         const targetEmail = (data.userEmail || "").trim().toLowerCase();
-        
+
         const isCategoryAllowed = data.category !== "settings" && data.category !== "master";
         const isMatch = isCategoryAllowed && (!targetEmail || targetEmail === "all" || targetEmail === cleanEmail);
         if (isMatch) {
@@ -681,7 +684,7 @@ export function subscribeUserNotifications(
     return unsubscribe;
   } catch (err) {
     console.warn("Gagal init subscribeUserNotifications:", err);
-    return () => {};
+    return () => { };
   }
 }
 
@@ -689,9 +692,9 @@ export async function markNotificationRead(docId: string, userEmail?: string) {
   try {
     const docRef = doc(db, "gscan_notifications", docId);
     if (userEmail) {
-      await setDoc(docRef, { 
-        isRead: true, 
-        readBy: arrayUnion(userEmail.trim().toLowerCase()) 
+      await setDoc(docRef, {
+        isRead: true,
+        readBy: arrayUnion(userEmail.trim().toLowerCase())
       }, { merge: true });
     } else {
       await setDoc(docRef, { isRead: true }, { merge: true });
@@ -707,7 +710,7 @@ export async function markAllNotificationsRead(userEmail?: string) {
     const colRef = collection(db, "gscan_notifications");
     const snap = await getDocs(colRef);
     const cleanEmail = (userEmail || "").trim().toLowerCase();
-    
+
     await Promise.all(
       snap.docs.map((d) => {
         const data = d.data() as any;
@@ -744,7 +747,7 @@ export async function seedInitialUserNotifications(userEmail: string, districtNa
 
     const colRef = collection(db, "gscan_notifications");
     const snap = await getDocs(colRef);
-    
+
     // Filter notifications for this user
     const userNotifs = snap.docs.filter((d) => {
       const data = d.data() as any;
@@ -969,7 +972,7 @@ export async function fetchHelpQA() {
       "cmd_mbg_warga", "cmd_skrining_warga", "cmd_balita_warga",
       "cmd_lapor_warga", "cmd_track_warga", "cmd_posyandu_warga"
     ];
-    await Promise.all(unusedCmdIds.map((cmdId) => deleteDoc(doc(db, "gscan_help_qa", cmdId)).catch(() => {})));
+    await Promise.all(unusedCmdIds.map((cmdId) => deleteDoc(doc(db, "gscan_help_qa", cmdId)).catch(() => { })));
 
     const colRef = collection(db, "gscan_help_qa");
     let snap = await getDocs(colRef);
@@ -1107,8 +1110,8 @@ export async function saveComplaintToFirestore(complaint: Omit<ComplaintRecord, 
       createdAtIso: new Date().toISOString(),
     });
 
-    const targetEmail = (complaint.senderContact && complaint.senderContact.includes("@")) 
-      ? complaint.senderContact.trim().toLowerCase() 
+    const targetEmail = (complaint.senderContact && complaint.senderContact.includes("@"))
+      ? complaint.senderContact.trim().toLowerCase()
       : "";
     const districtName = complaint.district ? complaint.district : "Kebomas";
     const sppgLabel = `SPPG Kec. ${districtName}`;
@@ -1236,7 +1239,7 @@ export async function updateComplaintStatusInFirestore(
       if (snap.exists()) {
         existingData = snap.data();
       }
-    } catch {}
+    } catch { }
 
     await setDoc(docRef, { status, ...(responseNotes ? { responseNotes } : {}), updatedAtIso: new Date().toISOString() }, { merge: true });
 
@@ -1375,7 +1378,7 @@ export function subscribeQrClaims(onUpdate: (claims: QrClaimRecord[]) => void) {
     return unsubscribe;
   } catch (err) {
     console.warn("Gagal init subscribeQrClaims:", err);
-    return () => {};
+    return () => { };
   }
 }
 
@@ -1489,7 +1492,7 @@ export function subscribeBiometricScans(onUpdate: (scans: any[]) => void) {
     };
   } catch (err) {
     console.warn("Gagal init subscribeBiometricScans:", err);
-    return () => {};
+    return () => { };
   }
 }
 
@@ -1628,7 +1631,7 @@ export function subscribeUserScansAndClaims(
     };
   } catch (err) {
     console.warn("Gagal init subscribeUserScansAndClaims:", err);
-    return () => {};
+    return () => { };
   }
 }
 
@@ -1660,12 +1663,12 @@ export async function registerCitizenToFirestore(account: Omit<CitizenAccountRec
       const auth = getAuth(app);
       const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, cleanPass);
       firebaseUid = userCredential.user.uid;
-      
+
       try {
         await updateProfile(userCredential.user, {
           displayName: account.fullName,
         });
-      } catch {}
+      } catch { }
     } catch (authErr: any) {
       console.warn("Firebase Auth registration note:", authErr);
       if (authErr.code === "auth/email-already-in-use") {
@@ -1718,7 +1721,7 @@ export async function registerCitizenToFirestore(account: Omit<CitizenAccountRec
         userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "PWA Mobile App (Pendaftaran)",
         status: "active",
       });
-    } catch {}
+    } catch { }
 
     return { success: true, id: docId, sessionId: logId };
   } catch (err: any) {
@@ -1784,7 +1787,7 @@ export async function loginCitizenFromFirestore(
             try {
               const newCred = await createUserWithEmailAndPassword(auth, cleanEmail, cleanPass);
               firebaseUser = newCred.user;
-            } catch {}
+            } catch { }
           }
         }
       } catch (authErr) {
@@ -1821,7 +1824,7 @@ export async function loginCitizenFromFirestore(
         userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "PWA Mobile App",
         status: "active",
       });
-    } catch {}
+    } catch { }
 
     return {
       success: true,
@@ -1969,7 +1972,7 @@ export async function saveCachedFoodImageToFirestore(queryName: string, imageUrl
 }
 
 export function listenToActiveSessions(callback: (sessions: any[]) => void) {
-  if (!db) return () => {};
+  if (!db) return () => { };
   const q = query(collection(db, "kcal_session_logs"));
   return onSnapshot(q, (snapshot) => {
     const sessions = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -2281,7 +2284,7 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
       for (const art of DEFAULT_15_ARTICLES) {
         const docId = `art_${Math.random().toString(36).substring(2, 8)}_${Date.now()}`;
         const docRef = doc(db, "gscan_articles", docId);
-        
+
         // Auto-fetch real Google Image from SerpAPI based on article title
         let imageUrl = art.imageUrl;
         const serpUrl = await fetchArticleImageFromSerpApi(art.title);
@@ -2311,7 +2314,7 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
             art.imageUrl = serpUrl;
             // Save to Firestore permanently so SERP API isn't called again!
             const docRef = doc(db, "gscan_articles", d.id);
-            await setDoc(docRef, { imageUrl: serpUrl }, { merge: true }).catch(() => {});
+            await setDoc(docRef, { imageUrl: serpUrl }, { merge: true }).catch(() => { });
           } else {
             // Assign high-quality Unsplash fallback based on category
             const categoryFallbacks: Record<string, string> = {
@@ -2324,7 +2327,7 @@ export async function fetchArticlesFromFirestore(): Promise<{ success: boolean; 
             };
             art.imageUrl = categoryFallbacks[art.category] || "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80";
             const docRef = doc(db, "gscan_articles", d.id);
-            await setDoc(docRef, { imageUrl: art.imageUrl }, { merge: true }).catch(() => {});
+            await setDoc(docRef, { imageUrl: art.imageUrl }, { merge: true }).catch(() => { });
           }
         }
         return art;
