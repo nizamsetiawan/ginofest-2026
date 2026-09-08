@@ -258,7 +258,8 @@ export class BiometricSyncService {
             return "/assets/mbg_tray_ayam.jpg";
           };
 
-          finalImageUrl    = (bestMenu as any).imageUrl || (bestMenu as any).photo || getFallbackDishPhoto(menuTitle);
+          const rawBestUrl = (bestMenu as any).imageUrl || (bestMenu as any).photo;
+          finalImageUrl    = (rawBestUrl && typeof rawBestUrl === "string" && !rawBestUrl.includes("wikimedia.org")) ? rawBestUrl : getFallbackDishPhoto(menuTitle);
           menuSource       = "AI_RAG_PRECISION_CLINICAL";
 
           console.log(`[Clinical Score] dominant=${dominant} ironNeed=${ironNeed.toFixed(2)} proteinNeed=${proteinNeed.toFixed(2)} calorieNeed=${calorieNeed.toFixed(2)} → selected="${menuTitle}" (${finalCalories} kkal, ${finalProtein}g protein, ${finalIron}mg Fe)`);

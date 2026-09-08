@@ -487,20 +487,24 @@ export async function saveMenuPlanToFirestore(districtId: string, period: string
       Object.entries(planData.monthlyWeeks).map(([weekKey, days]: [string, any]) => [
         weekKey,
         Array.isArray(days)
-          ? days.map((d: any) => ({
-            ...d,
-            imageUrl: d.imageUrl || d.photo || getFallbackDishPhoto(d.menuTitle || ""),
-          }))
+          ? days.map((d: any) => {
+              const u = d.imageUrl || d.photo;
+              const validUrl = (u && typeof u === "string" && !u.includes("wikimedia.org")) ? u : getFallbackDishPhoto(d.menuTitle || "");
+              return { ...d, imageUrl: validUrl };
+            })
           : days,
       ])
     ) : planData.monthlyWeeks;
 
     const enrichedRecipes = Array.isArray(planData.availableGeneratedRecipes)
-      ? planData.availableGeneratedRecipes.map((r: any) =>
-        typeof r === "object"
-          ? { ...r, imageUrl: r.imageUrl || r.photo || getFallbackDishPhoto(r.menuTitle || r.title || "") }
-          : r
-      )
+      ? planData.availableGeneratedRecipes.map((r: any) => {
+        if (typeof r === "object") {
+          const u = r.imageUrl || r.photo;
+          const validUrl = (u && typeof u === "string" && !u.includes("wikimedia.org")) ? u : getFallbackDishPhoto(r.menuTitle || r.title || "");
+          return { ...r, imageUrl: validUrl };
+        }
+        return r;
+      })
       : planData.availableGeneratedRecipes || [];
 
     await setDoc(docRef, {
