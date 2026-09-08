@@ -250,21 +250,12 @@ export class BiometricSyncService {
           const getFallbackDishPhoto = (t: string) => {
             const lower = (t || "").toLowerCase();
             if (lower.includes("bandeng") || lower.includes("ikan") || lower.includes("pepes")) {
-              return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bandeng_Bakar_01.jpg/800px-Bandeng_Bakar_01.jpg";
-            }
-            if (lower.includes("soto")) {
-              return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Soto_Ayam_Semarang.jpg/800px-Soto_Ayam_Semarang.jpg";
+              return "/assets/mbg_tray_bandeng.jpg";
             }
             if (lower.includes("daging") || lower.includes("semur") || lower.includes("sapi") || lower.includes("rawon")) {
-              return "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Semur_Daging_Sapi_01.jpg/800px-Semur_Daging_Sapi_01.jpg";
+              return "/assets/mbg_tray_daging.jpg";
             }
-            if (lower.includes("telur")) {
-              return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Telur_Dadar_Padang.jpg/800px-Telur_Dadar_Padang.jpg";
-            }
-            if (lower.includes("sayur") || lower.includes("sop") || lower.includes("buncis")) {
-              return "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Sayur_Sop_Bening.jpg/800px-Sayur_Sop_Bening.jpg";
-            }
-            return "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Ayam_Goreng_Kalasan_01.jpg/800px-Ayam_Goreng_Kalasan_01.jpg";
+            return "/assets/mbg_tray_ayam.jpg";
           };
 
           finalImageUrl    = (bestMenu as any).imageUrl || (bestMenu as any).photo || getFallbackDishPhoto(menuTitle);

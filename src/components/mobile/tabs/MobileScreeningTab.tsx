@@ -292,21 +292,12 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   const getDishFallbackPhoto = useCallback((title?: string) => {
     const t = (title || "").toLowerCase();
     if (t.includes("bandeng") || t.includes("ikan") || t.includes("pepes")) {
-      return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bandeng_Bakar_01.jpg/800px-Bandeng_Bakar_01.jpg";
-    }
-    if (t.includes("soto")) {
-      return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Soto_Ayam_Semarang.jpg/800px-Soto_Ayam_Semarang.jpg";
+      return "/assets/mbg_tray_bandeng.jpg";
     }
     if (t.includes("daging") || t.includes("semur") || t.includes("sapi") || t.includes("rawon")) {
-      return "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Semur_Daging_Sapi_01.jpg/800px-Semur_Daging_Sapi_01.jpg";
+      return "/assets/mbg_tray_daging.jpg";
     }
-    if (t.includes("telur")) {
-      return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Telur_Dadar_Padang.jpg/800px-Telur_Dadar_Padang.jpg";
-    }
-    if (t.includes("sayur") || t.includes("sop") || t.includes("buncis") || t.includes("bayam")) {
-      return "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Sayur_Sop_Bening.jpg/800px-Sayur_Sop_Bening.jpg";
-    }
-    return "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Ayam_Goreng_Kalasan_01.jpg/800px-Ayam_Goreng_Kalasan_01.jpg";
+    return "/assets/mbg_tray_ayam.jpg";
   }, []);
 
   useEffect(() => {
@@ -1227,6 +1218,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
                     getDishFallbackPhoto(syncedRecord?.recommendedMenu?.menuTitle)
                   }
                   alt={syncedRecord?.recommendedMenu?.menuTitle || "Menu MBG"}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = getDishFallbackPhoto(syncedRecord?.recommendedMenu?.menuTitle);
+                  }}
                   className="w-full h-40 object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

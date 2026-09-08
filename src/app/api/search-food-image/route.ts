@@ -3,16 +3,13 @@ import { getCachedFoodImageFromFirestore, saveCachedFoodImageToFirestore } from 
 
 // Fallback high quality culinary photos if offline or rate limited
 const VERIFIED_CULINARY_FALLBACKS: Record<string, string> = {
-  bandeng: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bandeng_Bakar_01.jpg/800px-Bandeng_Bakar_01.jpg",
-  ikan: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bandeng_Bakar_01.jpg/800px-Bandeng_Bakar_01.jpg",
-  soto: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Soto_Ayam_Semarang.jpg/800px-Soto_Ayam_Semarang.jpg",
-  ayam: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Ayam_Goreng_Kalasan_01.jpg/800px-Ayam_Goreng_Kalasan_01.jpg",
-  daging: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Semur_Daging_Sapi_01.jpg/800px-Semur_Daging_Sapi_01.jpg",
-  semur: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Semur_Daging_Sapi_01.jpg/800px-Semur_Daging_Sapi_01.jpg",
-  telur: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Telur_Dadar_Padang.jpg/800px-Telur_Dadar_Padang.jpg",
-  sayur: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sayur_Bening_Bayam_Jagung.jpg/800px-Sayur_Bening_Bayam_Jagung.jpg",
-  sop: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Sayur_Sop_Bening.jpg/800px-Sayur_Sop_Bening.jpg",
-  default: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Nasi_Campur_Bali.jpg/800px-Nasi_Campur_Bali.jpg"
+  bandeng: "/assets/mbg_tray_bandeng.jpg",
+  ikan: "/assets/mbg_tray_bandeng.jpg",
+  daging: "/assets/mbg_tray_daging.jpg",
+  semur: "/assets/mbg_tray_daging.jpg",
+  sapi: "/assets/mbg_tray_daging.jpg",
+  ayam: "/assets/mbg_tray_ayam.jpg",
+  default: "/assets/mbg_tray_ayam.jpg"
 };
 
 function getFallbackPhoto(query: string): string {
