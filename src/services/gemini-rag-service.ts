@@ -2,7 +2,8 @@ import {
   fetchCommoditiesFromFirestore, 
   fetchPricesFromFirestore, 
   fetchRecipesFromFirestore, 
-  fetchNutritionFromFirestore 
+  fetchNutritionFromFirestore,
+  getFallbackDishPhoto
 } from "./firebase-service";
 
 export interface MasterPromptInput {
@@ -16,6 +17,7 @@ export interface DayMenuItem {
   day: string;
   monthYear: string;
   menuTitle: string;
+  imageUrl?: string;
   composition?: string;
   proteinSource: string;
   veggieSource: string;
@@ -158,13 +160,17 @@ WAJIB JSON VALID:
           const parsed = JSON.parse(rawText.replace(/```json/g, "").replace(/```/g, "").trim());
 
           if (parsed.weeklyPlan && parsed.weeklyPlan.length >= 5) {
+            const enrichedWeeklyPlan = parsed.weeklyPlan.map((d: any) => ({
+              ...d,
+              imageUrl: d.imageUrl || d.photo || getFallbackDishPhoto(d.menuTitle || ""),
+            }));
             return {
               success: true,
               engineUsed: "GOOGLE_GEMINI_FLAGSHIP_LIVE",
               modelName: `Google ${model.toUpperCase()} (Autonomous Live)`,
               districtName: input.districtName,
               studentsCount: students,
-              weeklyPlan: parsed.weeklyPlan,
+              weeklyPlan: enrichedWeeklyPlan,
               budgetSummary: parsed.budgetSummary,
               logisticsBOM: parsed.logisticsBOM || [],
               availableGeneratedRecipes: parsed.availableGeneratedRecipes || [],
@@ -193,6 +199,7 @@ WAJIB JSON VALID:
         day: "Senin",
         monthYear: "November 2026",
         menuTitle: "Nasi Olahan Ikan Bandeng Segar & Sayur Bening Kelor",
+        imageUrl: "/assets/mbg_tray_bandeng.jpg",
         composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Bandeng (65g) | Protein Nabati: Tempe (40g) | Sayuran: Bayam Kelor (80g) | Buah: Pisang (75g) | Susu: Susu UHT (200ml)",
         proteinSource: "Ikan Bandeng Lokal",
         veggieSource: "Daun Kelor & Jagung",
@@ -206,6 +213,7 @@ WAJIB JSON VALID:
         day: "Selasa",
         monthYear: "November 2026",
         menuTitle: "Nasi Ayam Bumbu Kuning & Sayur Lodeh Labu Siam",
+        imageUrl: "/assets/mbg_tray_ayam.jpg",
         composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Ayam (65g) | Protein Nabati: Tahu (40g) | Sayuran: Lodeh Labu Siam (80g) | Buah: Semangka (75g) | Susu: Susu UHT (200ml)",
         proteinSource: "Daging Ayam Segar",
         veggieSource: "Labu Siam & Kacang Panjang",
@@ -219,6 +227,7 @@ WAJIB JSON VALID:
         day: "Rabu",
         monthYear: "November 2026",
         menuTitle: "Nasi Semur Daging Sapi Lokal & Sop Wortel Buncis",
+        imageUrl: "/assets/mbg_tray_daging.jpg",
         composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Daging Sapi (60g) | Protein Nabati: Tempe (40g) | Sayuran: Sop Wortel Buncis (80g) | Buah: Jeruk (75g) | Susu: Susu UHT (200ml)",
         proteinSource: "Daging Sapi Lokal",
         veggieSource: "Wortel & Buncis",
@@ -232,6 +241,7 @@ WAJIB JSON VALID:
         day: "Kamis",
         monthYear: "November 2026",
         menuTitle: "Nasi Telur Ayam Bumbu Bali & Bayam Jagung",
+        imageUrl: "/assets/mbg_tray_ayam.jpg",
         composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Telur Ayam (65g) | Protein Nabati: Tahu Bacem (40g) | Sayuran: Bayam Jagung (80g) | Buah: Pisang (75g) | Susu: Susu UHT (200ml)",
         proteinSource: "Telur Ayam",
         veggieSource: "Bayam Hijau",
@@ -245,6 +255,7 @@ WAJIB JSON VALID:
         day: "Jumat",
         monthYear: "November 2026",
         menuTitle: "Nasi Ikan Segar Bumbu Kuning & Tumis Sayuran",
+        imageUrl: "/assets/mbg_tray_bandeng.jpg",
         composition: "Karbohidrat: Nasi Putih (150g) | Protein Hewani: Ikan Segar (65g) | Protein Nabati: Tempe Mendoan (40g) | Sayuran: Tumis Sayuran (80g) | Buah: Pepaya (75g) | Susu: Susu UHT (200ml)",
         proteinSource: "Ikan Segar Pesisir",
         veggieSource: "Sayuran Lokal",
