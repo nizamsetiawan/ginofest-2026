@@ -515,12 +515,15 @@ export async function saveMenuPlanToFirestore(districtId: string, period: string
 
     const enrichedRecipes = Array.isArray(planData.availableGeneratedRecipes)
       ? await Promise.all(planData.availableGeneratedRecipes.map(async (r: any) => {
-        if (typeof r === "object") {
+        if (typeof r === "object" && r !== null) {
           const u = r.imageUrl || r.photo;
           const validUrl = (u && typeof u === "string" && !u.includes("wikimedia.org")) 
             ? u 
             : await getDishPhotoFromCacheOrFallback(r.menuTitle || r.title || "");
           return { ...r, imageUrl: validUrl };
+        } else if (typeof r === "string") {
+          const validUrl = await getDishPhotoFromCacheOrFallback(r);
+          return { menuTitle: r, imageUrl: validUrl };
         }
         return r;
       }))
