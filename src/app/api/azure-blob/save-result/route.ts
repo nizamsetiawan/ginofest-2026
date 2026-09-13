@@ -201,7 +201,11 @@ export async function GET(req: NextRequest) {
 
     const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
     if (!connectionString) {
-      return NextResponse.json({ error: "AZURE_STORAGE_CONNECTION_STRING tidak dikonfigurasi" }, { status: 500 });
+      return NextResponse.json({
+        success: false,
+        warning: "AZURE_STORAGE_CONNECTION_STRING tidak dikonfigurasi di environment Vercel.",
+        skipped: true,
+      });
     }
 
     const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);

@@ -14,8 +14,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters, BlobSASPermissions } from "@azure/storage-blob";
 import { VercelLogService } from "@/services/vercel-log-service";
 
-// ─── AZURE CONFIG (server-side only) ─────────────────────────────────────────
-
 function getAzureConfig() {
   const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || null;
   const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME || "stgscanginofest26";
