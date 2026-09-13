@@ -455,6 +455,26 @@ export class BiometricSyncService {
     photos: BiometricPhotoPayload;
   }): Promise<void> {
     try {
+      // 1. Auto-upload foto yang baru ditangkap ke Azure Blob Storage di background
+      const stepMap: Record<string, string | undefined> = {
+        wajah: params.photos.faceBase64,
+        mata: params.photos.eyeBase64,
+        tangan: params.photos.handBase64,
+        kuku: params.photos.nailBase64,
+      };
+      const currentStepBase64 = stepMap[params.capturedStep];
+
+      if (currentStepBase64 && currentStepBase64.length > 50) {
+        AzureBlobService.uploadPhotoViaApi(
+          params.userId,
+          params.scanId,
+          params.capturedStep,
+          currentStepBase64
+        ).catch((uploadErr) =>
+          console.warn(`[LiveSync] Background upload Azure ${params.capturedStep} notice:`, uploadErr)
+        );
+      }
+
       if (!db) return;
 
       const docRef = doc(db, this.COLLECTION_SCANS, params.scanId);

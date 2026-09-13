@@ -50,7 +50,7 @@ export class AzureBlobService {
    * Memanggil POST /api/azure-blob/upload-photo agar Connection String
    * tidak pernah ter-expose ke browser.
    */
-  private static async uploadPhotoViaApi(
+  static async uploadPhotoViaApi(
     userId: string,
     scanId: string,
     photoType: "wajah" | "mata" | "tangan" | "kuku",
