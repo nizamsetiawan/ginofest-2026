@@ -428,9 +428,9 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
   // Help Modal State
   const [showHelpModal, setShowHelpModal] = useState(false);
 
-  // Scanning Guide Dialog (auto-shows when entering Step 1)
   const [showScanGuide, setShowScanGuide] = useState(true);
   const [rawPhotosMap, setRawPhotosMap] = useState<Record<string, string>>({});
+  const rawPhotosMapRef = React.useRef<Record<string, string>>({});
 
   const [activeScanId] = useState(() => `SCAN-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`);
 
@@ -480,13 +480,15 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
         if (ctx) {
           ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
           capturedFrame = canvas.toDataURL("image/jpeg", 0.85);
-          const updatedPhotos = {
-            ...rawPhotosMap,
+          
+          // Simpan ke ref & state lokal (Base64) tanpa unggah langsung ke Azure
+          rawPhotosMapRef.current[currentFlowId] = capturedFrame;
+          setRawPhotosMap((prev) => ({
+            ...prev,
             [currentFlowId]: capturedFrame,
-          };
-          setRawPhotosMap(updatedPhotos);
+          }));
 
-          // Realtime live sync to Firestore web console as photo is taken
+          // Live sync status & Base64 ke Firestore (untuk realtime console)
           BiometricSyncService.syncLiveBiometricFrame({
             scanId: activeScanId,
             userId: citizenUser?.id || citizenUser?.email || "user_guest",
@@ -495,10 +497,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
             userAge: citizenUser?.age || 9,
             capturedStep: currentFlowId as any,
             photos: {
-              faceBase64: updatedPhotos.wajah,
-              eyeBase64: updatedPhotos.mata,
-              handBase64: updatedPhotos.tangan,
-              nailBase64: updatedPhotos.kuku,
+              faceBase64: rawPhotosMapRef.current.wajah,
+              eyeBase64: rawPhotosMapRef.current.mata,
+              handBase64: rawPhotosMapRef.current.tangan,
+              nailBase64: rawPhotosMapRef.current.kuku,
             },
           });
         }
@@ -590,10 +592,10 @@ export const MobileScreeningTab: React.FC<MobileScreeningTabProps> = ({
           userEmail: citizenUser?.email,
           userAge: citizenUser?.age !== undefined ? Number(citizenUser.age) : 9,
           photos: {
-            faceBase64: rawPhotosMap.wajah || rawPhotosMap.face,
-            eyeBase64: rawPhotosMap.mata || rawPhotosMap.eye,
-            handBase64: rawPhotosMap.tangan || rawPhotosMap.hand,
-            nailBase64: rawPhotosMap.kuku || rawPhotosMap.nail,
+            faceBase64: rawPhotosMapRef.current.wajah || rawPhotosMap.wajah || rawPhotosMap.face,
+            eyeBase64: rawPhotosMapRef.current.mata || rawPhotosMap.mata || rawPhotosMap.eye,
+            handBase64: rawPhotosMapRef.current.tangan || rawPhotosMap.tangan || rawPhotosMap.hand,
+            nailBase64: rawPhotosMapRef.current.kuku || rawPhotosMap.kuku || rawPhotosMap.nail,
           },
           questionnaire: {
             nafsuMakan: q1Ans,
