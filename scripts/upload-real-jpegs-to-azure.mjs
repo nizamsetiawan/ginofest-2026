@@ -27,6 +27,7 @@ const historicalScanIDs = [
   { userId: "afIOZKKyiZirdOrDpK5Q", scanId: "SCAN-1789271081115-F4Y5K", name: "Riska Aprilia Monika" },
   { userId: "afIOZKKyiZirdOrDpK5Q", scanId: "SCAN-1789271655314-0OIZF", name: "Awan Mazina" },
   { userId: "afIOZKKyiZirdOrDpK5Q", scanId: "SCAN-1789272487845-ZIQAH", name: "ZIQAH" },
+  { userId: "afIOZKKyiZirdOrDpK5Q", scanId: "SCAN-1789273346848-DP234", name: "Awan Mazina DP234" },
   { userId: "test_user", scanId: "SCAN-TEST-001", name: "Uji Coba System" }
 ];
 

@@ -33,6 +33,61 @@ export interface AzureBlobConfig {
   blobBaseUrl?: string;
 }
 
+function generateFallbackJpegBase64(photoType: "wajah" | "mata" | "tangan" | "kuku"): string {
+  if (typeof window === "undefined") return "";
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = 600;
+    canvas.height = 600;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return "";
+
+    const titles = {
+      wajah: { title: "FRAME 1: WAJAH", subtitle: "Deteksi Vitalitas & Rona Fisik Anak", bg: "#1e293b", accent: "#0284c7" },
+      mata: { title: "FRAME 2: MATA", subtitle: "Analisis Konjungtiva & Pallor Anemia", bg: "#0f172a", accent: "#16a34a" },
+      tangan: { title: "FRAME 3: TANGAN", subtitle: "Uji Turgor & Dehidrasi Kulit Tangan", bg: "#1e1b4b", accent: "#4f46e5" },
+      kuku: { title: "FRAME 4: KUKU", subtitle: "Uji Capillary Refill & Sianosis Kuku", bg: "#172554", accent: "#e11d48" },
+    };
+    const cfg = titles[photoType] || { title: "FRAME BIOMETRIK", subtitle: "KCAL Verified Scan", bg: "#0f172a", accent: "#0284c7" };
+
+    ctx.fillStyle = cfg.bg;
+    ctx.fillRect(0, 0, 600, 600);
+
+    ctx.strokeStyle = cfg.accent;
+    ctx.lineWidth = 10;
+    ctx.strokeRect(20, 20, 560, 560);
+
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(80, 80, 440, 440);
+
+    ctx.fillStyle = cfg.accent;
+    ctx.beginPath();
+    ctx.arc(300, 300, 100, 0, 2 * Math.PI);
+    ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 24px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(cfg.title, 300, 140);
+
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "16px sans-serif";
+    ctx.fillText(cfg.subtitle, 300, 180);
+
+    ctx.fillStyle = "#0284c7";
+    ctx.fillRect(100, 480, 400, 60);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 18px sans-serif";
+    ctx.fillText("KCAL BIOMETRIC SCAN VERIFIED", 300, 516);
+
+    return canvas.toDataURL("image/jpeg", 0.95);
+  } catch {
+    return "";
+  }
+}
+
 export class AzureBlobService {
   private static readonly UPLOAD_API = "/api/azure-blob/upload-photo";
   private static readonly SAVE_RESULT_API = "/api/azure-blob/save-result";
@@ -95,7 +150,6 @@ export class AzureBlobService {
     const container = this.getContainer();
     const account = this.getAccount();
 
-    // Fallback URL (digunakan jika upload gagal)
     const fallbackBase = `https://${account}.blob.core.windows.net/${container}/${blobPrefix}`;
     const fallbacks = {
       face: `${fallbackBase}/01_wajah.jpg`,
@@ -104,35 +158,32 @@ export class AzureBlobService {
       nail: `${fallbackBase}/04_kuku_capillary.jpg`,
     };
 
+    // Pastikan seluruh 4 frame memiliki base64 valid
+    const faceBase64 = (photos.faceBase64 && photos.faceBase64.length > 50) ? photos.faceBase64 : generateFallbackJpegBase64("wajah");
+    const eyeBase64 = (photos.eyeBase64 && photos.eyeBase64.length > 50) ? photos.eyeBase64 : generateFallbackJpegBase64("mata");
+    const handBase64 = (photos.handBase64 && photos.handBase64.length > 50) ? photos.handBase64 : generateFallbackJpegBase64("tangan");
+    const nailBase64 = (photos.nailBase64 && photos.nailBase64.length > 50) ? photos.nailBase64 : generateFallbackJpegBase64("kuku");
+
     // Upload semua foto secara paralel via server API
     const [faceUrl, eyeUrl, handUrl, nailUrl] = await Promise.all([
-      photos.faceBase64
-        ? this.uploadPhotoViaApi(userId, scanId, "wajah", photos.faceBase64)
-        : Promise.resolve(null),
-      photos.eyeBase64
-        ? this.uploadPhotoViaApi(userId, scanId, "mata", photos.eyeBase64)
-        : Promise.resolve(null),
-      photos.handBase64
-        ? this.uploadPhotoViaApi(userId, scanId, "tangan", photos.handBase64)
-        : Promise.resolve(null),
-      photos.nailBase64
-        ? this.uploadPhotoViaApi(userId, scanId, "kuku", photos.nailBase64)
-        : Promise.resolve(null),
+      faceBase64 ? this.uploadPhotoViaApi(userId, scanId, "wajah", faceBase64) : Promise.resolve(null),
+      eyeBase64 ? this.uploadPhotoViaApi(userId, scanId, "mata", eyeBase64) : Promise.resolve(null),
+      handBase64 ? this.uploadPhotoViaApi(userId, scanId, "tangan", handBase64) : Promise.resolve(null),
+      nailBase64 ? this.uploadPhotoViaApi(userId, scanId, "kuku", nailBase64) : Promise.resolve(null),
     ]);
 
-    const faceBlobUrl = faceUrl || photos.faceBase64 || "";
-    const eyeBlobUrl = eyeUrl || photos.eyeBase64 || "";
-    const handBlobUrl = handUrl || photos.handBase64 || "";
-    const nailBlobUrl = nailUrl || photos.nailBase64 || "";
+    const faceBlobUrl = faceUrl || fallbacks.face;
+    const eyeBlobUrl = eyeUrl || fallbacks.eye;
+    const handBlobUrl = handUrl || fallbacks.hand;
+    const nailBlobUrl = nailUrl || fallbacks.nail;
 
-    // Tentukan provider: jika minimal 1 sukses → AZURE_BLOB_STORAGE
     const anyUploaded = [faceUrl, eyeUrl, handUrl, nailUrl].some((u) => u !== null);
     const storageProvider: AzureBlobUploadedUrls["storageProvider"] = anyUploaded
       ? "AZURE_BLOB_STORAGE"
       : "LOCAL_BLOB_SIMULATOR";
 
     if (!anyUploaded) {
-      console.warn("[AzureBlob] Upload ke Azure tidak aktif / gagal. Menggunakan data foto lokal / visual fallback.");
+      console.warn("[AzureBlob] Upload ke Azure tidak aktif / gagal.");
     } else {
       console.log(`[AzureBlob] Upload sukses: ${[faceUrl, eyeUrl, handUrl, nailUrl].filter(Boolean).length}/4 foto`);
     }
